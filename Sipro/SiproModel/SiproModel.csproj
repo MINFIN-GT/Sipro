@@ -57,7 +57,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Models\actividad.cs" />
     <Compile Include="Models\actividad_propiedad.cs" />
     <Compile Include="Models\actividad_propiedad_valor.cs" />
@@ -176,7 +175,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
