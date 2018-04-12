@@ -1,0 +1,8 @@
+C:\Users\pedro\git\Sipro\Sipro\Sipro\Sipro\bin\Debug\netcoreapp2.0\Sipro.deps.json
+C:\Users\pedro\git\Sipro\Sipro\Sipro\Sipro\bin\Debug\netcoreapp2.0\Sipro.runtimeconfig.json
+C:\Users\pedro\git\Sipro\Sipro\Sipro\Sipro\bin\Debug\netcoreapp2.0\Sipro.runtimeconfig.dev.json
+C:\Users\pedro\git\Sipro\Sipro\Sipro\Sipro\bin\Debug\netcoreapp2.0\Sipro.dll
+C:\Users\pedro\git\Sipro\Sipro\Sipro\Sipro\obj\Debug\netcoreapp2.0\Sipro.csprojResolveAssemblyReference.cache
+C:\Users\pedro\git\Sipro\Sipro\Sipro\Sipro\obj\Debug\netcoreapp2.0\Sipro.csproj.CoreCompileInputs.cache
+C:\Users\pedro\git\Sipro\Sipro\Sipro\Sipro\obj\Debug\netcoreapp2.0\Sipro.AssemblyInfoInputs.cache
+C:\Users\pedro\git\Sipro\Sipro\Sipro\Sipro\obj\Debug\netcoreapp2.0\Sipro.AssemblyInfo.cs
