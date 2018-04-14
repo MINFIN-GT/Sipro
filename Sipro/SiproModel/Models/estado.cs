@@ -1,20 +1,21 @@
+
 namespace SiproModel.Models
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
+	using System;
+	using System.ComponentModel.DataAnnotations;
+	using System.ComponentModel.DataAnnotations.Schema;
+	using System.Collections.Generic;
 
-    [Table("sipro.estado")]
-    public partial class estado
-    {
-        public int id { get; set; }
-
-        [Required]
-        [StringLength(30)]
-        public string nombre { get; set; }
-
-        public int valor { get; set; }
-    }
+    /// <summary>
+    /// A class which represents the estado table.
+    /// </summary>
+	[Table("estado")]
+	public partial class Estado
+	{
+		[Key]
+	    public virtual int id { get; set; }
+	    public virtual string nombre { get; set; }
+	    public virtual int valor { get; set; }
+		public virtual IEnumerable<Estado> estadoes { get; set; }
+	}
 }

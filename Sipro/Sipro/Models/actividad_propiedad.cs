@@ -16,6 +16,7 @@ namespace Sipro.Models
             atipo_propiedad = new HashSet<atipo_propiedad>();
         }
 
+        [Key]
         public int id { get; set; }
 
         [Required]
