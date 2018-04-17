@@ -16,8 +16,8 @@ namespace Sipro.Controllers
         [HttpPost()]
         public string Post([FromBody]dynamic data)
         {
-            //return "Datos: " + data.user + ", " + data.password;
-            return null;
+            return "Datos: " + data.user + ", " + data.password;
+            //return null;
         }
     }
 }
