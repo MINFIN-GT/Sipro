@@ -13517,6 +13517,9 @@
       "Dapper.FastCrud.ModelGenerator >= 2.4.1",
       "EntityFramework >= 6.2.0",
       "Microsoft.AspNetCore.All >= 2.0.6",
+      "Microsoft.AspNetCore.Identity >= 2.0.2",
+      "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 2.0.2",
+      "Microsoft.AspNetCore.Session >= 2.0.2",
       "Microsoft.EntityFrameworkCore >= 2.0.2",
       "Microsoft.NETCore.App >= 2.0.0",
       "MySql.Data >= 6.10.6",
@@ -13588,6 +13591,18 @@
           "Microsoft.AspNetCore.All": {
             "target": "Package",
             "version": "[2.0.6, )"
+          },
+          "Microsoft.AspNetCore.Identity": {
+            "target": "Package",
+            "version": "[2.0.2, )"
+          },
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+            "target": "Package",
+            "version": "[2.0.2, )"
+          },
+          "Microsoft.AspNetCore.Session": {
+            "target": "Package",
+            "version": "[2.0.2, )"
           },
           "Microsoft.EntityFrameworkCore": {
             "target": "Package",
