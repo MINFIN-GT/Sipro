@@ -2832,6 +2832,15 @@
           }
         }
       },
+      "MySql.Data.Entity/6.10.6": {
+        "type": "package",
+        "compile": {
+          "lib/net452/MySql.Data.Entity.EF6.dll": {}
+        },
+        "runtime": {
+          "lib/net452/MySql.Data.Entity.EF6.dll": {}
+        }
+      },
       "NETStandard.Library/2.0.0": {
         "type": "package",
         "dependencies": {
@@ -7930,6 +7939,21 @@
         "lib/netstandard2.0/MySql.Data.xml",
         "mysql.data.6.10.6.nupkg.sha512",
         "mysql.data.nuspec"
+      ]
+    },
+    "MySql.Data.Entity/6.10.6": {
+      "sha512": "+YoEmjyco/CM9VRa8bDmGGfOtZ71Oo0TtpfoN772rZJ+28XBd2s2VxWOM8xWI1+oYQNrV48d6FYJyHJC6eTFBw==",
+      "type": "package",
+      "path": "mysql.data.entity/6.10.6",
+      "files": [
+        "content/app.config.transform",
+        "content/web.config.transform",
+        "contentFiles/any/net452/app.config.transform",
+        "contentFiles/any/net452/web.config.transform",
+        "lib/net452/MySql.Data.Entity.EF6.dll",
+        "lib/net452/MySql.Data.Entity.EF6.xml",
+        "mysql.data.entity.6.10.6.nupkg.sha512",
+        "mysql.data.entity.nuspec"
       ]
     },
     "NETStandard.Library/2.0.0": {
@@ -13493,8 +13517,13 @@
       "Dapper.FastCrud.ModelGenerator >= 2.4.1",
       "EntityFramework >= 6.2.0",
       "Microsoft.AspNetCore.All >= 2.0.6",
+      "Microsoft.AspNetCore.Identity >= 2.0.2",
+      "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 2.0.2",
+      "Microsoft.AspNetCore.Session >= 2.0.2",
+      "Microsoft.EntityFrameworkCore >= 2.0.2",
       "Microsoft.NETCore.App >= 2.0.0",
       "MySql.Data >= 6.10.6",
+      "MySql.Data.Entity >= 6.10.6",
       "Newtonsoft.Json >= 11.0.2",
       "log4net >= 2.0.8"
     ]
@@ -13560,12 +13589,32 @@
             "target": "Package",
             "version": "[2.0.6, )"
           },
+          "Microsoft.AspNetCore.Identity": {
+            "target": "Package",
+            "version": "[2.0.2, )"
+          },
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+            "target": "Package",
+            "version": "[2.0.2, )"
+          },
+          "Microsoft.AspNetCore.Session": {
+            "target": "Package",
+            "version": "[2.0.2, )"
+          },
+          "Microsoft.EntityFrameworkCore": {
+            "target": "Package",
+            "version": "[2.0.2, )"
+          },
           "Microsoft.NETCore.App": {
             "target": "Package",
             "version": "[2.0.0, )",
             "autoReferenced": true
           },
           "MySql.Data": {
+            "target": "Package",
+            "version": "[6.10.6, )"
+          },
+          "MySql.Data.Entity": {
             "target": "Package",
             "version": "[6.10.6, )"
           },
@@ -13593,6 +13642,16 @@
       "warningLevel": 1,
       "message": "El paquete \"EntityFramework 6.2.0\" se restauró con \".NETFramework,Version=v4.6.1\" en lugar de la plataforma de destino del proyecto \".NETCoreApp,Version=v2.0\". Puede que el paquete no sea totalmente compatible con el proyecto.",
       "libraryId": "EntityFramework",
+      "targetGraphs": [
+        ".NETCoreApp,Version=v2.0"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "El paquete \"MySql.Data.Entity 6.10.6\" se restauró con \".NETFramework,Version=v4.6.1\" en lugar de la plataforma de destino del proyecto \".NETCoreApp,Version=v2.0\". Puede que el paquete no sea totalmente compatible con el proyecto.",
+      "libraryId": "MySql.Data.Entity",
       "targetGraphs": [
         ".NETCoreApp,Version=v2.0"
       ]

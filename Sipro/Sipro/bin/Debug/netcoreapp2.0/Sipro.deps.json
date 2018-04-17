@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.0",
-    "signature": "589e4b9bbb0f7119a0a5ec3d8cc61a8094fccd01"
+    "signature": "9afb193c4f3acddc990320261b42e5098d8dc4cd"
   },
   "compilationOptions": {
     "defines": [
@@ -25,13 +25,17 @@
         "dependencies": {
           "Dapper": "1.50.4",
           "Dapper.FastCrud": "2.4.1",
+          "Dapper.FastCrud.ModelGenerator": "2.4.1",
           "EntityFramework": "6.2.0",
           "Microsoft.AspNetCore.All": "2.0.6",
+          "Microsoft.AspNetCore.Identity": "2.0.2",
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "2.0.2",
+          "Microsoft.EntityFrameworkCore": "2.0.2",
           "Microsoft.NETCore.App": "2.0.0",
           "MySql.Data": "6.10.6",
+          "MySql.Data.Entity": "6.10.6",
           "Newtonsoft.Json": "11.0.2",
-          "log4net": "2.0.8",
-          "MySql.Data.Entity.EF6": "6.9.10.0"
+          "log4net": "2.0.8"
         },
         "runtime": {
           "Sipro.dll": {}
@@ -68,6 +72,7 @@
           "lib/netstandard1.6/Dapper.FastCrud.dll": {}
         }
       },
+      "Dapper.FastCrud.ModelGenerator/2.4.1": {},
       "EntityFramework/6.2.0": {
         "runtime": {
           "lib/net45/EntityFramework.SqlServer.dll": {},
@@ -2411,6 +2416,14 @@
           "lib/netcoreapp2.0/MySql.Data.dll": {}
         }
       },
+      "MySql.Data.Entity/6.10.6": {
+        "runtime": {
+          "lib/net452/MySql.Data.Entity.EF6.dll": {}
+        },
+        "compile": {
+          "lib/net452/MySql.Data.Entity.EF6.dll": {}
+        }
+      },
       "Newtonsoft.Json/11.0.2": {
         "runtime": {
           "lib/netstandard2.0/Newtonsoft.Json.dll": {}
@@ -4052,14 +4065,6 @@
           "lib/netstandard1.3/Microsoft.WindowsAzure.Storage.dll": {}
         }
       },
-      "MySql.Data.Entity.EF6/6.9.10.0": {
-        "runtime": {
-          "MySql.Data.Entity.EF6.dll": {}
-        },
-        "compile": {
-          "MySql.Data.Entity.EF6.dll": {}
-        }
-      },
       "Microsoft.NETCore.App/2.0.0": {
         "dependencies": {
           "Microsoft.NETCore.DotNetHostPolicy": "2.0.0",
@@ -4257,6 +4262,13 @@
       "sha512": "sha512-JfZv7KB7EKZj9CHgEXeZuYCSK9al5drnY+sYeF+JDWsr1XfHYLrEJrl6lTj+LuUwPv5Nc1L9EbE91D+W1uom6Q==",
       "path": "dapper.fastcrud/2.4.1",
       "hashPath": "dapper.fastcrud.2.4.1.nupkg.sha512"
+    },
+    "Dapper.FastCrud.ModelGenerator/2.4.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-HuTd90JJWsMsWRy/fJt3ZtVX087cL+QvY8SiiqcZ7XXFcMQtw8UjYIsv5fqhdDLsAicK5HZGcf5zrrvzXdjxzg==",
+      "path": "dapper.fastcrud.modelgenerator/2.4.1",
+      "hashPath": "dapper.fastcrud.modelgenerator.2.4.1.nupkg.sha512"
     },
     "EntityFramework/6.2.0": {
       "type": "package",
@@ -5413,6 +5425,13 @@
       "path": "mysql.data/6.10.6",
       "hashPath": "mysql.data.6.10.6.nupkg.sha512"
     },
+    "MySql.Data.Entity/6.10.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+YoEmjyco/CM9VRa8bDmGGfOtZ71Oo0TtpfoN772rZJ+28XBd2s2VxWOM8xWI1+oYQNrV48d6FYJyHJC6eTFBw==",
+      "path": "mysql.data.entity/6.10.6",
+      "hashPath": "mysql.data.entity.6.10.6.nupkg.sha512"
+    },
     "Newtonsoft.Json/11.0.2": {
       "type": "package",
       "serviceable": true,
@@ -6350,11 +6369,6 @@
       "sha512": "sha512-W6ZZ0/o7+3Qb77mRAQyLjPudHG3OMeeQ4p9yY13PUdJArmRCx2cLMm5F4tpIjJXxzHC0ew0oK7DMDGILMdfCnw==",
       "path": "windowsazure.storage/8.1.4",
       "hashPath": "windowsazure.storage.8.1.4.nupkg.sha512"
-    },
-    "MySql.Data.Entity.EF6/6.9.10.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
     },
     "Microsoft.NETCore.App/2.0.0": {
       "type": "package",
