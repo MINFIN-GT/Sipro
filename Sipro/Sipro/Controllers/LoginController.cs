@@ -9,14 +9,21 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Sipro.Controllers
 {
-    [Route("[controller]")]
+    [Route("[controller]/[action]")]
     public class LoginController : Controller
     {
         // POST /<controller>
-        [HttpPost()]
-        public string Post([FromBody]dynamic data)
+        [HttpPost]
+        public IActionResult In([FromBody]dynamic data)
         {
-            return "Datos: " + data.user + ", " + data.password;
+            return Ok("Datos: " + data.user + ", " + data.password);
+            //return null;
+        }
+
+        [HttpPost]
+        public IActionResult Out()
+        {
+            return Ok("Sign out");
             //return null;
         }
     }
