@@ -1,4 +1,4 @@
-﻿<#@ assembly name="EnvDTE" #>
+<#@ assembly name="EnvDTE" #>
 <#@ assembly name="System.Core.dll" #>
 <#@ assembly name="System.Data" #>
 <#@ assembly name="System.Data.Entity.Design" #>
@@ -676,9 +676,12 @@ class SqlServerSchemaReader : SchemaReader
 	List<string> GetPKs(string table){
 		
 		string sql=@"SELECT DISTINCT
-				COLUMN_NAME AS ColumnName
-				FROM INFORMATION_SCHEMA.STATISTICS
-				WHERE INDEX_NAME LIKE '%PRIMARY%' AND TABLE_NAME LIKE @tableName";
+                cols.COLUMN_NAME AS ColumnName
+                FROM ALL_CONSTRAINTS cons, ALL_CONS_COLUMNS cols
+                WHERE cons.constraint_name=cols.constraint_name 
+                AND cons.owner = cols.owner
+                AND cons.constraint_type = 'P'  
+                AND cols.TABLE_NAME LIKE @tableName";
 
 		var pks=new List<string>();
 
@@ -706,9 +709,9 @@ class SqlServerSchemaReader : SchemaReader
 
 	List<string> GetColumnsWithDefaultValues(string table){
 		
-		string sql=@"SELECT COLUMN_NAME AS ColumnName 
-				FROM INFORMATION_SCHEMA.COLUMNS
-				WHERE TABLE_NAME LIKE @tableName AND TABLE_SCHEMA LIKE '%sipro%' AND COLUMN_DEFAULT IS NOT NULL";
+		string sql=@"SELECT COLUMN_NAME AS ColumnName
+                        FROM ALL_TAB_COLUMNS
+                        WHERE TABLE_NAME LIKE @tableName AND OWNER LIKE @schemaName AND DATA_DEFAULT IS NOT NULL;";
 
 		var defaultCols=new List<string>();
 
@@ -793,6 +796,7 @@ class SqlServerSchemaReader : SchemaReader
 		return sysType;
 	}
 
+<<<<<<< HEAD
 	const string TABLE_SQL=@"SELECT *
 		FROM  INFORMATION_SCHEMA.TABLES
 		WHERE TABLE_SCHEMA='SIPRO' AND TABLE_TYPE='BASE TABLE' OR TABLE_TYPE='VIEW'";
@@ -822,6 +826,60 @@ class SqlServerSchemaReader : SchemaReader
     const string INNER_KEYS_SQL = @"SELECT CONSTRAINT_SCHEMA AS 'Schema', TABLE_NAME AS Referencing_tbl, CONSTRAINT_NAME AS FK, COLUMN_NAME AS Referencing_col, REFERENCED_COLUMN_NAME AS Referenced_col
 		FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
 		WHERE TABLE_NAME LIKE @tableName;";
+=======
+	const string TABLE_SQL=@"SELECT TABLE_NAME, OWNER TABLE_SCHEMA, 'Table' TABLE_TYEP  
+                                FROM ALL_TABLES WHERE OWNER LIKE @schemaName
+                                UNION
+                                SELECT VIEW_NAME, OWNER TABLE_SCHEMA, 'View' 
+                                FROM ALL_VIEWS WHERE OWNER LIKE @schemaName";
+
+	const string COLUMN_SQL=@"SELECT OWNER Database, 
+                                OWNER Owner, 
+                                TABLE_NAME TableName, 
+                                COLUMN_NAME ColumnName, 
+                                COLUMN_ID OrdinalPosition,
+                                DATA_DEFAULT DefaultSetting, 
+                                NULLABLE IsNullable, 
+                                DATA_TYPE DataType, 
+                                CHAR_LENGTH MaxLength,
+                                DATA_SCALE DatePrecision, 
+                                0 IsIdentity, 
+                                CASE VIRTUAL_COLUMN WHEN 'YES' THEN 1 WHEN 'NO' THEN 0 END IsComputed
+                                FROM all_tab_cols WHERE TABLE_NAME=@tableName AND OWNER LIKE '@schemaName'
+                                ORDER BY OrdinalPosition ASC";
+
+	const string OUTER_KEYS_SQL = @"SELECT RCC.OWNER Schema,
+        C.CONSTRAINT_NAME FK,
+        RRC.TABLE_NAME Referenced_tbl,
+        RRC.COLUMN_NAME Referenced_col,
+        TC.COLUMN_NAME Referencing_col,
+        FROM   ALL_TAB_COLUMNS tc
+               LEFT OUTER JOIN ALL_CONS_COLUMNS cc
+               ON ( tc.owner = cc.owner AND tc.table_name = cc.table_name AND tc.column_name = cc.COLUMN_NAME )
+               LEFT OUTER JOIN ALL_CONSTRAINTS c
+               ON ( tc.owner = c.owner AND tc.table_name = c.table_name AND c.constraint_name = cc.constraint_name )
+               LEFT OUTER JOIN ALL_CONS_COLUMNS rcc
+               ON ( c.r_owner = rcc.owner AND c.r_constraint_name = rcc.constraint_name )
+        WHERE  c.constraint_type='R'
+            AND tc.table_name = @tableNAme
+            AND tc.OWNER      = @schemaName;"
+
+   const string INNER_KEYS_SQL = @"SELECT TC.OWNER Schema,
+        C.CONSTRAINT_NAME FK,
+        TC.TABLE_NAME Referencing_tbl,
+        RRC.COLUMN_NAME Referenced_col,
+        TC.COLUMN_NAME Referencing_col,
+        FROM   ALL_TAB_COLUMNS tc
+               LEFT OUTER JOIN ALL_CONS_COLUMNS cc
+               ON ( tc.owner = cc.owner AND tc.table_name = cc.table_name AND tc.column_name = cc.COLUMN_NAME )
+               LEFT OUTER JOIN ALL_CONSTRAINTS c
+               ON ( tc.owner = c.owner AND tc.table_name = c.table_name AND c.constraint_name = cc.constraint_name )
+               LEFT OUTER JOIN ALL_CONS_COLUMNS rcc
+               ON ( c.r_owner = rcc.owner AND c.r_constraint_name = rcc.constraint_name )
+        WHERE  c.constraint_type='R'
+            AND tc.table_name = @tableNAme
+            AND tc.OWNER      = @schemaName;";
+>>>>>>> dd91a3e... Modificado el generado de POCOs para Oracle
 	  
 }
 
