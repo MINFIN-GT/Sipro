@@ -21,7 +21,7 @@ namespace SiproModel.Models
 	    public virtual byte[] fecha_creacion { get; set; }
 	    public virtual byte[] fecha_actualizacion { get; set; }
 	    public virtual int? estado { get; set; }
-	    [ForeignKey("programatipo")]
+	    [ForeignKey("Programatipo")]
         public virtual int programa_tipoid { get; set; }
 		public virtual Programatipo tprogramatipo { get; set; }
 		public virtual IEnumerable<Programa> programas { get; set; }

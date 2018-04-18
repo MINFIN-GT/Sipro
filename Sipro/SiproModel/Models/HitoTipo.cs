@@ -17,7 +17,7 @@ namespace SiproModel.Models
 	    public virtual string nombre { get; set; }
 	    public virtual string descripcion { get; set; }
 	    public virtual int estado { get; set; }
-	    [ForeignKey("datotipo")]
+	    [ForeignKey("Datotipo")]
         public virtual int dato_tipoid { get; set; }
 	    public virtual string usuario_creo { get; set; }
 	    public virtual string usuario_actualizacion { get; set; }

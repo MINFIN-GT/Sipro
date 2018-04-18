@@ -13,10 +13,10 @@ namespace SiproModel.Models
 	public partial class Subproductousuario
 	{
 		[Key]
-	    [ForeignKey("subproducto")]
+	    [ForeignKey("Subproducto")]
         public virtual int subproductoid { get; set; }
 		[Key]
-	    [ForeignKey("usuario")]
+	    [ForeignKey("Usuario")]
         public virtual string usuario { get; set; }
 	    public virtual string usuario_creo { get; set; }
 	    public virtual string usuario_actualizo { get; set; }

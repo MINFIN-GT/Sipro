@@ -21,9 +21,9 @@ namespace SiproModel.Models
 	    public virtual byte[] fecha_creacion { get; set; }
 	    public virtual byte[] fecha_actualizacion { get; set; }
 	    public virtual int estado { get; set; }
-	    [ForeignKey("proyectotipo")]
+	    [ForeignKey("Proyectotipo")]
         public virtual int proyecto_tipoid { get; set; }
-	    [ForeignKey("unidadejecutora")]
+	    [ForeignKey("Unidadejecutora")]
         public virtual int? unidad_ejecutoraunidad_ejecutora { get; set; }
 	    public virtual long? snip { get; set; }
 	    public virtual int? programa { get; set; }
@@ -34,11 +34,11 @@ namespace SiproModel.Models
 	    public virtual string latitud { get; set; }
 	    public virtual string longitud { get; set; }
 	    public virtual string objetivo { get; set; }
-	    [ForeignKey("colaborador")]
+	    [ForeignKey("Colaborador")]
         public virtual int? director_proyecto { get; set; }
 	    public virtual string enunciado_alcance { get; set; }
 	    public virtual decimal? costo { get; set; }
-	    [ForeignKey("acumulacioncosto")]
+	    [ForeignKey("Acumulacioncosto")]
         public virtual int? acumulacion_costoid { get; set; }
 	    public virtual string objetivo_especifico { get; set; }
 	    public virtual string vision_general { get; set; }
@@ -51,23 +51,23 @@ namespace SiproModel.Models
 	    public virtual int? orden { get; set; }
 	    public virtual string treePath { get; set; }
 	    public virtual int? nivel { get; set; }
-	    [ForeignKey("unidadejecutora")]
+	    [ForeignKey("Unidadejecutora")]
         public virtual int? entidad { get; set; }
-	    [ForeignKey("unidadejecutora")]
+	    [ForeignKey("Unidadejecutora")]
         public virtual int? ejercicio { get; set; }
 	    public virtual int? ejecucion_fisica_real { get; set; }
-	    [ForeignKey("etiqueta")]
+	    [ForeignKey("Etiqueta")]
         public virtual int proyecto_clase { get; set; }
 	    public virtual int? project_cargado { get; set; }
-	    [ForeignKey("prestamo")]
+	    [ForeignKey("Prestamo")]
         public virtual int? prestamoid { get; set; }
 	    public virtual string observaciones { get; set; }
 	    public virtual int? coordinador { get; set; }
-	    public virtual byte[] fecha_elegibilidad { get; set; }
-	    public virtual byte[] fecha_cierre { get; set; }
 	    public virtual byte[] fecha_inicio_real { get; set; }
+	    public virtual byte[] fecha_elegibilidad { get; set; }
 	    public virtual byte[] fecha_fin_real { get; set; }
 	    public virtual int? congelado { get; set; }
+	    public virtual byte[] fecha_cierre { get; set; }
 		public virtual Proyectotipo tproyectotipo { get; set; }
 		public virtual Colaborador tcolaborador { get; set; }
 		public virtual Etiqueta tetiqueta { get; set; }

@@ -13,10 +13,10 @@ namespace SiproModel.Models
 	public partial class Subcomponentepropiedadvalor
 	{
 		[Key]
-	    [ForeignKey("subcomponente")]
+	    [ForeignKey("Subcomponente")]
         public virtual int subcomponenteid { get; set; }
 		[Key]
-	    [ForeignKey("subcomponentepropiedad")]
+	    [ForeignKey("Subcomponentepropiedad")]
         public virtual int subcomponente_propiedadid { get; set; }
 	    public virtual string valor_string { get; set; }
 	    public virtual int? valor_entero { get; set; }

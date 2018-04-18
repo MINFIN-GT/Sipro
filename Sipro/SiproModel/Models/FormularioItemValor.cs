@@ -13,13 +13,13 @@ namespace SiproModel.Models
 	public partial class Formularioitemvalor
 	{
 		[Key]
-	    [ForeignKey("formularioitem")]
+	    [ForeignKey("Formularioitem")]
         public virtual int formulario_itemid { get; set; }
 		[Key]
-	    [ForeignKey("objetoformulario")]
+	    [ForeignKey("Objetoformulario")]
         public virtual int objeto_formularioformularioid { get; set; }
 		[Key]
-	    [ForeignKey("objetoformulario")]
+	    [ForeignKey("Objetoformulario")]
         public virtual int objeto_formularioobjeto_tipoid { get; set; }
 	    public virtual int valor_entero { get; set; }
 	    public virtual string valor_string { get; set; }
@@ -33,7 +33,7 @@ namespace SiproModel.Models
 	    public virtual byte[] fecha_creacion { get; set; }
 	    public virtual byte[] fecha_actualizacion { get; set; }
 		[Key]
-	    [ForeignKey("objetoformulario")]
+	    [ForeignKey("Objetoformulario")]
         public virtual int objeto_formularioobjeto_id { get; set; }
 		public virtual Formularioitem tformularioitem { get; set; }
 		public virtual Objetoformulario tobjetoformulario { get; set; }

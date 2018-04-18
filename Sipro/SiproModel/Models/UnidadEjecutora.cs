@@ -16,10 +16,10 @@ namespace SiproModel.Models
 	    public virtual int unidad_ejecutora { get; set; }
 	    public virtual string nombre { get; set; }
 		[Key]
-	    [ForeignKey("entidad")]
+	    [ForeignKey("Entidad")]
         public virtual int entidadentidad { get; set; }
 		[Key]
-	    [ForeignKey("entidad")]
+	    [ForeignKey("Entidad")]
         public virtual int ejercicio { get; set; }
 		public virtual Entidad tentidad { get; set; }
 		public virtual IEnumerable<Unidadejecutora> unidadejecutoras { get; set; }

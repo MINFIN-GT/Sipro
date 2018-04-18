@@ -13,10 +13,10 @@ namespace SiproModel.Models
 	public partial class Proyectomiembro
 	{
 		[Key]
-	    [ForeignKey("proyecto")]
+	    [ForeignKey("Proyecto")]
         public virtual int proyectoid { get; set; }
 		[Key]
-	    [ForeignKey("colaborador")]
+	    [ForeignKey("Colaborador")]
         public virtual int colaboradorid { get; set; }
 	    public virtual int estado { get; set; }
 	    public virtual byte[] fecha_creacion { get; set; }

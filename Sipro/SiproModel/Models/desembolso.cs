@@ -23,11 +23,11 @@ namespace SiproModel.Models
 	    public virtual string usuario_actualizo { get; set; }
 	    public virtual byte[] fecha_creacion { get; set; }
 	    public virtual byte[] fecha_actualizacion { get; set; }
-	    [ForeignKey("proyecto")]
+	    [ForeignKey("Proyecto")]
         public virtual int proyectoid { get; set; }
-	    [ForeignKey("desembolsotipo")]
+	    [ForeignKey("Desembolsotipo")]
         public virtual int desembolso_tipoid { get; set; }
-	    [ForeignKey("tipomoneda")]
+	    [ForeignKey("Tipomoneda")]
         public virtual int tipo_monedaid { get; set; }
 		public virtual Proyecto tproyecto { get; set; }
 		public virtual Desembolsotipo tdesembolsotipo { get; set; }

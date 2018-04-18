@@ -15,7 +15,7 @@ namespace SiproModel.Models
 		[Key]
 	    public virtual int id { get; set; }
 	    public virtual string nombre { get; set; }
-	    [ForeignKey("proyecto")]
+	    [ForeignKey("Proyecto")]
         public virtual int proyectoid { get; set; }
 	    public virtual string usuario_creo { get; set; }
 	    public virtual string usuario_actualizo { get; set; }

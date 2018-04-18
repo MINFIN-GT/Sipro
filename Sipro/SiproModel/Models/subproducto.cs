@@ -27,16 +27,16 @@ namespace SiproModel.Models
 	    public virtual int? proyecto { get; set; }
 	    public virtual int? actividad { get; set; }
 	    public virtual int? obra { get; set; }
-	    [ForeignKey("producto")]
+	    [ForeignKey("Producto")]
         public virtual int productoid { get; set; }
-	    [ForeignKey("subproductotipo")]
+	    [ForeignKey("Subproductotipo")]
         public virtual int subproducto_tipoid { get; set; }
-	    [ForeignKey("unidadejecutora")]
+	    [ForeignKey("Unidadejecutora")]
         public virtual int? unidad_ejecutoraunidad_ejecutora { get; set; }
 	    public virtual string latitud { get; set; }
 	    public virtual string longitud { get; set; }
 	    public virtual decimal? costo { get; set; }
-	    [ForeignKey("acumulacioncosto")]
+	    [ForeignKey("Acumulacioncosto")]
         public virtual int? acumulacion_costoid { get; set; }
 	    public virtual int? renglon { get; set; }
 	    public virtual int? ubicacion_geografica { get; set; }
@@ -47,9 +47,9 @@ namespace SiproModel.Models
 	    public virtual int? orden { get; set; }
 	    public virtual string treePath { get; set; }
 	    public virtual int? nivel { get; set; }
-	    [ForeignKey("unidadejecutora")]
+	    [ForeignKey("Unidadejecutora")]
         public virtual int? entidad { get; set; }
-	    [ForeignKey("unidadejecutora")]
+	    [ForeignKey("Unidadejecutora")]
         public virtual int? ejercicio { get; set; }
 	    public virtual byte[] fecha_inicio_real { get; set; }
 	    public virtual byte[] fecha_fin_real { get; set; }

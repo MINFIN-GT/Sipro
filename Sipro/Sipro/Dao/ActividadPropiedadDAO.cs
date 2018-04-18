@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Sipro.Models;
+using SiproModel.Models;
 using Sipro.Utilities;
 using Dapper;
 using MySql.Data.MySqlClient;
@@ -18,18 +18,18 @@ namespace Sipro.Dao
             new CMariaDB();
         }
 
-        public static List<actividad_propiedad> getActividadPropiedadesPorTipoActividadPagina(int idTipoActividad)
+        public static List<Actividadpropiedad> getActividadPropiedadesPorTipoActividadPagina(int idTipoActividad)
         {
-            List<actividad_propiedad> ret = new List<actividad_propiedad>();
+            List<Actividadpropiedad> ret = new List<Actividadpropiedad>();
             try
             {
                 if (CMariaDB.connect())
                 {
-                    String query = String.Join(" ", "select * from actividad_propiedad ap, atipo_propiedad atp, actividad_tipo pt ",
-                        "where actividad_propiedadid = ap.id and atp.actividad_tipoid = pt.id and pt.id=@idTipoActividad");
+                    String query = String.Join(" ", "select * from Actividadpropiedad ap, atipo_propiedad atp, actividad_tipo pt ",
+                        "where Actividadpropiedadid = ap.id and atp.actividad_tipoid = pt.id and pt.id=@idTipoActividad");
                     using (var connection = CMariaDB.getConnection())
                     {
-                        ret = (List<actividad_propiedad>)connection.Query<actividad_propiedad>(query, new { idTipoActividad = idTipoActividad });
+                        ret = (List<Actividadpropiedad>)connection.Query<Actividadpropiedad>(query, new { idTipoActividad = idTipoActividad });
                     }
                 }
             }
@@ -52,7 +52,7 @@ namespace Sipro.Dao
             {
                 if (CMariaDB.connect())
                 {
-                    String query = String.Join(" ", "select count(p.id) from actividad_propiedad p where p.estado=1");
+                    String query = String.Join(" ", "select count(p.id) from Actividadpropiedad p where p.estado=1");
                     using (var connection = CMariaDB.getConnection())
                     {
                         ret = connection.ExecuteScalar<long>(query);
@@ -71,18 +71,18 @@ namespace Sipro.Dao
             return ret;
         }
 
-        public static List<actividad_propiedad> getActividadPropiedadPaginaTotalDisponibles(int pagina, int numeroactividadpropiedades, String idPropiedades)
+        public static List<Actividadpropiedad> getActividadPropiedadPaginaTotalDisponibles(int pagina, int numeroactividadpropiedades, String idPropiedades)
         {
-            List<actividad_propiedad> ret = new List<actividad_propiedad>();
+            List<Actividadpropiedad> ret = new List<Actividadpropiedad>();
             try
             {
                 if (CMariaDB.connect())
                 {
-                    String query = String.Join(" ", "select * from actividad_propiedad ap",
+                    String query = String.Join(" ", "select * from Actividadpropiedad ap",
                         "where ap.estado = 1 and ap.id not in (@idPropiedades) limit @pagina,@numDatos");
                     using (var connection = CMariaDB.getConnection())
                     {
-                        ret = (List<actividad_propiedad>)connection.Query<actividad_propiedad>(query, new { idPropiedades = idPropiedades, pagina = pagina, numDatos = numeroactividadpropiedades });
+                        ret = (List<Actividadpropiedad>)connection.Query<Actividadpropiedad>(query, new { idPropiedades = idPropiedades, pagina = pagina, numDatos = numeroactividadpropiedades });
                     }
                 }
             }
@@ -98,9 +98,9 @@ namespace Sipro.Dao
             return ret;
         }
 
-        public static actividad_propiedad getActividadPropiedadPorId(int id)
+        public static Actividadpropiedad getActividadPropiedadPorId(int id)
         {
-            actividad_propiedad ret = new actividad_propiedad();
+            Actividadpropiedad ret = new Actividadpropiedad();
             try
             {
                 if (CMariaDB.connect())
@@ -109,7 +109,7 @@ namespace Sipro.Dao
                         "where ap.estado = 1 and ap.id=@id");
                     using (var connection = CMariaDB.getConnection())
                     {
-                        ret = connection.QuerySingle<actividad_propiedad>(query, new { id = id });
+                        ret = connection.QueryFirstOrDefault<Actividadpropiedad>(query, new { id = id });
                     }
                 }
             }
@@ -125,20 +125,20 @@ namespace Sipro.Dao
             return ret;
         }
 
-        public static Boolean guardarActividadPropiedad(actividad_propiedad actividadPropiedad)
+        public static Boolean guardarActividadPropiedad(Actividadpropiedad actividadPropiedad)
         {
             Boolean ret = false;
             try
             {
                 if (CMariaDB.connect())
                 {
-                    String query = String.Join(" ", "select count(p.id) from actividad_propiedad p where p.estado=1 and p.id=@id");
+                    String query = String.Join(" ", "select count(p.id) from Actividadpropiedad p where p.estado=1 and p.id=@id");
                     using (var connection = CMariaDB.getConnection())
                     {
                         Int32 existe = connection.QuerySingle<Int32>(query, new { id = actividadPropiedad.id });
                         if (existe > 0)
                         {
-                            query = String.Join(" ", "update actividad_propiedad ap set ap.nombre=@nombre, ap.descripcion=@descripcion, ap.usaurio_creo=@usuarioCreo, ap.usuario_actualizo=@usuarioActualizo,",
+                            query = String.Join(" ", "update Actividadpropiedad ap set ap.nombre=@nombre, ap.descripcion=@descripcion, ap.usaurio_creo=@usuarioCreo, ap.usuario_actualizo=@usuarioActualizo,",
                                 "ap.fecha_creacion=@fechaCreacion, ap.fecha_actualizacion=@fechaActualizacion, ap.estado=@estado, ap.dato_tipoid=@datoTipoId");
 
                             var affectedRows = connection.Execute(query, new
@@ -157,7 +157,7 @@ namespace Sipro.Dao
                         }
                         else
                         {
-                            query = String.Join(" ", "insert into actividad_propiedad (nombre, descripcion, usuario_creo, fecha_creacion, estado, dato_tipoid) values (@nombre,@descripcion, @usuarioCreo, @fechaCreacion, @estado, @datoTipoId");
+                            query = String.Join(" ", "insert into Actividadpropiedad (nombre, descripcion, usuario_creo, fecha_creacion, estado, dato_tipoid) values (@nombre,@descripcion, @usuarioCreo, @fechaCreacion, @estado, @datoTipoId");
 
                             var affectedRows = connection.Execute(query, new
                             {
@@ -186,19 +186,19 @@ namespace Sipro.Dao
             return ret;
         }
 
-        public static Boolean eliminarActividadPropiedad(actividad_propiedad actividadPropiedad)
+        public static Boolean eliminarActividadPropiedad(Actividadpropiedad actividadPropiedad)
         {
             Boolean ret = false;
             try
             {
                 if (CMariaDB.connect())
                 {
-                    String query = String.Join(" ", "update from actividad_propiedad set estado=0 where id=@id");
+                    String query = String.Join(" ", "update from Actividadpropiedad set estado=0 where id=@id");
                     using (var connection = CMariaDB.getConnection())
                     {
                         actividadPropiedad.estado = 0;
                         //var isSuccess = connection.Execute(query, new { id = actividadPropiedad.id });
-                        connection.Update<actividad_propiedad>(actividadPropiedad);
+                        connection.Update<Actividadpropiedad>(actividadPropiedad);
                     }
                 }
             }

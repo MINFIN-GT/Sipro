@@ -13,7 +13,7 @@ namespace SiproModel.Models
 	public partial class Objetorecurso
 	{
 		[Key]
-	    [ForeignKey("recurso")]
+	    [ForeignKey("Recurso")]
         public virtual int recursoid { get; set; }
 		[Key]
 	    public virtual int objetoid { get; set; }

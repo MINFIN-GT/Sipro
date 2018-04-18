@@ -14,11 +14,11 @@ namespace SiproModel.Models
 	{
 		[Key]
 	    public virtual int id { get; set; }
-	    [ForeignKey("colaborador")]
+	    [ForeignKey("Colaborador")]
         public virtual int colaboradorid { get; set; }
-	    [ForeignKey("proyecto")]
+	    [ForeignKey("Proyecto")]
         public virtual int proyectoid { get; set; }
-	    [ForeignKey("rolunidadejecutora")]
+	    [ForeignKey("Rolunidadejecutora")]
         public virtual int rol_unidad_ejecutoraid { get; set; }
 	    public virtual int estado { get; set; }
 	    public virtual string usuario_creo { get; set; }

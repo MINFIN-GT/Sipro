@@ -14,9 +14,9 @@ namespace SiproModel.Models
 	{
 		[Key]
 	    public virtual int id { get; set; }
-	    [ForeignKey("proyecto")]
+	    [ForeignKey("Proyecto")]
         public virtual int proyectoid { get; set; }
-	    [ForeignKey("entidad")]
+	    [ForeignKey("Entidad")]
         public virtual int entidadentidad { get; set; }
 	    public virtual string impacto { get; set; }
 	    public virtual int estado { get; set; }
@@ -24,7 +24,7 @@ namespace SiproModel.Models
 	    public virtual string usuario_actualizo { get; set; }
 	    public virtual byte[] fecha_creacion { get; set; }
 	    public virtual byte[] fecha_actualizacion { get; set; }
-	    [ForeignKey("entidad")]
+	    [ForeignKey("Entidad")]
         public virtual int ejercicio { get; set; }
 		public virtual Proyecto tproyecto { get; set; }
 		public virtual Entidad tentidad { get; set; }

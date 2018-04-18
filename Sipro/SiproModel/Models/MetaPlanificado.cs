@@ -13,7 +13,7 @@ namespace SiproModel.Models
 	public partial class Metaplanificado
 	{
 		[Key]
-	    [ForeignKey("meta")]
+	    [ForeignKey("Meta")]
         public virtual int metaid { get; set; }
 		[Key]
 	    public virtual int ejercicio { get; set; }

@@ -21,9 +21,9 @@ namespace SiproModel.Models
 	    public virtual byte[] fecha_creacion { get; set; }
 	    public virtual byte[] fecha_actualizacion { get; set; }
 	    public virtual int estado { get; set; }
-	    [ForeignKey("recursotipo")]
+	    [ForeignKey("Recursotipo")]
         public virtual int recurso_tipoid { get; set; }
-	    [ForeignKey("recursounidadmedida")]
+	    [ForeignKey("Recursounidadmedida")]
         public virtual int recurso_unidad_medidaid { get; set; }
 		public virtual Recursounidadmedida trecursounidadmedida { get; set; }
 		public virtual Recursotipo trecursotipo { get; set; }

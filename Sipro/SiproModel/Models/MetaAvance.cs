@@ -13,7 +13,7 @@ namespace SiproModel.Models
 	public partial class Metaavance
 	{
 		[Key]
-	    [ForeignKey("meta")]
+	    [ForeignKey("Meta")]
         public virtual int metaid { get; set; }
 		[Key]
 	    public virtual byte[] fecha { get; set; }

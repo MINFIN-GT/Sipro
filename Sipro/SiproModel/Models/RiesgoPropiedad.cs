@@ -21,7 +21,7 @@ namespace SiproModel.Models
 	    public virtual byte[] fecha_creacion { get; set; }
 	    public virtual byte[] fecha_actualizacion { get; set; }
 	    public virtual int estado { get; set; }
-	    [ForeignKey("datotipo")]
+	    [ForeignKey("Datotipo")]
         public virtual int dato_tipoid { get; set; }
 		public virtual Datotipo tdatotipo { get; set; }
 		public virtual IEnumerable<Riesgopropiedad> riesgopropiedads { get; set; }

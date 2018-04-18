@@ -13,10 +13,10 @@ namespace SiproModel.Models
 	public partial class Componenteusuario
 	{
 		[Key]
-	    [ForeignKey("componente")]
+	    [ForeignKey("Componente")]
         public virtual int componenteid { get; set; }
 		[Key]
-	    [ForeignKey("usuario")]
+	    [ForeignKey("Usuario")]
         public virtual string usuario { get; set; }
 	    public virtual string usuario_creo { get; set; }
 	    public virtual string usuario_actualizo { get; set; }

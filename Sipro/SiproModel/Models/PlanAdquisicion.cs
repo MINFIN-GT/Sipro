@@ -14,9 +14,9 @@ namespace SiproModel.Models
 	{
 		[Key]
 	    public virtual int id { get; set; }
-	    [ForeignKey("tipoadquisicion")]
+	    [ForeignKey("Tipoadquisicion")]
         public virtual int tipo_adquisicion { get; set; }
-	    [ForeignKey("categoriaadquisicion")]
+	    [ForeignKey("Categoriaadquisicion")]
         public virtual int? categoria_adquisicion { get; set; }
 	    public virtual string unidad_medida { get; set; }
 	    public virtual int? cantidad { get; set; }

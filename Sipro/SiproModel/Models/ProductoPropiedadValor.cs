@@ -13,10 +13,10 @@ namespace SiproModel.Models
 	public partial class Productopropiedadvalor
 	{
 		[Key]
-	    [ForeignKey("productopropiedad")]
+	    [ForeignKey("Productopropiedad")]
         public virtual int producto_propiedadid { get; set; }
 		[Key]
-	    [ForeignKey("producto")]
+	    [ForeignKey("Producto")]
         public virtual int productoid { get; set; }
 	    public virtual int? valor_entero { get; set; }
 	    public virtual string valor_string { get; set; }

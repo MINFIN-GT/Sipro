@@ -14,7 +14,7 @@ namespace SiproModel.Models
 	{
 		[Key]
 	    public virtual int id { get; set; }
-	    [ForeignKey("formularioitem")]
+	    [ForeignKey("Formularioitem")]
         public virtual int formulario_itemid { get; set; }
 	    public virtual string etiqueta { get; set; }
 	    public virtual int? valor_entero { get; set; }

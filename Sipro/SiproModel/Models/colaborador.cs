@@ -19,18 +19,18 @@ namespace SiproModel.Models
 	    public virtual string papellido { get; set; }
 	    public virtual string sapellido { get; set; }
 	    public virtual long cui { get; set; }
-	    [ForeignKey("unidadejecutora")]
+	    [ForeignKey("Unidadejecutora")]
         public virtual int unidad_ejecutoraunidad_ejecutora { get; set; }
-	    [ForeignKey("usuario")]
+	    [ForeignKey("Usuario")]
         public virtual string usuariousuario { get; set; }
 	    public virtual int estado { get; set; }
 	    public virtual string usuario_creo { get; set; }
 	    public virtual string usuario_actualizo { get; set; }
 	    public virtual byte[] fecha_creacion { get; set; }
 	    public virtual byte[] fecha_actualizacion { get; set; }
-	    [ForeignKey("unidadejecutora")]
+	    [ForeignKey("Unidadejecutora")]
         public virtual int entidad { get; set; }
-	    [ForeignKey("unidadejecutora")]
+	    [ForeignKey("Unidadejecutora")]
         public virtual int ejercicio { get; set; }
 		public virtual Usuario tusuario { get; set; }
 		public virtual Unidadejecutora tunidadejecutora { get; set; }

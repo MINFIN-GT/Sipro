@@ -76,7 +76,7 @@ manager.StartNewFile(manager.underscoreToCamelCase(tbl.Name)+".cs");
 	<#}
 	if (IncludeRelationships) {
 		var tableKey = (from key in tbl.OuterKeys where col.PropertyName==tbl[key.ReferencingTableColumnName].PropertyName select key).FirstOrDefault();
-		if(tableKey != null){#>    [ForeignKey("<#=tables[tableKey.ReferencedTableName].ClassName#>")]
+		if(tableKey != null){#>    [ForeignKey("<#=manager.underscoreToCamelCase(tables[tableKey.ReferencedTableName].ClassName)#>")]
     <#}
 	}#>    public virtual <#=col.PropertyType #><#=CheckNullable(col)#> <#=col.PropertyName #> { get; set; }
 <#}#>
@@ -804,7 +804,8 @@ class SqlServerSchemaReader : SchemaReader
 			COLUMN_NAME AS ColumnName, 
 			ORDINAL_POSITION AS OrdinalPosition, 
 			COLUMN_DEFAULT AS DefaultSetting, 
-			IS_NULLABLE AS IsNullable, DATA_TYPE AS DataType, 
+			IS_NULLABLE AS IsNullable, 
+			DATA_TYPE AS DataType, 
 			CHARACTER_MAXIMUM_LENGTH AS MaxLength, 
 			DATETIME_PRECISION AS DatePrecision,
 			IF(EXTRA LIKE '%auto_increment%',1,0) AS IsIdentity,

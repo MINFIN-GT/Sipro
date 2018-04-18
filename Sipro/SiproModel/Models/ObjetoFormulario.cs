@@ -13,7 +13,7 @@ namespace SiproModel.Models
 	public partial class Objetoformulario
 	{
 		[Key]
-	    [ForeignKey("formulario")]
+	    [ForeignKey("Formulario")]
         public virtual int formularioid { get; set; }
 		[Key]
 	    public virtual int objeto_tipo { get; set; }

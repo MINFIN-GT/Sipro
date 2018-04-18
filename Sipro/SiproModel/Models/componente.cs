@@ -16,16 +16,16 @@ namespace SiproModel.Models
 	    public virtual int id { get; set; }
 	    public virtual string nombre { get; set; }
 	    public virtual string descripcion { get; set; }
-	    [ForeignKey("proyecto")]
+	    [ForeignKey("Proyecto")]
         public virtual int proyectoid { get; set; }
-	    [ForeignKey("componentetipo")]
+	    [ForeignKey("Componentetipo")]
         public virtual int componente_tipoid { get; set; }
 	    public virtual string usuario_creo { get; set; }
 	    public virtual string usuario_actualizo { get; set; }
 	    public virtual byte[] fecha_creacion { get; set; }
 	    public virtual byte[] fecha_actualizacion { get; set; }
 	    public virtual int estado { get; set; }
-	    [ForeignKey("unidadejecutora")]
+	    [ForeignKey("Unidadejecutora")]
         public virtual int? unidad_ejecutoraunidad_ejecutora { get; set; }
 	    public virtual long? snip { get; set; }
 	    public virtual int? programa { get; set; }
@@ -36,7 +36,7 @@ namespace SiproModel.Models
 	    public virtual string latitud { get; set; }
 	    public virtual string longitud { get; set; }
 	    public virtual decimal? costo { get; set; }
-	    [ForeignKey("acumulacioncosto")]
+	    [ForeignKey("Acumulacioncosto")]
         public virtual int? acumulacion_costoid { get; set; }
 	    public virtual int? renglon { get; set; }
 	    public virtual int? ubicacion_geografica { get; set; }
@@ -47,15 +47,15 @@ namespace SiproModel.Models
 	    public virtual int? orden { get; set; }
 	    public virtual string treePath { get; set; }
 	    public virtual int? nivel { get; set; }
-	    [ForeignKey("unidadejecutora")]
+	    [ForeignKey("Unidadejecutora")]
         public virtual int? entidad { get; set; }
-	    [ForeignKey("unidadejecutora")]
+	    [ForeignKey("Unidadejecutora")]
         public virtual int? ejercicio { get; set; }
 	    public virtual int? es_de_sigade { get; set; }
 	    public virtual decimal? fuente_prestamo { get; set; }
 	    public virtual decimal? fuente_donacion { get; set; }
 	    public virtual decimal? fuente_nacional { get; set; }
-	    [ForeignKey("componentesigade")]
+	    [ForeignKey("Componentesigade")]
         public virtual int? componente_sigadeid { get; set; }
 	    public virtual byte[] fecha_inicio_real { get; set; }
 	    public virtual byte[] fecha_fin_real { get; set; }

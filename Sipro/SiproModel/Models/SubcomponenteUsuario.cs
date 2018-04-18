@@ -13,7 +13,7 @@ namespace SiproModel.Models
 	public partial class Subcomponenteusuario
 	{
 		[Key]
-	    [ForeignKey("subcomponente")]
+	    [ForeignKey("Subcomponente")]
         public virtual int subcomponenteid { get; set; }
 		[Key]
 	    public virtual string usuario { get; set; }

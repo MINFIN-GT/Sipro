@@ -13,10 +13,10 @@ namespace SiproModel.Models
 	public partial class Prestamotipoprestamo
 	{
 		[Key]
-	    [ForeignKey("prestamo")]
+	    [ForeignKey("Prestamo")]
         public virtual int prestamoId { get; set; }
 		[Key]
-	    [ForeignKey("prestamotipo")]
+	    [ForeignKey("Prestamotipo")]
         public virtual int tipoPrestamoId { get; set; }
 	    public virtual string usuario_creo { get; set; }
 	    public virtual string usuario_actualizo { get; set; }

@@ -21,9 +21,9 @@ namespace SiproModel.Models
 	    public virtual byte[] fecha_creacion { get; set; }
 	    public virtual byte[] fecha_actualizacion { get; set; }
 	    public virtual int? estado { get; set; }
-	    [ForeignKey("metaunidadmedida")]
+	    [ForeignKey("Metaunidadmedida")]
         public virtual int meta_unidad_medidaid { get; set; }
-	    [ForeignKey("datotipo")]
+	    [ForeignKey("Datotipo")]
         public virtual int dato_tipoid { get; set; }
 	    public virtual int? objeto_id { get; set; }
 	    public virtual int? objeto_tipo { get; set; }

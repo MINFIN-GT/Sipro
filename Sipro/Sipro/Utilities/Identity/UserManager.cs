@@ -27,7 +27,7 @@ namespace Sipro.Utilities.Identity
         return null;
 
       Credential credential = this.storage.Credentials.FirstOrDefault(
-        c => c.CredentialTypeId == credentialType.Id && string.Equals(c.Identifier, identifier, StringComparison.OrdinalIgnoreCase) && c.Secret == MD5Hasher.ComputeHash(secret)
+        c => c.CredentialTypeId == credentialType.Id && string.Equals(c.Identifier, identifier, StringComparison.OrdinalIgnoreCase) && c.Secret == SHA256Hasher.ComputeHash(secret)[0]
       );
 
       if (credential == null)

@@ -24,7 +24,7 @@ namespace SiproModel.Models
 	    public virtual byte[] fecha_creacion { get; set; }
 	    public virtual byte[] fecha_actualizacion { get; set; }
 	    public virtual int estado { get; set; }
-	    [ForeignKey("actividadtipo")]
+	    [ForeignKey("Actividadtipo")]
         public virtual int actividad_tipoid { get; set; }
 	    public virtual long? snip { get; set; }
 	    public virtual int? programa { get; set; }
@@ -41,7 +41,7 @@ namespace SiproModel.Models
 	    public virtual string latitud { get; set; }
 	    public virtual string longitud { get; set; }
 	    public virtual decimal? costo { get; set; }
-	    [ForeignKey("acumulacioncosto")]
+	    [ForeignKey("Acumulacioncosto")]
         public virtual int? acumulacion_costo { get; set; }
 	    public virtual int? renglon { get; set; }
 	    public virtual int? ubicacion_geografica { get; set; }

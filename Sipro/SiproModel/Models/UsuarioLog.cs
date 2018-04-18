@@ -12,10 +12,7 @@ namespace SiproModel.Models
 	[Table("usuario_log")]
 	public partial class Usuariolog
 	{
-		[Key]
 	    public virtual string usuario { get; set; }
-		[Key]
 	    public virtual byte[] fecha { get; set; }
-		public virtual IEnumerable<Usuariolog> usuariologs { get; set; }
 	}
 }

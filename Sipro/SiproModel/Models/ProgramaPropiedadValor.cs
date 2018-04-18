@@ -13,10 +13,10 @@ namespace SiproModel.Models
 	public partial class Programapropiedadvalor
 	{
 		[Key]
-	    [ForeignKey("programapropiedad")]
+	    [ForeignKey("Programapropiedad")]
         public virtual int programa_propiedadid { get; set; }
 		[Key]
-	    [ForeignKey("programa")]
+	    [ForeignKey("Programa")]
         public virtual int programaid { get; set; }
 	    public virtual string valor_string { get; set; }
 	    public virtual int? valor_entero { get; set; }

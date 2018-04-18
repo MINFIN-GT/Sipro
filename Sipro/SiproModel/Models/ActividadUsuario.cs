@@ -13,7 +13,7 @@ namespace SiproModel.Models
 	public partial class Actividadusuario
 	{
 		[Key]
-	    [ForeignKey("actividad")]
+	    [ForeignKey("Actividad")]
         public virtual int actividadid { get; set; }
 		[Key]
 	    public virtual string usuario { get; set; }

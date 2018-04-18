@@ -13,10 +13,10 @@ namespace SiproModel.Models
 	public partial class Usuariopermiso
 	{
 		[Key]
-	    [ForeignKey("usuario")]
+	    [ForeignKey("Usuario")]
         public virtual string usuariousuario { get; set; }
 		[Key]
-	    [ForeignKey("permiso")]
+	    [ForeignKey("Permiso")]
         public virtual int permisoid { get; set; }
 	    public virtual string usuario_creo { get; set; }
 	    public virtual string usuario_actualizo { get; set; }

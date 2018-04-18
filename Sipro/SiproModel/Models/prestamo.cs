@@ -19,10 +19,10 @@ namespace SiproModel.Models
 	    public virtual string numero_prestamo { get; set; }
 	    public virtual string destino { get; set; }
 	    public virtual string sector_economico { get; set; }
-	    [ForeignKey("unidadejecutora")]
+	    [ForeignKey("Unidadejecutora")]
         public virtual int? unidad_ejecutoraunidad_ejecutora { get; set; }
 	    public virtual byte[] fecha_firma { get; set; }
-	    [ForeignKey("autorizaciontipo")]
+	    [ForeignKey("Autorizaciontipo")]
         public virtual int? autorizacion_tipoid { get; set; }
 	    public virtual string numero_autorizacion { get; set; }
 	    public virtual byte[] fecha_autorizacion { get; set; }
@@ -30,11 +30,11 @@ namespace SiproModel.Models
 	    public virtual int? anios_gracia { get; set; }
 	    public virtual byte[] fecha_fin_ejecucion { get; set; }
 	    public virtual int? perido_ejecucion { get; set; }
-	    [ForeignKey("interestipo")]
+	    [ForeignKey("Interestipo")]
         public virtual int? interes_tipoid { get; set; }
 	    public virtual decimal? porcentaje_interes { get; set; }
 	    public virtual decimal? porcentaje_comision_compra { get; set; }
-	    [ForeignKey("tipomoneda")]
+	    [ForeignKey("Tipomoneda")]
         public virtual int tipo_monedaid { get; set; }
 	    public virtual decimal monto_contratado { get; set; }
 	    public virtual decimal? amortizado { get; set; }
@@ -59,7 +59,7 @@ namespace SiproModel.Models
 	    public virtual decimal? presupuesto_pagado_inversion { get; set; }
 	    public virtual decimal? saldo_cuentas { get; set; }
 	    public virtual decimal? desembolsado_real { get; set; }
-	    [ForeignKey("ejecucionestado")]
+	    [ForeignKey("Ejecucionestado")]
         public virtual int? ejecucion_estadoid { get; set; }
 	    public virtual string usuario_creo { get; set; }
 	    public virtual string usuario_actualizo { get; set; }
@@ -86,16 +86,16 @@ namespace SiproModel.Models
 	    public virtual decimal? monto_asignado_ue_qtz { get; set; }
 	    public virtual decimal? desembolso_a_fecha_ue_usd { get; set; }
 	    public virtual decimal? monto_por_desembolsar_ue_usd { get; set; }
-	    [ForeignKey("unidadejecutora")]
+	    [ForeignKey("Unidadejecutora")]
         public virtual int? entidad { get; set; }
-	    [ForeignKey("unidadejecutora")]
+	    [ForeignKey("Unidadejecutora")]
         public virtual int? ejercicio { get; set; }
 	    public virtual string objetivo { get; set; }
 	    public virtual string objetivo_especifico { get; set; }
 	    public virtual int? porcentaje_avance { get; set; }
-	    [ForeignKey("cooperante")]
+	    [ForeignKey("Cooperante")]
         public virtual int cooperantecodigo { get; set; }
-	    [ForeignKey("cooperante")]
+	    [ForeignKey("Cooperante")]
         public virtual int cooperanteejercicio { get; set; }
 		public virtual Tipomoneda ttipomoneda { get; set; }
 		public virtual Ejecucionestado tejecucionestado { get; set; }

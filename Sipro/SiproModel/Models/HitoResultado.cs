@@ -19,7 +19,7 @@ namespace SiproModel.Models
 	    public virtual decimal? valor_decimal { get; set; }
 	    public virtual byte[] valor_tiempo { get; set; }
 	    public virtual string comentario { get; set; }
-	    [ForeignKey("hito")]
+	    [ForeignKey("Hito")]
         public virtual int hitoid { get; set; }
 	    public virtual string usuario_creo { get; set; }
 	    public virtual string usuario_actualizo { get; set; }

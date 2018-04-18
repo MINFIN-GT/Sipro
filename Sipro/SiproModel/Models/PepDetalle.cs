@@ -13,7 +13,7 @@ namespace SiproModel.Models
 	public partial class Pepdetalle
 	{
 		[Key]
-	    [ForeignKey("proyecto")]
+	    [ForeignKey("Proyecto")]
         public virtual int proyectoid { get; set; }
 	    public virtual string observaciones { get; set; }
 	    public virtual string alertivos { get; set; }

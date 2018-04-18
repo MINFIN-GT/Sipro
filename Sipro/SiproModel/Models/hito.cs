@@ -22,9 +22,9 @@ namespace SiproModel.Models
 	    public virtual byte[] fecha_actualizacion { get; set; }
 	    public virtual int estado { get; set; }
 	    public virtual byte[] fecha { get; set; }
-	    [ForeignKey("proyecto")]
+	    [ForeignKey("Proyecto")]
         public virtual int proyectoid { get; set; }
-	    [ForeignKey("hitotipo")]
+	    [ForeignKey("Hitotipo")]
         public virtual int hito_tipoid { get; set; }
 		public virtual Proyecto tproyecto { get; set; }
 		public virtual Hitotipo thitotipo { get; set; }

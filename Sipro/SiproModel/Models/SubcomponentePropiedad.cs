@@ -20,7 +20,7 @@ namespace SiproModel.Models
 	    public virtual string usuario_actualizo { get; set; }
 	    public virtual byte[] fecha_creacion { get; set; }
 	    public virtual byte[] fecha_actualizacion { get; set; }
-	    [ForeignKey("datotipo")]
+	    [ForeignKey("Datotipo")]
         public virtual int dato_tipoid { get; set; }
 	    public virtual int estado { get; set; }
 		public virtual Datotipo tdatotipo { get; set; }

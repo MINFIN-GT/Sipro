@@ -13,10 +13,10 @@ namespace SiproModel.Models
 	public partial class Ctipopropiedad
 	{
 		[Key]
-	    [ForeignKey("componentetipo")]
+	    [ForeignKey("Componentetipo")]
         public virtual int componente_tipoid { get; set; }
 		[Key]
-	    [ForeignKey("componentepropiedad")]
+	    [ForeignKey("Componentepropiedad")]
         public virtual int componente_propiedadid { get; set; }
 	    public virtual string usuario_creo { get; set; }
 	    public virtual string usuario_actualizo { get; set; }

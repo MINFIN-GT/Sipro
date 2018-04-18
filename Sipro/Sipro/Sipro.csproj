@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="1.50.4" />
+    <PackageReference Include="Dapper.Contrib" Version="1.50.4" />
     <PackageReference Include="Dapper.FastCrud" Version="2.4.1" />
     <PackageReference Include="Dapper.FastCrud.ModelGenerator" Version="2.4.1" />
     <PackageReference Include="EntityFramework" Version="6.2.0" />
@@ -18,10 +19,16 @@
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="MySql.Data.Entity" Version="6.10.6" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Oracle.ManagedDataAccess" Version="12.2.1100" />
+    <PackageReference Include="Oracle.ManagedDataAccess.EntityFramework" Version="12.2.1100" />
   </ItemGroup>
 
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SiproModel\SiproModel.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,5 +38,13 @@
     <Reference Include="MySql.Data.Entity.EF6">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\MySQL\MySQL Connector Net 6.9.10\Assemblies\v4.5\MySql.Data.Entity.EF6.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
 </Project>

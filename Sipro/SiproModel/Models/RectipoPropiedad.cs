@@ -13,10 +13,10 @@ namespace SiproModel.Models
 	public partial class Rectipopropiedad
 	{
 		[Key]
-	    [ForeignKey("recursopropiedad")]
+	    [ForeignKey("Recursopropiedad")]
         public virtual int recurso_propiedadid { get; set; }
 		[Key]
-	    [ForeignKey("recursotipo")]
+	    [ForeignKey("Recursotipo")]
         public virtual int recurso_tipoid { get; set; }
 	    public virtual string usuario_creo { get; set; }
 	    public virtual string usuario_actualizo { get; set; }

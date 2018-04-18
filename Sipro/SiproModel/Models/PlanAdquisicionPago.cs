@@ -14,7 +14,7 @@ namespace SiproModel.Models
 	{
 		[Key]
 	    public virtual int id { get; set; }
-	    [ForeignKey("planadquisicion")]
+	    [ForeignKey("Planadquisicion")]
         public virtual int plan_adquisicionid { get; set; }
 	    public virtual byte[] fecha_pago { get; set; }
 	    public virtual decimal? pago { get; set; }

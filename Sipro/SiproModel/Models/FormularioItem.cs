@@ -15,7 +15,7 @@ namespace SiproModel.Models
 		[Key]
 	    public virtual int id { get; set; }
 	    public virtual string texto { get; set; }
-	    [ForeignKey("formulario")]
+	    [ForeignKey("Formulario")]
         public virtual int formularioid { get; set; }
 	    public virtual int orden { get; set; }
 	    public virtual string usuario_creo { get; set; }
@@ -23,7 +23,7 @@ namespace SiproModel.Models
 	    public virtual byte[] fecha_creacion { get; set; }
 	    public virtual byte[] fecha_actualizacion { get; set; }
 	    public virtual int estado { get; set; }
-	    [ForeignKey("formularioitemtipo")]
+	    [ForeignKey("Formularioitemtipo")]
         public virtual int formulario_item_tipoid { get; set; }
 		public virtual Formularioitemtipo tformularioitemtipo { get; set; }
 		public virtual Formulario tformulario { get; set; }
