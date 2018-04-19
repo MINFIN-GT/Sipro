@@ -13636,37 +13636,35 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\pedro\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "/Users/rafa/.nuget/packages/": {},
+    "/usr/local/share/dotnet/sdk/NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\Sipro\\Sipro.csproj",
+      "projectUniqueName": "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/Sipro/Sipro.csproj",
       "projectName": "Sipro",
-      "projectPath": "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\Sipro\\Sipro.csproj",
-      "packagesPath": "C:\\Users\\pedro\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\Sipro\\obj\\",
+      "projectPath": "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/Sipro/Sipro.csproj",
+      "packagesPath": "/Users/rafa/.nuget/packages/",
+      "outputPath": "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/Sipro/obj",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\pedro\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/Users/rafa/.config/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "netcoreapp2.0": {
           "projectReferences": {
-            "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\SiproModel\\SiproModel.csproj": {
-              "projectPath": "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\SiproModel\\SiproModel.csproj"
+            "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/SiproModel/SiproModel.csproj": {
+              "projectPath": "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/SiproModel/SiproModel.csproj"
             }
           }
         }
@@ -13680,74 +13678,75 @@
     "frameworks": {
       "netcoreapp2.0": {
         "dependencies": {
+          "Microsoft.NETCore.App": {
+            "suppressParent": "All",
+            "target": "Package",
+            "version": "2.0",
+            "autoReferenced": true
+          },
           "Dapper": {
             "target": "Package",
-            "version": "[1.50.4, )"
+            "version": "1.50.4"
           },
           "Dapper.Contrib": {
             "target": "Package",
-            "version": "[1.50.4, )"
+            "version": "1.50.4"
           },
           "Dapper.FastCrud": {
             "target": "Package",
-            "version": "[2.4.1, )"
+            "version": "2.4.1"
           },
           "Dapper.FastCrud.ModelGenerator": {
             "target": "Package",
-            "version": "[2.4.1, )"
+            "version": "2.4.1"
           },
           "EntityFramework": {
             "target": "Package",
-            "version": "[6.2.0, )"
+            "version": "6.2.0"
           },
           "Microsoft.AspNetCore.All": {
             "target": "Package",
-            "version": "[2.0.6, )"
+            "version": "2.0.6"
           },
           "Microsoft.AspNetCore.Identity": {
             "target": "Package",
-            "version": "[2.0.2, )"
+            "version": "2.0.2"
           },
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
             "target": "Package",
-            "version": "[2.0.2, )"
+            "version": "2.0.2"
           },
           "Microsoft.AspNetCore.Session": {
             "target": "Package",
-            "version": "[2.0.2, )"
+            "version": "2.0.2"
           },
           "Microsoft.EntityFrameworkCore": {
             "target": "Package",
-            "version": "[2.0.2, )"
-          },
-          "Microsoft.NETCore.App": {
-            "target": "Package",
-            "version": "[2.0.0, )",
-            "autoReferenced": true
+            "version": "2.0.2"
           },
           "MySql.Data": {
             "target": "Package",
-            "version": "[6.10.6, )"
-          },
-          "MySql.Data.Entity": {
-            "target": "Package",
-            "version": "[6.10.6, )"
-          },
-          "Newtonsoft.Json": {
-            "target": "Package",
-            "version": "[11.0.2, )"
-          },
-          "Oracle.ManagedDataAccess": {
-            "target": "Package",
-            "version": "[12.2.1100, )"
-          },
-          "Oracle.ManagedDataAccess.EntityFramework": {
-            "target": "Package",
-            "version": "[12.2.1100, )"
+            "version": "6.10.6"
           },
           "log4net": {
             "target": "Package",
-            "version": "[2.0.8, )"
+            "version": "2.0.8"
+          },
+          "MySql.Data.Entity": {
+            "target": "Package",
+            "version": "6.10.6"
+          },
+          "Newtonsoft.Json": {
+            "target": "Package",
+            "version": "11.0.2"
+          },
+          "Oracle.ManagedDataAccess": {
+            "target": "Package",
+            "version": "12.2.1100"
+          },
+          "Oracle.ManagedDataAccess.EntityFramework": {
+            "target": "Package",
+            "version": "12.2.1100"
           }
         },
         "imports": [
@@ -13763,7 +13762,7 @@
       "code": "NU1701",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "El paquete \"EntityFramework 6.2.0\" se restauró con \".NETFramework,Version=v4.6.1\" en lugar de la plataforma de destino del proyecto \".NETCoreApp,Version=v2.0\". Puede que el paquete no sea totalmente compatible con el proyecto.",
+      "message": "Package 'EntityFramework 6.2.0' was restored using '.NETFramework,Version=v4.6.1' instead of the project target framework '.NETCoreApp,Version=v2.0'. This package may not be fully compatible with your project.",
       "libraryId": "EntityFramework",
       "targetGraphs": [
         ".NETCoreApp,Version=v2.0"
@@ -13773,7 +13772,7 @@
       "code": "NU1701",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "El paquete \"MySql.Data.Entity 6.10.6\" se restauró con \".NETFramework,Version=v4.6.1\" en lugar de la plataforma de destino del proyecto \".NETCoreApp,Version=v2.0\". Puede que el paquete no sea totalmente compatible con el proyecto.",
+      "message": "Package 'MySql.Data.Entity 6.10.6' was restored using '.NETFramework,Version=v4.6.1' instead of the project target framework '.NETCoreApp,Version=v2.0'. This package may not be fully compatible with your project.",
       "libraryId": "MySql.Data.Entity",
       "targetGraphs": [
         ".NETCoreApp,Version=v2.0"
@@ -13783,7 +13782,7 @@
       "code": "NU1701",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "El paquete \"Oracle.ManagedDataAccess 12.2.1100\" se restauró con \".NETFramework,Version=v4.6.1\" en lugar de la plataforma de destino del proyecto \".NETCoreApp,Version=v2.0\". Puede que el paquete no sea totalmente compatible con el proyecto.",
+      "message": "Package 'Oracle.ManagedDataAccess 12.2.1100' was restored using '.NETFramework,Version=v4.6.1' instead of the project target framework '.NETCoreApp,Version=v2.0'. This package may not be fully compatible with your project.",
       "libraryId": "Oracle.ManagedDataAccess",
       "targetGraphs": [
         ".NETCoreApp,Version=v2.0"
@@ -13793,7 +13792,7 @@
       "code": "NU1701",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "El paquete \"Oracle.ManagedDataAccess.EntityFramework 12.2.1100\" se restauró con \".NETFramework,Version=v4.6.1\" en lugar de la plataforma de destino del proyecto \".NETCoreApp,Version=v2.0\". Puede que el paquete no sea totalmente compatible con el proyecto.",
+      "message": "Package 'Oracle.ManagedDataAccess.EntityFramework 12.2.1100' was restored using '.NETFramework,Version=v4.6.1' instead of the project target framework '.NETCoreApp,Version=v2.0'. This package may not be fully compatible with your project.",
       "libraryId": "Oracle.ManagedDataAccess.EntityFramework",
       "targetGraphs": [
         ".NETCoreApp,Version=v2.0"
