@@ -6,8 +6,6 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="1.50.4" />
-    <PackageReference Include="Dapper.Contrib" Version="1.50.4" />
-    <PackageReference Include="Dapper.FastCrud" Version="2.4.1" />
     <PackageReference Include="Dapper.FastCrud.ModelGenerator" Version="2.4.1" />
     <PackageReference Include="EntityFramework" Version="6.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
@@ -15,9 +13,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.2" />
-    <PackageReference Include="MySql.Data" Version="6.10.6" />
     <PackageReference Include="log4net" Version="2.0.8" />
-    <PackageReference Include="MySql.Data.Entity" Version="6.10.6" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Oracle.ManagedDataAccess" Version="12.2.1100" />
     <PackageReference Include="Oracle.ManagedDataAccess.EntityFramework" Version="12.2.1100" />
@@ -33,5 +29,10 @@
 
   <ItemGroup>
     <Folder Include="Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Dapper.SimpleCRUD\Dapper.SimpleCRUD.csproj" />
+    <ProjectReference Include="..\SiproModel\SiproModel.csproj" />
   </ItemGroup>
 </Project>
