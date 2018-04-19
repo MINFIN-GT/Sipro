@@ -5155,15 +5155,6 @@
         "runtime": {
           "lib/netstandard1.3/Microsoft.WindowsAzure.Storage.dll": {}
         }
-      },
-      "SiproModel/1.0.0": {
-        "type": "project",
-        "compile": {
-          "bin/placeholder/SiproModel.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/SiproModel.dll": {}
-        }
       }
     }
   },
@@ -13606,11 +13597,6 @@
         "windowsazure.storage.8.1.4.nupkg.sha512",
         "windowsazure.storage.nuspec"
       ]
-    },
-    "SiproModel/1.0.0": {
-      "type": "project",
-      "path": "../SiproModel/SiproModel.csproj",
-      "msbuildProject": "../SiproModel/SiproModel.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -13631,7 +13617,6 @@
       "Newtonsoft.Json >= 11.0.2",
       "Oracle.ManagedDataAccess >= 12.2.1100",
       "Oracle.ManagedDataAccess.EntityFramework >= 12.2.1100",
-      "SiproModel >= 1.0.0",
       "log4net >= 2.0.8"
     ]
   },
@@ -13662,11 +13647,7 @@
       },
       "frameworks": {
         "netcoreapp2.0": {
-          "projectReferences": {
-            "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/SiproModel/SiproModel.csproj": {
-              "projectPath": "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/SiproModel/SiproModel.csproj"
-            }
-          }
+          "projectReferences": {}
         }
       },
       "warningProperties": {
