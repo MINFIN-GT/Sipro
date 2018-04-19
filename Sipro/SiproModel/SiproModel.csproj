@@ -45,9 +45,6 @@
     <Reference Include="Oracle.ManagedDataAccess, Version=4.122.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
       <HintPath>..\packages\Oracle.ManagedDataAccess.12.2.1100\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
     </Reference>
-    <Reference Include="Oracle.ManagedDataAccess.EntityFramework, Version=6.122.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
-      <HintPath>..\packages\Oracle.ManagedDataAccess.EntityFramework.12.2.1100\lib\net45\Oracle.ManagedDataAccess.EntityFramework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -69,6 +66,300 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\..\ACTIVIDAD.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ActividadPropiedad.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ActividadPropiedadValor.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ActividadTipo.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ActividadUsuario.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\AcumulacionCosto.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\AsignacionRaci.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\AtipoPropiedad.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\AutorizacionTipo.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\CategoriaAdquisicion.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\COLABORADOR.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\COMPONENTE.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ComponentePropiedad.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ComponentePropiedadValor.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ComponenteSigade.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ComponenteTipo.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ComponenteUsuario.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\COOPERANTE.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\CtipoPropiedad.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\DatoTipo.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\DESEMBOLSO.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\DesembolsoTipo.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\DOCUMENTO.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\EjecucionEstado.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ENTIDAD.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ESTADO.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\EstadoTabla.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ETIQUETA.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\FORMULARIO.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\FormularioItem.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\FormularioItemOpcion.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\FormularioItemTipo.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\FormularioItemValor.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\FormularioTipo.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\HITO.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\HitoResultado.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\HitoTipo.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\InteresTipo.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\MatrizRaci.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\META.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\MetaAvance.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\MetaPlanificado.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\MetaTipo.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\MetaUnidadMedida.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\MetaValor.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ObjetoFormulario.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ObjetoRiesgo.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\PagoPlanificado.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\PERMISO.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\PlanAdquisicion.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\PlanAdquisicionPago.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\PRESTAMO.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\PrestamoTipo.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\PrestamoTipoPrestamo.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\PrestamoUsuario.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ProdtipoPropiedad.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\PRODUCTO.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ProductoPropiedad.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ProductoPropiedadValor.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ProductoTipo.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ProductoUsuario.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\PROYECTO.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ProyectoImpacto.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ProyectoMiembro.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ProyectoPropiedad.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ProyectoPropiedadValor.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ProyectoRolColaborador.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ProyectoTipo.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ProyectoUsuario.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\PtipoPropiedad.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\RIESGO.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\RiesgoPropiedad.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\RiesgoPropiedadValor.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\RiesgoTipo.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\ROL.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\RolPermiso.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\RolUnidadEjecutora.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\RolUsuarioProyecto.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\RtipoPropiedad.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\SctipoPropiedad.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\SUBCOMPONENTE.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\SubcomponentePropiedad.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\SubcomponentePropiedadValor.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\SubcomponenteTipo.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\SubcomponenteUsuario.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\SubprodtipoPropiedad.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\SUBPRODUCTO.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\SubproductoPropiedad.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\SubproductoPropiedadValor.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\SubproductoTipo.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\SubproductoUsuario.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\TipoAdquisicion.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\TipoMoneda.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\UnidadEjecutora.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\UnidadMedida.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\USUARIO.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\UsuarioLog.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\..\UsuarioPermiso.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Actividad.cs">
       <DependentUpon>SiproConfig.tt</DependentUpon>
     </Compile>
@@ -147,9 +438,6 @@
     <Compile Include="Models\Estado.cs">
       <DependentUpon>SiproConfig.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\EstadoInforme.cs">
-      <DependentUpon>SiproConfig.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\EstadoTabla.cs">
       <DependentUpon>SiproConfig.tt</DependentUpon>
     </Compile>
@@ -183,13 +471,7 @@
     <Compile Include="Models\HitoTipo.cs">
       <DependentUpon>SiproConfig.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\InformePresupuesto.cs">
-      <DependentUpon>SiproConfig.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\InteresTipo.cs">
-      <DependentUpon>SiproConfig.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\LineaBase.cs">
       <DependentUpon>SiproConfig.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MatrizRaci.cs">
@@ -210,22 +492,16 @@
     <Compile Include="Models\MetaUnidadMedida.cs">
       <DependentUpon>SiproConfig.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\MetaValor.cs">
+      <DependentUpon>SiproConfig.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ObjetoFormulario.cs">
-      <DependentUpon>SiproConfig.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ObjetoPrestamo.cs">
-      <DependentUpon>SiproConfig.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ObjetoRecurso.cs">
       <DependentUpon>SiproConfig.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ObjetoRiesgo.cs">
       <DependentUpon>SiproConfig.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PagoPlanificado.cs">
-      <DependentUpon>SiproConfig.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\PepDetalle.cs">
       <DependentUpon>SiproConfig.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Permiso.cs">
@@ -267,24 +543,6 @@
     <Compile Include="Models\ProductoUsuario.cs">
       <DependentUpon>SiproConfig.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Programa.cs">
-      <DependentUpon>SiproConfig.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ProgramaPropiedad.cs">
-      <DependentUpon>SiproConfig.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ProgramaPropiedadValor.cs">
-      <DependentUpon>SiproConfig.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ProgramaProyecto.cs">
-      <DependentUpon>SiproConfig.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ProgramaTipo.cs">
-      <DependentUpon>SiproConfig.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ProgtipoPropiedad.cs">
-      <DependentUpon>SiproConfig.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Proyecto.cs">
       <DependentUpon>SiproConfig.tt</DependentUpon>
     </Compile>
@@ -310,21 +568,6 @@
       <DependentUpon>SiproConfig.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PtipoPropiedad.cs">
-      <DependentUpon>SiproConfig.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\RectipoPropiedad.cs">
-      <DependentUpon>SiproConfig.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Recurso.cs">
-      <DependentUpon>SiproConfig.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\RecursoPropiedad.cs">
-      <DependentUpon>SiproConfig.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\RecursoTipo.cs">
-      <DependentUpon>SiproConfig.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\RecursoUnidadMedida.cs">
       <DependentUpon>SiproConfig.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Riesgo.cs">
@@ -420,7 +663,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.Config" />
-    <None Include="Models\Sipro.config" />
+    <None Include="Models\Sipro.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -451,5 +696,6 @@
     <Content Include="docs\MySqlParameterCollection.xml" />
     <Content Include="docs\MySqlTransaction.xml" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
