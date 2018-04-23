@@ -1,0 +1,5 @@
+C:\Users\pedro\git\sipro\Sipro\Sipro\Sipro\obj\Debug\net471\Sipro.csprojResolveAssemblyReference.cache
+C:\Users\pedro\git\sipro\Sipro\Sipro\Sipro\obj\Debug\net471\Sipro.exe.config
+C:\Users\pedro\git\sipro\Sipro\Sipro\Sipro\obj\Debug\net471\Sipro.csproj.CoreCompileInputs.cache
+C:\Users\pedro\git\sipro\Sipro\Sipro\Sipro\obj\Debug\net471\Sipro.AssemblyInfoInputs.cache
+C:\Users\pedro\git\sipro\Sipro\Sipro\Sipro\obj\Debug\net471\Sipro.AssemblyInfo.cs

@@ -1,0 +1,9 @@
+C:\Users\pedro\git\sipro\Sipro\Sipro\Dapper.SimpleCRUD\bin\Debug\Dapper.SimpleCRUD.dll
+C:\Users\pedro\git\sipro\Sipro\Sipro\Dapper.SimpleCRUD\bin\Debug\Dapper.SimpleCRUD.pdb
+C:\Users\pedro\git\sipro\Sipro\Sipro\Dapper.SimpleCRUD\bin\Debug\Dapper.dll
+C:\Users\pedro\git\sipro\Sipro\Sipro\Dapper.SimpleCRUD\bin\Debug\Dapper.xml
+C:\Users\pedro\git\sipro\Sipro\Sipro\Dapper.SimpleCRUD\obj\Debug\Dapper.SimpleCRUD.csprojResolveAssemblyReference.cache
+C:\Users\pedro\git\sipro\Sipro\Sipro\Dapper.SimpleCRUD\obj\Debug\Dapper.SimpleCRUD.csproj.CoreCompileInputs.cache
+C:\Users\pedro\git\sipro\Sipro\Sipro\Dapper.SimpleCRUD\obj\Debug\Dapper.SimpleCRUD.csproj.CopyComplete
+C:\Users\pedro\git\sipro\Sipro\Sipro\Dapper.SimpleCRUD\obj\Debug\Dapper.SimpleCRUD.dll
+C:\Users\pedro\git\sipro\Sipro\Sipro\Dapper.SimpleCRUD\obj\Debug\Dapper.SimpleCRUD.pdb
