@@ -256,4 +256,9 @@ class Manager {
 	  return newname;
 	}
 
+	public string toLowerValue(String strAttribute)
+	{
+		return strAttribute.ToLowerInvariant();
+	}
+
 } #>
