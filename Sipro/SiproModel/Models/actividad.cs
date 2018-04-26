@@ -18,9 +18,9 @@ namespace SiproModel.Models
 	    public virtual string nombre { get; set; }
 	    public virtual string descripcion { get; set; }
 	    [Column("FECHA_INICIO")]
-	    public virtual byte[] fechaInicio { get; set; }
+	    public virtual DateTime fechaInicio { get; set; }
 	    [Column("FECHA_FIN")]
-	    public virtual byte[] fechaFin { get; set; }
+	    public virtual DateTime fechaFin { get; set; }
 	    [Column("PORCENTAJE_AVANCE")]
 	    public virtual Int32 porcentajeAvance { get; set; }
 	    [Column("USUARIO_CREO")]
@@ -28,9 +28,9 @@ namespace SiproModel.Models
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual byte[] fechaCreacion { get; set; }
+	    public virtual DateTime fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual DateTime? fechaActualizacion { get; set; }
 	    public virtual Int32 estado { get; set; }
 	    [Column("ACTIVIDAD_TIPOID")]
 	    [ForeignKey("ActividadTipo")]
@@ -72,9 +72,9 @@ namespace SiproModel.Models
 	    [Column("PRODUCTO_BASE")]
 	    public virtual Int32? productoBase { get; set; }
 	    [Column("FECHA_INICIO_REAL")]
-	    public virtual byte[] fechaInicioReal { get; set; }
+	    public virtual DateTime? fechaInicioReal { get; set; }
 	    [Column("FECHA_FIN_REAL")]
-	    public virtual byte[] fechaFinReal { get; set; }
+	    public virtual DateTime? fechaFinReal { get; set; }
 	    [Column("INVERSION_NUEVA")]
 	    public virtual Int32 inversionNueva { get; set; }
 		public virtual AcumulacionCosto acumulacionCostos { get; set; }

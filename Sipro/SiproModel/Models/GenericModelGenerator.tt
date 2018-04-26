@@ -764,6 +764,8 @@ class SqlServerSchemaReader : SchemaReader
 			case "datetime":
 			case "datetime2":
 			case "date":
+			case "timestamp(0)":
+			case "timestamp":
 			case "time":
 				sysType=  "DateTime";
 				  break;
@@ -796,8 +798,6 @@ class SqlServerSchemaReader : SchemaReader
 			case "image":
 			case "binary":
 			case "varbinary":
-			case "timestamp(0)":
-			case "timestamp":
 				sysType=  "byte[]";
 				 break;
 			case "geography":

@@ -14,6 +14,6 @@ namespace SiproModel.Models
 	public partial class UsuarioLog
 	{
 	    public virtual string usuario { get; set; }
-	    public virtual byte[] fecha { get; set; }
+	    public virtual DateTime? fecha { get; set; }
 	}
 }

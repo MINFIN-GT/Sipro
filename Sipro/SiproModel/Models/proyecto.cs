@@ -22,9 +22,9 @@ namespace SiproModel.Models
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual byte[] fechaCreacion { get; set; }
+	    public virtual DateTime fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual DateTime? fechaActualizacion { get; set; }
 	    public virtual Int32 estado { get; set; }
 	    [Column("PROYECTO_TIPOID")]
 	    [ForeignKey("ProyectoTipo")]
@@ -58,9 +58,9 @@ namespace SiproModel.Models
 	    [Column("UBICACION_GEOGRAFICA")]
 	    public virtual Int32? ubicacionGeografica { get; set; }
 	    [Column("FECHA_INICIO")]
-	    public virtual byte[] fechaInicio { get; set; }
+	    public virtual DateTime? fechaInicio { get; set; }
 	    [Column("FECHA_FIN")]
-	    public virtual byte[] fechaFin { get; set; }
+	    public virtual DateTime? fechaFin { get; set; }
 	    public virtual Int32 duracion { get; set; }
 	    [Column("DURACION_DIMENSION")]
 	    public virtual string duracionDimension { get; set; }
@@ -82,14 +82,14 @@ namespace SiproModel.Models
 	    public virtual string observaciones { get; set; }
 	    public virtual Int32? coordinador { get; set; }
 	    [Column("FECHA_ELEGIBILIDAD")]
-	    public virtual byte[] fechaElegibilidad { get; set; }
+	    public virtual DateTime? fechaElegibilidad { get; set; }
 	    [Column("FECHA_INICIO_REAL")]
-	    public virtual byte[] fechaInicioReal { get; set; }
+	    public virtual DateTime? fechaInicioReal { get; set; }
 	    [Column("FECHA_FIN_REAL")]
-	    public virtual byte[] fechaFinReal { get; set; }
+	    public virtual DateTime? fechaFinReal { get; set; }
 	    public virtual Int32? congelado { get; set; }
 	    [Column("FECHA_CIERRE")]
-	    public virtual byte[] fechaCierre { get; set; }
+	    public virtual DateTime? fechaCierre { get; set; }
 		public virtual Prestamo prestamos { get; set; }
 		public virtual AcumulacionCosto acumulacionCostos { get; set; }
 		public virtual UnidadEjecutora unidadEjecutoras { get; set; }

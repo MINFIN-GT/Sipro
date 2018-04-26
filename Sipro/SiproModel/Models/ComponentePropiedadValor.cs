@@ -27,15 +27,15 @@ namespace SiproModel.Models
 	    [Column("VALOR_DECIMAL")]
 	    public virtual decimal? valorDecimal { get; set; }
 	    [Column("VALOR_TIEMPO")]
-	    public virtual byte[] valorTiempo { get; set; }
+	    public virtual DateTime? valorTiempo { get; set; }
 	    [Column("USUARIO_CREO")]
 	    public virtual string usuarioCreo { get; set; }
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual byte[] fechaCreacion { get; set; }
+	    public virtual DateTime fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual DateTime? fechaActualizacion { get; set; }
 		public virtual ComponentePropiedad componentePropiedads { get; set; }
 		public virtual Componente componentes { get; set; }
 		public virtual IEnumerable<ComponentePropiedadValor> componentepropiedadvalors { get; set; }

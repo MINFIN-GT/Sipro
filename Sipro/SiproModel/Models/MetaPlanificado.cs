@@ -25,7 +25,7 @@ namespace SiproModel.Models
 	    [Column("ENERO_DECIMAL")]
 	    public virtual decimal? eneroDecimal { get; set; }
 	    [Column("ENERO_TIEMPO")]
-	    public virtual byte[] eneroTiempo { get; set; }
+	    public virtual DateTime? eneroTiempo { get; set; }
 	    [Column("FEBRERO_ENTERO")]
 	    public virtual Int32? febreroEntero { get; set; }
 	    [Column("FEBRERO_STRING")]
@@ -33,7 +33,7 @@ namespace SiproModel.Models
 	    [Column("FEBRERO_DECIMAL")]
 	    public virtual decimal? febreroDecimal { get; set; }
 	    [Column("FEBRERO_TIEMPO")]
-	    public virtual byte[] febreroTiempo { get; set; }
+	    public virtual DateTime? febreroTiempo { get; set; }
 	    [Column("MARZO_ENTERO")]
 	    public virtual Int32? marzoEntero { get; set; }
 	    [Column("MARZO_STRING")]
@@ -41,7 +41,7 @@ namespace SiproModel.Models
 	    [Column("MARZO_DECIMAL")]
 	    public virtual decimal? marzoDecimal { get; set; }
 	    [Column("MARZO_TIEMPO")]
-	    public virtual byte[] marzoTiempo { get; set; }
+	    public virtual DateTime? marzoTiempo { get; set; }
 	    [Column("ABRIL_ENTERO")]
 	    public virtual Int32? abrilEntero { get; set; }
 	    [Column("ABRIL_STRING")]
@@ -49,7 +49,7 @@ namespace SiproModel.Models
 	    [Column("ABRIL_DECIMAL")]
 	    public virtual decimal? abrilDecimal { get; set; }
 	    [Column("ABRIL_TIEMPO")]
-	    public virtual byte[] abrilTiempo { get; set; }
+	    public virtual DateTime? abrilTiempo { get; set; }
 	    [Column("MAYO_ENTERO")]
 	    public virtual Int32? mayoEntero { get; set; }
 	    [Column("MAYO_STRING")]
@@ -57,7 +57,7 @@ namespace SiproModel.Models
 	    [Column("MAYO_DECIMAL")]
 	    public virtual decimal? mayoDecimal { get; set; }
 	    [Column("MAYO_TIEMPO")]
-	    public virtual byte[] mayoTiempo { get; set; }
+	    public virtual DateTime? mayoTiempo { get; set; }
 	    [Column("JUNIO_ENTERO")]
 	    public virtual Int32? junioEntero { get; set; }
 	    [Column("JUNIO_STRING")]
@@ -65,7 +65,7 @@ namespace SiproModel.Models
 	    [Column("JUNIO_DECIMAL")]
 	    public virtual decimal? junioDecimal { get; set; }
 	    [Column("JUNIO_TIEMPO")]
-	    public virtual byte[] junioTiempo { get; set; }
+	    public virtual DateTime? junioTiempo { get; set; }
 	    [Column("JULIO_ENTERO")]
 	    public virtual Int32? julioEntero { get; set; }
 	    [Column("JULIO_STRING")]
@@ -73,7 +73,7 @@ namespace SiproModel.Models
 	    [Column("JULIO_DECIMAL")]
 	    public virtual decimal? julioDecimal { get; set; }
 	    [Column("JULIO_TIEMPO")]
-	    public virtual byte[] julioTiempo { get; set; }
+	    public virtual DateTime? julioTiempo { get; set; }
 	    [Column("AGOSTO_ENTERO")]
 	    public virtual Int32? agostoEntero { get; set; }
 	    [Column("AGOSTO_STRING")]
@@ -81,7 +81,7 @@ namespace SiproModel.Models
 	    [Column("AGOSTO_DECIMAL")]
 	    public virtual decimal? agostoDecimal { get; set; }
 	    [Column("AGOSTO_TIEMPO")]
-	    public virtual byte[] agostoTiempo { get; set; }
+	    public virtual DateTime? agostoTiempo { get; set; }
 	    [Column("SEPTIEMBRE_ENTERO")]
 	    public virtual Int32? septiembreEntero { get; set; }
 	    [Column("SEPTIEMBRE_STRING")]
@@ -89,7 +89,7 @@ namespace SiproModel.Models
 	    [Column("SEPTIEMBRE_DECIMAL")]
 	    public virtual decimal? septiembreDecimal { get; set; }
 	    [Column("SEPTIEMBRE_TIEMPO")]
-	    public virtual byte[] septiembreTiempo { get; set; }
+	    public virtual DateTime? septiembreTiempo { get; set; }
 	    [Column("OCTUBRE_ENTERO")]
 	    public virtual Int32? octubreEntero { get; set; }
 	    [Column("OCTUBRE_STRING")]
@@ -97,7 +97,7 @@ namespace SiproModel.Models
 	    [Column("OCTUBRE_DECIMAL")]
 	    public virtual decimal? octubreDecimal { get; set; }
 	    [Column("OCTUBRE_TIEMPO")]
-	    public virtual byte[] octubreTiempo { get; set; }
+	    public virtual DateTime? octubreTiempo { get; set; }
 	    [Column("NOVIEMBRE_ENTERO")]
 	    public virtual Int32? noviembreEntero { get; set; }
 	    [Column("NOVIEMBRE_STRING")]
@@ -105,7 +105,7 @@ namespace SiproModel.Models
 	    [Column("NOVIEMBRE_DECIMAL")]
 	    public virtual decimal? noviembreDecimal { get; set; }
 	    [Column("NOVIEMBRE_TIEMPO")]
-	    public virtual byte[] noviembreTiempo { get; set; }
+	    public virtual DateTime? noviembreTiempo { get; set; }
 	    [Column("DICIEMBRE_ENTERO")]
 	    public virtual Int32? diciembreEntero { get; set; }
 	    [Column("DICIEMBRE_STRING")]
@@ -113,11 +113,11 @@ namespace SiproModel.Models
 	    [Column("DICIEMBRE_DECIMAL")]
 	    public virtual decimal? diciembreDecimal { get; set; }
 	    [Column("DICIEMBRE_TIEMPO")]
-	    public virtual byte[] diciembreTiempo { get; set; }
+	    public virtual DateTime? diciembreTiempo { get; set; }
 	    public virtual Int32 estado { get; set; }
 	    public virtual string usuario { get; set; }
 	    [Column("FECHA_INGRESO")]
-	    public virtual byte[] fechaIngreso { get; set; }
+	    public virtual DateTime fechaIngreso { get; set; }
 		public virtual Meta metas { get; set; }
 		public virtual IEnumerable<MetaPlanificado> metaplanificadoes { get; set; }
 	}

@@ -22,9 +22,9 @@ namespace SiproModel.Models
 	    [Column("USUARIO_ACTUALIZACION")]
 	    public virtual string usuarioActualizacion { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual byte[] fechaCreacion { get; set; }
+	    public virtual DateTime fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual DateTime? fechaActualizacion { get; set; }
 	    public virtual Int32 estado { get; set; }
 	}
 }

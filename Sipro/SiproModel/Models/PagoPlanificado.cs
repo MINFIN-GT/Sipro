@@ -16,7 +16,7 @@ namespace SiproModel.Models
 		[Key]
 	    public virtual Int32 id { get; set; }
 	    [Column("FECHA_PAGO")]
-	    public virtual byte[] fechaPago { get; set; }
+	    public virtual DateTime fechaPago { get; set; }
 	    public virtual decimal pago { get; set; }
 	    [Column("OBJETO_ID")]
 	    public virtual Int32 objetoId { get; set; }
@@ -27,9 +27,9 @@ namespace SiproModel.Models
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual byte[] fechaCreacion { get; set; }
+	    public virtual DateTime fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual DateTime? fechaActualizacion { get; set; }
 	    public virtual Int32 estado { get; set; }
 	}
 }

@@ -33,7 +33,7 @@ namespace SiproModel.Models
 	    public virtual string riesgosSegundarios { get; set; }
 	    public virtual Int32 ejecutado { get; set; }
 	    [Column("FECHA_EJECUCION")]
-	    public virtual byte[] fechaEjecucion { get; set; }
+	    public virtual DateTime? fechaEjecucion { get; set; }
 	    public virtual string resultado { get; set; }
 	    public virtual string observaciones { get; set; }
 	    [ForeignKey("Colaborador")]
@@ -43,9 +43,9 @@ namespace SiproModel.Models
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual byte[] fechaCreacion { get; set; }
+	    public virtual DateTime fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual DateTime? fechaActualizacion { get; set; }
 	    public virtual Int32 estado { get; set; }
 		public virtual Colaborador colaboradors { get; set; }
 		public virtual RiesgoTipo riesgoTipos { get; set; }

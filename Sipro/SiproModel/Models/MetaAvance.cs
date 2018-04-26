@@ -15,7 +15,7 @@ namespace SiproModel.Models
 	{
 	    [ForeignKey("Meta")]
         public virtual Int32 metaid { get; set; }
-	    public virtual byte[] fecha { get; set; }
+	    public virtual DateTime fecha { get; set; }
 	    public virtual string usuario { get; set; }
 	    [Column("VALOR_ENTERO")]
 	    public virtual Int32? valorEntero { get; set; }
@@ -24,10 +24,10 @@ namespace SiproModel.Models
 	    [Column("VALOR_DECIMAL")]
 	    public virtual decimal? valorDecimal { get; set; }
 	    [Column("VALOR_TIEMPO")]
-	    public virtual byte[] valorTiempo { get; set; }
+	    public virtual DateTime? valorTiempo { get; set; }
 	    public virtual Int32 estado { get; set; }
 	    [Column("FECHA_INGRESO")]
-	    public virtual byte[] fechaIngreso { get; set; }
+	    public virtual DateTime fechaIngreso { get; set; }
 		public virtual Meta metas { get; set; }
 		public virtual IEnumerable<MetaAvance> metaavances { get; set; }
 	}

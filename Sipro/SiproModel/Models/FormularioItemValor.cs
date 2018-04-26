@@ -30,7 +30,7 @@ namespace SiproModel.Models
 	    [Column("VALOR_STRING")]
 	    public virtual string valorString { get; set; }
 	    [Column("VALOR_TIEMPO")]
-	    public virtual byte[] valorTiempo { get; set; }
+	    public virtual DateTime? valorTiempo { get; set; }
 	    [Column("VALOR_DECIMAL")]
 	    public virtual decimal? valorDecimal { get; set; }
 	    public virtual Int32 proyectoid { get; set; }
@@ -41,9 +41,9 @@ namespace SiproModel.Models
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual byte[] fechaCreacion { get; set; }
+	    public virtual DateTime fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual DateTime? fechaActualizacion { get; set; }
 		[Key]
 	    [Column("OBJETO_FORMULARIOOBJETO_ID")]
 	    [ForeignKey("ObjetoFormulario")]

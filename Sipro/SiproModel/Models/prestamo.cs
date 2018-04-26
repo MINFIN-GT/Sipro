@@ -16,7 +16,7 @@ namespace SiproModel.Models
 		[Key]
 	    public virtual Int32 id { get; set; }
 	    [Column("FECHA_CORTE")]
-	    public virtual byte[] fechaCorte { get; set; }
+	    public virtual DateTime? fechaCorte { get; set; }
 	    [Column("CODIGO_PRESUPUESTARIO")]
 	    public virtual Int64 codigoPresupuestario { get; set; }
 	    [Column("NUMERO_PRESTAMO")]
@@ -28,19 +28,19 @@ namespace SiproModel.Models
 	    [ForeignKey("UnidadEjecutora")]
         public virtual Int32 ueunidadEjecutora { get; set; }
 	    [Column("FECHA_FIRMA")]
-	    public virtual byte[] fechaFirma { get; set; }
+	    public virtual DateTime? fechaFirma { get; set; }
 	    [Column("AUTORIZACION_TIPOID")]
 	    public virtual Int32? autorizacionTipoid { get; set; }
 	    [Column("NUMERO_AUTORIZACION")]
 	    public virtual string numeroAutorizacion { get; set; }
 	    [Column("FECHA_AUTORIZACION")]
-	    public virtual byte[] fechaAutorizacion { get; set; }
+	    public virtual DateTime? fechaAutorizacion { get; set; }
 	    [Column("ANIOS_PLAZO")]
 	    public virtual Int32? aniosPlazo { get; set; }
 	    [Column("ANIOS_GRACIA")]
 	    public virtual Int32? aniosGracia { get; set; }
 	    [Column("FECHA_FIN_EJECUCION")]
-	    public virtual byte[] fechaFinEjecucion { get; set; }
+	    public virtual DateTime? fechaFinEjecucion { get; set; }
 	    [Column("PERIDO_EJECUCION")]
 	    public virtual Int32? peridoEjecucion { get; set; }
 	    [Column("INTERES_TIPOID")]
@@ -104,22 +104,22 @@ namespace SiproModel.Models
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual byte[] fechaCreacion { get; set; }
+	    public virtual DateTime fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual DateTime? fechaActualizacion { get; set; }
 	    public virtual Int32 estado { get; set; }
 	    [Column("PROYECTO_PROGRAMA")]
 	    public virtual string proyectoPrograma { get; set; }
 	    [Column("FECHA_DECRETO")]
-	    public virtual byte[] fechaDecreto { get; set; }
+	    public virtual DateTime fechaDecreto { get; set; }
 	    [Column("FECHA_SUSCRIPCION")]
-	    public virtual byte[] fechaSuscripcion { get; set; }
+	    public virtual DateTime fechaSuscripcion { get; set; }
 	    [Column("FECHA_ELEGIBILIDAD_UE")]
-	    public virtual byte[] fechaElegibilidadUe { get; set; }
+	    public virtual DateTime fechaElegibilidadUe { get; set; }
 	    [Column("FECHA_CIERRE_ORIGIANL_UE")]
-	    public virtual byte[] fechaCierreOrigianlUe { get; set; }
+	    public virtual DateTime fechaCierreOrigianlUe { get; set; }
 	    [Column("FECHA_CIERRE_ACTUAL_UE")]
-	    public virtual byte[] fechaCierreActualUe { get; set; }
+	    public virtual DateTime fechaCierreActualUe { get; set; }
 	    [Column("MESES_PRORROGA_UE")]
 	    public virtual Int32 mesesProrrogaUe { get; set; }
 	    [Column("PLAZO_EJECUCION_UE")]
@@ -131,7 +131,7 @@ namespace SiproModel.Models
 	    [Column("MONTO_POR_DESEMBOLSAR_UE")]
 	    public virtual decimal? montoPorDesembolsarUe { get; set; }
 	    [Column("FECHA_VIGENCIA")]
-	    public virtual byte[] fechaVigencia { get; set; }
+	    public virtual DateTime fechaVigencia { get; set; }
 	    [Column("MONTO_CONTRATADO_USD")]
 	    public virtual decimal montoContratadoUsd { get; set; }
 	    [Column("MONTO_CONTRATADO_QTZ")]

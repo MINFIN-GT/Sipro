@@ -22,9 +22,9 @@ namespace SiproModel.Models
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual byte[] fechaCreacion { get; set; }
+	    public virtual DateTime fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual DateTime? fechaActualizacion { get; set; }
 	    public virtual Int32? estado { get; set; }
 	    [Column("META_UNIDAD_MEDIDAID")]
 	    [ForeignKey("MetaUnidadMedida")]
@@ -43,7 +43,7 @@ namespace SiproModel.Models
 	    [Column("META_FINAL_DECIMAL")]
 	    public virtual decimal? metaFinalDecimal { get; set; }
 	    [Column("META_FINAL_FECHA")]
-	    public virtual byte[] metaFinalFecha { get; set; }
+	    public virtual DateTime? metaFinalFecha { get; set; }
 		public virtual DatoTipo datoTipos { get; set; }
 		public virtual MetaUnidadMedida metaUnidadMedidas { get; set; }
 		public virtual IEnumerable<Meta> metas { get; set; }

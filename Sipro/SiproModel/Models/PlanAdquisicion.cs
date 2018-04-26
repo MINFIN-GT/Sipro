@@ -28,25 +28,25 @@ namespace SiproModel.Models
 	    [Column("PRECIO_UNITARIO")]
 	    public virtual decimal? precioUnitario { get; set; }
 	    [Column("PREPARACION_DOC_PLANIFICADO")]
-	    public virtual byte[] preparacionDocPlanificado { get; set; }
+	    public virtual DateTime? preparacionDocPlanificado { get; set; }
 	    [Column("PREPARACION_DOC_REAL")]
-	    public virtual byte[] preparacionDocReal { get; set; }
+	    public virtual DateTime? preparacionDocReal { get; set; }
 	    [Column("LANZAMIENTO_EVENTO_PLANIFICADO")]
-	    public virtual byte[] lanzamientoEventoPlanificado { get; set; }
+	    public virtual DateTime? lanzamientoEventoPlanificado { get; set; }
 	    [Column("LANZAMIENTO_EVENTO_REAL")]
-	    public virtual byte[] lanzamientoEventoReal { get; set; }
+	    public virtual DateTime? lanzamientoEventoReal { get; set; }
 	    [Column("RECEPCION_OFERTAS_PLANIFICADO")]
-	    public virtual byte[] recepcionOfertasPlanificado { get; set; }
+	    public virtual DateTime? recepcionOfertasPlanificado { get; set; }
 	    [Column("RECEPCION_OFERTAS_REAL")]
-	    public virtual byte[] recepcionOfertasReal { get; set; }
+	    public virtual DateTime? recepcionOfertasReal { get; set; }
 	    [Column("ADJUDICACION_PLANIFICADO")]
-	    public virtual byte[] adjudicacionPlanificado { get; set; }
+	    public virtual DateTime? adjudicacionPlanificado { get; set; }
 	    [Column("ADJUDICACION_REAL")]
-	    public virtual byte[] adjudicacionReal { get; set; }
+	    public virtual DateTime? adjudicacionReal { get; set; }
 	    [Column("FIRMA_CONTRATO_PLANIFICADO")]
-	    public virtual byte[] firmaContratoPlanificado { get; set; }
+	    public virtual DateTime? firmaContratoPlanificado { get; set; }
 	    [Column("FIRMA_CONTRATO_REAL")]
-	    public virtual byte[] firmaContratoReal { get; set; }
+	    public virtual DateTime? firmaContratoReal { get; set; }
 	    [Column("OBJETO_ID")]
 	    public virtual Int64 objetoId { get; set; }
 	    [Column("OBJETO_TIPO")]
@@ -56,9 +56,9 @@ namespace SiproModel.Models
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual byte[] fechaCreacion { get; set; }
+	    public virtual DateTime fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual DateTime? fechaActualizacion { get; set; }
 	    public virtual Int32? estado { get; set; }
 	    public virtual Int32? bloqueado { get; set; }
 	    [Column("NUMERO_CONTRATO")]

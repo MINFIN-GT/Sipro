@@ -19,7 +19,7 @@ namespace SiproModel.Models
 	    [ForeignKey("PlanAdquisicion")]
         public virtual Int64 planAdquisicionid { get; set; }
 	    [Column("FECHA_PAGO")]
-	    public virtual byte[] fechaPago { get; set; }
+	    public virtual DateTime fechaPago { get; set; }
 	    public virtual decimal? pago { get; set; }
 	    public virtual string descripcion { get; set; }
 	    [Column("USUARIO_CREO")]
@@ -27,9 +27,9 @@ namespace SiproModel.Models
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual byte[] fechaCreacion { get; set; }
+	    public virtual DateTime fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual DateTime? fechaActualizacion { get; set; }
 	    public virtual Int32 estado { get; set; }
 		public virtual PlanAdquisicion planAdquisicions { get; set; }
 		public virtual IEnumerable<PlanAdquisicionPago> planadquisicionpagoes { get; set; }
