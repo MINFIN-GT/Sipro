@@ -15,7 +15,7 @@ namespace SiproModel.Models
 	{
 		[Key]
 	    [ForeignKey("Componente")]
-        public virtual string componenteid { get; set; }
+        public virtual Int32 componenteid { get; set; }
 		[Key]
 	    public virtual string usuario { get; set; }
 	    [Column("USUARIO_CREO")]
@@ -23,9 +23,9 @@ namespace SiproModel.Models
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
 		public virtual Componente componentes { get; set; }
 		public virtual IEnumerable<ComponenteUsuario> componenteusuarios { get; set; }
 	}

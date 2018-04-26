@@ -14,16 +14,16 @@ namespace SiproModel.Models
 	public partial class AcumulacionCosto
 	{
 		[Key]
-	    public virtual string id { get; set; }
+	    public virtual Int64 id { get; set; }
 	    public virtual string nombre { get; set; }
 	    [Column("USUARIO_CREO")]
 	    public virtual string usuarioCreo { get; set; }
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
-	    public virtual string estado { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual Int32 estado { get; set; }
 	}
 }

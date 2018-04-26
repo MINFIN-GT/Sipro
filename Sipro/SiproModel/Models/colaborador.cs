@@ -14,30 +14,30 @@ namespace SiproModel.Models
 	public partial class Colaborador
 	{
 		[Key]
-	    public virtual string id { get; set; }
+	    public virtual Int32 id { get; set; }
 	    public virtual string pnombre { get; set; }
 	    public virtual string snombre { get; set; }
 	    public virtual string papellido { get; set; }
 	    public virtual string sapellido { get; set; }
-	    public virtual string cui { get; set; }
+	    public virtual Int64 cui { get; set; }
 	    [Column("UEUNIDAD_EJECUTORA")]
 	    [ForeignKey("UnidadEjecutora")]
-        public virtual string ueunidadEjecutora { get; set; }
+        public virtual Int32 ueunidadEjecutora { get; set; }
 	    [ForeignKey("Usuario")]
         public virtual string usuariousuario { get; set; }
-	    public virtual string estado { get; set; }
+	    public virtual Int32 estado { get; set; }
 	    [Column("USUARIO_CREO")]
 	    public virtual string usuarioCreo { get; set; }
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
 	    [ForeignKey("UnidadEjecutora")]
-        public virtual string ejercicio { get; set; }
+        public virtual Int32 ejercicio { get; set; }
 	    [ForeignKey("UnidadEjecutora")]
-        public virtual string entidad { get; set; }
+        public virtual Int32? entidad { get; set; }
 		public virtual Usuario usuarios { get; set; }
 		public virtual UnidadEjecutora unidadEjecutoras { get; set; }
 		public virtual IEnumerable<Colaborador> colaboradors { get; set; }

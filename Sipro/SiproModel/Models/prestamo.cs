@@ -14,11 +14,11 @@ namespace SiproModel.Models
 	public partial class Prestamo
 	{
 		[Key]
-	    public virtual string id { get; set; }
+	    public virtual Int32 id { get; set; }
 	    [Column("FECHA_CORTE")]
-	    public virtual string fechaCorte { get; set; }
+	    public virtual byte[] fechaCorte { get; set; }
 	    [Column("CODIGO_PRESUPUESTARIO")]
-	    public virtual string codigoPresupuestario { get; set; }
+	    public virtual Int64 codigoPresupuestario { get; set; }
 	    [Column("NUMERO_PRESTAMO")]
 	    public virtual string numeroPrestamo { get; set; }
 	    public virtual string destino { get; set; }
@@ -26,141 +26,141 @@ namespace SiproModel.Models
 	    public virtual string sectorEconomico { get; set; }
 	    [Column("UEUNIDAD_EJECUTORA")]
 	    [ForeignKey("UnidadEjecutora")]
-        public virtual string ueunidadEjecutora { get; set; }
+        public virtual Int32 ueunidadEjecutora { get; set; }
 	    [Column("FECHA_FIRMA")]
-	    public virtual string fechaFirma { get; set; }
+	    public virtual byte[] fechaFirma { get; set; }
 	    [Column("AUTORIZACION_TIPOID")]
-	    public virtual string autorizacionTipoid { get; set; }
+	    public virtual Int32? autorizacionTipoid { get; set; }
 	    [Column("NUMERO_AUTORIZACION")]
 	    public virtual string numeroAutorizacion { get; set; }
 	    [Column("FECHA_AUTORIZACION")]
-	    public virtual string fechaAutorizacion { get; set; }
+	    public virtual byte[] fechaAutorizacion { get; set; }
 	    [Column("ANIOS_PLAZO")]
-	    public virtual string aniosPlazo { get; set; }
+	    public virtual Int32? aniosPlazo { get; set; }
 	    [Column("ANIOS_GRACIA")]
-	    public virtual string aniosGracia { get; set; }
+	    public virtual Int32? aniosGracia { get; set; }
 	    [Column("FECHA_FIN_EJECUCION")]
-	    public virtual string fechaFinEjecucion { get; set; }
+	    public virtual byte[] fechaFinEjecucion { get; set; }
 	    [Column("PERIDO_EJECUCION")]
-	    public virtual string peridoEjecucion { get; set; }
+	    public virtual Int32? peridoEjecucion { get; set; }
 	    [Column("INTERES_TIPOID")]
-	    public virtual string interesTipoid { get; set; }
+	    public virtual Int32? interesTipoid { get; set; }
 	    [Column("PORCENTAJE_INTERES")]
-	    public virtual string porcentajeInteres { get; set; }
+	    public virtual decimal? porcentajeInteres { get; set; }
 	    [Column("PORCENTAJE_COMISION_COMPRA")]
-	    public virtual string porcentajeComisionCompra { get; set; }
+	    public virtual decimal? porcentajeComisionCompra { get; set; }
 	    [Column("TIPO_MONEDAID")]
 	    [ForeignKey("TipoMoneda")]
-        public virtual string tipoMonedaid { get; set; }
+        public virtual Int32 tipoMonedaid { get; set; }
 	    [Column("MONTO_CONTRATADO")]
-	    public virtual string montoContratado { get; set; }
-	    public virtual string amortizado { get; set; }
+	    public virtual decimal montoContratado { get; set; }
+	    public virtual decimal? amortizado { get; set; }
 	    [Column("POR_AMORTIZAR")]
-	    public virtual string porAmortizar { get; set; }
+	    public virtual decimal? porAmortizar { get; set; }
 	    [Column("PRINCIPAL_ANIO")]
-	    public virtual string principalAnio { get; set; }
+	    public virtual decimal? principalAnio { get; set; }
 	    [Column("INTERESES_ANIO")]
-	    public virtual string interesesAnio { get; set; }
+	    public virtual decimal? interesesAnio { get; set; }
 	    [Column("COMISION_COMPROMISO_ANIO")]
-	    public virtual string comisionCompromisoAnio { get; set; }
+	    public virtual decimal? comisionCompromisoAnio { get; set; }
 	    [Column("OTROS_GASTOS")]
-	    public virtual string otrosGastos { get; set; }
+	    public virtual decimal? otrosGastos { get; set; }
 	    [Column("PRINCIPAL_ACUMULADO")]
-	    public virtual string principalAcumulado { get; set; }
+	    public virtual decimal? principalAcumulado { get; set; }
 	    [Column("INTERESES_ACUMULADOS")]
-	    public virtual string interesesAcumulados { get; set; }
+	    public virtual decimal? interesesAcumulados { get; set; }
 	    [Column("COMISION_COMPROMISO_ACUMULADO")]
-	    public virtual string comisionCompromisoAcumulado { get; set; }
+	    public virtual decimal? comisionCompromisoAcumulado { get; set; }
 	    [Column("OTROS_CARGOS_ACUMULADOS")]
-	    public virtual string otrosCargosAcumulados { get; set; }
+	    public virtual decimal? otrosCargosAcumulados { get; set; }
 	    [Column("PRESUPUESTO_ASIGNADO_FUNC")]
-	    public virtual string presupuestoAsignadoFunc { get; set; }
+	    public virtual decimal? presupuestoAsignadoFunc { get; set; }
 	    [Column("PRESUPUESTO_ASIGNADO_INV")]
-	    public virtual string presupuestoAsignadoInv { get; set; }
+	    public virtual decimal? presupuestoAsignadoInv { get; set; }
 	    [Column("PRESUPUESTO_MODIFICADO_FUNC")]
-	    public virtual string presupuestoModificadoFunc { get; set; }
+	    public virtual decimal? presupuestoModificadoFunc { get; set; }
 	    [Column("PRESUPUESTO_MODIFICADO_INV")]
-	    public virtual string presupuestoModificadoInv { get; set; }
+	    public virtual decimal? presupuestoModificadoInv { get; set; }
 	    [Column("PRESUPUESTO_VIGENTE_FUNC")]
-	    public virtual string presupuestoVigenteFunc { get; set; }
+	    public virtual decimal? presupuestoVigenteFunc { get; set; }
 	    [Column("PRESUPUESTO_VIGENTE_INV")]
-	    public virtual string presupuestoVigenteInv { get; set; }
+	    public virtual decimal? presupuestoVigenteInv { get; set; }
 	    [Column("PRESUPUESTO_DEVENGADO_FUNC")]
-	    public virtual string presupuestoDevengadoFunc { get; set; }
+	    public virtual decimal? presupuestoDevengadoFunc { get; set; }
 	    [Column("PRESUPUESTO_DEVENGADO_INV")]
-	    public virtual string presupuestoDevengadoInv { get; set; }
+	    public virtual decimal? presupuestoDevengadoInv { get; set; }
 	    [Column("PRESUPUESTO_PAGADO_FUNC")]
-	    public virtual string presupuestoPagadoFunc { get; set; }
+	    public virtual decimal? presupuestoPagadoFunc { get; set; }
 	    [Column("PRESUPUESTO_PAGADO_INV")]
-	    public virtual string presupuestoPagadoInv { get; set; }
+	    public virtual decimal? presupuestoPagadoInv { get; set; }
 	    [Column("SALDO_CUENTAS")]
-	    public virtual string saldoCuentas { get; set; }
+	    public virtual decimal? saldoCuentas { get; set; }
 	    [Column("DESEMBOLSADO_REAL")]
-	    public virtual string desembolsadoReal { get; set; }
+	    public virtual decimal? desembolsadoReal { get; set; }
 	    [Column("EJECUCION_ESTADOID")]
-	    public virtual string ejecucionEstadoid { get; set; }
+	    public virtual Int32? ejecucionEstadoid { get; set; }
 	    [Column("USUARIO_CREO")]
 	    public virtual string usuarioCreo { get; set; }
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
-	    public virtual string estado { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual Int32 estado { get; set; }
 	    [Column("PROYECTO_PROGRAMA")]
 	    public virtual string proyectoPrograma { get; set; }
 	    [Column("FECHA_DECRETO")]
-	    public virtual string fechaDecreto { get; set; }
+	    public virtual byte[] fechaDecreto { get; set; }
 	    [Column("FECHA_SUSCRIPCION")]
-	    public virtual string fechaSuscripcion { get; set; }
+	    public virtual byte[] fechaSuscripcion { get; set; }
 	    [Column("FECHA_ELEGIBILIDAD_UE")]
-	    public virtual string fechaElegibilidadUe { get; set; }
+	    public virtual byte[] fechaElegibilidadUe { get; set; }
 	    [Column("FECHA_CIERRE_ORIGIANL_UE")]
-	    public virtual string fechaCierreOrigianlUe { get; set; }
+	    public virtual byte[] fechaCierreOrigianlUe { get; set; }
 	    [Column("FECHA_CIERRE_ACTUAL_UE")]
-	    public virtual string fechaCierreActualUe { get; set; }
+	    public virtual byte[] fechaCierreActualUe { get; set; }
 	    [Column("MESES_PRORROGA_UE")]
-	    public virtual string mesesProrrogaUe { get; set; }
+	    public virtual Int32 mesesProrrogaUe { get; set; }
 	    [Column("PLAZO_EJECUCION_UE")]
-	    public virtual string plazoEjecucionUe { get; set; }
+	    public virtual Int32? plazoEjecucionUe { get; set; }
 	    [Column("MONTO_ASIGNADO_UE")]
-	    public virtual string montoAsignadoUe { get; set; }
+	    public virtual decimal? montoAsignadoUe { get; set; }
 	    [Column("DESEMBOLSO_A_FECHA_UE")]
-	    public virtual string desembolsoAFechaUe { get; set; }
+	    public virtual decimal? desembolsoAFechaUe { get; set; }
 	    [Column("MONTO_POR_DESEMBOLSAR_UE")]
-	    public virtual string montoPorDesembolsarUe { get; set; }
+	    public virtual decimal? montoPorDesembolsarUe { get; set; }
 	    [Column("FECHA_VIGENCIA")]
-	    public virtual string fechaVigencia { get; set; }
+	    public virtual byte[] fechaVigencia { get; set; }
 	    [Column("MONTO_CONTRATADO_USD")]
-	    public virtual string montoContratadoUsd { get; set; }
+	    public virtual decimal montoContratadoUsd { get; set; }
 	    [Column("MONTO_CONTRATADO_QTZ")]
-	    public virtual string montoContratadoQtz { get; set; }
+	    public virtual decimal montoContratadoQtz { get; set; }
 	    [Column("DESEMBOLSO_A_FECHA_USD")]
-	    public virtual string desembolsoAFechaUsd { get; set; }
+	    public virtual decimal? desembolsoAFechaUsd { get; set; }
 	    [Column("MONTO_POR_DESEMBOLSAR_USD")]
-	    public virtual string montoPorDesembolsarUsd { get; set; }
+	    public virtual decimal montoPorDesembolsarUsd { get; set; }
 	    [Column("MONTO_ASIGNADO_UE_USD")]
-	    public virtual string montoAsignadoUeUsd { get; set; }
+	    public virtual decimal? montoAsignadoUeUsd { get; set; }
 	    [Column("MONTO_ASIGNADO_UE_QTZ")]
-	    public virtual string montoAsignadoUeQtz { get; set; }
+	    public virtual decimal? montoAsignadoUeQtz { get; set; }
 	    [Column("DESEMBOLSO_A_FECHA_UE_USD")]
-	    public virtual string desembolsoAFechaUeUsd { get; set; }
+	    public virtual decimal? desembolsoAFechaUeUsd { get; set; }
 	    [Column("MONTO_POR_DESEMBOLSAR_UE_USD")]
-	    public virtual string montoPorDesembolsarUeUsd { get; set; }
+	    public virtual decimal? montoPorDesembolsarUeUsd { get; set; }
 	    [ForeignKey("UnidadEjecutora")]
-        public virtual string entidad { get; set; }
+        public virtual Int32 entidad { get; set; }
 	    [ForeignKey("UnidadEjecutora")]
-        public virtual string ejercicio { get; set; }
+        public virtual Int32 ejercicio { get; set; }
 	    public virtual string objetivo { get; set; }
 	    [Column("OBJETIVO_ESPECIFICO")]
 	    public virtual string objetivoEspecifico { get; set; }
 	    [Column("PORCENTAJE_AVANCE")]
-	    public virtual string porcentajeAvance { get; set; }
+	    public virtual Int32 porcentajeAvance { get; set; }
 	    [ForeignKey("Cooperante")]
-        public virtual string cooperantecodigo { get; set; }
+        public virtual Int32? cooperantecodigo { get; set; }
 	    [ForeignKey("Cooperante")]
-        public virtual string cooperanteejercicio { get; set; }
+        public virtual Int32? cooperanteejercicio { get; set; }
 		public virtual UnidadEjecutora unidadEjecutoras { get; set; }
 		public virtual Cooperante cooperantes { get; set; }
 		public virtual TipoMoneda tipoMonedas { get; set; }

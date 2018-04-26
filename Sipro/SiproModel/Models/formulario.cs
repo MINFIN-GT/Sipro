@@ -14,7 +14,7 @@ namespace SiproModel.Models
 	public partial class Formulario
 	{
 		[Key]
-	    public virtual string id { get; set; }
+	    public virtual Int32 id { get; set; }
 	    public virtual string codigo { get; set; }
 	    public virtual string descripcion { get; set; }
 	    [Column("USUARIO_CREO")]
@@ -22,13 +22,13 @@ namespace SiproModel.Models
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
-	    public virtual string estado { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual Int32 estado { get; set; }
 	    [Column("FORMULARIO_TIPOID")]
 	    [ForeignKey("FormularioTipo")]
-        public virtual string formularioTipoid { get; set; }
+        public virtual Int32 formularioTipoid { get; set; }
 		public virtual FormularioTipo formularioTipos { get; set; }
 		public virtual IEnumerable<Formulario> formularios { get; set; }
 	}

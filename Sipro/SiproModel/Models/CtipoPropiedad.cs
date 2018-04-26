@@ -16,19 +16,19 @@ namespace SiproModel.Models
 		[Key]
 	    [Column("COMPONENTE_TIPOID")]
 	    [ForeignKey("ComponenteTipo")]
-        public virtual string componenteTipoid { get; set; }
+        public virtual Int32 componenteTipoid { get; set; }
 		[Key]
 	    [Column("COMPONENTE_PROPIEDADID")]
 	    [ForeignKey("ComponentePropiedad")]
-        public virtual string componentePropiedadid { get; set; }
+        public virtual Int32 componentePropiedadid { get; set; }
 	    [Column("USUARIO_CREO")]
 	    public virtual string usuarioCreo { get; set; }
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
 		public virtual ComponentePropiedad componentePropiedads { get; set; }
 		public virtual ComponenteTipo componenteTipos { get; set; }
 		public virtual IEnumerable<CtipoPropiedad> ctipopropiedads { get; set; }

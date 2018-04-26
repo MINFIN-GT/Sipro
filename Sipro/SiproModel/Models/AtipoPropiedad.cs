@@ -16,19 +16,19 @@ namespace SiproModel.Models
 		[Key]
 	    [Column("ACTIVIDAD_TIPOID")]
 	    [ForeignKey("ActividadTipo")]
-        public virtual string actividadTipoid { get; set; }
+        public virtual Int32 actividadTipoid { get; set; }
 		[Key]
 	    [Column("ACTIVIDAD_PROPIEDADID")]
 	    [ForeignKey("ActividadPropiedad")]
-        public virtual string actividadPropiedadid { get; set; }
+        public virtual Int32 actividadPropiedadid { get; set; }
 	    [Column("USUARIO_CREO")]
 	    public virtual string usuarioCreo { get; set; }
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
 		public virtual ActividadPropiedad actividadPropiedads { get; set; }
 		public virtual ActividadTipo actividadTipos { get; set; }
 		public virtual IEnumerable<AtipoPropiedad> atipopropiedads { get; set; }

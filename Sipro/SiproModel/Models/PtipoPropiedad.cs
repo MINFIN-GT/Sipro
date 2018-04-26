@@ -16,20 +16,20 @@ namespace SiproModel.Models
 		[Key]
 	    [Column("PROYECTO_TIPOID")]
 	    [ForeignKey("ProyectoTipo")]
-        public virtual string proyectoTipoid { get; set; }
+        public virtual Int32 proyectoTipoid { get; set; }
 		[Key]
 	    [Column("PROYECTO_PROPIEDADID")]
 	    [ForeignKey("ProyectoPropiedad")]
-        public virtual string proyectoPropiedadid { get; set; }
+        public virtual Int32 proyectoPropiedadid { get; set; }
 	    [Column("USUARIO_CREO")]
 	    public virtual string usuarioCreo { get; set; }
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
-	    public virtual string estado { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual Int32? estado { get; set; }
 		public virtual ProyectoPropiedad proyectoPropiedads { get; set; }
 		public virtual ProyectoTipo proyectoTipos { get; set; }
 		public virtual IEnumerable<PtipoPropiedad> ptipopropiedads { get; set; }

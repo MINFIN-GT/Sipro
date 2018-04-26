@@ -15,21 +15,21 @@ namespace SiproModel.Models
 	{
 		[Key]
 	    [ForeignKey("Riesgo")]
-        public virtual string riesgoid { get; set; }
+        public virtual Int32 riesgoid { get; set; }
 		[Key]
 	    [Column("OBJETO_ID")]
-	    public virtual string objetoId { get; set; }
+	    public virtual Int64 objetoId { get; set; }
 		[Key]
 	    [Column("OBJETO_TIPO")]
-	    public virtual string objetoTipo { get; set; }
+	    public virtual Int64 objetoTipo { get; set; }
 	    [Column("USUARIO_CREO")]
 	    public virtual string usuarioCreo { get; set; }
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
 		public virtual Riesgo riesgos { get; set; }
 		public virtual IEnumerable<ObjetoRiesgo> objetoriesgoes { get; set; }
 	}

@@ -15,9 +15,9 @@ namespace SiproModel.Models
 	{
 		[Key]
 	    [Column("_ENTIDAD")]
-	    public virtual string entidad { get; set; }
+	    public virtual Int32 entidad { get; set; }
 	    public virtual string nombre { get; set; }
 	    public virtual string abreviatura { get; set; }
-	    public virtual string ejercicio { get; set; }
+	    public virtual Int32 ejercicio { get; set; }
 	}
 }

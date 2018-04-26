@@ -15,7 +15,7 @@ namespace SiproModel.Models
 	{
 		[Key]
 	    [ForeignKey("Prestamo")]
-        public virtual string prestamoid { get; set; }
+        public virtual Int32 prestamoid { get; set; }
 		[Key]
 	    [ForeignKey("Usuario")]
         public virtual string usuario { get; set; }
@@ -24,9 +24,9 @@ namespace SiproModel.Models
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
 		public virtual Usuario usuarios { get; set; }
 		public virtual Prestamo prestamos { get; set; }
 		public virtual IEnumerable<PrestamoUsuario> prestamousuarios { get; set; }

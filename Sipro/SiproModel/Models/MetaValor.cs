@@ -15,18 +15,18 @@ namespace SiproModel.Models
 	{
 		[Key]
 	    [ForeignKey("Meta")]
-        public virtual string metaid { get; set; }
+        public virtual Int32 metaid { get; set; }
 		[Key]
-	    public virtual string fecha { get; set; }
+	    public virtual byte[] fecha { get; set; }
 	    public virtual string usuario { get; set; }
 	    [Column("VALOR_ENTERO")]
-	    public virtual string valorEntero { get; set; }
+	    public virtual Int32? valorEntero { get; set; }
 	    [Column("VALOR_STRING")]
 	    public virtual string valorString { get; set; }
 	    [Column("VALOR_DECIMAL")]
-	    public virtual string valorDecimal { get; set; }
+	    public virtual decimal? valorDecimal { get; set; }
 	    [Column("VALOR_TIEMPO")]
-	    public virtual string valorTiempo { get; set; }
+	    public virtual byte[] valorTiempo { get; set; }
 		public virtual Meta metas { get; set; }
 		public virtual IEnumerable<MetaValor> metavalors { get; set; }
 	}

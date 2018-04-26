@@ -14,69 +14,69 @@ namespace SiproModel.Models
 	public partial class Actividad
 	{
 		[Key]
-	    public virtual string id { get; set; }
+	    public virtual Int32 id { get; set; }
 	    public virtual string nombre { get; set; }
 	    public virtual string descripcion { get; set; }
 	    [Column("FECHA_INICIO")]
-	    public virtual string fechaInicio { get; set; }
+	    public virtual byte[] fechaInicio { get; set; }
 	    [Column("FECHA_FIN")]
-	    public virtual string fechaFin { get; set; }
+	    public virtual byte[] fechaFin { get; set; }
 	    [Column("PORCENTAJE_AVANCE")]
-	    public virtual string porcentajeAvance { get; set; }
+	    public virtual Int32 porcentajeAvance { get; set; }
 	    [Column("USUARIO_CREO")]
 	    public virtual string usuarioCreo { get; set; }
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
-	    public virtual string estado { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual Int32 estado { get; set; }
 	    [Column("ACTIVIDAD_TIPOID")]
 	    [ForeignKey("ActividadTipo")]
-        public virtual string actividadTipoid { get; set; }
-	    public virtual string snip { get; set; }
-	    public virtual string programa { get; set; }
-	    public virtual string subprograma { get; set; }
-	    public virtual string proyecto { get; set; }
+        public virtual Int32 actividadTipoid { get; set; }
+	    public virtual Int32? snip { get; set; }
+	    public virtual Int32? programa { get; set; }
+	    public virtual Int32? subprograma { get; set; }
+	    public virtual Int32? proyecto { get; set; }
 	    [Column("_ACTIVIDAD")]
-	    public virtual string actividad { get; set; }
-	    public virtual string obra { get; set; }
+	    public virtual Int32? actividad { get; set; }
+	    public virtual Int32? obra { get; set; }
 	    [Column("OBJETO_ID")]
-	    public virtual string objetoId { get; set; }
+	    public virtual Int64 objetoId { get; set; }
 	    [Column("OBJETO_TIPO")]
-	    public virtual string objetoTipo { get; set; }
-	    public virtual string duracion { get; set; }
+	    public virtual Int32 objetoTipo { get; set; }
+	    public virtual Int32 duracion { get; set; }
 	    [Column("DURACION_DIMENSION")]
 	    public virtual string duracionDimension { get; set; }
 	    [Column("PRED_OBJETO_ID")]
-	    public virtual string predObjetoId { get; set; }
+	    public virtual Int64? predObjetoId { get; set; }
 	    [Column("PRED_OBJETO_TIPO")]
-	    public virtual string predObjetoTipo { get; set; }
+	    public virtual Int32? predObjetoTipo { get; set; }
 	    public virtual string latitud { get; set; }
 	    public virtual string longitud { get; set; }
-	    public virtual string costo { get; set; }
+	    public virtual decimal? costo { get; set; }
 	    [Column("ACUMULACION_COSTO")]
 	    [ForeignKey("AcumulacionCosto")]
-        public virtual string acumulacionCosto { get; set; }
-	    public virtual string renglon { get; set; }
+        public virtual Int64 acumulacionCosto { get; set; }
+	    public virtual Int32? renglon { get; set; }
 	    [Column("UBICACION_GEOGRAFICA")]
-	    public virtual string ubicacionGeografica { get; set; }
-	    public virtual string orden { get; set; }
+	    public virtual Int32? ubicacionGeografica { get; set; }
+	    public virtual Int32? orden { get; set; }
 	    public virtual string treepath { get; set; }
-	    public virtual string nivel { get; set; }
+	    public virtual Int32? nivel { get; set; }
 	    [Column("PROYECTO_BASE")]
-	    public virtual string proyectoBase { get; set; }
+	    public virtual Int64? proyectoBase { get; set; }
 	    [Column("COMPONENTE_BASE")]
-	    public virtual string componenteBase { get; set; }
+	    public virtual Int32? componenteBase { get; set; }
 	    [Column("PRODUCTO_BASE")]
-	    public virtual string productoBase { get; set; }
+	    public virtual Int32? productoBase { get; set; }
 	    [Column("FECHA_INICIO_REAL")]
-	    public virtual string fechaInicioReal { get; set; }
+	    public virtual byte[] fechaInicioReal { get; set; }
 	    [Column("FECHA_FIN_REAL")]
-	    public virtual string fechaFinReal { get; set; }
+	    public virtual byte[] fechaFinReal { get; set; }
 	    [Column("INVERSION_NUEVA")]
-	    public virtual string inversionNueva { get; set; }
+	    public virtual Int32 inversionNueva { get; set; }
 		public virtual AcumulacionCosto acumulacionCostos { get; set; }
 		public virtual ActividadTipo actividadTipos { get; set; }
 		public virtual IEnumerable<Actividad> actividads { get; set; }

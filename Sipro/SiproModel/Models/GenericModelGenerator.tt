@@ -606,7 +606,7 @@ class SqlServerSchemaReader : SchemaReader
 					col.Name=rdr["ColumnName"].ToString();
 					col.IsComputed=rdr["IsComputed"].Equals("1");
 					col.PropertyName=CleanUp(col.Name);
-					col.PropertyType=GetPropertyType(rdr["DataType"].ToString());
+					col.PropertyType=GetPropertyType(rdr["DataType"].ToString(), rdr["DataPrecision"].ToString(), rdr["DatePrecision"].ToString());
 					col.IsNullable=rdr["IsNullable"].ToString()=="Y";
 					col.IsAutoIncrement=rdr["IsIdentity"].Equals("1");
 					col.IsGeneratedUniqueIdentifier = rdr["DefaultSetting"].ToString().ToLower().Trim(' ','(',')')=="newid";
@@ -742,8 +742,9 @@ class SqlServerSchemaReader : SchemaReader
 	}
 
 	
-	string GetPropertyType(string sqlType)
+	string GetPropertyType(string sqlType, string dataLenght, string decimalLenght)
 	{
+		sqlType = sqlType.ToLowerInvariant();
 		string sysType="string";
 		switch (sqlType) 
 		{
@@ -772,6 +773,14 @@ class SqlServerSchemaReader : SchemaReader
 			case "real":
 				sysType="float";
 				break;
+			case "number":
+				if(Int32.Parse(decimalLenght) > 0)
+					sysType="decimal";
+				else if(Int32.Parse(dataLenght) > 10)
+					sysType="Int64";
+				else
+					sysType="Int32";
+				break;
 			case "numeric":
 			case "smallmoney":
 			case "decimal":
@@ -787,6 +796,7 @@ class SqlServerSchemaReader : SchemaReader
 			case "image":
 			case "binary":
 			case "varbinary":
+			case "timestamp(0)":
 			case "timestamp":
 				sysType=  "byte[]";
 				 break;
@@ -817,7 +827,8 @@ class SqlServerSchemaReader : SchemaReader
                                 CHAR_LENGTH MaxLength,
                                 DATA_SCALE DatePrecision, 
                                 '0' IsIdentity, 
-                                CASE VIRTUAL_COLUMN WHEN 'YES' THEN '1' WHEN 'NO' THEN '0' END IsComputed
+                                CASE VIRTUAL_COLUMN WHEN 'YES' THEN '1' WHEN 'NO' THEN '0' END IsComputed,
+								DATA_PRECISION DataPrecision
                                 FROM all_tab_cols 
 								WHERE TABLE_NAME=:tableName AND OWNER LIKE :schemaName
                                 ORDER BY OrdinalPosition ASC";

@@ -14,22 +14,22 @@ namespace SiproModel.Models
 	public partial class ComponenteSigade
 	{
 		[Key]
-	    public virtual string id { get; set; }
+	    public virtual Int32 id { get; set; }
 	    public virtual string nombre { get; set; }
 	    [Column("CODIGO_PRESUPUESTARIO")]
 	    public virtual string codigoPresupuestario { get; set; }
 	    [Column("NUMERO_COMPONENTE")]
-	    public virtual string numeroComponente { get; set; }
+	    public virtual Int32 numeroComponente { get; set; }
 	    [Column("MONTO_COMPONENTE")]
-	    public virtual string montoComponente { get; set; }
+	    public virtual decimal montoComponente { get; set; }
 	    [Column("USUARIO_CREO")]
 	    public virtual string usuarioCreo { get; set; }
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
-	    public virtual string estado { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual Int32 estado { get; set; }
 	}
 }

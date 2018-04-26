@@ -14,22 +14,22 @@ namespace SiproModel.Models
 	public partial class ProyectoImpacto
 	{
 		[Key]
-	    public virtual string id { get; set; }
+	    public virtual Int64 id { get; set; }
 	    [ForeignKey("Proyecto")]
-        public virtual string proyectoid { get; set; }
+        public virtual Int32 proyectoid { get; set; }
 	    [ForeignKey("Entidad")]
-        public virtual string entidadentidad { get; set; }
+        public virtual Int32 entidadentidad { get; set; }
 	    public virtual string impacto { get; set; }
-	    public virtual string estado { get; set; }
+	    public virtual Int32 estado { get; set; }
 	    [Column("USUARIO_CREO")]
 	    public virtual string usuarioCreo { get; set; }
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
-	    public virtual string ejercicio { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual Int32 ejercicio { get; set; }
 		public virtual Entidad entidads { get; set; }
 		public virtual Proyecto proyectos { get; set; }
 		public virtual IEnumerable<ProyectoImpacto> proyectoimpactoes { get; set; }

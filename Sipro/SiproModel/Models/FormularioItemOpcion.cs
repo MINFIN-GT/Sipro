@@ -14,28 +14,28 @@ namespace SiproModel.Models
 	public partial class FormularioItemOpcion
 	{
 		[Key]
-	    public virtual string id { get; set; }
+	    public virtual Int32 id { get; set; }
 	    [Column("FORMULARIO_ITEMID")]
 	    [ForeignKey("FormularioItem")]
-        public virtual string formularioItemid { get; set; }
+        public virtual Int32 formularioItemid { get; set; }
 	    public virtual string etiqueta { get; set; }
 	    [Column("VALOR_ENTERO")]
-	    public virtual string valorEntero { get; set; }
+	    public virtual Int32? valorEntero { get; set; }
 	    [Column("VALOR_STRING")]
 	    public virtual string valorString { get; set; }
 	    [Column("VALOR_TIEMPO")]
-	    public virtual string valorTiempo { get; set; }
+	    public virtual byte[] valorTiempo { get; set; }
 	    [Column("VALOR_DECIMAL")]
-	    public virtual string valorDecimal { get; set; }
-	    public virtual string estado { get; set; }
+	    public virtual decimal? valorDecimal { get; set; }
+	    public virtual Int32 estado { get; set; }
 	    [Column("USUARIO_CREO")]
 	    public virtual string usuarioCreo { get; set; }
 	    [Column("USUARIO_ACTUALIZACION")]
-	    public virtual string usuarioActualizacion { get; set; }
+	    public virtual Int64? usuarioActualizacion { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
 		public virtual FormularioItem formularioItems { get; set; }
 		public virtual IEnumerable<FormularioItemOpcion> formularioitemopcions { get; set; }
 	}

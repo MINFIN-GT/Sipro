@@ -14,7 +14,7 @@ namespace SiproModel.Models
 	public partial class UnidadMedida
 	{
 		[Key]
-	    public virtual string id { get; set; }
+	    public virtual Int64 id { get; set; }
 	    public virtual string nombre { get; set; }
 	    public virtual string descripcion { get; set; }
 	    [Column("USUARIO_CREO")]
@@ -22,9 +22,9 @@ namespace SiproModel.Models
 	    [Column("USUARIO_ACTUALIZACION")]
 	    public virtual string usuarioActualizacion { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
-	    public virtual string estado { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual Int32 estado { get; set; }
 	}
 }

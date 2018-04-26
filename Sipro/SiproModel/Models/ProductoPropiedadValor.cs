@@ -16,27 +16,27 @@ namespace SiproModel.Models
 		[Key]
 	    [Column("PRODUCTO_PROPIEDADID")]
 	    [ForeignKey("ProductoPropiedad")]
-        public virtual string productoPropiedadid { get; set; }
+        public virtual Int32 productoPropiedadid { get; set; }
 		[Key]
 	    [ForeignKey("Producto")]
-        public virtual string productoid { get; set; }
+        public virtual Int32 productoid { get; set; }
 	    [Column("VALOR_ENTERO")]
-	    public virtual string valorEntero { get; set; }
+	    public virtual Int32? valorEntero { get; set; }
 	    [Column("VALOR_STRING")]
 	    public virtual string valorString { get; set; }
 	    [Column("VALOR_DECIMAL")]
-	    public virtual string valorDecimal { get; set; }
+	    public virtual decimal? valorDecimal { get; set; }
 	    [Column("VALOR_TIEMPO")]
-	    public virtual string valorTiempo { get; set; }
+	    public virtual byte[] valorTiempo { get; set; }
 	    [Column("USUARIO_CREO")]
 	    public virtual string usuarioCreo { get; set; }
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
-	    public virtual string estado { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual Int32 estado { get; set; }
 		public virtual Producto productos { get; set; }
 		public virtual ProductoPropiedad productoPropiedads { get; set; }
 		public virtual IEnumerable<ProductoPropiedadValor> productopropiedadvalors { get; set; }

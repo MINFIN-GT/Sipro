@@ -16,38 +16,38 @@ namespace SiproModel.Models
 		[Key]
 	    [Column("FORMULARIO_ITEMID")]
 	    [ForeignKey("FormularioItem")]
-        public virtual string formularioItemid { get; set; }
+        public virtual Int32 formularioItemid { get; set; }
 		[Key]
 	    [Column("OBJETO_FORMULARIOFORMULARIOID")]
 	    [ForeignKey("ObjetoFormulario")]
-        public virtual string objetoFormularioformularioid { get; set; }
+        public virtual Int32 objetoFormularioformularioid { get; set; }
 		[Key]
 	    [Column("OBJETO_FORMULARIOOBJETO_TIPOID")]
 	    [ForeignKey("ObjetoFormulario")]
-        public virtual string objetoFormularioobjetoTipoid { get; set; }
+        public virtual Int32 objetoFormularioobjetoTipoid { get; set; }
 	    [Column("VALOR_ENTERO")]
-	    public virtual string valorEntero { get; set; }
+	    public virtual Int32 valorEntero { get; set; }
 	    [Column("VALOR_STRING")]
 	    public virtual string valorString { get; set; }
 	    [Column("VALOR_TIEMPO")]
-	    public virtual string valorTiempo { get; set; }
+	    public virtual byte[] valorTiempo { get; set; }
 	    [Column("VALOR_DECIMAL")]
-	    public virtual string valorDecimal { get; set; }
-	    public virtual string proyectoid { get; set; }
-	    public virtual string componenteid { get; set; }
-	    public virtual string productoid { get; set; }
+	    public virtual decimal? valorDecimal { get; set; }
+	    public virtual Int32 proyectoid { get; set; }
+	    public virtual Int32 componenteid { get; set; }
+	    public virtual Int32 productoid { get; set; }
 	    [Column("USUARIO_CREO")]
 	    public virtual string usuarioCreo { get; set; }
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
 		[Key]
 	    [Column("OBJETO_FORMULARIOOBJETO_ID")]
 	    [ForeignKey("ObjetoFormulario")]
-        public virtual string objetoFormularioobjetoId { get; set; }
+        public virtual Int32 objetoFormularioobjetoId { get; set; }
 		public virtual ObjetoFormulario objetoFormularios { get; set; }
 		public virtual FormularioItem formularioItems { get; set; }
 		public virtual IEnumerable<FormularioItemValor> formularioitemvalors { get; set; }

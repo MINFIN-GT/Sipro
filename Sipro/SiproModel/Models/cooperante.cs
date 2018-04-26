@@ -14,7 +14,7 @@ namespace SiproModel.Models
 	public partial class Cooperante
 	{
 		[Key]
-	    public virtual string codigo { get; set; }
+	    public virtual Int32 codigo { get; set; }
 	    public virtual string siglas { get; set; }
 	    public virtual string nombre { get; set; }
 	    public virtual string descripcion { get; set; }
@@ -23,11 +23,11 @@ namespace SiproModel.Models
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
-	    public virtual string estado { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual Int32 estado { get; set; }
 		[Key]
-	    public virtual string ejercicio { get; set; }
+	    public virtual Int32 ejercicio { get; set; }
 	}
 }

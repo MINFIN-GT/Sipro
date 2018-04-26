@@ -14,9 +14,9 @@ namespace SiproModel.Models
 	public partial class RolUsuarioProyecto
 	{
 		[Key]
-	    public virtual string rol { get; set; }
+	    public virtual Int64 rol { get; set; }
 		[Key]
-	    public virtual string proyecto { get; set; }
+	    public virtual Int64 proyecto { get; set; }
 		[Key]
 	    public virtual string usuario { get; set; }
 	}

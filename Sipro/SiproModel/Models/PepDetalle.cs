@@ -15,7 +15,7 @@ namespace SiproModel.Models
 	{
 		[Key]
 	    [ForeignKey("Proyecto")]
-        public virtual string proyectoid { get; set; }
+        public virtual Int32 proyectoid { get; set; }
 	    public virtual string observaciones { get; set; }
 	    public virtual string alertivos { get; set; }
 	    public virtual string elaborado { get; set; }
@@ -26,10 +26,10 @@ namespace SiproModel.Models
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
-	    public virtual string estado { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual Int32 estado { get; set; }
 		public virtual Proyecto proyectos { get; set; }
 		public virtual IEnumerable<PepDetalle> pepdetalles { get; set; }
 	}

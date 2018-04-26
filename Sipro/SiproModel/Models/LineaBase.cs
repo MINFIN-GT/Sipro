@@ -14,21 +14,21 @@ namespace SiproModel.Models
 	public partial class LineaBase
 	{
 		[Key]
-	    public virtual string id { get; set; }
+	    public virtual Int32 id { get; set; }
 	    public virtual string nombre { get; set; }
 	    [ForeignKey("Proyecto")]
-        public virtual string proyectoid { get; set; }
+        public virtual Int32 proyectoid { get; set; }
 	    [Column("USUARIO_CREO")]
 	    public virtual string usuarioCreo { get; set; }
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
 	    [Column("TIPO_LINEA_BASE")]
-	    public virtual string tipoLineaBase { get; set; }
-	    public virtual string sobreescribir { get; set; }
+	    public virtual Int32 tipoLineaBase { get; set; }
+	    public virtual Int32? sobreescribir { get; set; }
 		public virtual Proyecto proyectos { get; set; }
 		public virtual IEnumerable<LineaBase> lineabases { get; set; }
 	}

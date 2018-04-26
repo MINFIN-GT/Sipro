@@ -14,7 +14,7 @@ namespace SiproModel.Models
 	public partial class Proyecto
 	{
 		[Key]
-	    public virtual string id { get; set; }
+	    public virtual Int32 id { get; set; }
 	    public virtual string nombre { get; set; }
 	    public virtual string descripcion { get; set; }
 	    [Column("USUARIO_CREO")]
@@ -22,74 +22,74 @@ namespace SiproModel.Models
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
-	    public virtual string estado { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual Int32 estado { get; set; }
 	    [Column("PROYECTO_TIPOID")]
 	    [ForeignKey("ProyectoTipo")]
-        public virtual string proyectoTipoid { get; set; }
+        public virtual Int32 proyectoTipoid { get; set; }
 	    [Column("UEUNIDAD_EJECUTORA")]
 	    [ForeignKey("UnidadEjecutora")]
-        public virtual string ueunidadEjecutora { get; set; }
-	    public virtual string snip { get; set; }
-	    public virtual string programa { get; set; }
-	    public virtual string subprograma { get; set; }
+        public virtual Int32 ueunidadEjecutora { get; set; }
+	    public virtual Int32? snip { get; set; }
+	    public virtual Int32? programa { get; set; }
+	    public virtual Int32? subprograma { get; set; }
 	    [Column("_PROYECTO")]
-	    public virtual string proyecto { get; set; }
-	    public virtual string actividad { get; set; }
-	    public virtual string obra { get; set; }
+	    public virtual Int32? proyecto { get; set; }
+	    public virtual Int32? actividad { get; set; }
+	    public virtual Int32? obra { get; set; }
 	    public virtual string latitud { get; set; }
 	    public virtual string longitud { get; set; }
 	    public virtual string objetivo { get; set; }
 	    [Column("DIRECTOR_PROYECTO")]
-	    public virtual string directorProyecto { get; set; }
+	    public virtual Int32? directorProyecto { get; set; }
 	    [Column("ENUNCIADO_ALCANCE")]
 	    public virtual string enunciadoAlcance { get; set; }
-	    public virtual string costo { get; set; }
+	    public virtual decimal? costo { get; set; }
 	    [Column("ACUMULACION_COSTOID")]
 	    [ForeignKey("AcumulacionCosto")]
-        public virtual string acumulacionCostoid { get; set; }
+        public virtual Int64 acumulacionCostoid { get; set; }
 	    [Column("OBJETIVO_ESPECIFICO")]
 	    public virtual string objetivoEspecifico { get; set; }
 	    [Column("VISION_GENERAL")]
 	    public virtual string visionGeneral { get; set; }
-	    public virtual string renglon { get; set; }
+	    public virtual Int32? renglon { get; set; }
 	    [Column("UBICACION_GEOGRAFICA")]
-	    public virtual string ubicacionGeografica { get; set; }
+	    public virtual Int32? ubicacionGeografica { get; set; }
 	    [Column("FECHA_INICIO")]
-	    public virtual string fechaInicio { get; set; }
+	    public virtual byte[] fechaInicio { get; set; }
 	    [Column("FECHA_FIN")]
-	    public virtual string fechaFin { get; set; }
-	    public virtual string duracion { get; set; }
+	    public virtual byte[] fechaFin { get; set; }
+	    public virtual Int32 duracion { get; set; }
 	    [Column("DURACION_DIMENSION")]
 	    public virtual string duracionDimension { get; set; }
-	    public virtual string orden { get; set; }
+	    public virtual Int32? orden { get; set; }
 	    public virtual string treepath { get; set; }
-	    public virtual string nivel { get; set; }
+	    public virtual Int32? nivel { get; set; }
 	    [ForeignKey("UnidadEjecutora")]
-        public virtual string ejercicio { get; set; }
+        public virtual Int32 ejercicio { get; set; }
 	    [ForeignKey("UnidadEjecutora")]
-        public virtual string entidad { get; set; }
+        public virtual Int32? entidad { get; set; }
 	    [Column("EJECUCION_FISICA_REAL")]
-	    public virtual string ejecucionFisicaReal { get; set; }
+	    public virtual Int32? ejecucionFisicaReal { get; set; }
 	    [Column("PROYECTO_CLASE")]
-	    public virtual string proyectoClase { get; set; }
+	    public virtual Int32 proyectoClase { get; set; }
 	    [Column("PROJECT_CARGADO")]
-	    public virtual string projectCargado { get; set; }
+	    public virtual Int32? projectCargado { get; set; }
 	    [ForeignKey("Prestamo")]
-        public virtual string prestamoid { get; set; }
+        public virtual Int32? prestamoid { get; set; }
 	    public virtual string observaciones { get; set; }
-	    public virtual string coordinador { get; set; }
+	    public virtual Int32? coordinador { get; set; }
 	    [Column("FECHA_ELEGIBILIDAD")]
-	    public virtual string fechaElegibilidad { get; set; }
+	    public virtual byte[] fechaElegibilidad { get; set; }
 	    [Column("FECHA_INICIO_REAL")]
-	    public virtual string fechaInicioReal { get; set; }
+	    public virtual byte[] fechaInicioReal { get; set; }
 	    [Column("FECHA_FIN_REAL")]
-	    public virtual string fechaFinReal { get; set; }
-	    public virtual string congelado { get; set; }
+	    public virtual byte[] fechaFinReal { get; set; }
+	    public virtual Int32? congelado { get; set; }
 	    [Column("FECHA_CIERRE")]
-	    public virtual string fechaCierre { get; set; }
+	    public virtual byte[] fechaCierre { get; set; }
 		public virtual Prestamo prestamos { get; set; }
 		public virtual AcumulacionCosto acumulacionCostos { get; set; }
 		public virtual UnidadEjecutora unidadEjecutoras { get; set; }

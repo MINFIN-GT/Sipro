@@ -13,8 +13,8 @@ namespace SiproModel.Models
 	[Table("ESTADO")]
 	public partial class Estado
 	{
-	    public virtual string id { get; set; }
+	    public virtual Int32 id { get; set; }
 	    public virtual string nombre { get; set; }
-	    public virtual string valor { get; set; }
+	    public virtual Int32 valor { get; set; }
 	}
 }

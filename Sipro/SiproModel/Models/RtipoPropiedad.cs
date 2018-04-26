@@ -16,20 +16,20 @@ namespace SiproModel.Models
 		[Key]
 	    [Column("RIESGO_TIPOID")]
 	    [ForeignKey("RiesgoTipo")]
-        public virtual string riesgoTipoid { get; set; }
+        public virtual Int32 riesgoTipoid { get; set; }
 		[Key]
 	    [Column("RIESGO_PROPIEDADID")]
 	    [ForeignKey("RiesgoPropiedad")]
-        public virtual string riesgoPropiedadid { get; set; }
+        public virtual Int32 riesgoPropiedadid { get; set; }
 	    [Column("USUARIO_CREO")]
 	    public virtual string usuarioCreo { get; set; }
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
-	    public virtual string estado { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual Int32 estado { get; set; }
 		public virtual RiesgoPropiedad riesgoPropiedads { get; set; }
 		public virtual RiesgoTipo riesgoTipos { get; set; }
 		public virtual IEnumerable<RtipoPropiedad> rtipopropiedads { get; set; }

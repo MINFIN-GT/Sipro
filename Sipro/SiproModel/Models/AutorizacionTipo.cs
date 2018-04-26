@@ -14,7 +14,7 @@ namespace SiproModel.Models
 	public partial class AutorizacionTipo
 	{
 		[Key]
-	    public virtual string id { get; set; }
+	    public virtual Int32 id { get; set; }
 	    public virtual string nombre { get; set; }
 	    public virtual string descripcion { get; set; }
 	}

@@ -14,39 +14,39 @@ namespace SiproModel.Models
 	public partial class Riesgo
 	{
 		[Key]
-	    public virtual string id { get; set; }
+	    public virtual Int32 id { get; set; }
 	    public virtual string nombre { get; set; }
 	    public virtual string descripcion { get; set; }
 	    [Column("RIESGO_TIPOID")]
 	    [ForeignKey("RiesgoTipo")]
-        public virtual string riesgoTipoid { get; set; }
-	    public virtual string impacto { get; set; }
-	    public virtual string probabilidad { get; set; }
+        public virtual Int32 riesgoTipoid { get; set; }
+	    public virtual decimal impacto { get; set; }
+	    public virtual decimal probabilidad { get; set; }
 	    [Column("IMPACTO_MONTO")]
-	    public virtual string impactoMonto { get; set; }
+	    public virtual decimal? impactoMonto { get; set; }
 	    [Column("IMPACTO_TIEMPO")]
-	    public virtual string impactoTiempo { get; set; }
+	    public virtual decimal? impactoTiempo { get; set; }
 	    public virtual string gatillo { get; set; }
 	    public virtual string consecuencia { get; set; }
 	    public virtual string solucion { get; set; }
 	    [Column("RIESGOS_SEGUNDARIOS")]
 	    public virtual string riesgosSegundarios { get; set; }
-	    public virtual string ejecutado { get; set; }
+	    public virtual Int32 ejecutado { get; set; }
 	    [Column("FECHA_EJECUCION")]
-	    public virtual string fechaEjecucion { get; set; }
+	    public virtual byte[] fechaEjecucion { get; set; }
 	    public virtual string resultado { get; set; }
 	    public virtual string observaciones { get; set; }
 	    [ForeignKey("Colaborador")]
-        public virtual string colaboradorid { get; set; }
+        public virtual Int32 colaboradorid { get; set; }
 	    [Column("USUARIO_CREO")]
 	    public virtual string usuarioCreo { get; set; }
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
-	    public virtual string estado { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual Int32 estado { get; set; }
 		public virtual Colaborador colaboradors { get; set; }
 		public virtual RiesgoTipo riesgoTipos { get; set; }
 		public virtual IEnumerable<Riesgo> riesgoes { get; set; }

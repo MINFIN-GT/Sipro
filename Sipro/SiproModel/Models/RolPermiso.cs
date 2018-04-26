@@ -15,19 +15,19 @@ namespace SiproModel.Models
 	{
 		[Key]
 	    [ForeignKey("Rol")]
-        public virtual string rolid { get; set; }
+        public virtual Int32 rolid { get; set; }
 		[Key]
 	    [ForeignKey("Permiso")]
-        public virtual string permisoid { get; set; }
+        public virtual Int64 permisoid { get; set; }
 	    [Column("USUARIO_CREO")]
 	    public virtual string usuarioCreo { get; set; }
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
-	    public virtual string estado { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual Int32 estado { get; set; }
 		public virtual Permiso permisos { get; set; }
 		public virtual Rol rols { get; set; }
 		public virtual IEnumerable<RolPermiso> rolpermisoes { get; set; }

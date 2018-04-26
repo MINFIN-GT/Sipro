@@ -14,30 +14,30 @@ namespace SiproModel.Models
 	public partial class Desembolso
 	{
 		[Key]
-	    public virtual string id { get; set; }
-	    public virtual string fecha { get; set; }
-	    public virtual string estado { get; set; }
-	    public virtual string monto { get; set; }
+	    public virtual Int32 id { get; set; }
+	    public virtual byte[] fecha { get; set; }
+	    public virtual Int32 estado { get; set; }
+	    public virtual decimal monto { get; set; }
 	    [Column("TIPO_CAMBIO")]
-	    public virtual string tipoCambio { get; set; }
+	    public virtual decimal tipoCambio { get; set; }
 	    [Column("MONTO_MONEDA_ORIGEN")]
-	    public virtual string montoMonedaOrigen { get; set; }
+	    public virtual Int64? montoMonedaOrigen { get; set; }
 	    [Column("USUARIO_CREO")]
 	    public virtual string usuarioCreo { get; set; }
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
 	    [ForeignKey("Proyecto")]
-        public virtual string proyectoid { get; set; }
+        public virtual Int32 proyectoid { get; set; }
 	    [Column("DESEMBOLSO_TIPOID")]
 	    [ForeignKey("DesembolsoTipo")]
-        public virtual string desembolsoTipoid { get; set; }
+        public virtual Int32 desembolsoTipoid { get; set; }
 	    [Column("TIPO_MONEDAID")]
 	    [ForeignKey("TipoMoneda")]
-        public virtual string tipoMonedaid { get; set; }
+        public virtual Int32 tipoMonedaid { get; set; }
 		public virtual TipoMoneda tipoMonedas { get; set; }
 		public virtual DesembolsoTipo desembolsoTipos { get; set; }
 		public virtual Proyecto proyectos { get; set; }

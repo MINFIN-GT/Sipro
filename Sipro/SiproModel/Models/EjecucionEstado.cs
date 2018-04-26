@@ -14,7 +14,7 @@ namespace SiproModel.Models
 	public partial class EjecucionEstado
 	{
 		[Key]
-	    public virtual string id { get; set; }
+	    public virtual Int64 id { get; set; }
 	    public virtual string nombre { get; set; }
 	    public virtual string descripcion { get; set; }
 	}

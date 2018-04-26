@@ -14,27 +14,27 @@ namespace SiproModel.Models
 	public partial class AsignacionRaci
 	{
 		[Key]
-	    public virtual string id { get; set; }
+	    public virtual Int64 id { get; set; }
 	    [Column("MATRIZ_RACIID")]
 	    [ForeignKey("MatrizRaci")]
-        public virtual string matrizRaciid { get; set; }
+        public virtual Int64 matrizRaciid { get; set; }
 	    [ForeignKey("Colaborador")]
-        public virtual string colaboradorid { get; set; }
+        public virtual Int32 colaboradorid { get; set; }
 	    [Column("ROL_RACI")]
 	    public virtual string rolRaci { get; set; }
 	    [Column("OBJETO_ID")]
-	    public virtual string objetoId { get; set; }
+	    public virtual Int64 objetoId { get; set; }
 	    [Column("OBJETO_TIPO")]
-	    public virtual string objetoTipo { get; set; }
+	    public virtual Int64 objetoTipo { get; set; }
 	    [Column("USUARIO_CREO")]
 	    public virtual string usuarioCreo { get; set; }
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
-	    public virtual string estado { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual Int32 estado { get; set; }
 		public virtual Colaborador colaboradors { get; set; }
 		public virtual MatrizRaci matrizRacis { get; set; }
 		public virtual IEnumerable<AsignacionRaci> asignacionracis { get; set; }

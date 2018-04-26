@@ -15,28 +15,28 @@ namespace SiproModel.Models
 	{
 		[Key]
 	    [ForeignKey("Actividad")]
-        public virtual string actividadid { get; set; }
+        public virtual Int32 actividadid { get; set; }
 		[Key]
 	    [Column("ACTIVIDAD_PROPIEDADID")]
 	    [ForeignKey("ActividadPropiedad")]
-        public virtual string actividadPropiedadid { get; set; }
+        public virtual Int32 actividadPropiedadid { get; set; }
 	    [Column("VALOR_ENTERO")]
-	    public virtual string valorEntero { get; set; }
+	    public virtual Int32? valorEntero { get; set; }
 	    [Column("VALOR_STRING")]
 	    public virtual string valorString { get; set; }
 	    [Column("VALOR_DECIMAL")]
-	    public virtual string valorDecimal { get; set; }
+	    public virtual decimal? valorDecimal { get; set; }
 	    [Column("VALOR_TIEMPO")]
-	    public virtual string valorTiempo { get; set; }
+	    public virtual byte[] valorTiempo { get; set; }
 	    [Column("USUARIO_CREO")]
 	    public virtual string usuarioCreo { get; set; }
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
 	    [Column("FECHA_CREACION")]
-	    public virtual string fechaCreacion { get; set; }
+	    public virtual byte[] fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
-	    public virtual string fechaActualizacion { get; set; }
-	    public virtual string estado { get; set; }
+	    public virtual byte[] fechaActualizacion { get; set; }
+	    public virtual Int32? estado { get; set; }
 		public virtual ActividadPropiedad actividadPropiedads { get; set; }
 		public virtual Actividad actividads { get; set; }
 		public virtual IEnumerable<ActividadPropiedadValor> actividadpropiedadvalors { get; set; }
