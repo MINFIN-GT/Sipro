@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using SiproModel.Models;
 using Sipro.Utilities;
+using System.Data.Common;
+using Dapper;
 
 namespace Sipro.Dao
 {
@@ -11,27 +13,23 @@ namespace Sipro.Dao
         {
         }
 
-        public static List<Permiso> getPermisos(){
-        List <Permiso> ret = new List<Permiso>();
-        try{
-                IDbConnection dbContext = new OracleContext();
-
-            CriteriaBuilder builder = session.getCriteriaBuilder();
-            CriteriaQuery<Permiso> criteria = builder.createQuery(Permiso.class);
-            Root<Permiso> root = criteria.from(Permiso.class);
-            criteria.select( root ).where(builder.equal(root.get("estado"),1));
-            criteria.orderBy(builder.asc(root.get("nombre")));
-            ret = session.createQuery( criteria ).getResultList();
+        public static List<Permiso> getPermisos()
+        {
+            List<Permiso> ret = new List<Permiso>();
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    ret = db.Query<Permiso>("SELECT * FROM permiso WHERE estado=1").AsList<Permiso>();
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("1", "PermisoDAO.class", e);
+            }
+            return ret;
         }
-        catch(Throwable e){
-            CLogger.write("1", PermisoDAO.class, e);
-        }
-        finally{
-            session.close();
-        }
-
-        return ret;
-    }
+     }
 
     /*public static boolean guardarPermiso(Permiso permiso){
         boolean ret = false;

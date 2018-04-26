@@ -18,9 +18,7 @@ namespace Sipro.Controllers
         [HttpPost]
         public IActionResult getActividadPorId([FromBody]dynamic data)
         {
-            new ActividadPropiedadDAO();
-            Actividadpropiedad temp = ActividadPropiedadDAO.getActividadPropiedadPorId((Int32)data.id);
-            return Ok(temp);
+            return Ok();
         }
 
         

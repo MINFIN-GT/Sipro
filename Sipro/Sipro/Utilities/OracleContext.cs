@@ -2,6 +2,7 @@
 using System.Data;
 using System.Configuration;
 using Oracle.ManagedDataAccess.Client;
+using System.Data.Common;
 
 namespace Sipro.Utilities
 {
@@ -12,8 +13,22 @@ namespace Sipro.Utilities
 
         public OracleContext()
         {
-            connectionString = ConfigurationManager.ConnectionStrings["Oracle"].ConnectionString;
-            connection = new OracleConnection(connectionString);
+            connectionString = ConfigurationManager.ConnectionStrings["oracle"].ConnectionString;
         }
+
+
+        public DbConnection getConnection(){
+            DbConnection db = null;
+            try
+            {
+                db = new OracleConnection(connectionString);
+            }
+            catch (Exception e)
+            {
+                CLogger.write("1", "OracleContext.class", e);
+            }
+            return db;
+        }
+
     }
 }

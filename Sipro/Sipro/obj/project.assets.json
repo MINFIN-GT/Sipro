@@ -16,9 +16,6 @@
           "lib/netstandard2.0/Dapper.dll": {}
         }
       },
-      "Dapper.FastCrud.ModelGenerator/2.4.1": {
-        "type": "package"
-      },
       "EntityFramework/6.2.0": {
         "type": "package",
         "compile": {
@@ -2772,26 +2769,13 @@
           "lib/netstandard1.3/Newtonsoft.Json.Bson.dll": {}
         }
       },
-      "Oracle.ManagedDataAccess/12.2.1100": {
+      "Oracle.ManagedDataAccess.Core/2.12.0-beta2": {
         "type": "package",
         "compile": {
-          "lib/net40/Oracle.ManagedDataAccess.dll": {}
+          "lib/netstandard2.0/Oracle.ManagedDataAccess.dll": {}
         },
         "runtime": {
-          "lib/net40/Oracle.ManagedDataAccess.dll": {}
-        }
-      },
-      "Oracle.ManagedDataAccess.EntityFramework/12.2.1100": {
-        "type": "package",
-        "dependencies": {
-          "EntityFramework": "[6.0.0, 7.0.0)",
-          "Oracle.ManagedDataAccess": "[12.2.1100, 12.3.0)"
-        },
-        "compile": {
-          "lib/net45/Oracle.ManagedDataAccess.EntityFramework.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Oracle.ManagedDataAccess.EntityFramework.dll": {}
+          "lib/netstandard2.0/Oracle.ManagedDataAccess.dll": {}
         }
       },
       "Remotion.Linq/2.1.1": {
@@ -3269,6 +3253,18 @@
         },
         "runtime": {
           "lib/netcoreapp2.0/_._": {}
+        }
+      },
+      "System.Configuration.ConfigurationManager/4.4.1": {
+        "type": "package",
+        "dependencies": {
+          "System.Security.Cryptography.ProtectedData": "4.4.0"
+        },
+        "compile": {
+          "ref/netstandard2.0/System.Configuration.ConfigurationManager.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.Configuration.ConfigurationManager.dll": {}
         }
       },
       "System.Console/4.3.0": {
@@ -4468,6 +4464,21 @@
           "lib/netstandard1.3/System.Security.Cryptography.Primitives.dll": {}
         }
       },
+      "System.Security.Cryptography.ProtectedData/4.4.0": {
+        "type": "package",
+        "compile": {
+          "ref/netstandard2.0/_._": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll": {}
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll": {
+            "assetType": "runtime",
+            "rid": "win"
+          }
+        }
+      },
       "System.Security.Cryptography.X509Certificates/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -4951,18 +4962,6 @@
         "lib/netstandard1.3/Dapper.xml",
         "lib/netstandard2.0/Dapper.dll",
         "lib/netstandard2.0/Dapper.xml"
-      ]
-    },
-    "Dapper.FastCrud.ModelGenerator/2.4.1": {
-      "sha512": "HuTd90JJWsMsWRy/fJt3ZtVX087cL+QvY8SiiqcZ7XXFcMQtw8UjYIsv5fqhdDLsAicK5HZGcf5zrrvzXdjxzg==",
-      "type": "package",
-      "path": "dapper.fastcrud.modelgenerator/2.4.1",
-      "files": [
-        "Content/Models/GenericModelGenerator.tt",
-        "Content/Models/SampleModelGeneratorConfig.tt",
-        "Tools/Install.ps1",
-        "dapper.fastcrud.modelgenerator.2.4.1.nupkg.sha512",
-        "dapper.fastcrud.modelgenerator.nuspec"
       ]
     },
     "EntityFramework/6.2.0": {
@@ -7828,41 +7827,16 @@
         "newtonsoft.json.bson.nuspec"
       ]
     },
-    "Oracle.ManagedDataAccess/12.2.1100": {
-      "sha512": "PEiPi7VrQyJmcZm0TtiIBNATR13JcuLUAncpdCrCY5us9KjIdwjbgbdb6lwsc9/EHETfUFiYlYCdSRY+qkcdzQ==",
+    "Oracle.ManagedDataAccess.Core/2.12.0-beta2": {
+      "sha512": "Rwi2ys28cMuE+X+fKd8Yp5O9yqHlvEj7EAtG5k1fXwQ8zqWkB79KD3U0Ff/HFYxlg492AD2R4QWtIUQYGyXZBQ==",
       "type": "package",
-      "path": "oracle.manageddataaccess/12.2.1100",
+      "path": "oracle.manageddataaccess.core/2.12.0-beta2",
       "files": [
-        "bin/x64/Oracle.ManagedDataAccessDTC.dll",
-        "bin/x64/Oracle.ManagedDataAccessIOP.dll",
-        "bin/x86/Oracle.ManagedDataAccessDTC.dll",
-        "bin/x86/Oracle.ManagedDataAccessIOP.dll",
-        "content/net40/App.config.install.xdt",
-        "content/net40/App.config.transform",
-        "content/net40/App.config.uninstall.xdt",
-        "content/net40/Web.config.install.xdt",
-        "content/net40/Web.config.transform",
-        "content/net40/Web.config.uninstall.xdt",
+        "ODP.NET-Core-12.2-Beta2-Documentation.pdf",
         "info.txt",
-        "lib/net40/Oracle.ManagedDataAccess.dll",
-        "oracle.manageddataaccess.12.2.1100.nupkg.sha512",
-        "oracle.manageddataaccess.nuspec",
-        "readme.txt"
-      ]
-    },
-    "Oracle.ManagedDataAccess.EntityFramework/12.2.1100": {
-      "sha512": "ZE06FbYqCRbsu9w7KMDEnr330S6jnsd2CLcmQuiyUfQGLFKfJ9B7c0BMhMWAxomacmEcgOIT14ZmO6AgHwqjAw==",
-      "type": "package",
-      "path": "oracle.manageddataaccess.entityframework/12.2.1100",
-      "files": [
-        "content/net45/App.config.install.xdt",
-        "content/net45/App.config.uninstall.xdt",
-        "content/net45/Web.config.install.xdt",
-        "content/net45/Web.config.uninstall.xdt",
-        "info.txt",
-        "lib/net45/Oracle.ManagedDataAccess.EntityFramework.dll",
-        "oracle.manageddataaccess.entityframework.12.2.1100.nupkg.sha512",
-        "oracle.manageddataaccess.entityframework.nuspec",
+        "lib/netstandard2.0/Oracle.ManagedDataAccess.dll",
+        "oracle.manageddataaccess.core.2.12.0-beta2.nupkg.sha512",
+        "oracle.manageddataaccess.core.nuspec",
         "readme.txt"
       ]
     },
@@ -8666,6 +8640,25 @@
         "ref/xamarinwatchos10/_._",
         "system.componentmodel.annotations.4.4.0.nupkg.sha512",
         "system.componentmodel.annotations.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
+    },
+    "System.Configuration.ConfigurationManager/4.4.1": {
+      "sha512": "jz3TWKMAeuDEyrPCK5Jyt4bzQcmzUIMcY9Ud6PkElFxTfnsihV+9N/UCqvxe1z5gc7jMYAnj7V1COMS9QKIuHQ==",
+      "type": "package",
+      "path": "system.configuration.configurationmanager/4.4.1",
+      "files": [
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net461/System.Configuration.ConfigurationManager.dll",
+        "lib/netstandard2.0/System.Configuration.ConfigurationManager.dll",
+        "ref/net461/System.Configuration.ConfigurationManager.dll",
+        "ref/net461/System.Configuration.ConfigurationManager.xml",
+        "ref/netstandard2.0/System.Configuration.ConfigurationManager.dll",
+        "ref/netstandard2.0/System.Configuration.ConfigurationManager.xml",
+        "system.configuration.configurationmanager.4.4.1.nupkg.sha512",
+        "system.configuration.configurationmanager.nuspec",
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
@@ -11720,6 +11713,45 @@
         "system.security.cryptography.primitives.nuspec"
       ]
     },
+    "System.Security.Cryptography.ProtectedData/4.4.0": {
+      "sha512": "cJV7ScGW7EhatRsjehfvvYVBvtiSMKgN8bOVI0bQhnF5bU7vnHVIsH49Kva7i7GWaWYvmEzkYVk1TC+gZYBEog==",
+      "type": "package",
+      "path": "system.security.cryptography.protecteddata/4.4.0",
+      "files": [
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net46/System.Security.Cryptography.ProtectedData.dll",
+        "lib/net461/System.Security.Cryptography.ProtectedData.dll",
+        "lib/netstandard1.3/System.Security.Cryptography.ProtectedData.dll",
+        "lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net46/System.Security.Cryptography.ProtectedData.dll",
+        "ref/net461/System.Security.Cryptography.ProtectedData.dll",
+        "ref/net461/System.Security.Cryptography.ProtectedData.xml",
+        "ref/netstandard1.3/System.Security.Cryptography.ProtectedData.dll",
+        "ref/netstandard2.0/System.Security.Cryptography.ProtectedData.dll",
+        "ref/netstandard2.0/System.Security.Cryptography.ProtectedData.xml",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "ref/xamarintvos10/_._",
+        "ref/xamarinwatchos10/_._",
+        "runtimes/win/lib/net46/System.Security.Cryptography.ProtectedData.dll",
+        "runtimes/win/lib/net461/System.Security.Cryptography.ProtectedData.dll",
+        "runtimes/win/lib/netstandard1.3/System.Security.Cryptography.ProtectedData.dll",
+        "runtimes/win/lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll",
+        "system.security.cryptography.protecteddata.4.4.0.nupkg.sha512",
+        "system.security.cryptography.protecteddata.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
+    },
     "System.Security.Cryptography.X509Certificates/4.3.0": {
       "sha512": "t2Tmu6Y2NtJ2um0RtcuhP7ZdNNxXEgUm2JeoA/0NvlMjAhKCnM1NX07TDl3244mVp3QU6LPEhT3HTtH1uF7IYw==",
       "type": "package",
@@ -12988,9 +13020,7 @@
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.0": [
-      "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\Dapper.SimpleCRUD\\Dapper.SimpleCRUD.csproj",
       "Dapper >= 1.50.4",
-      "Dapper.FastCrud.ModelGenerator >= 2.4.1",
       "EntityFramework >= 6.2.0",
       "Microsoft.AspNetCore.All >= 2.0.6",
       "Microsoft.AspNetCore.Identity >= 2.0.2",
@@ -12999,47 +13029,42 @@
       "Microsoft.EntityFrameworkCore >= 2.0.2",
       "Microsoft.NETCore.App >= 2.0.0",
       "Newtonsoft.Json >= 11.0.2",
-      "Oracle.ManagedDataAccess >= 12.2.1100",
-      "Oracle.ManagedDataAccess.EntityFramework >= 12.2.1100",
+      "Oracle.ManagedDataAccess.Core >= 2.12.0-beta2",
       "SiproModel >= 1.0.0",
+      "System.Configuration.ConfigurationManager >= 4.4.1",
       "log4net >= 2.0.8"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\pedro\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "/Users/rafa/.nuget/packages/": {},
+    "/usr/local/share/dotnet/sdk/NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\Sipro\\Sipro.csproj",
+      "projectUniqueName": "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/Sipro/Sipro.csproj",
       "projectName": "Sipro",
-      "projectPath": "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\Sipro\\Sipro.csproj",
-      "packagesPath": "C:\\Users\\pedro\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\Sipro\\obj\\",
+      "projectPath": "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/Sipro/Sipro.csproj",
+      "packagesPath": "/Users/rafa/.nuget/packages/",
+      "outputPath": "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/Sipro/obj",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\pedro\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/Users/rafa/.config/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "netcoreapp2.0": {
           "projectReferences": {
-            "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\Dapper.SimpleCRUD\\Dapper.SimpleCRUD.csproj": {
-              "projectPath": "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\Dapper.SimpleCRUD\\Dapper.SimpleCRUD.csproj"
-            },
-            "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\SiproModel\\SiproModel.csproj": {
-              "projectPath": "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\SiproModel\\SiproModel.csproj"
+            "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/SiproModel/SiproModel.csproj": {
+              "projectPath": "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/SiproModel/SiproModel.csproj"
             }
           }
         }
@@ -13053,58 +13078,55 @@
     "frameworks": {
       "netcoreapp2.0": {
         "dependencies": {
+          "Microsoft.NETCore.App": {
+            "suppressParent": "All",
+            "target": "Package",
+            "version": "2.0",
+            "autoReferenced": true
+          },
           "Dapper": {
             "target": "Package",
-            "version": "[1.50.4, )"
-          },
-          "Dapper.FastCrud.ModelGenerator": {
-            "target": "Package",
-            "version": "[2.4.1, )"
+            "version": "1.50.4"
           },
           "EntityFramework": {
             "target": "Package",
-            "version": "[6.2.0, )"
+            "version": "6.2.0"
           },
           "Microsoft.AspNetCore.All": {
             "target": "Package",
-            "version": "[2.0.6, )"
+            "version": "2.0.6"
           },
           "Microsoft.AspNetCore.Identity": {
             "target": "Package",
-            "version": "[2.0.2, )"
+            "version": "2.0.2"
           },
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
             "target": "Package",
-            "version": "[2.0.2, )"
+            "version": "2.0.2"
           },
           "Microsoft.AspNetCore.Session": {
             "target": "Package",
-            "version": "[2.0.2, )"
+            "version": "2.0.2"
           },
           "Microsoft.EntityFrameworkCore": {
             "target": "Package",
-            "version": "[2.0.2, )"
-          },
-          "Microsoft.NETCore.App": {
-            "target": "Package",
-            "version": "[2.0.0, )",
-            "autoReferenced": true
-          },
-          "Newtonsoft.Json": {
-            "target": "Package",
-            "version": "[11.0.2, )"
-          },
-          "Oracle.ManagedDataAccess": {
-            "target": "Package",
-            "version": "[12.2.1100, )"
-          },
-          "Oracle.ManagedDataAccess.EntityFramework": {
-            "target": "Package",
-            "version": "[12.2.1100, )"
+            "version": "2.0.2"
           },
           "log4net": {
             "target": "Package",
-            "version": "[2.0.8, )"
+            "version": "2.0.8"
+          },
+          "Newtonsoft.Json": {
+            "target": "Package",
+            "version": "11.0.2"
+          },
+          "Oracle.ManagedDataAccess.Core": {
+            "target": "Package",
+            "version": "2.12.0-beta2"
+          },
+          "System.Configuration.ConfigurationManager": {
+            "target": "Package",
+            "version": "4.4.1"
           }
         },
         "imports": [
@@ -13117,40 +13139,11 @@
   },
   "logs": [
     {
-      "code": "NU1105",
-      "level": "Error",
-      "message": "No se encuentra la información del proyecto de \"C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\Dapper.SimpleCRUD\\Dapper.SimpleCRUD.csproj\". Puede que el archivo de proyecto no sea válido o que falten los destinos necesarios para la restauración.",
-      "libraryId": "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\Dapper.SimpleCRUD\\Dapper.SimpleCRUD.csproj",
-      "targetGraphs": [
-        ".NETCoreApp,Version=v2.0"
-      ]
-    },
-    {
       "code": "NU1701",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "El paquete \"EntityFramework 6.2.0\" se restauró con \".NETFramework,Version=v4.6.1\" en lugar de la plataforma de destino del proyecto \".NETCoreApp,Version=v2.0\". Puede que el paquete no sea totalmente compatible con el proyecto.",
+      "message": "Package 'EntityFramework 6.2.0' was restored using '.NETFramework,Version=v4.6.1' instead of the project target framework '.NETCoreApp,Version=v2.0'. This package may not be fully compatible with your project.",
       "libraryId": "EntityFramework",
-      "targetGraphs": [
-        ".NETCoreApp,Version=v2.0"
-      ]
-    },
-    {
-      "code": "NU1701",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "El paquete \"Oracle.ManagedDataAccess 12.2.1100\" se restauró con \".NETFramework,Version=v4.6.1\" en lugar de la plataforma de destino del proyecto \".NETCoreApp,Version=v2.0\". Puede que el paquete no sea totalmente compatible con el proyecto.",
-      "libraryId": "Oracle.ManagedDataAccess",
-      "targetGraphs": [
-        ".NETCoreApp,Version=v2.0"
-      ]
-    },
-    {
-      "code": "NU1701",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "El paquete \"Oracle.ManagedDataAccess.EntityFramework 12.2.1100\" se restauró con \".NETFramework,Version=v4.6.1\" en lugar de la plataforma de destino del proyecto \".NETCoreApp,Version=v2.0\". Puede que el paquete no sea totalmente compatible con el proyecto.",
-      "libraryId": "Oracle.ManagedDataAccess.EntityFramework",
       "targetGraphs": [
         ".NETCoreApp,Version=v2.0"
       ]

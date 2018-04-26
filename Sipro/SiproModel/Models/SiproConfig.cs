@@ -10,13 +10,3 @@
 //     Connection String:      `Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=192.168.128.128)(PORT=1521))(CONNECT_DATA=(SID=orcl)));User Id=sipro;Password=******;`
 //     Include Views:          `True`
 
-
-namespace SiproModel.Models
-{
-	using System;
-	using System.ComponentModel.DataAnnotations;
-	using System.ComponentModel.DataAnnotations.Schema;
-	using System.Collections.Generic;
-
-
- 

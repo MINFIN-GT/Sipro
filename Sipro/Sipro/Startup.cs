@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Sipro.Utilities;
+using SiproModel.Models;
 
 namespace Sipro
 {
@@ -16,6 +19,10 @@ namespace Sipro
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            var mapper = (SqlMapper.ITypeMap)Activator
+            .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+                      .MakeGenericType(typeof(Permiso)));
+                        SqlMapper.SetTypeMap(typeof(Permiso), mapper);
         }
 
         public IConfiguration Configuration { get; }

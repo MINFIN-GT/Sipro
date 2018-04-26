@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.0",
-    "signature": "dd7f1a6e253acdd4a5c400cbd3d720fa5cc507b4"
+    "signature": "925a61b7ba842db1bedf2fe5e1fa39ea11561d11"
   },
   "compilationOptions": {
     "defines": [
@@ -24,8 +24,6 @@
       "Sipro/1.0.0": {
         "dependencies": {
           "Dapper": "1.50.4",
-          "Dapper.FastCrud.ModelGenerator": "2.4.1",
-          "Dapper.SimpleCRUD": "1.0.0",
           "EntityFramework": "6.2.0",
           "Microsoft.AspNetCore.All": "2.0.6",
           "Microsoft.AspNetCore.Identity": "2.0.2",
@@ -34,8 +32,7 @@
           "Microsoft.EntityFrameworkCore": "2.0.2",
           "Microsoft.NETCore.App": "2.0.0",
           "Newtonsoft.Json": "11.0.2",
-          "Oracle.ManagedDataAccess": "12.2.1100",
-          "Oracle.ManagedDataAccess.EntityFramework": "12.2.1100",
+          "Oracle.ManagedDataAccess.Core": "2.12.0-beta2",
           "SiproModel": "1.0.0",
           "System.Configuration.ConfigurationManager": "4.4.1",
           "log4net": "2.0.8"
@@ -60,7 +57,6 @@
           "lib/netstandard2.0/Dapper.dll": {}
         }
       },
-      "Dapper.FastCrud.ModelGenerator/2.4.1": {},
       "EntityFramework/6.2.0": {
         "runtime": {
           "lib/net45/EntityFramework.SqlServer.dll": {},
@@ -2411,24 +2407,12 @@
           "lib/netstandard1.3/Newtonsoft.Json.Bson.dll": {}
         }
       },
-      "Oracle.ManagedDataAccess/12.2.1100": {
+      "Oracle.ManagedDataAccess.Core/2.12.0-beta2": {
         "runtime": {
-          "lib/net40/Oracle.ManagedDataAccess.dll": {}
+          "lib/netstandard2.0/Oracle.ManagedDataAccess.dll": {}
         },
         "compile": {
-          "lib/net40/Oracle.ManagedDataAccess.dll": {}
-        }
-      },
-      "Oracle.ManagedDataAccess.EntityFramework/12.2.1100": {
-        "dependencies": {
-          "EntityFramework": "6.2.0",
-          "Oracle.ManagedDataAccess": "12.2.1100"
-        },
-        "runtime": {
-          "lib/net45/Oracle.ManagedDataAccess.EntityFramework.dll": {}
-        },
-        "compile": {
-          "lib/net45/Oracle.ManagedDataAccess.EntityFramework.dll": {}
+          "lib/netstandard2.0/Oracle.ManagedDataAccess.dll": {}
         }
       },
       "Remotion.Linq/2.1.1": {
@@ -3995,14 +3979,6 @@
           "lib/netstandard1.3/Microsoft.WindowsAzure.Storage.dll": {}
         }
       },
-      "Dapper.SimpleCRUD/1.0.0": {
-        "runtime": {
-          "Dapper.SimpleCRUD.dll": {}
-        },
-        "compile": {
-          "Dapper.SimpleCRUD.dll": {}
-        }
-      },
       "SiproModel/1.0.0": {
         "runtime": {
           "SiproModel.dll": {}
@@ -4201,13 +4177,6 @@
       "sha512": "sha512-t5DMz+1aEkBcyCgkj+6hJHNsUq3k/d67lVMTNzICEhVjPUI3Gt2kgotSK8S4SpziIbFPphnOEn8M6Q75ED5hRQ==",
       "path": "dapper/1.50.4",
       "hashPath": "dapper.1.50.4.nupkg.sha512"
-    },
-    "Dapper.FastCrud.ModelGenerator/2.4.1": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-HuTd90JJWsMsWRy/fJt3ZtVX087cL+QvY8SiiqcZ7XXFcMQtw8UjYIsv5fqhdDLsAicK5HZGcf5zrrvzXdjxzg==",
-      "path": "dapper.fastcrud.modelgenerator/2.4.1",
-      "hashPath": "dapper.fastcrud.modelgenerator.2.4.1.nupkg.sha512"
     },
     "EntityFramework/6.2.0": {
       "type": "package",
@@ -5371,19 +5340,12 @@
       "path": "newtonsoft.json.bson/1.0.1",
       "hashPath": "newtonsoft.json.bson.1.0.1.nupkg.sha512"
     },
-    "Oracle.ManagedDataAccess/12.2.1100": {
+    "Oracle.ManagedDataAccess.Core/2.12.0-beta2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-PEiPi7VrQyJmcZm0TtiIBNATR13JcuLUAncpdCrCY5us9KjIdwjbgbdb6lwsc9/EHETfUFiYlYCdSRY+qkcdzQ==",
-      "path": "oracle.manageddataaccess/12.2.1100",
-      "hashPath": "oracle.manageddataaccess.12.2.1100.nupkg.sha512"
-    },
-    "Oracle.ManagedDataAccess.EntityFramework/12.2.1100": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-ZE06FbYqCRbsu9w7KMDEnr330S6jnsd2CLcmQuiyUfQGLFKfJ9B7c0BMhMWAxomacmEcgOIT14ZmO6AgHwqjAw==",
-      "path": "oracle.manageddataaccess.entityframework/12.2.1100",
-      "hashPath": "oracle.manageddataaccess.entityframework.12.2.1100.nupkg.sha512"
+      "sha512": "sha512-Rwi2ys28cMuE+X+fKd8Yp5O9yqHlvEj7EAtG5k1fXwQ8zqWkB79KD3U0Ff/HFYxlg492AD2R4QWtIUQYGyXZBQ==",
+      "path": "oracle.manageddataaccess.core/2.12.0-beta2",
+      "hashPath": "oracle.manageddataaccess.core.2.12.0-beta2.nupkg.sha512"
     },
     "Remotion.Linq/2.1.1": {
       "type": "package",
@@ -6273,11 +6235,6 @@
       "sha512": "sha512-W6ZZ0/o7+3Qb77mRAQyLjPudHG3OMeeQ4p9yY13PUdJArmRCx2cLMm5F4tpIjJXxzHC0ew0oK7DMDGILMdfCnw==",
       "path": "windowsazure.storage/8.1.4",
       "hashPath": "windowsazure.storage.8.1.4.nupkg.sha512"
-    },
-    "Dapper.SimpleCRUD/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
     },
     "SiproModel/1.0.0": {
       "type": "project",
