@@ -14,7 +14,6 @@ namespace SiproModel.Models
 	public partial class Usuario
 	{
 		[Key]
-	    [Column("_USUARIO")]
 	    public virtual string usuario { get; set; }
 	    public virtual string password { get; set; }
 	    public virtual string salt { get; set; }

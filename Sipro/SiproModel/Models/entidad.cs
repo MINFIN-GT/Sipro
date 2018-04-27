@@ -14,7 +14,6 @@ namespace SiproModel.Models
 	public partial class Entidad
 	{
 		[Key]
-	    [Column("_ENTIDAD")]
 	    public virtual Int32 entidad { get; set; }
 	    public virtual string nombre { get; set; }
 	    public virtual string abreviatura { get; set; }

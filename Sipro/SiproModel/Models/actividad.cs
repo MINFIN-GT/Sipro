@@ -39,7 +39,6 @@ namespace SiproModel.Models
 	    public virtual Int32? programa { get; set; }
 	    public virtual Int32? subprograma { get; set; }
 	    public virtual Int32? proyecto { get; set; }
-	    [Column("_ACTIVIDAD")]
 	    public virtual Int32? actividad { get; set; }
 	    public virtual Int32? obra { get; set; }
 	    [Column("OBJETO_ID")]

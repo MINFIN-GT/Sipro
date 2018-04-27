@@ -35,7 +35,6 @@ namespace SiproModel.Models
 	    public virtual Int32? snip { get; set; }
 	    public virtual Int32? programa { get; set; }
 	    public virtual Int32? subprograma { get; set; }
-	    [Column("_PROYECTO")]
 	    public virtual Int32? proyecto { get; set; }
 	    public virtual Int32? actividad { get; set; }
 	    public virtual Int32? obra { get; set; }

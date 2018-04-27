@@ -9,4 +9,3 @@
 //     Provider:               `Oracle.ManagedDataAccess.Client`
 //     Connection String:      `Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=192.168.128.128)(PORT=1521))(CONNECT_DATA=(SID=orcl)));User Id=sipro;Password=******;`
 //     Include Views:          `True`
-
