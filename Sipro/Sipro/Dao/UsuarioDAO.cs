@@ -504,7 +504,7 @@ namespace Sipro.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    string query = "SELECT * FROM USUARIO WHERE estado=:estado";
+                    string query = "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT * FROM USUARIO WHERE estado=:estado";
                     string query_a = "";
                     if (usuario != null && usuario.Trim().Length > 0)
                         query_a = String.Join(" ", query_a, " usuario LIKE :usuario");
@@ -515,6 +515,7 @@ namespace Sipro.Dao
                     if (filtro_fecha_creacion != null && filtro_fecha_creacion.Trim().Length > 0)
                         query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE(:filtro_fecha_creacion,'DD/MM/YY') ");
                     query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND ", query_a, "") : ""));
+                    query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + numeroUsuarios + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + numeroUsuarios + ") + 1)");
                     ret = db.Query<Usuario>(query, new { usuario = usuario, email = email, estado = 1, filtro_usuario_creo = filtro_usuario_creo, filtro_fecha_creacion = filtro_fecha_creacion }).AsList<Usuario>();
                 }
             }

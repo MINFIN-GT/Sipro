@@ -20,7 +20,7 @@ namespace Sipro.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    ret = db.Query<Permiso>("SELECT * FROM permiso WHERE estado=1").AsList<Permiso>();
+                    ret = db.Query<Permiso>("SELECT * FROM permiso WHERE estado=1 ORDER BY id").AsList<Permiso>();
                 }
             }
             catch (Exception e)
@@ -29,126 +29,146 @@ namespace Sipro.Dao
             }
             return ret;
         }
-     }
 
-    /*public static boolean guardarPermiso(Permiso permiso){
-        boolean ret = false;
-        Session session = CHibernateSession.getSessionFactory().openSession();
-        try{
-            session.beginTransaction();
-            session.saveOrUpdate(permiso);
-            session.getTransaction().commit();
-            ret = true;
-        }catch(Throwable e){
-            CLogger.write("1",PermisoDAO.class,e);
-        }finally{
-            session.close();
-        }
+        public static bool guardarPermiso(Permiso permiso)
+        {
+            bool ret = false;
 
-        return ret;
-    }
-    public static Permiso getPermiso(String nombrepermiso){
-        Session session = CHibernateSession.getSessionFactory().openSession();
-        Permiso ret = null;
-        try{
-            CriteriaBuilder builder = session.getCriteriaBuilder();
-            CriteriaQuery<Permiso> criteria = builder.createQuery(Permiso.class);
-            Root<Permiso> root = criteria.from(Permiso.class);
-            criteria.where( builder.and(builder.equal(root.get("nombre"), nombrepermiso)));
-            ret = session.createQuery( criteria ).getSingleResult();
-        }catch(Throwable e){
-            CLogger.write("1",PermisoDAO.class,e);
-        }finally{
-            session.close();
-        }
-         return ret;
-    }
-    public static boolean eliminarPermiso(Permiso permiso){
-        boolean ret = false;
-        Session session = CHibernateSession.getSessionFactory().openSession();
-        try{
-            permiso.setEstado(0);
-            session.beginTransaction();
-            session.saveOrUpdate(permiso);
-            session.getTransaction().commit();
-            ret = true;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    long existe = db.ExecuteScalar<long>("SELECT COUNT(*) FROM PERMISO WHERE id=:id", new { permiso.id });
 
-        }catch(Throwable e){
-            CLogger.write("4",PermisoDAO.class,e);
-        }finally{
-            session.close();
-        }
-        return ret;
-    }
+                    if (existe > 0)
+                    {
+                        db.Query<Usuario>("UPDATE PERMISO SET nombre=:nombre, descripcion=:descripcion, usuario_creo=:usuarioCreo, usuario_actualizo=:usuarioActualizo, fecha_creacion=:fechaCreacion, fecha_actualizacion=:fechaActualizacion, estado=:estado WHERE id=:id", permiso);
+                        ret = true;
+                    }
+                    else
+                    {
+                        db.Query<Usuario>("INSERT INTO PERMISO VALUES (:id, :nombre, :descripcion, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion, :estado)", permiso);
+                        ret = true;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("1", "PermisoDAO", e);
+            }
 
-    public static Permiso getPermisoById(Integer idpermiso){
-        Permiso ret = null;
-        Session session = CHibernateSession.getSessionFactory().openSession();
-        try{
-            ret = session.get(Permiso.class,idpermiso );
-        }catch(Throwable e){
-            CLogger.write("1",PermisoDAO.class,e);
-        }finally{
-            session.close();
-        }
-        return ret;
-    }
-
-    public static List<Permiso> getPermisosPagina(int pagina, int numeroPermisos, String filtro_id, String filtro_nombre, String filtro_usuario_creo,
-            String filtro_fecha_creacion){
-        List <Permiso> ret = new ArrayList <Permiso>();
-        Session session = CHibernateSession.getSessionFactory().openSession();
-        try{
-            String query ="FROM Permiso p  where estado= :estado ";
-            String query_a="";
-            if(filtro_id!=null && filtro_id.trim().length()>0)
-                query_a = String.join("",query_a, " p.id LIKE '%",filtro_id,"%' ");
-            if(filtro_nombre!=null && filtro_nombre.trim().length()>0)
-                query_a = String.join("",query_a, (query_a.length()>0 ? " OR " :""),  " p.nombre LIKE '%",filtro_nombre,"%' ");
-            if(filtro_usuario_creo!=null && filtro_usuario_creo.trim().length()>0)
-                query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " p.usuarioCreo LIKE '%", filtro_usuario_creo,"%' ");
-            if(filtro_fecha_creacion!=null && filtro_fecha_creacion.trim().length()>0)
-                query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " str(date_format(p.fechaCreacion,'%d/%m/%YYYY')) LIKE '%", filtro_fecha_creacion,"%' ");
-            query = String.join(" ", query, (query_a.length()>0 ? String.join("","AND ",query_a,"") : ""));
-            Query <Permiso> criteria = session.createQuery(query,Permiso.class);
-            criteria.setParameter("estado", 1);
-            criteria.setFirstResult(((pagina-1)*(numeroPermisos)));
-            criteria.setMaxResults(numeroPermisos);
-            ret = criteria.getResultList();
-        }catch(Throwable e){
-            CLogger.write("6", PermisoDAO.class, e);
-        }finally{
-            session.close();
-        }
-        return ret;
-    }
-    public static Long getTotalPermisos( String filtro_id, String filtro_nombre, String filtro_usuario_creo,
-            String filtro_fecha_creacion){
-        Long ret = 0L;
-        Session session = CHibernateSession.getSessionFactory().openSession();
-        try{
-            String query  = "SELECT count(p.id) FROM Permiso p WHERE p.estado=1";
-            String query_a="";
-            if(filtro_id!=null && filtro_id.trim().length()>0)
-                query_a = String.join("",query_a, " p.id LIKE '%",filtro_id,"%' ");
-            if(filtro_nombre!=null && filtro_nombre.trim().length()>0)
-                query_a = String.join("",query_a, " p.nombre LIKE '%",filtro_nombre,"%' ");
-            if(filtro_usuario_creo!=null && filtro_usuario_creo.trim().length()>0)
-                query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " p.usuarioCreo LIKE '%", filtro_usuario_creo,"%' ");
-            if(filtro_fecha_creacion!=null && filtro_fecha_creacion.trim().length()>0)
-                query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " str(date_format(p.fechaCreacion,'%d/%m/%YYYY')) LIKE '%", filtro_fecha_creacion,"%' ");
-            query = String.join(" ", query, (query_a.length()>0 ? String.join("","AND (",query_a,")") : ""));
-            Query<Long> conteo = session.createQuery(query,Long.class);
-            ret = conteo.getSingleResult();
-        }
-        catch(Throwable e){
-            CLogger.write("7", PermisoDAO.class, e);
-        }
-        finally{
-            session.close();
+            return ret;
         }
 
-        return ret;
+        public static Permiso getPermiso(String nombrepermiso)
+        {
+            Permiso ret = null;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    ret = db.QueryFirstOrDefault<Permiso>("SELECT * FROM PERMISO WHERE nombre=:nombre", new { nombre = nombrepermiso });
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("1", "PermisoDAO", e);
+            }
+            return ret;
+        }
+
+        public static bool eliminarPermiso(Permiso permiso)
+        {
+            bool ret = false;
+
+            try
+            {
+                permiso.estado = 0;
+                ret = guardarPermiso(permiso);
+            }
+            catch (Exception e)
+            {
+                CLogger.write("4", "PermisoDAO", e);
+            }
+            return ret;
+        }
+
+        public static Permiso getPermisoById(int idpermiso)
+        {
+            Permiso ret = null;
+
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    ret = db.QueryFirstOrDefault<Permiso>("SELECT * FROM PERMISO WHERE id=:id", new { id = idpermiso });
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("1", "PermisoDAO", e);
+            }
+            return ret;
+        }
+
+        public static List<Permiso> getPermisosPagina(int pagina, int numeroPermisos, String filtro_id, String filtro_nombre, String filtro_usuario_creo, String filtro_fecha_creacion)
+        {
+            List<Permiso> ret = new List<Permiso>();
+
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    String query = "SELECT * FROM (SELECT a.*, rownum r__ FROM (Select * FROM Permiso p  where estado= :estado ";
+                    String query_a = "";
+                    if (filtro_id != null && filtro_id.Trim().Length > 0)
+                        query_a = String.Join("", query_a, " p.id LIKE :filtro_id ");
+                    if (filtro_nombre != null && filtro_nombre.Trim().Length > 0)
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.nombre LIKE '%" + filtro_nombre + "%' ");
+                    if (filtro_usuario_creo != null && filtro_usuario_creo.Trim().Length > 0)
+                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " usuario_creo LIKE :filtro_usuario_creo ");
+                    if (filtro_fecha_creacion != null && filtro_fecha_creacion.Trim().Length > 0)
+                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE(:filtro_fecha_creacion,'DD/MM/YY') ");
+                    query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND ", query_a, "") : ""));
+                    query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + numeroPermisos + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + numeroPermisos + ") + 1)");
+                    ret = db.Query<Permiso>(query, new { estado = 1, filtro_id = filtro_id, filtro_usuario_creo = filtro_usuario_creo, filtro_fecha_creacion = filtro_fecha_creacion }).AsList<Permiso>();
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("6", "PermisoDAO", e);
+            }
+            return ret;
+        }
+
+        public static long getTotalPermisos(String filtro_id, String filtro_nombre, String filtro_usuario_creo, String filtro_fecha_creacion)
+        {
+            long ret = 0L;
+
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    String query = "SELECT count(p.id) FROM Permiso p WHERE p.estado=1";
+                    String query_a = "";
+                    if (filtro_id != null && filtro_id.Trim().Length > 0)
+                        query_a = String.Join("", query_a, " p.id LIKE :filtro_id ");
+                    if (filtro_nombre != null && filtro_nombre.Trim().Length > 0)
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.nombre LIKE '%" + filtro_nombre + "%' ");
+                    if (filtro_usuario_creo != null && filtro_usuario_creo.Trim().Length > 0)
+                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " usuario_creo LIKE :filtro_usuario_creo ");
+                    if (filtro_fecha_creacion != null && filtro_fecha_creacion.Trim().Length > 0)
+                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE(:filtro_fecha_creacion,'DD/MM/YY') ");
+                    query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND ", query_a, "") : ""));
+                    ret = db.ExecuteScalar<long>(query, new { filtro_id = filtro_id, filtro_usuario_creo = filtro_usuario_creo, filtro_fecha_creacion = filtro_fecha_creacion });
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("7", "PermisoDAO", e);
+            }
+
+            return ret;
+        }
     }
-    }*/
 }

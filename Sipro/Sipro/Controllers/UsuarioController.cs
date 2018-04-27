@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Sipro.Dao;
 using SiproModel.Models;
 
@@ -18,7 +19,7 @@ namespace Sipro.Controllers
         public IActionResult getUsuario([FromBody]dynamic data)
         {
             Usuario usuario = UsuarioDAO.getUsuario((string)data.usuario);
-            return Ok("getUsuario");
+            return Ok(JsonConvert.SerializeObject(usuario));
         }
 
         [HttpPost]
@@ -85,21 +86,21 @@ namespace Sipro.Controllers
         public IActionResult getPermisosActivosUsuario([FromBody]dynamic data)
         {
             List< UsuarioPermiso> permisosActivos = UsuarioDAO.getPermisosActivosUsuario((string)data.usuario);
-            return Ok("userLoginHistory");
+            return Ok(JsonConvert.SerializeObject(permisosActivos));
         }
 
         [HttpPost]
         public IActionResult getPermisosDisponibles([FromBody]dynamic data)
         {
             List<Permiso> permisosActivos = UsuarioDAO.getPermisosDisponibles((string)data.usuario);
-            return Ok("userLoginHistory");
+            return Ok(JsonConvert.SerializeObject(permisosActivos));
         }
 
         [HttpPost]
         public IActionResult getUsuarios([FromBody]dynamic data)
         {
             List<Usuario> usuarios = UsuarioDAO.getUsuarios((int)data.pagina, (int)data.numeroUsuarios, (string)data.usuario, (string)data.email, (string)data.filtroUsuarioCreo, (string)data.filtroFechaCreacion);
-            return Ok("userLoginHistory");
+            return Ok(JsonConvert.SerializeObject(usuarios));
         }
 
         [HttpPost]
@@ -128,7 +129,7 @@ namespace Sipro.Controllers
         {
             Usuario usuario = UsuarioDAO.getUsuario((string)data.usuario);
             Usuario usuarioP = UsuarioDAO.setNuevoPassword(usuario, (string)data.password);
-            return Ok("userLoginHistory");
+            return Ok(JsonConvert.SerializeObject(usuarioP));
         }
     }
 }

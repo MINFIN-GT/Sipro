@@ -16,17 +16,6 @@
           "lib/netstandard2.0/Dapper.dll": {}
         }
       },
-      "EntityFramework/6.2.0": {
-        "type": "package",
-        "compile": {
-          "lib/net45/EntityFramework.SqlServer.dll": {},
-          "lib/net45/EntityFramework.dll": {}
-        },
-        "runtime": {
-          "lib/net45/EntityFramework.SqlServer.dll": {},
-          "lib/net45/EntityFramework.dll": {}
-        }
-      },
       "Libuv/1.10.0": {
         "type": "package",
         "dependencies": {
@@ -4962,33 +4951,6 @@
         "lib/netstandard1.3/Dapper.xml",
         "lib/netstandard2.0/Dapper.dll",
         "lib/netstandard2.0/Dapper.xml"
-      ]
-    },
-    "EntityFramework/6.2.0": {
-      "sha512": "ptGyXOf26qLrtn+2doAmylIlCxOnBJANwlyyLrXDmqIk9O18IzLWHyxDwwAyhgXkxmbiaA0WNpRy67WRReInBw==",
-      "type": "package",
-      "path": "entityframework/6.2.0",
-      "files": [
-        "content/net40/App.config.transform",
-        "content/net40/Web.config.transform",
-        "entityframework.6.2.0.nupkg.sha512",
-        "entityframework.nuspec",
-        "lib/net40/EntityFramework.SqlServer.dll",
-        "lib/net40/EntityFramework.SqlServer.xml",
-        "lib/net40/EntityFramework.dll",
-        "lib/net40/EntityFramework.xml",
-        "lib/net45/EntityFramework.SqlServer.dll",
-        "lib/net45/EntityFramework.SqlServer.xml",
-        "lib/net45/EntityFramework.dll",
-        "lib/net45/EntityFramework.xml",
-        "tools/EntityFramework.PowerShell.Utility.dll",
-        "tools/EntityFramework.PowerShell.dll",
-        "tools/EntityFramework.psd1",
-        "tools/EntityFramework.psm1",
-        "tools/about_EntityFramework.help.txt",
-        "tools/init.ps1",
-        "tools/install.ps1",
-        "tools/migrate.exe"
       ]
     },
     "Libuv/1.10.0": {
@@ -13021,7 +12983,6 @@
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.0": [
       "Dapper >= 1.50.4",
-      "EntityFramework >= 6.2.0",
       "Microsoft.AspNetCore.All >= 2.0.6",
       "Microsoft.AspNetCore.Identity >= 2.0.2",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 2.0.2",
@@ -13036,35 +12997,37 @@
     ]
   },
   "packageFolders": {
-    "/Users/rafa/.nuget/packages/": {},
-    "/usr/local/share/dotnet/sdk/NuGetFallbackFolder": {}
+    "C:\\Users\\pedro\\.nuget\\packages\\": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/Sipro/Sipro.csproj",
+      "projectUniqueName": "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\Sipro\\Sipro.csproj",
       "projectName": "Sipro",
-      "projectPath": "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/Sipro/Sipro.csproj",
-      "packagesPath": "/Users/rafa/.nuget/packages/",
-      "outputPath": "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/Sipro/obj",
+      "projectPath": "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\Sipro\\Sipro.csproj",
+      "packagesPath": "C:\\Users\\pedro\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\Sipro\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "/Users/rafa/.config/NuGet/NuGet.Config"
+        "C:\\Users\\pedro\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "netcoreapp2.0": {
           "projectReferences": {
-            "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/SiproModel/SiproModel.csproj": {
-              "projectPath": "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/SiproModel/SiproModel.csproj"
+            "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\SiproModel\\SiproModel.csproj": {
+              "projectPath": "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\SiproModel\\SiproModel.csproj"
             }
           }
         }
@@ -13078,55 +13041,50 @@
     "frameworks": {
       "netcoreapp2.0": {
         "dependencies": {
-          "Microsoft.NETCore.App": {
-            "suppressParent": "All",
-            "target": "Package",
-            "version": "2.0",
-            "autoReferenced": true
-          },
           "Dapper": {
             "target": "Package",
-            "version": "1.50.4"
-          },
-          "EntityFramework": {
-            "target": "Package",
-            "version": "6.2.0"
+            "version": "[1.50.4, )"
           },
           "Microsoft.AspNetCore.All": {
             "target": "Package",
-            "version": "2.0.6"
+            "version": "[2.0.6, )"
           },
           "Microsoft.AspNetCore.Identity": {
             "target": "Package",
-            "version": "2.0.2"
+            "version": "[2.0.2, )"
           },
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
             "target": "Package",
-            "version": "2.0.2"
+            "version": "[2.0.2, )"
           },
           "Microsoft.AspNetCore.Session": {
             "target": "Package",
-            "version": "2.0.2"
+            "version": "[2.0.2, )"
           },
           "Microsoft.EntityFrameworkCore": {
             "target": "Package",
-            "version": "2.0.2"
+            "version": "[2.0.2, )"
           },
-          "log4net": {
+          "Microsoft.NETCore.App": {
             "target": "Package",
-            "version": "2.0.8"
+            "version": "[2.0.0, )",
+            "autoReferenced": true
           },
           "Newtonsoft.Json": {
             "target": "Package",
-            "version": "11.0.2"
+            "version": "[11.0.2, )"
           },
           "Oracle.ManagedDataAccess.Core": {
             "target": "Package",
-            "version": "2.12.0-beta2"
+            "version": "[2.12.0-beta2, )"
           },
           "System.Configuration.ConfigurationManager": {
             "target": "Package",
-            "version": "4.4.1"
+            "version": "[4.4.1, )"
+          },
+          "log4net": {
+            "target": "Package",
+            "version": "[2.0.8, )"
           }
         },
         "imports": [
@@ -13136,17 +13094,5 @@
         "warn": true
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1701",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'EntityFramework 6.2.0' was restored using '.NETFramework,Version=v4.6.1' instead of the project target framework '.NETCoreApp,Version=v2.0'. This package may not be fully compatible with your project.",
-      "libraryId": "EntityFramework",
-      "targetGraphs": [
-        ".NETCoreApp,Version=v2.0"
-      ]
-    }
-  ]
+  }
 }
