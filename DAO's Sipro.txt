@@ -56,7 +56,7 @@ PlanAdquisicionPagoDAO.java
 PlanEjecucionDAO.java
 PrestamoDAO.java
 PrestamoMetasDAO.java
-PrestamoTipoDAO.java
+/ PrestamoTipoDAO.java
 ProdTipoPropiedadDAO.java
 ProductoDAO.java
 ProductoPropiedadDAO.java
