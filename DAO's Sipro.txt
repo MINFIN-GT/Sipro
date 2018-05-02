@@ -1,4 +1,4 @@
-/////////Nota: Los Dao's que tiene un "*" al inicio son los que ya se hicieron. Los Dao's que tienen "/" son los que están en proceso/////////
+﻿/////////Nota: Los Dao's que tiene un "*" al inicio son los que ya se hicieron. Los Dao's que tienen "/" son los que están en proceso/////////
 
 
 ActividadDAO.java
@@ -86,7 +86,7 @@ RiesgoDAO.java
 RiesgoPropiedadDAO.java
 RiesgoPropiedadValorDAO.java
 RiesgoTipoDAO.java
-RolDAO.java
+/ RolDAO.java
 RolUnidadEjecutoraDAO.java
 RtipoPropiedadDAO.java
 SctipoPropiedadDAO.java
