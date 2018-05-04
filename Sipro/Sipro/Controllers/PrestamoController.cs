@@ -144,7 +144,7 @@ namespace Sipro.Controllers
 
         // POST api/values
         [HttpPost]
-        public IActionResult getObjetoPrestamoPorId([FromBody]dynamic value)
+        public IActionResult getPrestamoById([FromBody]dynamic value)
         {
             Prestamo prestamo = PrestamoDAO.getPrestamoById((int)value.idPrestamo);
             return Ok(JsonConvert.SerializeObject(prestamo));
@@ -164,6 +164,33 @@ namespace Sipro.Controllers
         {
             Prestamo lstprestamos = PrestamoDAO.getPrestamoByIdHistory((int)value.idPrestamo, (string)value.lineaBase);
             return Ok(JsonConvert.SerializeObject(lstprestamos));
+        }
+
+        // POST api/values
+        [HttpPost]
+        public IActionResult actualizarMatriz([FromBody]dynamic value)
+        {
+            List<UnidadEjecutora> unidadesEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutoras((int)value.ejercicio, (int)value.entidad);
+            List<stunidadejecutora> lstunidadesEjecutoras = new List<stunidadejecutora>();
+            foreach (UnidadEjecutora unidad in unidadesEjecutoras)
+            {
+                stunidadejecutora stunidad = new stunidadejecutora();
+                stunidad.nombre = unidad.nombre;
+                stunidad.id = unidad.unidadEjecutora;
+                stunidad.entidad = unidad.entidadentidad.ToString();
+                stunidad.ejercicio = unidad.ejercicio;
+                lstunidadesEjecutoras.Add(stunidad);
+            }
+            bool actualizado = PrestamoDAO.actualizarMatriz((int)value.idPrestamo, lstunidadesEjecutoras);
+            return Ok(JsonConvert.SerializeObject(actualizado));
+        }
+
+        // POST api/values
+        [HttpPost]
+        public IActionResult getVersionHistoriaMatriz([FromBody]dynamic value)
+        {
+            int version = PrestamoDAO.getVersionHistoriaMatriz((int)value.idPrestamo);
+            return Ok(JsonConvert.SerializeObject(version));
         }
     }
 }

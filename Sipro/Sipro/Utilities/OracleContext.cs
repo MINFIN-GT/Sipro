@@ -10,14 +10,17 @@ namespace Sipro.Utilities
     {
         public IDbConnection connection { get; set; }
         private string connectionString;
+        private string connectionStringHistory;
 
         public OracleContext()
         {
             connectionString = ConfigurationManager.ConnectionStrings["oracle"].ConnectionString;
+            connectionStringHistory = ConfigurationManager.ConnectionStrings["oracle_history"].ConnectionString;
         }
 
 
-        public DbConnection getConnection(){
+        public DbConnection getConnection()
+        {
             DbConnection db = null;
             try
             {
@@ -30,5 +33,18 @@ namespace Sipro.Utilities
             return db;
         }
 
+        public DbConnection getConnectionHistory()
+        {
+            DbConnection db = null;
+            try
+            {
+                db = new OracleConnection(connectionStringHistory);
+            }
+            catch (Exception e)
+            {
+                CLogger.write("2", "OracleContext.class", e);
+            }
+            return db;
+        }
     }
 }

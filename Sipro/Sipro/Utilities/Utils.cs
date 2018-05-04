@@ -9,16 +9,17 @@ namespace Sipro.Utilities
 
         }
 
-        public static byte[] getFechaHora(DateTime fechaHora)
+        public static DateTime? getFechaHoraNull(string fechaHora)
         {
-            long getLong = fechaHora.ToBinary();
-            return BitConverter.GetBytes(getLong);
+            if (fechaHora != null)
+                return DateTime.ParseExact(fechaHora, "dd/MM/yyyy", null);
+            return null;
         }
 
-        public static DateTime getFechaHora(byte[] fechaHora)
+        public static DateTime getFechaHora(string fechaHora)
         {
-            long getLong = BitConverter.ToInt64(fechaHora, 0);
-            return DateTime.FromBinary(getLong);
+            DateTime getDateTime = DateTime.ParseExact(fechaHora, "dd/MM/yyyy", null);
+            return getDateTime;
         }
     }
 }

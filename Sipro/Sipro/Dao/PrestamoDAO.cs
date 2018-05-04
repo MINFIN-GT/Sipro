@@ -68,7 +68,7 @@ namespace Sipro.Dao
             }
             catch (Exception e)
             {
-                CLogger.write("2", "PrestamoDAO", e);
+                CLogger.write("1", "PrestamoDAO", e);
             }
             return ret;
         }
@@ -82,7 +82,11 @@ namespace Sipro.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    String query = "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT * FROM Prestamo p where p.estado=1 ";
+                    String query = "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT p.*, ue.unidad_ejecutora, e.entidad as entidadentidad " +
+                        "FROM PRESTAMO p " +
+                        "INNER JOIN UNIDAD_EJECUTORA ue ON ue.unidad_ejecutora=p.ueunidad_ejecutora " +
+                        "INNER JOIN ENTIDAD e ON e.entidad=ue.entidadentidad AND e.entidad=p.entidad " +
+                        "WHERE p.estado=1 ";
                     String query_a = "";
                     if (filtro_nombre != null && filtro_nombre.Trim().Length > 0)
                         query_a = String.Join("", query_a, " p.proyectoPrograma LIKE '%", filtro_nombre, "%' ");
@@ -91,23 +95,32 @@ namespace Sipro.Dao
                     if (filtro_numero_prestamo != null && filtro_numero_prestamo.Trim().Length > 0)
                         query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.numero_prestamo LIKE '%", filtro_numero_prestamo, "%' ");
                     if (filtro_usuario_creo != null && filtro_usuario_creo.Trim().Length > 0)
-                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " usuario_creo LIKE :filtro_usuario_creo ");
+                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " p.usuario_creo LIKE :filtro_usuario_creo ");
                     if (filtro_fecha_creacion != null && filtro_fecha_creacion.Trim().Length > 0)
-                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE(:filtro_fecha_creacion,'DD/MM/YY') ");
+                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(p.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE(:filtro_fecha_creacion,'DD/MM/YY') ");
                     query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND (", query_a, ")") : ""));
                     if (usuario != null)
-                        query = String.Join("", query, " AND p.id in (SELECT prestamoid from Prestamo_Usuario u where u.usuario=:usuario )");
+                        query = String.Join("", query, " AND p.id in (SELECT u.prestamoid from Prestamo_Usuario u where u.usuario=:usuario )");
 
                     query = columna_ordenada != null && columna_ordenada.Trim().Length > 0 ? String.Join(" ", query, "ORDER BY", columna_ordenada, orden_direccion) :
-                        String.Join(" ", query, "ORDER BY fecha_creacion ASC");
+                        String.Join(" ", query, "ORDER BY p.fecha_creacion ASC");
                     query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + elementosPorPagina + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + elementosPorPagina + ") + 1)");
 
-                    ret = db.Query<Prestamo>(query, new { filtro_codigo_presupuestario = filtro_codigo_presupuestario, filtro_usuario_creo = filtro_usuario_creo, filtro_fecha_creacion = filtro_fecha_creacion, usuario = usuario }).AsList<Prestamo>();
+                    ret = db.Query<Prestamo, UnidadEjecutora, Entidad, Prestamo>(query, 
+                        (p, ue, e) => 
+                        {
+                            p.unidadEjecutoras = ue;
+                            ue.entidads = e;
+                            return p;
+                        }
+                        , new { filtro_codigo_presupuestario = filtro_codigo_presupuestario,
+                        filtro_usuario_creo = filtro_usuario_creo, filtro_fecha_creacion = filtro_fecha_creacion, usuario = usuario }, 
+                        splitOn : "unidad_ejecutora, entidadentidad").AsList<Prestamo>();
                 }
             }
             catch (Exception e)
             {
-                CLogger.write("3", "PrestamoDAO", e);
+                CLogger.write("2", "PrestamoDAO", e);
             }
 
             return ret;
@@ -143,7 +156,7 @@ namespace Sipro.Dao
             }
             catch (Exception e)
             {
-                CLogger.write("5", "ProyectoDAO", e);
+                CLogger.write("3", "ProyectoDAO", e);
             }
             return ret;
         }
@@ -162,7 +175,7 @@ namespace Sipro.Dao
             }
             catch (Exception e)
             {
-                CLogger.write("6", "PrestamoDAO", e);
+                CLogger.write("4", "PrestamoDAO", e);
             }
 
             return ret;
@@ -176,12 +189,23 @@ namespace Sipro.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    ret = db.QueryFirstOrDefault<Prestamo>("SELECT * FROM PRESTAMO WHERE id=:id", new { id = idPrestamo });
+                    ret = db.Query<Prestamo, UnidadEjecutora, Entidad, Prestamo>("SELECT p.*, ue.unidad_ejecutora, e.entidad as entidadentidad " +
+                        "FROM PRESTAMO p " +
+                        "INNER JOIN UNIDAD_EJECUTORA ue ON ue.unidad_ejecutora=p.ueunidad_ejecutora " +
+                        "INNER JOIN ENTIDAD e ON e.entidad=ue.entidadentidad AND e.entidad=p.entidad " + 
+                        "WHERE id=:id", 
+                        (p, ue, e) => 
+                        {
+                            p.unidadEjecutoras = ue;
+                            ue.entidads = e;
+                            return p;
+                        },
+                        new { id = idPrestamo }, splitOn : "unidad_ejecutora,entidadentidad").ElementAtOrDefault<Prestamo>(0);
                 }
             }
             catch (Exception e)
             {
-                CLogger.write("7", "PrestamoDAO", e);
+                CLogger.write("5", "PrestamoDAO", e);
             }
 
             return ret;
@@ -195,16 +219,27 @@ namespace Sipro.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    String query = "SELECT * FROM PRESTAMO WHERE estado=1 ";
+                    String query = "SELECT p.*, ue.unidad_ejecutora, e.entidad as entidadentidad " +
+                        "FROM PRESTAMO p " +
+                        "INNER JOIN UNIDAD_EJECUTORA ue ON ue.unidad_ejecutora=p.ueunidad_ejecutora " +
+                        "INNER JOIN ENTIDAD e ON e.entidad=ue.entidadentidad AND e.entidad=p.entidad " + 
+                        "WHERE p.estado=1 ";
                     if (usuario != null)
-                        query += "and id in (SELECT u.prestamoid FROM Prestamo_Usuario u where u.usuario=:usuario ) ";
+                        query += "and p.id in (SELECT u.prestamoid FROM Prestamo_Usuario u where u.usuario=:usuario ) ";
 
-                    ret = db.Query<Prestamo>(query, new { usuario = usuario }).AsList<Prestamo>();
+                    ret = db.Query<Prestamo, UnidadEjecutora, Entidad, Prestamo>(query,
+                        (p, ue, e) => 
+                        {
+                            p.unidadEjecutoras = ue;
+                            ue.entidads = e;
+                            return p;
+                        },
+                        new { usuario = usuario }, splitOn: "unidad_ejecutora,entidadentidad").AsList<Prestamo>();
                 }
             }
             catch (Exception e)
             {
-                CLogger.write("8", "PrestamoDAO", e);
+                CLogger.write("6", "PrestamoDAO", e);
             }
 
             return ret;
@@ -245,12 +280,12 @@ namespace Sipro.Dao
                 {
                     int version = getVersionHistoriaMatriz(prestamoId);
                     version++;
-                    using (DbConnection db = new OracleContext().getConnection())
+                    using (DbConnection db = new OracleContext().getConnectionHistory())
                     {
                         for (int u = 0; u < unidadesEjecutoras.Count; u++)
                         {
                             stunidadejecutora unidadEjecutora = unidadesEjecutoras[u];
-                            String query = "INSERT INTO sipro_history.componente_matriz "
+                            String query = "INSERT INTO componente_matriz "
                                     + "(unidad_ejecutoraid, componente_sigadeid, prestamoid, entidadid, ejercicio, "
                                     + " fuente_prestamo, fuente_donacion, fuente_nacional, techo, version, fecha_actualizacion) "
                                     + " VALUES "
@@ -264,7 +299,7 @@ namespace Sipro.Dao
                                     + ", " + (unidadEjecutora.nacional != 0 ? (unidadEjecutora.nacional).ToString() : "0")
                                     + ", " + (unidadEjecutora.techo != 0 ? unidadEjecutora.techo.ToString() : "0")
                                     + ", " + version
-                                    + ", '" + DateTime.Now + "') ";
+                                    + ", '" + DateTime.Now.ToString("dd/MM/yyyy") + "') ";
 
                             db.Query(query);
                         }
@@ -274,7 +309,7 @@ namespace Sipro.Dao
             }
             catch (Exception e)
             {
-                CLogger.write("3", "PrestamoDAO", e);
+                CLogger.write("8", "PrestamoDAO", e);
             }
             return actualizada;
         }
@@ -283,17 +318,17 @@ namespace Sipro.Dao
             int version = 0;
 
             try {
-                using (DbConnection db = new OracleContext().getConnection())
+                using (DbConnection db = new OracleContext().getConnectionHistory())
                 {
                     String query = "SELECT NVL(MAX(version),0) version "
-                    + " FROM sipro_history.componente_matriz "
+                    + " FROM componente_matriz "
                     + " WHERE prestamoid = " + prestamoId;
 
                     version = db.ExecuteScalar<int>(query);
                 }
             }
             catch (Exception e) {
-                CLogger.write("4", "PrestamoDAO", e);
+                CLogger.write("9", "PrestamoDAO", e);
             }
 
             return version;
@@ -302,24 +337,31 @@ namespace Sipro.Dao
         public static String getVersionesMatriz(int id)//Se debe crear otro schema de sipro_history
         {
             String resultado = "";
-            using (DbConnection db = new OracleContext().getConnection())
+            try
             {
-                String query = "SELECT DISTINCT(version) FROM sipro_history.componente_matriz WHERE prestamoid=:id ";
-
-                List<string> versiones = db.Query<string>(query, new { id = id }).AsList<string>();
-
-                if (versiones != null)
+                using (DbConnection db = new OracleContext().getConnectionHistory())
                 {
-                    for (int i = 0; i < versiones.Count; i++)
+                    String query = "SELECT DISTINCT(version) FROM componente_matriz WHERE prestamoid=:id ";
+
+                    List<string> versiones = db.Query<string>(query, new { id = id }).AsList<string>();
+
+                    if (versiones != null)
                     {
-                        if (!resultado.Equals(""))
+                        for (int i = 0; i < versiones.Count; i++)
                         {
-                            resultado += ",";
+                            if (!resultado.Equals(""))
+                            {
+                                resultado += ",";
+                            }
+                            resultado += versiones[i];
                         }
-                        resultado += versiones[i];
                     }
                 }
             }
+            catch (Exception e)
+            {
+                CLogger.write("10", "PrestamoDAO", e);
+            }            
 
             return resultado;
         }
