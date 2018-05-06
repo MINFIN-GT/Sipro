@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sipro.Utilities;
+using Sipro.Utilities.Identity;
 using SiproModel.Models;
 
 namespace Sipro
@@ -43,6 +46,14 @@ namespace Sipro
                //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                options.IdleTimeout = TimeSpan.FromMinutes(10);
             });
+
+            services.AddIdentity<Usuario, Rol>()
+                .AddRoleStore<RoleStore>()
+                .AddUserStore<UserPasswordStore>()
+                .AddDefaultTokenProviders()
+                .AddUserManager<CustomUserManager>();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,6 +78,7 @@ namespace Sipro
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
+            app.UseAuthentication();
             
         }
     }

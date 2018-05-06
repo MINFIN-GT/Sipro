@@ -17,7 +17,7 @@ namespace Sipro.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    ret = db.QueryFirstOrDefault<Usuario>("Select * FROM USUARIO WHERE usuario =:usuario", new Usuario { usuario = usuario });
+                    ret = db.QueryFirstOrDefault<Usuario>("Select * FROM USUARIO WHERE LOWER(usuario) =:usuario", new Usuario { usuario = usuario });
                 }
             } catch (Exception e) {
                 CLogger.write("1", "UsuarioDAO", e);

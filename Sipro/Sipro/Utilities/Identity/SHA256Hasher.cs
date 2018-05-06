@@ -13,14 +13,15 @@ namespace Sipro.Utilities.Identity
                 number.GetBytes(bytes);
                 string salt = BitConverter.ToString(bytes).Replace("-", "").ToLower();
                 var hasher = SHA256.Create();
-                string hashed = BitConverter.ToString(hasher.ComputeHash(Encoding.UTF8.GetBytes(salt+data)));
+                string hashed = Encoding.UTF8.GetString((hasher.ComputeHash(Encoding.UTF8.GetBytes(data+salt))));
                 return new string[] { hashed,salt};
         }
 
         public static string ComputeHash(string data, string salt)
         {
             var hasher = SHA256.Create();
-            return BitConverter.ToString(hasher.ComputeHash(Encoding.UTF8.GetBytes(salt + data)));
+            var hashed = hasher.ComputeHash(Encoding.UTF8.GetBytes(data + salt));
+            return Convert.ToBase64String(hashed);
         }
     }
 }
