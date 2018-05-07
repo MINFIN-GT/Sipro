@@ -3,14 +3,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using SiproModel.Models;
+using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 
 namespace Sipro.Utilities.Identity
 {
     public class RoleStore : IRoleStore<Rol>
     {
-        public Task<IdentityResult> CreateAsync(Rol role, CancellationToken cancellationToken)
+        public async Task<IdentityResult> CreateAsync(Rol role, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            return IdentityResult.Success;
         }
 
         public Task<IdentityResult> DeleteAsync(Rol role, CancellationToken cancellationToken)
@@ -27,9 +29,12 @@ namespace Sipro.Utilities.Identity
             throw new NotImplementedException();
         }
 
-        public Task<Rol> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
+        public async Task<Rol> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            if(normalizedRoleName.ToLower().Equals("general")){
+                return new Rol() { nombre = "General", descripcion = "General" };
+            }
+            return null;
         }
 
         public Task<string> GetNormalizedRoleNameAsync(Rol role, CancellationToken cancellationToken)
@@ -37,24 +42,24 @@ namespace Sipro.Utilities.Identity
             throw new NotImplementedException();
         }
 
-        public Task<string> GetRoleIdAsync(Rol role, CancellationToken cancellationToken)
+        public async Task<string> GetRoleIdAsync(Rol role, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return role.id.ToString();
         }
 
-        public Task<string> GetRoleNameAsync(Rol role, CancellationToken cancellationToken)
+        public async Task<string> GetRoleNameAsync(Rol role, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return role.nombre;
         }
 
-        public Task SetNormalizedRoleNameAsync(Rol role, string normalizedName, CancellationToken cancellationToken)
+        public async Task SetNormalizedRoleNameAsync(Rol role, string normalizedName, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            
         }
 
-        public Task SetRoleNameAsync(Rol role, string roleName, CancellationToken cancellationToken)
+        public async Task SetRoleNameAsync(Rol role, string roleName, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            role.nombre = roleName;
         }
 
         public Task<IdentityResult> UpdateAsync(Rol role, CancellationToken cancellationToken)

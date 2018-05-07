@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -48,16 +49,16 @@ namespace Sipro.Utilities.Identity
         public async Task<Usuario> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-
-            return UsuarioDAO.getUsuario(userId);
+            Usuario usuario = UsuarioDAO.getUsuario(userId);
+            return usuario;
         }
 
         public async Task<Usuario> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var user = UsuarioDAO.getUsuario(normalizedUserName.ToLower());
-            return user;
+            Usuario usuario = UsuarioDAO.getUsuario(normalizedUserName.ToLower());
+            return usuario;
         }
 
         public Task<string> GetNormalizedUserNameAsync(Usuario user, CancellationToken cancellationToken)

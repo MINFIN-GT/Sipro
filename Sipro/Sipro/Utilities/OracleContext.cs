@@ -8,14 +8,13 @@ namespace Sipro.Utilities
 {
     public class OracleContext
     {
-        public IDbConnection connection { get; set; }
         private string connectionString;
         private string connectionStringHistory;
 
         public OracleContext()
         {
             connectionString = ConfigurationManager.ConnectionStrings["oracle"].ConnectionString;
-            connectionStringHistory = ConfigurationManager.ConnectionStrings["oracle_history"].ConnectionString;
+            connectionStringHistory = ConfigurationManager.ConnectionStrings["oracle"].ConnectionString;
         }
 
 

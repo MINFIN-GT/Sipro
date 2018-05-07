@@ -27,9 +27,15 @@
 
   <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="Pages\" />
+    <Folder Include="Views\SignIn\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SiproModel\SiproModel.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Utilities\Identity\CustomRoleManager.cs" />
+    <Compile Remove="Utilities\Identity\RolePermissionStore.cs" />
   </ItemGroup>
 </Project>

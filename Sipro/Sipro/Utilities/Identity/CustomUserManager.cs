@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Sipro.Dao;
 using SiproModel.Models;
 
 namespace Sipro.Utilities.Identity
@@ -28,5 +32,6 @@ namespace Sipro.Utilities.Identity
             string hash = SHA256Hasher.ComputeHash(password,user.salt);
             return Task.FromResult<bool>(hash.Equals(user.password));
         }
+
     }
 }

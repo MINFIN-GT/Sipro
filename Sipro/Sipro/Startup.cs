@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Sipro.Utilities;
 using Sipro.Utilities.Identity;
 using SiproModel.Models;
+using System.Net;
 
 namespace Sipro
 {
@@ -40,12 +41,7 @@ namespace Sipro
             services.AddMvc();
             services.AddDistributedMemoryCache();
 
-            services.AddSession(options =>
-            {
-               options.Cookie.HttpOnly = true;
-               //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-               options.IdleTimeout = TimeSpan.FromMinutes(10);
-            });
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 
             services.AddIdentity<Usuario, Rol>()
                 .AddRoleStore<RoleStore>()
@@ -53,6 +49,41 @@ namespace Sipro
                 .AddDefaultTokenProviders()
                 .AddUserManager<CustomUserManager>();
 
+            services.AddSession(options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.IdleTimeout = TimeSpan.FromMinutes(10);
+            });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/SignIn";
+                options.LogoutPath = "/Login/Out";
+                options.AccessDeniedPath = "/AccesoDenegado";
+                options.SlidingExpiration = true;
+                options.Cookie = new CookieBuilder
+                {
+                    HttpOnly = true,
+                    Name = "Sipro.Cookie",
+                    Path = "/",
+                    SameSite = SameSiteMode.Lax,
+                    SecurePolicy = CookieSecurePolicy.SameAsRequest
+                };
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    //if (context.Request.Path.StartsWithSegments("/api") &&
+                    //    context.Response.StatusCode == (int)HttpStatusCode.OK)
+                    //{
+                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    //}
+                    //else
+                    //{
+                    //    context.Response.Redirect(ctx.RedirectUri);
+                    //}
+                    return Task.CompletedTask;
+                };
+            });
 
         }
 
@@ -79,7 +110,7 @@ namespace Sipro
             });
 
             app.UseAuthentication();
-            
+
         }
     }
 }

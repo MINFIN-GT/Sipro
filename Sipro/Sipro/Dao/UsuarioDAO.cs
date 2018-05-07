@@ -442,15 +442,16 @@ namespace Sipro.Dao
             return ret;
         }
 
-        public static List<UsuarioPermiso> getPermisosActivosUsuario(String usuario)
+        public static List<Permiso> getPermisosActivosUsuario(String usuario)
         {
-            List<UsuarioPermiso> ret = new List<UsuarioPermiso>();
+            List<Permiso> ret = new List<Permiso>();
 
             try
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    ret = db.Query<UsuarioPermiso>("SELECT * FROM USUARIO_PERMISO WHERE usuariousuario=:usuario", new { usuario = usuario }).AsList<UsuarioPermiso>();
+                    ret = db.Query<Permiso>(@"SELECT P.* FROM PERMISO P,USUARIO_PERMISO UP 
+                        WHERE UP.usuariousuario=:usuario AND UP.PERMISOID = P.ID AND P.ESTADO = 1 AND UP.ESTADO = 1", new { usuario = usuario }).AsList<Permiso>();
                 }
             }
             catch (Exception e)

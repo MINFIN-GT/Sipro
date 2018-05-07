@@ -85,7 +85,7 @@ namespace Sipro.Controllers
         [HttpPost]
         public IActionResult getPermisosActivosUsuario([FromBody]dynamic data)
         {
-            List< UsuarioPermiso> permisosActivos = UsuarioDAO.getPermisosActivosUsuario((string)data.usuario);
+            List< Permiso> permisosActivos = UsuarioDAO.getPermisosActivosUsuario((string)data.usuario);
             return Ok(JsonConvert.SerializeObject(permisosActivos));
         }
 
