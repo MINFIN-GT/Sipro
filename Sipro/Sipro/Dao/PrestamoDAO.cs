@@ -24,7 +24,7 @@ namespace Sipro.Dao
 
                     if (existe > 0)
                     {
-                        db.Query<Prestamo>("UPDATE PRESTAMO SET fecha_corte=:fechaCorte, codigo_presupuestario=:codigoPresupuestario, numero_prestamo=:numeroPrestamo, destino=:destino, " +
+                        int result = db.Execute("UPDATE PRESTAMO SET fecha_corte=:fechaCorte, codigo_presupuestario=:codigoPresupuestario, numero_prestamo=:numeroPrestamo, destino=:destino, " +
                             "sector_economico=:sectorEconomico, ueunidad_ejecutora=:ueunidadEjecutora, fecha_firma=:fechaFirma, autorizacion_tipoid=:autorizacionTipoid, numero_autorizacion=:numeroAutorizacion, " +
                             "fecha_autorizacion=:fechaAutorizacion, anios_plazo=:aniosPlazo, anios_gracia=:aniosGracia, fecha_fin_ejecucion=:fechaFinEjecucion, perido_ejecucion=:peridoEjecucion, " +
                             "interes_tipoid=:interesTipoid, porcentaje_interes=:porcentajeInteres, porcentaje_comision_compra=:porcentajeComisionCompra, tipo_monedaid=:tipoMonedaid, " +
@@ -42,13 +42,13 @@ namespace Sipro.Dao
                             "monto_por_desembolsar_usd=:montoPorDesembolsarUsd, monto_asignado_ue_usd=:montoAsignadoUeUsd, monto_asignado_ue_qtz=:montoAsignadoUeQtz, desembolso_a_fecha_ue_usd=:desembolsoAFechaUeUsd, " +
                             "monto_por_desembolsar_ue_usd=:montoPorDesembolsarUeUsd, entidad=:entidad, ejercicio=:ejercicio, objetivo=objetivo, objetivo_Especifico=:objetivoEspecifico, " +
                             "porcentaje_Avance=:porcentajeAvance, cooperantecodigo=:cooperantecodigo, cooperanteejercicio=:cooperanteejercicio WHERE id=:id", prestamo);
-                        ret = true;
+                        ret = result > 0 ? true : false;
                     }
                     else
                     {
                         int sequenceId = db.ExecuteScalar<int>("SELECT seq_prestamo.nextval FROM DUAL");
                         prestamo.id = sequenceId;
-                        db.Query<Prestamo>("INSERT INTO PRESTAMO VALUES (:id, :fechaCorte, :codigoPresupuestario, :numeroPrestamo, :destino, :sectorEconomico, :ueunidadEjecutora, " +
+                        int result = db.Execute("INSERT INTO PRESTAMO VALUES (:id, :fechaCorte, :codigoPresupuestario, :numeroPrestamo, :destino, :sectorEconomico, :ueunidadEjecutora, " +
                             ":fechaFirma, :autorizacionTipoid, :numeroAutorizacion, :fechaAutorizacion, :aniosPlazo, :aniosGracia, :fechaFinEjecucion, :peridoEjecucion, :interesTipoid, " +
                             ":porcentajeInteres, :porcentajeComisionCompra, :tipoMonedaid, :montoContratado, :amortizado, :porAmortizar, :principalAnio, :interesesAnio, :comisionCompromisoAnio, " +
                             ":otrosGastos, :principalAcumulado, :interesesAcumulados, :comisionCompromisoAcumulado, :otrosCargosAcumulados, :presupuestoAsignadoFunc, :presupuestoAsignadoInv, " +
@@ -62,7 +62,7 @@ namespace Sipro.Dao
                         db.Query<PrestamoUsuario>("INSERT INTO PRESTAMO_USUARIO VALUES (:prestamoid, :usuario, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion)",
                             new { prestamoid = prestamo.id, usuario = prestamo.usuarioCreo, usuarioCreo = prestamo.usuarioCreo, fechaCreacion = DateTime.Now, usuarioActualizo = (string)null, fechaActualizacion = (DateTime?)null });
 
-                        ret = true;
+                        ret = result > 0 ? true : false;
                     }
                 }
             }
@@ -82,10 +82,12 @@ namespace Sipro.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    String query = "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT p.*, ue.unidad_ejecutora, e.entidad as entidadentidad " +
+                    String query = "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT p.*, ue.unidad_ejecutora, e.entidad as entidadentidad, c.codigo, tm.id as tipoMonedaId " +
                         "FROM PRESTAMO p " +
                         "INNER JOIN UNIDAD_EJECUTORA ue ON ue.unidad_ejecutora=p.ueunidad_ejecutora " +
                         "INNER JOIN ENTIDAD e ON e.entidad=ue.entidadentidad AND e.entidad=p.entidad " +
+                        "INNER JOIN COOPERANTE c ON c.codigo=p.cooperantecodigo AND c.ejercicio=p.cooperanteejercicio " +
+                        "INNER JOIN TIPO_MONEDA tm ON tm.id=p.tipo_monedaid " +
                         "WHERE p.estado=1 ";
                     String query_a = "";
                     if (filtro_nombre != null && filtro_nombre.Trim().Length > 0)
@@ -106,16 +108,18 @@ namespace Sipro.Dao
                         String.Join(" ", query, "ORDER BY p.fecha_creacion ASC");
                     query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + elementosPorPagina + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + elementosPorPagina + ") + 1)");
 
-                    ret = db.Query<Prestamo, UnidadEjecutora, Entidad, Prestamo>(query, 
-                        (p, ue, e) => 
+                    ret = db.Query<Prestamo, UnidadEjecutora, Entidad, Cooperante, TipoMoneda, Prestamo>(query, 
+                        (p, ue, e, c, tm) => 
                         {
                             p.unidadEjecutoras = ue;
                             ue.entidads = e;
+                            p.cooperantes = c;
+                            p.tipoMonedas = tm;
                             return p;
                         }
                         , new { filtro_codigo_presupuestario = filtro_codigo_presupuestario,
                         filtro_usuario_creo = filtro_usuario_creo, filtro_fecha_creacion = filtro_fecha_creacion, usuario = usuario }, 
-                        splitOn : "unidad_ejecutora, entidadentidad").AsList<Prestamo>();
+                        splitOn : "unidad_ejecutora, entidadentidad, codigo, tipoMonedaId").AsList<Prestamo>();
                 }
             }
             catch (Exception e)
@@ -189,18 +193,22 @@ namespace Sipro.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    ret = db.Query<Prestamo, UnidadEjecutora, Entidad, Prestamo>("SELECT p.*, ue.unidad_ejecutora, e.entidad as entidadentidad " +
+                    ret = db.Query<Prestamo, UnidadEjecutora, Entidad, Cooperante, TipoMoneda, Prestamo>("SELECT p.*, ue.unidad_ejecutora, e.entidad as entidadentidad, c.codigo, tm.id as tipoMonedaId " +
                         "FROM PRESTAMO p " +
                         "INNER JOIN UNIDAD_EJECUTORA ue ON ue.unidad_ejecutora=p.ueunidad_ejecutora " +
-                        "INNER JOIN ENTIDAD e ON e.entidad=ue.entidadentidad AND e.entidad=p.entidad " + 
-                        "WHERE id=:id", 
-                        (p, ue, e) => 
+                        "INNER JOIN ENTIDAD e ON e.entidad=ue.entidadentidad AND e.entidad=p.entidad " +
+                        "INNER JOIN COOPERANTE c ON c.codigo=p.cooperantecodigo AND c.ejercicio=p.cooperanteejercicio " +
+                        "INNER JOIN TIPO_MONEDA tm ON tm.id=p.tipo_monedaid " +
+                        "WHERE p.id=:id", 
+                        (p, ue, e, c, tm) =>
                         {
                             p.unidadEjecutoras = ue;
+                            p.cooperantes = c;
                             ue.entidads = e;
+                            p.tipoMonedas = tm;
                             return p;
                         },
-                        new { id = idPrestamo }, splitOn : "unidad_ejecutora,entidadentidad").ElementAtOrDefault<Prestamo>(0);
+                        new { id = idPrestamo }, splitOn : "unidad_ejecutora, entidadentidad, codigo, tipoMonedaId").ElementAtOrDefault<Prestamo>(0);
                 }
             }
             catch (Exception e)
@@ -219,22 +227,26 @@ namespace Sipro.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    String query = "SELECT p.*, ue.unidad_ejecutora, e.entidad as entidadentidad " +
+                    String query = "SELECT p.*, ue.unidad_ejecutora, e.entidad as entidadentidad, c.codigo, tm.id as tipoMonedaId " +
                         "FROM PRESTAMO p " +
                         "INNER JOIN UNIDAD_EJECUTORA ue ON ue.unidad_ejecutora=p.ueunidad_ejecutora " +
-                        "INNER JOIN ENTIDAD e ON e.entidad=ue.entidadentidad AND e.entidad=p.entidad " + 
+                        "INNER JOIN ENTIDAD e ON e.entidad=ue.entidadentidad AND e.entidad=p.entidad " +
+                        "INNER JOIN Cooperante c ON c.codigo=p.cooperantecodigo AND c.ejercicio=p.cooperanteejercicio " +
+                        "INNER JOIN TIPO_MONEDA tm ON tm.id=p.tipo_monedaid " +
                         "WHERE p.estado=1 ";
                     if (usuario != null)
                         query += "and p.id in (SELECT u.prestamoid FROM Prestamo_Usuario u where u.usuario=:usuario ) ";
 
-                    ret = db.Query<Prestamo, UnidadEjecutora, Entidad, Prestamo>(query,
-                        (p, ue, e) => 
+                    ret = db.Query<Prestamo, UnidadEjecutora, Entidad, Cooperante, TipoMoneda, Prestamo>(query,
+                        (p, ue, e, c, tm) => 
                         {
                             p.unidadEjecutoras = ue;
                             ue.entidads = e;
+                            p.cooperantes = c;
+                            p.tipoMonedas = tm;
                             return p;
                         },
-                        new { usuario = usuario }, splitOn: "unidad_ejecutora,entidadentidad").AsList<Prestamo>();
+                        new { usuario = usuario }, splitOn: "unidad_ejecutora,entidadentidad, codigo, tipoMonedaId").AsList<Prestamo>();
                 }
             }
             catch (Exception e)

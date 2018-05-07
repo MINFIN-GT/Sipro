@@ -58,13 +58,13 @@ namespace Sipro.Dao
                     long existe = db.ExecuteScalar<long>("SELECT COUNT(*) FROM PRESTAMO_TIPO WHERE id=:id", new { id = prestamotipo.id });
                     if (existe > 0)
                     {
-                        db.Query<PrestamoTipo>("UPDATE PRESTAMO_TIPO SET nombre=:nombre, descripcion=:descripcion, usuarioCreo=:usuario_creo, usuarioActualizo=:usuario_actual, fechaCreacion=:fecha_creacion, fechaActualizacion=:fecha_actualizacion, estado=:estado WHERE id=:id", prestamotipo);
-                        ret = true;
+                        int result = db.Execute("UPDATE PRESTAMO_TIPO SET nombre=:nombre, descripcion=:descripcion, usuarioCreo=:usuario_creo, usuarioActualizo=:usuario_actual, fechaCreacion=:fecha_creacion, fechaActualizacion=:fecha_actualizacion, estado=:estado WHERE id=:id", prestamotipo);
+                        ret = result > 0 ? true : false;
                     }
                     else
                     {
-                        db.Query<PrestamoTipo>("INSERT INTO PRESTAMO_TIPO VALUES (:id, :nombre, :descripcion, :usuario_creo, :usuario_actualizo, :fecha_creacion, :fecha_actualizacion, :estado)", prestamotipo);
-                        ret = true;
+                        int result = db.Execute("INSERT INTO PRESTAMO_TIPO VALUES (:id, :nombre, :descripcion, :usuario_creo, :usuario_actualizo, :fecha_creacion, :fecha_actualizacion, :estado)", prestamotipo);
+                        ret = result > 0 ? true : false;
                     }
                 }
             }
@@ -185,8 +185,8 @@ namespace Sipro.Dao
                 {
                     for (int i = 0; i < tipos.Count; i++)
                     {
-                        db.Execute("INSERT INTO PrestamoTipoPrestamo VALUES (:prestamoId, :tipoPrestamoId, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion, :estado)", 
-                            new { prestamoId = prestamo.id, tipoPrestamoId = tipos[i], usuarioCreo = usuario, fechaCreacion = DateTime.Now, estado = 1 });
+                        db.Execute("INSERT INTO PRESTAMO_TIPO_PRESTAMO VALUES (:prestamoId, :tipoPrestamoId, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion, :estado)",
+                            new { prestamoId = prestamo.id, tipoPrestamoId = tipos[i], usuarioCreo = usuario, fechaCreacion = DateTime.Now, estado = 1, usuarioActualizo = DBNull.Value });
                     }
 
                     ret = true;
@@ -208,7 +208,22 @@ namespace Sipro.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    ret = db.Query<PrestamoTipoPrestamo>("SELECT * FROM PrestamoTipoPrestamo WHERE prestamoId=:prestamoId", new { prestamoId = prestamoId }).AsList<PrestamoTipoPrestamo>();
+                    string query = String.Join(" ", "SELECT ptp.*, p.id, ue.unidad_ejecutora, e.entidad, pt.id FROM PRESTAMO_TIPO_PRESTAMO ptp",
+                        "INNER JOIN PRESTAMO p ON p.id=ptp.prestamoid",
+                        "INNER JOIN UNIDAD_EJECUTORA ue ON ue.unidad_ejecutora=p.ueunidad_ejecutora",
+                        "INNER JOIN ENTIDAD e ON e.entidad=ue.entidadentidad",
+                        "INNER JOIN PRESTAMO_TIPO pt ON pt.id=ptp.tipoprestamoid",
+                        "WHERE ptp.prestamoId=:prestamoId");
+                    ret = db.Query<PrestamoTipoPrestamo,Prestamo, UnidadEjecutora, Entidad, PrestamoTipo,PrestamoTipoPrestamo>(query, 
+                        (ptp, p, ue,e, pt) => 
+                        {
+                            ptp.prestamos = p;
+                            p.unidadEjecutoras = ue;
+                            ue.entidads = e;
+                            ptp.prestamoTipos = pt;
+                            return ptp;
+                        },
+                        new { prestamoId = prestamoId }, splitOn : "id,unidad_ejecutora, entidad, id").AsList<PrestamoTipoPrestamo>();
                 }
             }
             catch (Exception e)

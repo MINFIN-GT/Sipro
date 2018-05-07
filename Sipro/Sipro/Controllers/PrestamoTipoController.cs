@@ -77,10 +77,10 @@ namespace Sipro.Controllers
         [HttpPost]
         public IActionResult asignarTiposAPrestamo([FromBody]dynamic value)
         {
-            string strtipos = (string)value.permisos;
+            string strtipos = (string)value.prestamoTipos;
             List<int> tipos = new List<int>(strtipos.Split(',').Select(int.Parse).ToList());
-            //Prestamo prestamo = PrestamoDAO.
-            //bool asignado = PrestamoTipoDAO.asignarTiposAPrestamo(tipos, )
+            Prestamo prestamo = PrestamoDAO.getPrestamoById((int)value.idPrestamo);
+            bool asignado = PrestamoTipoDAO.asignarTiposAPrestamo(tipos, prestamo, (string)value.usuario);
             return Ok(JsonConvert.SerializeObject(false));
         }
 
@@ -88,7 +88,7 @@ namespace Sipro.Controllers
         [HttpPost]
         public IActionResult getPrestamoTiposPrestamo([FromBody]dynamic value)
         {
-            List<PrestamoTipoPrestamo> lstprestamotipoprestamo = PrestamoTipoDAO.getPrestamoTiposPrestamo((int)value.prestamoId);
+            List<PrestamoTipoPrestamo> lstprestamotipoprestamo = PrestamoTipoDAO.getPrestamoTiposPrestamo((int)value.idPrestamo);
             return Ok(JsonConvert.SerializeObject(lstprestamotipoprestamo));
         }
     }

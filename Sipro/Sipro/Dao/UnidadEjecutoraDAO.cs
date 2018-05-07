@@ -63,13 +63,13 @@ namespace Sipro.Dao
 
                     if (existe > 0)
                     {
-                        db.Query<UnidadEjecutora>("UPDATE UNIDAD_EJECUTORA SET nombre=:nombre WHERE unidad_ejecutora=:unidadEjecutora AND entidadentidad=:entidadentidad AND ejercicio=:ejercicio", unidadejecutora);
-                        ret = true;
+                        int result = db.Execute("UPDATE UNIDAD_EJECUTORA SET nombre=:nombre WHERE unidad_ejecutora=:unidadEjecutora AND entidadentidad=:entidadentidad AND ejercicio=:ejercicio", unidadejecutora);
+                        ret = result > 0 ? true : false;
                     }
                     else
                     {
-                        db.Query<UnidadEjecutora>("INSERT INTO UNIDAD_EJECUTORA VALUES(:unidadEjecutora, :nombre, :entidadentidad, :ejercicio)", unidadejecutora);
-                        ret = true;
+                        int result = db.Execute("INSERT INTO UNIDAD_EJECUTORA VALUES(:unidadEjecutora, :nombre, :entidadentidad, :ejercicio)", unidadejecutora);
+                        ret = result > 0 ? true : false;
                     }
                 }
             }
