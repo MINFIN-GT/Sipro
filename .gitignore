@@ -333,3 +333,10 @@ ASALocalRun/
 .mfractor/
 .DS_Store
 app.config
+.vs/
+.vs/sipro/v15/
+/bin/
+/obj/
+/bin/Debug/netcoreapp2.0/
+/SiproModel/obj/
+slnx.sqlite
