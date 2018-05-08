@@ -85,7 +85,7 @@ namespace Sipro
                     if (context.Request.Path.StartsWithSegments("/api") &&
                         context.Response.StatusCode == (int)HttpStatusCode.OK)
                     {
-                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                        context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                     }
                     else
                     {
