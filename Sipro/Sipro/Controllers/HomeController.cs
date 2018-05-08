@@ -13,7 +13,8 @@ namespace Sipro.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
-            return View();
+            //return View();
+            return RedirectToPage("/login");
         }
 
         public IActionResult About()
