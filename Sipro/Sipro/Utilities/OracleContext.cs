@@ -15,7 +15,7 @@ namespace Sipro.Utilities
         public OracleContext()
         {
             connectionString = ConfigurationManager.ConnectionStrings["oracle"].ConnectionString;
-            connectionStringHistory = ConfigurationManager.ConnectionStrings["oracle_history"].ConnectionString;
+            connectionStringHistory = ConfigurationManager.ConnectionStrings["oracle"].ConnectionString;
         }
 
 

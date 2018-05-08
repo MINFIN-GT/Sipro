@@ -16,7 +16,7 @@ using SiproModel.Models;
 namespace Sipro.Controllers
 {
     [Authorize]
-    [Route("[controller]/[action]")]
+    [Route("/api/[controller]/[action]")]
     [Produces("application/json")]
     public class LoginController : Controller
     {
