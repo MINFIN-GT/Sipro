@@ -340,3 +340,5 @@ app.config
 /bin/Debug/netcoreapp2.0/
 /SiproModel/obj/
 slnx.sqlite
+/Sipro/.vs/Sipro/v15
+.suo
