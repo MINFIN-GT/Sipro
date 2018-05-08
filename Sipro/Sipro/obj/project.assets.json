@@ -12997,37 +12997,35 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\pedro\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "/Users/rafa/.nuget/packages/": {},
+    "/usr/local/share/dotnet/sdk/NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\Sipro\\Sipro.csproj",
+      "projectUniqueName": "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/Sipro/Sipro.csproj",
       "projectName": "Sipro",
-      "projectPath": "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\Sipro\\Sipro.csproj",
-      "packagesPath": "C:\\Users\\pedro\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\Sipro\\obj\\",
+      "projectPath": "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/Sipro/Sipro.csproj",
+      "packagesPath": "/Users/rafa/.nuget/packages/",
+      "outputPath": "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/Sipro/obj",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\pedro\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/Users/rafa/.config/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "netcoreapp2.0": {
           "projectReferences": {
-            "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\SiproModel\\SiproModel.csproj": {
-              "projectPath": "C:\\Users\\pedro\\git\\sipro\\Sipro\\Sipro\\SiproModel\\SiproModel.csproj"
+            "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/SiproModel/SiproModel.csproj": {
+              "projectPath": "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/SiproModel/SiproModel.csproj"
             }
           }
         }
@@ -13041,50 +13039,51 @@
     "frameworks": {
       "netcoreapp2.0": {
         "dependencies": {
+          "Microsoft.NETCore.App": {
+            "suppressParent": "All",
+            "target": "Package",
+            "version": "2.0",
+            "autoReferenced": true
+          },
           "Dapper": {
             "target": "Package",
-            "version": "[1.50.4, )"
+            "version": "1.50.4"
           },
           "Microsoft.AspNetCore.All": {
             "target": "Package",
-            "version": "[2.0.6, )"
+            "version": "2.0.6"
           },
           "Microsoft.AspNetCore.Identity": {
             "target": "Package",
-            "version": "[2.0.2, )"
+            "version": "2.0.2"
           },
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
             "target": "Package",
-            "version": "[2.0.2, )"
+            "version": "2.0.2"
           },
           "Microsoft.AspNetCore.Session": {
             "target": "Package",
-            "version": "[2.0.2, )"
+            "version": "2.0.2"
           },
           "Microsoft.EntityFrameworkCore": {
             "target": "Package",
-            "version": "[2.0.2, )"
-          },
-          "Microsoft.NETCore.App": {
-            "target": "Package",
-            "version": "[2.0.0, )",
-            "autoReferenced": true
-          },
-          "Newtonsoft.Json": {
-            "target": "Package",
-            "version": "[11.0.2, )"
-          },
-          "Oracle.ManagedDataAccess.Core": {
-            "target": "Package",
-            "version": "[2.12.0-beta2, )"
-          },
-          "System.Configuration.ConfigurationManager": {
-            "target": "Package",
-            "version": "[4.4.1, )"
+            "version": "2.0.2"
           },
           "log4net": {
             "target": "Package",
-            "version": "[2.0.8, )"
+            "version": "2.0.8"
+          },
+          "Newtonsoft.Json": {
+            "target": "Package",
+            "version": "11.0.2"
+          },
+          "Oracle.ManagedDataAccess.Core": {
+            "target": "Package",
+            "version": "2.12.0-beta2"
+          },
+          "System.Configuration.ConfigurationManager": {
+            "target": "Package",
+            "version": "4.4.1"
           }
         },
         "imports": [
