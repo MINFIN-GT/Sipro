@@ -8,14 +8,14 @@ using SiproModel.Models;
 
 namespace Sipro.Utilities.Identity
 {
-    public class UserPasswordStore : IUserPasswordStore<Usuario>
+    public class UserPasswordStore : IUserPasswordStore<User>
     {
         public UserPasswordStore()
         {
             
         }
 
-        public async Task<IdentityResult> CreateAsync(Usuario user, CancellationToken cancellationToken)
+        public async Task<IdentityResult> CreateAsync(User user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -24,11 +24,11 @@ namespace Sipro.Utilities.Identity
                 throw new ArgumentNullException(nameof(user));
             }
 
-            UsuarioDAO.registroUsuario(user.usuario,user.email,user.password,"admin",1);
+            UsuarioDAO.registroUsuario(user.UserName,user.Email,user.PasswordHash,"admin",1);
             return IdentityResult.Success;
         }
 
-        public async Task<IdentityResult> DeleteAsync(Usuario user, CancellationToken cancellationToken)
+        public async Task<IdentityResult> DeleteAsync(User user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -37,7 +37,7 @@ namespace Sipro.Utilities.Identity
                 throw new ArgumentNullException(nameof(user));
             }
 
-            UsuarioDAO.desactivarUsuario(user.usuario,"admin");
+            UsuarioDAO.desactivarUsuario(user.UserName,"admin");
 
             return IdentityResult.Success;
         }
@@ -46,103 +46,117 @@ namespace Sipro.Utilities.Identity
         {
         }
 
-        public async Task<Usuario> FindByIdAsync(string userId, CancellationToken cancellationToken)
+        public async Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             Usuario usuario = UsuarioDAO.getUsuario(userId);
-            return usuario;
+            User iusuario = new User()
+            {
+                UserName = usuario.usuario,
+                Email = usuario.email,
+                PasswordHash = usuario.password,
+                Salt = usuario.salt
+            };
+            return iusuario;
         }
 
-        public async Task<Usuario> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
+        public async Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             Usuario usuario = UsuarioDAO.getUsuario(normalizedUserName.ToLower());
-            return usuario;
+            User iusuario = new User()
+            {
+                UserName = usuario.usuario,
+                Email = usuario.email,
+                PasswordHash = usuario.password,
+                Salt = usuario.salt
+            };
+            return iusuario;
         }
 
-        public Task<string> GetNormalizedUserNameAsync(Usuario user, CancellationToken cancellationToken)
+        public Task<string> GetNormalizedUserNameAsync(User user, CancellationToken cancellationToken)
         {
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
             }
 
-            return Task.FromResult(user.usuario);
+            return Task.FromResult(user.UserName);
         }
 
-        public Task<string> GetPasswordHashAsync(Usuario user, CancellationToken cancellationToken)
+        public Task<string> GetPasswordHashAsync(User user, CancellationToken cancellationToken)
         {
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
             }
 
-            return Task.FromResult(user.password);
+            return Task.FromResult(user.PasswordHash);
         }
 
-        public Task<string> GetUserIdAsync(Usuario user, CancellationToken cancellationToken)
+        public Task<string> GetUserIdAsync(User user, CancellationToken cancellationToken)
         {
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
             }
 
-            return Task.FromResult(user.usuario);
+            return Task.FromResult(user.UserName);
         }
 
-        public Task<string> GetUserNameAsync(Usuario user, CancellationToken cancellationToken)
+        public Task<string> GetUserNameAsync(User user, CancellationToken cancellationToken)
         {
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
             }
 
-            return Task.FromResult(user.usuario);
+            return Task.FromResult(user.UserName);
         }
 
-        public Task<bool> HasPasswordAsync(Usuario user, CancellationToken cancellationToken)
+        public Task<bool> HasPasswordAsync(User user, CancellationToken cancellationToken)
         {
             return Task.FromResult(true);
         }
 
-        public Task SetNormalizedUserNameAsync(Usuario user, string normalizedName, CancellationToken cancellationToken)
+        public Task SetNormalizedUserNameAsync(User user, string normalizedName, CancellationToken cancellationToken)
         {
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
             }
 
-            user.usuario = normalizedName;
+            user.NormalizedUserName = normalizedName;
 
             return Task.CompletedTask;
         }
 
-        public Task SetPasswordHashAsync(Usuario user, string passwordHash, CancellationToken cancellationToken)
+        public Task SetPasswordHashAsync(User user, string passwordHash, CancellationToken cancellationToken)
         {
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
             }
 
-            user.password = passwordHash;
+            user.PasswordHash = passwordHash;
 
             return Task.CompletedTask;
         }
 
-        public Task SetUserNameAsync(Usuario user, string userName, CancellationToken cancellationToken)
+        public Task SetUserNameAsync(User user, string userName, CancellationToken cancellationToken)
         {
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
             }
 
-            user.usuario = userName;
+            user.UserName = userName;
 
             return Task.CompletedTask;
         }
 
-        public async Task<IdentityResult> UpdateAsync(Usuario user, CancellationToken cancellationToken)
+        public async Task<IdentityResult> UpdateAsync(User user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -150,8 +164,10 @@ namespace Sipro.Utilities.Identity
             {
                 throw new ArgumentNullException(nameof(user));
             }
-
-            UsuarioDAO.editarUsuario(user,"admin");
+            Usuario usuario = UsuarioDAO.getUsuario(user.UserName);
+            usuario.password = user.PasswordHash;
+            usuario.salt = user.Salt;
+            UsuarioDAO.editarUsuario(usuario,"admin");
             return IdentityResult.Success;
         }
     }

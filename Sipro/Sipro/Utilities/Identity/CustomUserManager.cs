@@ -12,26 +12,28 @@ using SiproModel.Models;
 
 namespace Sipro.Utilities.Identity
 {
-    public class CustomUserManager : UserManager<Usuario>
+    public class CustomUserManager : UserManager<User>
     {
-        public CustomUserManager(IUserStore<Usuario> store, 
+        public CustomUserManager(IUserStore<User> store, 
                                  IOptions<IdentityOptions> optionsAccessor, 
-                                 IPasswordHasher<Usuario> passwordHasher, 
-                                 IEnumerable<IUserValidator<Usuario>> userValidators, 
-                                 IEnumerable<IPasswordValidator<Usuario>> passwordValidators, 
+                                 IPasswordHasher<User> passwordHasher, 
+                                 IEnumerable<IUserValidator<User>> userValidators, 
+                                 IEnumerable<IPasswordValidator<User>> passwordValidators, 
                                  ILookupNormalizer keyNormalizer, 
                                  IdentityErrorDescriber errors, 
                                  IServiceProvider services, 
-                                 ILogger<UserManager<Usuario>> logger) 
+                                 ILogger<UserManager<User>> logger) 
             : base(store, optionsAccessor, passwordHasher, userValidators, passwordValidators, keyNormalizer, errors, services, logger)
         {
         }
 
-        public override Task<bool> CheckPasswordAsync(Usuario user, string password)
+        public override Task<bool> CheckPasswordAsync(User user, string password)
         {
-            string hash = SHA256Hasher.ComputeHash(password,user.salt);
-            return Task.FromResult<bool>(hash.Equals(user.password));
+            string hash = SHA256Hasher.ComputeHash(password, user.Salt);
+            return Task.FromResult<bool>(hash.Equals(user.PasswordHash));
         }
 
-    }
+
+
+	}
 }

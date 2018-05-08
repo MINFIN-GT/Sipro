@@ -15,6 +15,8 @@ using Sipro.Utilities;
 using Sipro.Utilities.Identity;
 using SiproModel.Models;
 using System.Net;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Sipro.Dao;
 
 namespace Sipro
 {
@@ -38,17 +40,6 @@ namespace Sipro
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
-            services.AddDistributedMemoryCache();
-
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
-
-            services.AddIdentity<Usuario, Rol>()
-                .AddRoleStore<RoleStore>()
-                .AddUserStore<UserPasswordStore>()
-                .AddDefaultTokenProviders()
-                .AddUserManager<CustomUserManager>();
-
             services.AddSession(options =>
             {
                 options.Cookie.HttpOnly = true;
@@ -56,20 +47,25 @@ namespace Sipro
                 options.IdleTimeout = TimeSpan.FromMinutes(10);
             });
 
+            services.AddIdentity<User, Rol>()
+                .AddRoleStore<RoleStore>()
+                .AddUserStore<UserPasswordStore>()
+                .AddDefaultTokenProviders()
+                .AddUserManager<CustomUserManager>();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = IdentityConstants.ApplicationScheme;
+            });
+
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/SignIn";
                 options.LogoutPath = "/Login/Out";
                 options.AccessDeniedPath = "/AccesoDenegado";
-                options.SlidingExpiration = true;
-                options.Cookie = new CookieBuilder
-                {
-                    HttpOnly = true,
-                    Name = "Sipro.Cookie",
-                    Path = "/",
-                    SameSite = SameSiteMode.Lax,
-                    SecurePolicy = CookieSecurePolicy.SameAsRequest
-                };
+                //options.Cookie.HttpOnly = true;
+                //options.Cookie.Name = "Sipro.Cookie";
+                //options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
                 options.Events.OnRedirectToLogin = context =>
                 {
                     //if (context.Request.Path.StartsWithSegments("/api") &&
@@ -84,6 +80,21 @@ namespace Sipro
                     return Task.CompletedTask;
                 };
             });
+
+            services.AddScoped<IUserClaimsPrincipalFactory<User>, ApplicationClaimsIdentityFactory>();
+
+            services.AddAuthorization(options =>
+            {
+                List<Permiso> permisos = PermisoDAO.getPermisos();
+                foreach (Permiso permiso in permisos)
+                {
+                    options.AddPolicy(permiso.nombre,
+                                      policy => policy.RequireClaim(CustomClaimType.Permission, permiso.nombre));
+                }
+            });
+
+            services.AddMvc();
+            services.AddDistributedMemoryCache();
 
         }
 
@@ -101,15 +112,16 @@ namespace Sipro
             }
 
             app.UseStaticFiles();
-            app.UseSession();
+
+            app.UseAuthentication();
+            //app.UseSession();
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
-            app.UseAuthentication();
 
         }
     }
