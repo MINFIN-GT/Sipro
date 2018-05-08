@@ -12986,6 +12986,7 @@
       "Microsoft.AspNetCore.All >= 2.0.6",
       "Microsoft.AspNetCore.Identity >= 2.0.2",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 2.0.2",
+      "Microsoft.AspNetCore.Server.Kestrel.Https >= 2.0.2",
       "Microsoft.AspNetCore.Session >= 2.0.2",
       "Microsoft.EntityFrameworkCore >= 2.0.2",
       "Microsoft.NETCore.App >= 2.0.0",
@@ -13084,6 +13085,10 @@
           "System.Configuration.ConfigurationManager": {
             "target": "Package",
             "version": "4.4.1"
+          },
+          "Microsoft.AspNetCore.Server.Kestrel.Https": {
+            "target": "Package",
+            "version": "2.0.2"
           }
         },
         "imports": [
