@@ -9,10 +9,9 @@ namespace Sipro.Utilities.Identity
 {
     public class RoleStore : IRoleStore<Rol>
     {
-        public async Task<IdentityResult> CreateAsync(Rol role, CancellationToken cancellationToken)
+        public Task<IdentityResult> CreateAsync(Rol role, CancellationToken cancellationToken)
         {
-            //throw new NotImplementedException();
-            return IdentityResult.Success;
+            return Task.FromResult(IdentityResult.Success);
         }
 
         public Task<IdentityResult> DeleteAsync(Rol role, CancellationToken cancellationToken)
@@ -29,10 +28,10 @@ namespace Sipro.Utilities.Identity
             throw new NotImplementedException();
         }
 
-        public async Task<Rol> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
+        public Task<Rol> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
         {
             if(normalizedRoleName.ToLower().Equals("general")){
-                return new Rol() { nombre = "General", descripcion = "General" };
+                return Task.FromResult(new Rol() { nombre = "General", descripcion = "General" });
             }
             return null;
         }
@@ -42,24 +41,25 @@ namespace Sipro.Utilities.Identity
             throw new NotImplementedException();
         }
 
-        public async Task<string> GetRoleIdAsync(Rol role, CancellationToken cancellationToken)
+        public Task<string> GetRoleIdAsync(Rol role, CancellationToken cancellationToken)
         {
-            return role.id.ToString();
+            return Task.FromResult(role.id.ToString());
         }
 
-        public async Task<string> GetRoleNameAsync(Rol role, CancellationToken cancellationToken)
+        public Task<string> GetRoleNameAsync(Rol role, CancellationToken cancellationToken)
         {
-            return role.nombre;
+            return Task.FromResult(role.nombre);
         }
 
-        public async Task SetNormalizedRoleNameAsync(Rol role, string normalizedName, CancellationToken cancellationToken)
+        public Task SetNormalizedRoleNameAsync(Rol role, string normalizedName, CancellationToken cancellationToken)
         {
-            
+            return Task.CompletedTask;
         }
 
-        public async Task SetRoleNameAsync(Rol role, string roleName, CancellationToken cancellationToken)
+        public Task SetRoleNameAsync(Rol role, string roleName, CancellationToken cancellationToken)
         {
             role.nombre = roleName;
+            return Task.CompletedTask;
         }
 
         public Task<IdentityResult> UpdateAsync(Rol role, CancellationToken cancellationToken)

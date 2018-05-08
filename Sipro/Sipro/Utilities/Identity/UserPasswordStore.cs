@@ -15,7 +15,7 @@ namespace Sipro.Utilities.Identity
             
         }
 
-        public async Task<IdentityResult> CreateAsync(User user, CancellationToken cancellationToken)
+        public Task<IdentityResult> CreateAsync(User user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -25,10 +25,10 @@ namespace Sipro.Utilities.Identity
             }
 
             UsuarioDAO.registroUsuario(user.UserName,user.Email,user.PasswordHash,"admin",1);
-            return IdentityResult.Success;
+            return Task.FromResult(IdentityResult.Success);
         }
 
-        public async Task<IdentityResult> DeleteAsync(User user, CancellationToken cancellationToken)
+        public Task<IdentityResult> DeleteAsync(User user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -39,14 +39,14 @@ namespace Sipro.Utilities.Identity
 
             UsuarioDAO.desactivarUsuario(user.UserName,"admin");
 
-            return IdentityResult.Success;
+            return Task.FromResult(IdentityResult.Success);
         }
 
         public void Dispose()
         {
         }
 
-        public async Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
+        public Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             Usuario usuario = UsuarioDAO.getUsuario(userId);
@@ -57,10 +57,10 @@ namespace Sipro.Utilities.Identity
                 PasswordHash = usuario.password,
                 Salt = usuario.salt
             };
-            return iusuario;
+            return Task.FromResult(iusuario);
         }
 
-        public async Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
+        public Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -72,7 +72,7 @@ namespace Sipro.Utilities.Identity
                 PasswordHash = usuario.password,
                 Salt = usuario.salt
             };
-            return iusuario;
+            return Task.FromResult(iusuario);
         }
 
         public Task<string> GetNormalizedUserNameAsync(User user, CancellationToken cancellationToken)
@@ -156,7 +156,7 @@ namespace Sipro.Utilities.Identity
             return Task.CompletedTask;
         }
 
-        public async Task<IdentityResult> UpdateAsync(User user, CancellationToken cancellationToken)
+        public Task<IdentityResult> UpdateAsync(User user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -168,7 +168,7 @@ namespace Sipro.Utilities.Identity
             usuario.password = user.PasswordHash;
             usuario.salt = user.Salt;
             UsuarioDAO.editarUsuario(usuario,"admin");
-            return IdentityResult.Success;
+            return Task.FromResult(IdentityResult.Success);
         }
     }
 }

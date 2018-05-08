@@ -22,7 +22,7 @@ app.controller('loginController', [
                 var headers = { headers: { RequestVerificationToken: document.getElementsByName('__RequestVerificationToken')[0].value }};
 				$http.post('/api/Login/In', data, headers).then(function(response){
 					if(response.data.success==true)
-					   	window.location.href = '/main.jsp';
+					   	window.location.href = '/main';
 					else
 					    $scope.showerror = true;
 				 	}, function errorCallback(response){

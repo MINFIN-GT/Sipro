@@ -1,0 +1,13 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+@page
+@{
+
+}
+@if ((await AuthorizationService.AuthorizeAsync(User, "General")).Succeeded)
+{
+     <li>tiene el rol de general</li>
+}
+<p>no lo tiene</p>
+
+

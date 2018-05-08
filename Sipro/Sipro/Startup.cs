@@ -85,6 +85,8 @@ namespace Sipro
 
             services.AddAuthorization(options =>
             {
+                options.AddPolicy("General", policy => policy.RequireRole("General"));
+
                 List<Permiso> permisos = PermisoDAO.getPermisos();
                 foreach (Permiso permiso in permisos)
                 {
