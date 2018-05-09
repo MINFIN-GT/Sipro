@@ -44,4 +44,10 @@
     <Compile Remove="Utilities\Identity\CustomRoleManager.cs" />
     <Compile Remove="Utilities\Identity\RolePermissionStore.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Remove="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
 </Project>

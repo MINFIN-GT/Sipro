@@ -348,3 +348,6 @@ SiproModel.csproj.FileListAbsolute.txt
 storage.ide
 storage.ide-shm
 storage.ide-wal
+/Sipro/.vs/Sipro/v15
+/Sipro/obj/
+/SiproModel/obj/Debug
