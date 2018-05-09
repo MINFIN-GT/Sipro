@@ -344,3 +344,7 @@ slnx.sqlite
 .suo
 /obj/Debug/netcoreapp2.0
 *.cache
+SiproModel.csproj.FileListAbsolute.txt
+storage.ide
+storage.ide-shm
+storage.ide-wal

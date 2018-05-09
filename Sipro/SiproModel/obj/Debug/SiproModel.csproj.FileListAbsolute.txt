@@ -65,8 +65,8 @@ C:\Users\pedro\git\Sipro\Sipro\SiproModel\bin\Debug\EntityFramework.SqlServer.xm
 C:\Users\pedro\git\Sipro\Sipro\SiproModel\bin\Debug\Google.Protobuf.xml
 C:\Users\pedro\git\Sipro\Sipro\SiproModel\bin\Debug\MySql.Data.xml
 C:\Users\pedro\git\Sipro\Sipro\SiproModel\bin\Debug\MySql.Data.Entity.EF6.xml
-C:\Users\pedro\git\Sipro\Sipro\SiproModel\obj\Debug\SiproModel.csprojResolveAssemblyReference.cache
 C:\Users\pedro\git\Sipro\Sipro\SiproModel\obj\Debug\SiproModel.csproj.CoreCompileInputs.cache
 C:\Users\pedro\git\Sipro\Sipro\SiproModel\obj\Debug\SiproModel.csproj.CopyComplete
 C:\Users\pedro\git\Sipro\Sipro\SiproModel\obj\Debug\SiproModel.dll
 C:\Users\pedro\git\Sipro\Sipro\SiproModel\obj\Debug\SiproModel.pdb
+C:\Users\pedro\git\Sipro\Sipro\SiproModel\obj\Debug\SiproModel.csprojResolveAssemblyReference.cache
