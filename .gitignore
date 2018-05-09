@@ -342,3 +342,5 @@ app.config
 slnx.sqlite
 /Sipro/.vs/Sipro/v15
 .suo
+/obj/Debug/netcoreapp2.0
+*.cache

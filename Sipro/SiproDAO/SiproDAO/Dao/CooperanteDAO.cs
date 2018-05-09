@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using System.Data.Common;
-using Sipro.Utilities;
+using SiproDAO.Utilities;
 using SiproModel.Models;
 
 namespace Sipro.Dao
