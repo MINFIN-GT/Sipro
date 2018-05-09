@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -8,14 +7,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sipro.Utilities;
 using Sipro.Utilities.Identity;
 using SiproModel.Models;
 using System.Net;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Sipro.Dao;
 
 namespace Sipro
@@ -37,7 +34,6 @@ namespace Sipro
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSession(options =>
@@ -97,22 +93,6 @@ namespace Sipro
                 };
             });
 			        
-            /*    AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
-                LoginPath = new PathString("/Account/Login"),
-                Provider = new CookieAuthenticationProvider
-                {
-                    OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, ApplicationUser>(
-                    validateInterval: TimeSpan.FromMinutes(30),
-                    regenerateIdentity: (manager, user) => {
-                        var identity = manager.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
-
-                        //some additional claims and stuff specific to my needs
-                        return Task.FromResult(identity);
-                    })
-                },
-                CookieDomain = ".example.com"
-            });*/
-
             /*services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/SignIn";
@@ -185,8 +165,7 @@ namespace Sipro
             app.UseStaticFiles();
 
             app.UseAuthentication();
-            //app.UseSession();
-   
+            
 			app.UseMvc(routes =>
             {
                 routes.MapRoute(
