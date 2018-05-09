@@ -17,7 +17,7 @@
     "keyFile": "",
     "emitEntryPoint": true,
     "xmlDoc": false,
-    "debugType": "full"
+    "debugType": "portable"
   },
   "targets": {
     ".NETCoreApp,Version=v2.0": {

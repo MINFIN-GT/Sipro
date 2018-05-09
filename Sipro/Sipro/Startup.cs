@@ -53,12 +53,67 @@ namespace Sipro
                 .AddDefaultTokenProviders()
                 .AddUserManager<CustomUserManager>();
 
-            services.AddAuthentication(options =>
+			/*services.AddAuthentication(options =>
             {
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
-            });
+            });*/
 
+			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme);
             services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/SignIn";
+                options.LogoutPath = "/Login/Out";
+                options.AccessDeniedPath = "/accesodenegado";
+				options.Cookie.Domain = "localhost";
+                options.Cookie.HttpOnly = true;
+                //options.Cookie.Name = "Sipro.Cookie";
+				options.Cookie.Expiration = TimeSpan.FromMinutes(60);
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    if (context.Request.Path.StartsWithSegments("/api") &&
+                        context.Response.StatusCode == (int)HttpStatusCode.OK)
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    }
+                    else
+                    {
+                        context.Response.Redirect(context.RedirectUri);
+                    }
+                    return Task.CompletedTask;
+                };
+
+                options.Events.OnRedirectToAccessDenied = context =>
+                {
+                    if (context.Request.Path.StartsWithSegments("/api") &&
+                        context.Response.StatusCode == (int)HttpStatusCode.OK)
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    }
+                    else
+                    {
+                        context.Response.Redirect(context.RedirectUri);
+                    }
+                    return Task.CompletedTask;
+                };
+            });
+			        
+            /*    AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
+                LoginPath = new PathString("/Account/Login"),
+                Provider = new CookieAuthenticationProvider
+                {
+                    OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, ApplicationUser>(
+                    validateInterval: TimeSpan.FromMinutes(30),
+                    regenerateIdentity: (manager, user) => {
+                        var identity = manager.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
+
+                        //some additional claims and stuff specific to my needs
+                        return Task.FromResult(identity);
+                    })
+                },
+                CookieDomain = ".example.com"
+            });*/
+
+            /*services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/SignIn";
                 options.LogoutPath = "/Login/Out";
@@ -85,7 +140,7 @@ namespace Sipro
                     if (context.Request.Path.StartsWithSegments("/api") &&
                         context.Response.StatusCode == (int)HttpStatusCode.OK)
                     {
-                        context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                     }
                     else
                     {
@@ -93,7 +148,7 @@ namespace Sipro
                     }
                     return Task.CompletedTask;
                 };
-            });
+            });*/
 
             services.AddScoped<IUserClaimsPrincipalFactory<User>, ApplicationClaimsIdentityFactory>();
 
@@ -131,8 +186,8 @@ namespace Sipro
 
             app.UseAuthentication();
             //app.UseSession();
-
-            app.UseMvc(routes =>
+   
+			app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
