@@ -332,3 +332,22 @@ ASALocalRun/
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
 .DS_Store
+app.config
+.vs/
+.vs/sipro/v15/
+/bin/
+/obj/
+/bin/Debug/netcoreapp2.0/
+/SiproModel/obj/
+slnx.sqlite
+/Sipro/.vs/Sipro/v15
+.suo
+/obj/Debug/netcoreapp2.0
+*.cache
+SiproModel.csproj.FileListAbsolute.txt
+storage.ide
+storage.ide-shm
+storage.ide-wal
+/Sipro/.vs/Sipro/v15
+/Sipro/obj/
+/SiproModel/obj/Debug

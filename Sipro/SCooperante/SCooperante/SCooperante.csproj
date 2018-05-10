@@ -26,12 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\SiproDAO\SiproDAO\SiproDAO.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="SiproModel">
-      <HintPath>..\..\..\..\SiproModel\obj\Debug\SiproModel.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\SiproModel\SiproModel.csproj" />
   </ItemGroup>
 
 </Project>

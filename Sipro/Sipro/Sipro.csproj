@@ -36,10 +36,6 @@
     <Folder Include="wwwroot\app\components\" />
     <Folder Include="wwwroot\app\components\login\" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\SiproModel\SiproModel.csproj" />
-  </ItemGroup>
   <ItemGroup>
     <Compile Remove="Utilities\Identity\CustomRoleManager.cs" />
     <Compile Remove="Utilities\Identity\RolePermissionStore.cs" />
@@ -49,5 +45,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SiproModel\SiproModel.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="SiproModel">
+      <HintPath>..\..\..\SiproModel\obj\Debug\SiproModel.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
