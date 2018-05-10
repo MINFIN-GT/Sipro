@@ -20,11 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Models\GenericModelGenerator.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenericModelGenerator.tt</DependentUpon>
-    </Compile>
     <Compile Update="Models\SiproConfig.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

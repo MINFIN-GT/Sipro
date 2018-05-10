@@ -4925,6 +4925,33 @@
         "runtime": {
           "lib/netstandard1.3/Microsoft.WindowsAzure.Storage.dll": {}
         }
+      },
+      "SiproDAO/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v2.0",
+        "dependencies": {
+          "Dapper": "1.50.4",
+          "Newtonsoft.Json": "11.0.2",
+          "Oracle.ManagedDataAccess.Core": "2.12.0-beta2",
+          "SiproModel": "1.0.0",
+          "System.Configuration.ConfigurationManager": "4.4.1",
+          "log4net": "2.0.8"
+        },
+        "compile": {
+          "bin/placeholder/SiproDAO.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/SiproDAO.dll": {}
+        }
+      },
+      "SiproModel/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/SiproModel.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/SiproModel.dll": {}
+        }
       }
     }
   },
@@ -12964,6 +12991,16 @@
         "windowsazure.storage.8.1.4.nupkg.sha512",
         "windowsazure.storage.nuspec"
       ]
+    },
+    "SiproDAO/1.0.0": {
+      "type": "project",
+      "path": "../SiproDAO/SiproDAO/SiproDAO.csproj",
+      "msbuildProject": "../SiproDAO/SiproDAO/SiproDAO.csproj"
+    },
+    "SiproModel/1.0.0": {
+      "type": "project",
+      "path": "../SiproModel/SiproModel.csproj",
+      "msbuildProject": "../SiproModel/SiproModel.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -12978,6 +13015,7 @@
       "Microsoft.NETCore.App >= 2.0.0",
       "Newtonsoft.Json >= 11.0.2",
       "Oracle.ManagedDataAccess.Core >= 2.12.0-beta2",
+      "SiproDAO >= 1.0.0",
       "System.Configuration.ConfigurationManager >= 4.4.1",
       "log4net >= 2.0.8"
     ]
@@ -13009,7 +13047,11 @@
       },
       "frameworks": {
         "netcoreapp2.0": {
-          "projectReferences": {}
+          "projectReferences": {
+            "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/SiproDAO/SiproDAO/SiproDAO.csproj": {
+              "projectPath": "/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/SiproDAO/SiproDAO/SiproDAO.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

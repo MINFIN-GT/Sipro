@@ -5,6 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SiproModel.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
+using System.IO;
+using System.Text;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Sipro.Controllers
 {
@@ -13,7 +17,7 @@ namespace Sipro.Controllers
     [Route("/api/[controller]/[action]/{codigo?}")]
     public class CooperanteController : Controller
     {
-        private class stcooperante
+  private class stcooperante
         {
             public int codigo;
             public String nombre;
@@ -25,6 +29,29 @@ namespace Sipro.Controllers
             public String fechaActualizacion;
             public int estado;
         }
+
+		public CooperanteController(){
+			//Get the encrypted cookie value
+            string cookieValue = HttpContext.Request.Cookies["MyCookie"];
+
+			var provider = DataProtectionProvider.Create(new DirectoryInfo(@"\SIPRO\"));
+
+            //Get a data protector to use with either approach
+            var dataProtector = provider.CreateProtector(typeof(CookieAuthenticationMiddleware).FullName, "MyCookie", "v2");
+
+
+            //Get the decrypted cookie as plain text
+            //UTF8Encoding specialUtf8Encoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
+            //byte[] protectedBytes = Base64UrlTextEncoder.Decode(cookieValue);
+            //byte[] plainBytes = dataProtector.Unprotect(protectedBytes);
+            //string plainText = specialUtf8Encoding.GetString(plainBytes);
+
+
+            //Get the decrypted cookie as a Authentication Ticket
+            TicketDataFormat ticketDataFormat = new TicketDataFormat(dataProtector);
+            AuthenticationTicket ticket = ticketDataFormat.Unprotect(cookieValue);
+
+		}
 
         // GET api/Cooperante/Cooperantes
         [HttpGet]

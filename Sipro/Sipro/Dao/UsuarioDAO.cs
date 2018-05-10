@@ -1,5 +1,5 @@
 ﻿using System;
-using SiproModel.Models;
+using SiproModelCore.Models;
 using Sipro.Utilities;
 using System.Data.Common;
 using Dapper;

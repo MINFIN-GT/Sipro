@@ -32,8 +32,8 @@ namespace SiproModel.Models
 	    [Column("HITO_TIPOID")]
 	    [ForeignKey("HitoTipo")]
         public virtual Int32 hitoTipoid { get; set; }
-		public virtual Proyecto proyectos { get; set; }
 		public virtual HitoTipo hitoTipos { get; set; }
+		public virtual Proyecto proyectos { get; set; }
 		public virtual IEnumerable<Hito> hitoes { get; set; }
 	}
 }

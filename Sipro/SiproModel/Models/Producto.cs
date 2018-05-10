@@ -72,11 +72,11 @@ namespace SiproModel.Models
 	    public virtual DateTime? fechaFinReal { get; set; }
 	    [Column("INVERSION_NUEVA")]
 	    public virtual Int32? inversionNueva { get; set; }
-		public virtual Componente componentes { get; set; }
-		public virtual ProductoTipo productoTipos { get; set; }
-		public virtual UnidadEjecutora unidadEjecutoras { get; set; }
-		public virtual Subcomponente subcomponentes { get; set; }
 		public virtual AcumulacionCosto acumulacionCostos { get; set; }
+		public virtual Subcomponente subcomponentes { get; set; }
+		public virtual UnidadEjecutora unidadEjecutoras { get; set; }
+		public virtual ProductoTipo productoTipos { get; set; }
+		public virtual Componente componentes { get; set; }
 		public virtual IEnumerable<Producto> productoes { get; set; }
 	}
 }

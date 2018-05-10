@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Dapper;
 using System.Data.Common;
 using SiproDAO.Utilities;
-using SiproModel.Models;
+using SiproModelCore.Models;
 using Newtonsoft.Json;
 
 namespace Sipro.Dao
