@@ -1,5 +1,5 @@
 
-namespace SiproModel.Models
+namespace SiproModelCore.Models
 {
 	using System;
 	using System.ComponentModel.DataAnnotations;
