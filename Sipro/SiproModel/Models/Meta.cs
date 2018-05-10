@@ -44,8 +44,8 @@ namespace SiproModel.Models
 	    public virtual decimal? metaFinalDecimal { get; set; }
 	    [Column("META_FINAL_FECHA")]
 	    public virtual DateTime? metaFinalFecha { get; set; }
-		public virtual MetaUnidadMedida metaUnidadMedidas { get; set; }
 		public virtual DatoTipo datoTipos { get; set; }
+		public virtual MetaUnidadMedida metaUnidadMedidas { get; set; }
 		public virtual IEnumerable<Meta> metas { get; set; }
 	}
 }

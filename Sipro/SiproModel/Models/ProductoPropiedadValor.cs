@@ -37,8 +37,13 @@ namespace SiproModel.Models
 	    [Column("FECHA_ACTUALIZACION")]
 	    public virtual DateTime? fechaActualizacion { get; set; }
 	    public virtual Int32 estado { get; set; }
+<<<<<<< Updated upstream
 		public virtual ProductoPropiedad productoPropiedads { get; set; }
 		public virtual Producto productos { get; set; }
+=======
+		public virtual Producto productos { get; set; }
+		public virtual ProductoPropiedad productoPropiedads { get; set; }
+>>>>>>> Stashed changes
 		public virtual IEnumerable<ProductoPropiedadValor> productopropiedadvalors { get; set; }
 	}
 }

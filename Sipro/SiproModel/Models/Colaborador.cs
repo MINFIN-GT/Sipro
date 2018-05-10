@@ -38,8 +38,8 @@ namespace SiproModel.Models
         public virtual Int32 ejercicio { get; set; }
 	    [ForeignKey("UnidadEjecutora")]
         public virtual Int32? entidad { get; set; }
-		public virtual UnidadEjecutora unidadEjecutoras { get; set; }
 		public virtual Usuario usuarios { get; set; }
+		public virtual UnidadEjecutora unidadEjecutoras { get; set; }
 		public virtual IEnumerable<Colaborador> colaboradors { get; set; }
 	}
 }

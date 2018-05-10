@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Dapper;
 using System.Data.Common;
 using Sipro.Utilities;
-using SiproModel.Models;
+using SiproModelCore.Models;
 using static Sipro.Controllers.PrestamoController;
 
 namespace Sipro.Dao

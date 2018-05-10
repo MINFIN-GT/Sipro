@@ -28,8 +28,13 @@ namespace SiproModel.Models
 	    public virtual string usuarioCreo { get; set; }
 	    [Column("USUARIO_ACTUALIZO")]
 	    public virtual string usuarioActualizo { get; set; }
+<<<<<<< Updated upstream
 		public virtual Proyecto proyectos { get; set; }
 		public virtual Colaborador colaboradors { get; set; }
+=======
+		public virtual Colaborador colaboradors { get; set; }
+		public virtual Proyecto proyectos { get; set; }
+>>>>>>> Stashed changes
 		public virtual IEnumerable<ProyectoMiembro> proyectomiembroes { get; set; }
 	}
 }

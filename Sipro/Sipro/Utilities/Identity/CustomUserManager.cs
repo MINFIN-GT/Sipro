@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sipro.Dao;
-using SiproModel.Models;
+using SiproModelCore.Models;
 
 namespace Sipro.Utilities.Identity
 {

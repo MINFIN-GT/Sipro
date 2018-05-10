@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sipro.Utilities;
 using Sipro.Utilities.Identity;
-using SiproModel.Models;
+using SiproModelCore.Models;
 using System.Net;
 using Sipro.Dao;
 using Microsoft.AspNetCore.DataProtection;
@@ -57,8 +57,13 @@ namespace Sipro
             });*/
 
 			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme);
+
             services.ConfigureApplicationCookie(options =>
             {
+				string[] files = Directory.GetFiles("/SIPRO/key*");
+				foreach (string file in files)
+					File.Delete(file);
+				options.DataProtectionProvider = DataProtectionProvider.Create(new DirectoryInfo(@"\SIPRO\"));
                 options.LoginPath = "/SignIn";
                 options.LogoutPath = "/Login/Out";
                 options.AccessDeniedPath = "/accesodenegado";
@@ -152,7 +157,7 @@ namespace Sipro
 			services.AddDataProtection()
 				.SetApplicationName("sipro")
 					.PersistKeysToFileSystem(new DirectoryInfo(@"/SIPRO"));
-
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

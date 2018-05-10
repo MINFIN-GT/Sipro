@@ -76,8 +76,8 @@ namespace SiproModel.Models
 	    public virtual DateTime? fechaFinReal { get; set; }
 	    [Column("INVERSION_NUEVA")]
 	    public virtual Int32 inversionNueva { get; set; }
-		public virtual ActividadTipo actividadTipos { get; set; }
 		public virtual AcumulacionCosto acumulacionCostos { get; set; }
+		public virtual ActividadTipo actividadTipos { get; set; }
 		public virtual IEnumerable<Actividad> actividads { get; set; }
 	}
 }

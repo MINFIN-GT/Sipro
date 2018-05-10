@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using SiproModel.Models;
+using SiproModelCore.Models;
 using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 
 namespace Sipro.Utilities.Identity

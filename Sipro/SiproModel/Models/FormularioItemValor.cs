@@ -48,8 +48,13 @@ namespace SiproModel.Models
 	    [Column("OBJETO_FORMULARIOOBJETO_ID")]
 	    [ForeignKey("ObjetoFormulario")]
         public virtual Int32 objetoFormularioobjetoId { get; set; }
+<<<<<<< Updated upstream
 		public virtual FormularioItem formularioItems { get; set; }
 		public virtual ObjetoFormulario objetoFormularios { get; set; }
+=======
+		public virtual ObjetoFormulario objetoFormularios { get; set; }
+		public virtual FormularioItem formularioItems { get; set; }
+>>>>>>> Stashed changes
 		public virtual IEnumerable<FormularioItemValor> formularioitemvalors { get; set; }
 	}
 }

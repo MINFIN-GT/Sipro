@@ -161,9 +161,9 @@ namespace SiproModel.Models
         public virtual Int32? cooperantecodigo { get; set; }
 	    [ForeignKey("Cooperante")]
         public virtual Int32? cooperanteejercicio { get; set; }
-		public virtual TipoMoneda tipoMonedas { get; set; }
-		public virtual Cooperante cooperantes { get; set; }
 		public virtual UnidadEjecutora unidadEjecutoras { get; set; }
+		public virtual Cooperante cooperantes { get; set; }
+		public virtual TipoMoneda tipoMonedas { get; set; }
 		public virtual IEnumerable<Prestamo> prestamoes { get; set; }
 	}
 }

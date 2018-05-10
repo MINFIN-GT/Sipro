@@ -89,10 +89,10 @@ namespace SiproModel.Models
 	    public virtual Int32? congelado { get; set; }
 	    [Column("FECHA_CIERRE")]
 	    public virtual DateTime? fechaCierre { get; set; }
-		public virtual ProyectoTipo proyectoTipos { get; set; }
-		public virtual UnidadEjecutora unidadEjecutoras { get; set; }
-		public virtual AcumulacionCosto acumulacionCostos { get; set; }
 		public virtual Prestamo prestamos { get; set; }
+		public virtual AcumulacionCosto acumulacionCostos { get; set; }
+		public virtual UnidadEjecutora unidadEjecutoras { get; set; }
+		public virtual ProyectoTipo proyectoTipos { get; set; }
 		public virtual IEnumerable<Proyecto> proyectoes { get; set; }
 	}
 }

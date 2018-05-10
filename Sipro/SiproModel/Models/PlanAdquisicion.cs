@@ -68,8 +68,13 @@ namespace SiproModel.Models
 	    public virtual Int32? nog { get; set; }
 	    [Column("TIPO_REVISION")]
 	    public virtual Int32? tipoRevision { get; set; }
+<<<<<<< Updated upstream
 		public virtual TipoAdquisicion tipoAdquisicions { get; set; }
 		public virtual CategoriaAdquisicion categoriaAdquisicions { get; set; }
+=======
+		public virtual CategoriaAdquisicion categoriaAdquisicions { get; set; }
+		public virtual TipoAdquisicion tipoAdquisicions { get; set; }
+>>>>>>> Stashed changes
 		public virtual IEnumerable<PlanAdquisicion> planadquisicions { get; set; }
 	}
 }

@@ -47,8 +47,8 @@ namespace SiproModel.Models
 	    [Column("FECHA_ACTUALIZACION")]
 	    public virtual DateTime? fechaActualizacion { get; set; }
 	    public virtual Int32 estado { get; set; }
-		public virtual RiesgoTipo riesgoTipos { get; set; }
 		public virtual Colaborador colaboradors { get; set; }
+		public virtual RiesgoTipo riesgoTipos { get; set; }
 		public virtual IEnumerable<Riesgo> riesgoes { get; set; }
 	}
 }

@@ -38,9 +38,9 @@ namespace SiproModel.Models
 	    [Column("TIPO_MONEDAID")]
 	    [ForeignKey("TipoMoneda")]
         public virtual Int32 tipoMonedaid { get; set; }
-		public virtual Proyecto proyectos { get; set; }
-		public virtual DesembolsoTipo desembolsoTipos { get; set; }
 		public virtual TipoMoneda tipoMonedas { get; set; }
+		public virtual DesembolsoTipo desembolsoTipos { get; set; }
+		public virtual Proyecto proyectos { get; set; }
 		public virtual IEnumerable<Desembolso> desembolsoes { get; set; }
 	}
 }

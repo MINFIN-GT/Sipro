@@ -27,8 +27,13 @@ namespace SiproModel.Models
 	    public virtual DateTime? fechaCreacion { get; set; }
 	    [Column("FECHA_ACTUALIZACION")]
 	    public virtual DateTime? fechaActualizacion { get; set; }
+<<<<<<< Updated upstream
 		public virtual Prestamo prestamos { get; set; }
 		public virtual Usuario usuarios { get; set; }
+=======
+		public virtual Usuario usuarios { get; set; }
+		public virtual Prestamo prestamos { get; set; }
+>>>>>>> Stashed changes
 		public virtual IEnumerable<PrestamoUsuario> prestamousuarios { get; set; }
 	}
 }
