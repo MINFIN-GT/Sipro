@@ -41,7 +41,6 @@ C:/Users/pedro/git/Sipro/Sipro/Sipro/bin/Debug/netcoreapp2.0/SiproModel.pdb
 C:/Users/pedro/git/Sipro/Sipro/Sipro/obj/Debug/netcoreapp2.0/Sipro.csproj.CopyComplete
 C:/Users/pedro/git/Sipro/Sipro/Sipro/obj/Debug/netcoreapp2.0/Sipro.csprojResolveAssemblyReference.cache
 C:/Users/pedro/git/Sipro/Sipro/Sipro/bin/Debug/netcoreapp2.0/SiproModel.dll.config
-/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/Sipro/obj/Debug/netcoreapp2.0/Sipro.csprojResolveAssemblyReference.cache
 /Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/Sipro/obj/Debug/netcoreapp2.0/Sipro.csproj.CoreCompileInputs.cache
 /Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/Sipro/obj/Debug/netcoreapp2.0/Sipro.AssemblyInfoInputs.cache
 /Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/Sipro/obj/Debug/netcoreapp2.0/Sipro.AssemblyInfo.cs

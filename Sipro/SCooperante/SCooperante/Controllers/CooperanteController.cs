@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using SiproModel.Models;
+using SiproModelCore.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using System.IO;
@@ -37,7 +37,7 @@ namespace Sipro.Controllers
 			var provider = DataProtectionProvider.Create(new DirectoryInfo(@"\SIPRO\"));
 
             //Get a data protector to use with either approach
-            var dataProtector = provider.CreateProtector(typeof(CookieAuthenticationMiddleware).FullName, "MyCookie", "v2");
+            /*var dataProtector = provider.CreateProtector(typeof(CookieAuthenticationMiddleware).FullName, "MyCookie", "v2");
 
 
             //Get the decrypted cookie as plain text
@@ -49,7 +49,7 @@ namespace Sipro.Controllers
 
             //Get the decrypted cookie as a Authentication Ticket
             TicketDataFormat ticketDataFormat = new TicketDataFormat(dataProtector);
-            AuthenticationTicket ticket = ticketDataFormat.Unprotect(cookieValue);
+            AuthenticationTicket ticket = ticketDataFormat.Unprotect(cookieValue);*/
 
 		}
 
