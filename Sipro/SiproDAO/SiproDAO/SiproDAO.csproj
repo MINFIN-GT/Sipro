@@ -12,8 +12,4 @@
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.4.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\SiproModel\SiproModel.csproj" />
-  </ItemGroup>
-
 </Project>

@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sipro", "Sipro\Sipro.csproj", "{BE1FA8C7-8086-4A94-9498-D7A38404D5DB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sipro", "Sipro\Sipro.csproj", "{BE1FA8C7-8086-4A94-9498-D7A38404D5DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCooperante", "SCooperante\SCooperante\SCooperante.csproj", "{004B0E1B-1D18-48B4-8D91-ABC61C80B09D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiproDAO", "SiproDAO\SiproDAO\SiproDAO.csproj", "{A3A710A9-34C5-40F0-BA36-6FBCC705FB9A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiproModel", "SiproModel\SiproModel.csproj", "{B4FF5881-C2E8-4FB5-9876-984B8E6107D6}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SiproDAO", "SiproDAO\SiproDAO\SiproDAO.csproj", "{66BB583D-F8D1-4D12-949E-B2D4E5E81C38}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCooperante", "SCooperante\SCooperante\SCooperante.csproj", "{E0BC0CBD-E2CF-4E6E-9D31-73E1C7FA2098}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,18 +21,18 @@ Global
 		{BE1FA8C7-8086-4A94-9498-D7A38404D5DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE1FA8C7-8086-4A94-9498-D7A38404D5DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE1FA8C7-8086-4A94-9498-D7A38404D5DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{004B0E1B-1D18-48B4-8D91-ABC61C80B09D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{004B0E1B-1D18-48B4-8D91-ABC61C80B09D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{004B0E1B-1D18-48B4-8D91-ABC61C80B09D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{004B0E1B-1D18-48B4-8D91-ABC61C80B09D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3A710A9-34C5-40F0-BA36-6FBCC705FB9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3A710A9-34C5-40F0-BA36-6FBCC705FB9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3A710A9-34C5-40F0-BA36-6FBCC705FB9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3A710A9-34C5-40F0-BA36-6FBCC705FB9A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B4FF5881-C2E8-4FB5-9876-984B8E6107D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B4FF5881-C2E8-4FB5-9876-984B8E6107D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4FF5881-C2E8-4FB5-9876-984B8E6107D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4FF5881-C2E8-4FB5-9876-984B8E6107D6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{66BB583D-F8D1-4D12-949E-B2D4E5E81C38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{66BB583D-F8D1-4D12-949E-B2D4E5E81C38}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{66BB583D-F8D1-4D12-949E-B2D4E5E81C38}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{66BB583D-F8D1-4D12-949E-B2D4E5E81C38}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E0BC0CBD-E2CF-4E6E-9D31-73E1C7FA2098}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E0BC0CBD-E2CF-4E6E-9D31-73E1C7FA2098}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E0BC0CBD-E2CF-4E6E-9D31-73E1C7FA2098}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E0BC0CBD-E2CF-4E6E-9D31-73E1C7FA2098}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

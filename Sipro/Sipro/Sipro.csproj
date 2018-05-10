@@ -38,9 +38,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SiproModel\SiproModel.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Remove="Utilities\Identity\CustomRoleManager.cs" />
     <Compile Remove="Utilities\Identity\RolePermissionStore.cs" />
   </ItemGroup>
