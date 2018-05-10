@@ -49,9 +49,4 @@
   <ItemGroup>
     <ProjectReference Include="..\SiproModel\SiproModel.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="SiproModel">
-      <HintPath>..\..\..\SiproModel\obj\Debug\SiproModel.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 </Project>
