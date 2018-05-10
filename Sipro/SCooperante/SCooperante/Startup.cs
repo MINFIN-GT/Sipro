@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
 using Dapper;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using SiproDAO.Utilities;
 using SiproModel.Models;
 
@@ -36,6 +33,8 @@ namespace SCooperante
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+			services.AddDataProtection().DisableAutomaticKeyGeneration().PersistKeysToFileSystem(new DirectoryInfo(@"/SIPRO"));
+        
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
