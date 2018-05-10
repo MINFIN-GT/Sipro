@@ -14,6 +14,8 @@ using Sipro.Utilities.Identity;
 using SiproModel.Models;
 using System.Net;
 using Sipro.Dao;
+using Microsoft.AspNetCore.DataProtection;
+using System.IO;
 
 namespace Sipro
 {
@@ -147,6 +149,10 @@ namespace Sipro
             services.AddMvc();
             services.AddDistributedMemoryCache();
 
+			services.AddDataProtection()
+				.SetApplicationName("sipro")
+					.PersistKeysToFileSystem(new DirectoryInfo(@"/SIPRO"));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -172,6 +178,8 @@ namespace Sipro
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+
 
 
         }
