@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Sipro.Controllers
 {
+    [Authorize]
     [Produces("application/json")]
     [Route("/api/[controller]/[action]/{codigo?}")]
     public class CooperanteController : Controller
@@ -27,7 +28,7 @@ namespace Sipro.Controllers
 
         // GET api/Cooperante/Cooperantes
         [HttpGet]
-        //[Authorize("Cooperantes - Visualizar")]
+        [Authorize("Cooperantes - Visualizar")]
         public IActionResult Cooperantes()
         {
             List<Cooperante> cooperantes = Dao.CooperanteDAO.getCooperantes();

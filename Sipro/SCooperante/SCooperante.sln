@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCooperante", "SCooperante\SCooperante.csproj", "{BD788B53-93AA-47DD-8105-4B854A28DEBA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCooperante", "SCooperante\SCooperante.csproj", "{BD788B53-93AA-47DD-8105-4B854A28DEBA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SiproDAO", "..\..\..\OneDrive\Documents\Visual Studio 2017\Projects\SiproDAO\SiproDAO\SiproDAO.csproj", "{486F34B3-5DBD-43F1-BCA3-A72FEB6E936B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SiproDAO", "..\SiproDAO\SiproDAO\SiproDAO.csproj", "{4EAB8F04-86B5-4C8A-AA87-91F7CF6187C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiproModel", "..\..\Sipro\Sipro\SiproModel\SiproModel.csproj", "{B4FF5881-C2E8-4FB5-9876-984B8E6107D6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiproModel", "..\SiproModel\SiproModel.csproj", "{B4FF5881-C2E8-4FB5-9876-984B8E6107D6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +19,10 @@ Global
 		{BD788B53-93AA-47DD-8105-4B854A28DEBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD788B53-93AA-47DD-8105-4B854A28DEBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD788B53-93AA-47DD-8105-4B854A28DEBA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{486F34B3-5DBD-43F1-BCA3-A72FEB6E936B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{486F34B3-5DBD-43F1-BCA3-A72FEB6E936B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{486F34B3-5DBD-43F1-BCA3-A72FEB6E936B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{486F34B3-5DBD-43F1-BCA3-A72FEB6E936B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EAB8F04-86B5-4C8A-AA87-91F7CF6187C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EAB8F04-86B5-4C8A-AA87-91F7CF6187C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EAB8F04-86B5-4C8A-AA87-91F7CF6187C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EAB8F04-86B5-4C8A-AA87-91F7CF6187C2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B4FF5881-C2E8-4FB5-9876-984B8E6107D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B4FF5881-C2E8-4FB5-9876-984B8E6107D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4FF5881-C2E8-4FB5-9876-984B8E6107D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
