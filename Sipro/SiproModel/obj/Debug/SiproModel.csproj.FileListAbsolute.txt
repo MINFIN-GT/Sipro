@@ -69,4 +69,3 @@ C:\Users\pedro\git\Sipro\Sipro\SiproModel\obj\Debug\SiproModel.csproj.CoreCompil
 C:\Users\pedro\git\Sipro\Sipro\SiproModel\obj\Debug\SiproModel.csproj.CopyComplete
 C:\Users\pedro\git\Sipro\Sipro\SiproModel\obj\Debug\SiproModel.dll
 C:\Users\pedro\git\Sipro\Sipro\SiproModel\obj\Debug\SiproModel.pdb
-C:\Users\pedro\git\Sipro\Sipro\SiproModel\obj\Debug\SiproModel.csprojResolveAssemblyReference.cache
