@@ -12,12 +12,12 @@ using SiproDAO.Dao;
 
 namespace Sipro.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Produces("application/json")]
     [Route("/api/[controller]/[action]/{codigo?}")]
     public class CooperanteController : Controller
     {
-  private class stcooperante
+        private class stcooperante
         {
             public int codigo;
             public String nombre;
@@ -28,6 +28,12 @@ namespace Sipro.Controllers
             public String fechaCreacion;
             public String fechaActualizacion;
             public int estado;
+        }
+
+        [HttpGet]
+        public IActionResult mensaje()
+        {
+            return Ok("hola");
         }
 
         // GET api/Cooperante/Cooperantes

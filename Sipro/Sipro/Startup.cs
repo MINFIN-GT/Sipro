@@ -38,13 +38,13 @@ namespace Sipro
 
         public void ConfigureServices(IServiceCollection services)
         {
-            string[] files = Directory.GetFiles(@"/SIPRO");
-            foreach (string file in files)
-				if (file.Contains("key-"))
-                    File.Delete(file);
+            string[] files = Directory.GetFiles(@"C:\SIPRO");
+    //        foreach (string file in files)
+				//if (file.Contains("key-"))
+    //                File.Delete(file);
 
 			services.AddDataProtection()
-                    .PersistKeysToFileSystem(new DirectoryInfo(@"/SIPRO"))
+                    .PersistKeysToFileSystem(new DirectoryInfo(@"C:\SIPRO"))
                     .SetApplicationName("SiproApp");
 			
 			services.AddIdentity<User, Rol>()

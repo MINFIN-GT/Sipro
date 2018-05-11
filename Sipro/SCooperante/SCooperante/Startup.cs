@@ -43,7 +43,7 @@ namespace SCooperante
                 .AddUserManager<CustomUserManager>();
 
 			services.AddDataProtection()
-					.PersistKeysToFileSystem(new DirectoryInfo(@"/SIPRO"))
+					.PersistKeysToFileSystem(new DirectoryInfo(@"C:\SIPRO"))
                 .SetApplicationName("SiproApp");
 
             services.ConfigureApplicationCookie(options => {
