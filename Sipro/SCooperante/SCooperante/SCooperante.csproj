@@ -28,6 +28,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\SiproDAO\SiproDAO\SiproDAO.csproj" />
     <ProjectReference Include="..\..\SiproModelCore\SiproModelCore\SiproModelCore.csproj" />
+    <ProjectReference Include="..\..\Identity\Identity.csproj" />
   </ItemGroup>
 
 </Project>

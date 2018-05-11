@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Sipro.Utilities
+namespace Utilities
 {
     public class Utils
     {

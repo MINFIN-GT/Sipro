@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Sipro.Dao;
+using SiproDAO.Dao;
 using SiproModelCore.Models;
 
-namespace Sipro.Utilities.Identity
+namespace Identity
 {
     public class UserPasswordStore : IUserPasswordStore<User>
     {

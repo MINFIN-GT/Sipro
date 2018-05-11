@@ -9,13 +9,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Sipro.Utilities;
-using Sipro.Utilities.Identity;
+using Identity;
 using SiproModelCore.Models;
 using System.Net;
 using Sipro.Dao;
 using Microsoft.AspNetCore.DataProtection;
 using System.IO;
+using Utilities;
 
 namespace Sipro
 {
@@ -38,39 +38,30 @@ namespace Sipro
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSession(options =>
-            {
-                options.Cookie.HttpOnly = true;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.IdleTimeout = TimeSpan.FromMinutes(10);
-            });
+            string[] files = Directory.GetFiles(@"/SIPRO");
+            foreach (string file in files)
+				if (file.Contains("key-"))
+                    File.Delete(file);
 
-            services.AddIdentity<User, Rol>()
+			services.AddDataProtection()
+                    .PersistKeysToFileSystem(new DirectoryInfo(@"/SIPRO"))
+                    .SetApplicationName("SiproApp");
+			
+			services.AddIdentity<User, Rol>()
                 .AddRoleStore<RoleStore>()
                 .AddUserStore<UserPasswordStore>()
                 .AddDefaultTokenProviders()
                 .AddUserManager<CustomUserManager>();
 
-			/*services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = IdentityConstants.ApplicationScheme;
-            });*/
-
-			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme);
-
             services.ConfigureApplicationCookie(options =>
             {
-				string[] files = Directory.GetFiles("/SIPRO/key*");
-				foreach (string file in files)
-					File.Delete(file);
-				options.DataProtectionProvider = DataProtectionProvider.Create(new DirectoryInfo(@"\SIPRO\"));
-                options.LoginPath = "/SignIn";
-                options.LogoutPath = "/Login/Out";
+				options.LoginPath = "/login";
+                options.LogoutPath = "/api/Login/Out";
                 options.AccessDeniedPath = "/accesodenegado";
-				options.Cookie.Domain = "localhost";
-                options.Cookie.HttpOnly = true;
-                //options.Cookie.Name = "Sipro.Cookie";
-				options.Cookie.Expiration = TimeSpan.FromMinutes(60);
+				options.Cookie.HttpOnly = true;
+                options.Cookie.Name = ".AspNet.Sipro";
+				//options.Cookie.Domain = "localhost";
+                options.Cookie.Expiration = TimeSpan.FromMinutes(60);
                 options.Events.OnRedirectToLogin = context =>
                 {
                     if (context.Request.Path.StartsWithSegments("/api") &&
@@ -100,43 +91,6 @@ namespace Sipro
                 };
             });
 			        
-            /*services.ConfigureApplicationCookie(options =>
-            {
-                options.LoginPath = "/SignIn";
-                options.LogoutPath = "/Login/Out";
-                options.AccessDeniedPath = "/AccesoDenegado";
-                //options.Cookie.HttpOnly = true;
-                //options.Cookie.Name = "Sipro.Cookie";
-                //options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
-                options.Events.OnRedirectToLogin = context =>
-                {
-                    if (context.Request.Path.StartsWithSegments("/api") &&
-                        context.Response.StatusCode == (int)HttpStatusCode.OK)
-                    {
-                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                    }
-                    else
-                    {
-                        context.Response.Redirect(context.RedirectUri);
-                    }
-                    return Task.CompletedTask;
-                };
-
-                options.Events.OnRedirectToAccessDenied = context =>
-                {
-                    if (context.Request.Path.StartsWithSegments("/api") &&
-                        context.Response.StatusCode == (int)HttpStatusCode.OK)
-                    {
-                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                    }
-                    else
-                    {
-                        context.Response.Redirect(context.RedirectUri);
-                    }
-                    return Task.CompletedTask;
-                };
-            });*/
-
             services.AddScoped<IUserClaimsPrincipalFactory<User>, ApplicationClaimsIdentityFactory>();
 
             services.AddAuthorization(options =>
@@ -153,10 +107,6 @@ namespace Sipro
 
             services.AddMvc();
             services.AddDistributedMemoryCache();
-
-			services.AddDataProtection()
-				.SetApplicationName("sipro")
-					.PersistKeysToFileSystem(new DirectoryInfo(@"/SIPRO"));
             
         }
 

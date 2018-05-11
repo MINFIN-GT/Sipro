@@ -4,7 +4,7 @@ using System.Configuration;
 using Oracle.ManagedDataAccess.Client;
 using System.Data.Common;
 
-namespace SiproDAO.Utilities
+namespace Utilities
 {
     public class OracleContext
     {
@@ -15,7 +15,7 @@ namespace SiproDAO.Utilities
         public OracleContext()
         {
             connectionString = ConfigurationManager.ConnectionStrings["oracle"].ConnectionString;
-            connectionStringHistory = ConfigurationManager.ConnectionStrings["oracle_history"].ConnectionString;
+            connectionStringHistory = ConfigurationManager.ConnectionStrings["oracle"].ConnectionString;
         }
 
 

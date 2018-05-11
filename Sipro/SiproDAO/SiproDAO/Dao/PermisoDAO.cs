@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using SiproModelCore.Models;
-using Utilities;
 using System.Data.Common;
 using Dapper;
+using Utilities;
 
-namespace Sipro.Dao
+namespace SiproDAO.Dao
 {
     public class PermisoDAO
     {

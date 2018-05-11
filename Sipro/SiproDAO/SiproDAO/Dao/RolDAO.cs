@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SiproModelCore.Models;
-using SiproDAO.Utilities;
 using System.Data.Common;
 using Dapper;
+using Utilities;
 
-namespace Sipro.Dao
+namespace SiproDAO.Dao
 {
     public class RolDAO
     {

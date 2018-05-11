@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Dapper;
 
-namespace Sipro.Utilities
+namespace Utilities
 {
     public class ColumnAttributeTypeMapper<T> : FallbackTypeMapper
     {

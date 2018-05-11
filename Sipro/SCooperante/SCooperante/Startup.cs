@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SiproDAO.Utilities;
-using SiproModel.Models;
+using Utilities;
+using SiproModelCore.Models;
+using Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace SCooperante
 {
@@ -32,8 +34,29 @@ namespace SCooperante
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+			
+
+			services.AddIdentity<User, Rol>()
+                .AddRoleStore<RoleStore>()
+                .AddUserStore<UserPasswordStore>()
+                .AddDefaultTokenProviders()
+                .AddUserManager<CustomUserManager>();
+
+			services.AddDataProtection()
+					.PersistKeysToFileSystem(new DirectoryInfo(@"/SIPRO"))
+                .SetApplicationName("SiproApp");
+
+            services.ConfigureApplicationCookie(options => {
+                options.Cookie.Name = ".AspNet.Sipro";
+            });
+
             services.AddMvc();
-			services.AddDataProtection().DisableAutomaticKeyGeneration().PersistKeysToFileSystem(new DirectoryInfo(@"/SIPRO"));
+
+			services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Cooperantes - Visualizar",
+                                  policy => policy.RequireClaim("sipro/permission", "Cooperantes - Visualizar"));
+            });
         
         }
 
@@ -44,7 +67,7 @@ namespace SCooperante
             {
                 app.UseDeveloperExceptionPage();
             }
-
+			app.UseAuthentication();
             app.UseMvc();
         }
     }

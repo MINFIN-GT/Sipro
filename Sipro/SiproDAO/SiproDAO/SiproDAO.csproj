@@ -14,5 +14,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\SiproModelCore\SiproModelCore\SiproModelCore.csproj" />
+    <ProjectReference Include="..\..\Utilities\Utilities.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Utilities\CLogger.cs" />
+    <Compile Remove="Utilities\ColumnAttributeTypeMapper.cs" />
+    <Compile Remove="Utilities\OracleContext.cs" />
   </ItemGroup>
 </Project>

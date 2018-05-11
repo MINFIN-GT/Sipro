@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Sipro.Utilities.Identity
+namespace Identity
 {
     public class SignIn<TUser> : SignInManager<TUser> where TUser : class
     {

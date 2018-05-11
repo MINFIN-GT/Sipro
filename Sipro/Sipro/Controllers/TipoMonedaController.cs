@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SiproModelCore.Models;
 using Sipro.Dao;
-using Sipro.Utilities;
+using Utilities;
 
 namespace Sipro.Controllers
 {

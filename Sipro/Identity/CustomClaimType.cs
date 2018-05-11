@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Sipro.Utilities.Identity
+namespace Identity
 {
     public class CustomClaimType
     {

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using SiproModelCore.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using System.IO;
-using System.Text;
 using Microsoft.AspNetCore.Authentication;
+using SiproModelCore.Models;
+using SiproDAO.Dao;
 
 namespace Sipro.Controllers
 {
@@ -30,35 +30,12 @@ namespace Sipro.Controllers
             public int estado;
         }
 
-		public CooperanteController(){
-			//Get the encrypted cookie value
-            string cookieValue = HttpContext.Request.Cookies["MyCookie"];
-
-			var provider = DataProtectionProvider.Create(new DirectoryInfo(@"\SIPRO\"));
-
-            //Get a data protector to use with either approach
-            /*var dataProtector = provider.CreateProtector(typeof(CookieAuthenticationMiddleware).FullName, "MyCookie", "v2");
-
-
-            //Get the decrypted cookie as plain text
-            //UTF8Encoding specialUtf8Encoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
-            //byte[] protectedBytes = Base64UrlTextEncoder.Decode(cookieValue);
-            //byte[] plainBytes = dataProtector.Unprotect(protectedBytes);
-            //string plainText = specialUtf8Encoding.GetString(plainBytes);
-
-
-            //Get the decrypted cookie as a Authentication Ticket
-            TicketDataFormat ticketDataFormat = new TicketDataFormat(dataProtector);
-            AuthenticationTicket ticket = ticketDataFormat.Unprotect(cookieValue);*/
-
-		}
-
         // GET api/Cooperante/Cooperantes
         [HttpGet]
         [Authorize("Cooperantes - Visualizar")]
         public IActionResult Cooperantes()
         {
-            List<Cooperante> cooperantes = Dao.CooperanteDAO.getCooperantes();
+            List<Cooperante> cooperantes = CooperanteDAO.getCooperantes();
             List<stcooperante> stcooperantes = new List<stcooperante>();
             foreach (Cooperante cooperante in cooperantes)
             {
@@ -102,7 +79,7 @@ namespace Sipro.Controllers
             }
             else
             {
-                cooperante = Dao.CooperanteDAO.getCooperantePorCodigo((int)value.codigo);
+                cooperante = CooperanteDAO.getCooperantePorCodigo((int)value.codigo);
                 cooperante.codigo = (int)value.codigo;
                 cooperante.descripcion = (string)value.descripcion;
                 cooperante.ejercicio = (int)value.ejercicio;
@@ -113,7 +90,7 @@ namespace Sipro.Controllers
                 cooperante.usuarioActualizo = User.Identity.Name;
             }
 
-            bool result = Dao.CooperanteDAO.guardarCooperante(cooperante);
+            bool result = CooperanteDAO.guardarCooperante(cooperante);
 
             string response_text = String.Join("", "{ \"success\": ", (result ? true : false), ", "
                 , "\"id\": " + cooperante.codigo, ","
@@ -134,9 +111,9 @@ namespace Sipro.Controllers
             string response_text = "";
             if (codigo > 0)
             {
-                Cooperante cooperante = Dao.CooperanteDAO.getCooperantePorCodigo(codigo);
+                Cooperante cooperante = CooperanteDAO.getCooperantePorCodigo(codigo);
                 cooperante.usuarioActualizo = User.Identity.Name;
-                response_text = String.Join("", "{ \"success\": ", (Dao.CooperanteDAO.eliminarCooperante(cooperante) ? true : false), " }");
+                response_text = String.Join("", "{ \"success\": ", (CooperanteDAO.eliminarCooperante(cooperante) ? true : false), " }");
             }
             else
                 response_text = "{ \"success\": false }";
@@ -149,7 +126,7 @@ namespace Sipro.Controllers
         //[Authorize(Policy = "Cooperantes - Visualizar")]
         public IActionResult CooperantesPagina([FromBody]dynamic value)
         {
-            List<Cooperante> cooperantes = Dao.CooperanteDAO.getCooperantesPagina((int)value.pagina, (int)value.numerocooperantes, (string)value.filtro_codigo,
+            List<Cooperante> cooperantes = CooperanteDAO.getCooperantesPagina((int)value.pagina, (int)value.numerocooperantes, (string)value.filtro_codigo,
                 (string)value.filtro_nombre, (string)value.filtro_usuario_creo, (string)value.filtro_fecha_creacion, (string)value.columna_ordenada,
                 (string)value.orden_direccion);
 
@@ -180,7 +157,7 @@ namespace Sipro.Controllers
         //[Authorize(Policy = "Cooperantes - Visualizar")]
         public IActionResult TotalCooperantes([FromBody]dynamic value)
         {
-            string response_text = String.Join("", "{ \"success\": true, \"totalcooperantes\":", Dao.CooperanteDAO.getTotalCooperantes((string)value.filtro_codigo,
+            string response_text = String.Join("", "{ \"success\": true, \"totalcooperantes\":", CooperanteDAO.getTotalCooperantes((string)value.filtro_codigo,
                 (string)value.filtro_nombre, (string)value.filtro_usuario_creo, (string)value.filtro_fecha_creacion), " }");
 
             return Ok(response_text);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SiproModelCore.Models;
-using Sipro.Utilities;
+using Utilities;
 using System.Data.Common;
 using Dapper;
 

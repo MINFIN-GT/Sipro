@@ -4,11 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using System.Data.Common;
-using SiproDAO.Utilities;
+using Utilities;
 using SiproModelCore.Models;
 using Newtonsoft.Json;
 
-namespace Sipro.Dao
+namespace SiproDAO.Dao
 {
     public class UnidadEjecutoraDAO
     {

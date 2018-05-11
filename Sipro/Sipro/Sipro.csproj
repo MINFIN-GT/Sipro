@@ -14,15 +14,12 @@
   <ItemGroup>
     <PackageReference Include="Dapper" Version="1.50.4" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.2" />
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.12.0-beta2" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.4.1" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Https" Version="2.0.2" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.4.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,15 +40,23 @@
   <ItemGroup>
     <Compile Remove="Utilities\Identity\CustomRoleManager.cs" />
     <Compile Remove="Utilities\Identity\RolePermissionStore.cs" />
+    <Compile Remove="Utilities\CLogger.cs" />
+    <Compile Remove="Utilities\ColumnAttributeTypeMapper.cs" />
+    <Compile Remove="Utilities\OracleContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Utilities\.DS_Store" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SiproModelCore\SiproModelCore\SiproModelCore.csproj" />
     <ProjectReference Include="..\SiproDAO\SiproDAO\SiproDAO.csproj" />
+    <ProjectReference Include="..\Utilities\Utilities.csproj" />
+    <ProjectReference Include="..\Identity\Identity.csproj" />
+    <ProjectReference Include="..\SiproModelCore\SiproModelCore\SiproModelCore.csproj" />
   </ItemGroup>
 </Project>

@@ -2,7 +2,7 @@
 using System.Reflection;
 using log4net;
 
-namespace SiproDAO.Utilities
+namespace Utilities
 {
     public class CLogger
     {

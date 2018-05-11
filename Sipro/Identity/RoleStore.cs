@@ -3,9 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using SiproModelCore.Models;
-using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 
-namespace Sipro.Utilities.Identity
+namespace Identity
 {
     public class RoleStore : IRoleStore<Rol>
     {

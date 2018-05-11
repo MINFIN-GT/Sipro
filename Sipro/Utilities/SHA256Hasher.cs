@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Sipro.Utilities.Identity
+namespace Utilities
 {
   public static class SHA256Hasher
   {

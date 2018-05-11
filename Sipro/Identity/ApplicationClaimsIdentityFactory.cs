@@ -3,10 +3,10 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using Sipro.Dao;
+using SiproDAO.Dao;
 using SiproModelCore.Models;
 
-namespace Sipro.Utilities.Identity
+namespace Identity
 {
     public class ApplicationClaimsIdentityFactory : UserClaimsPrincipalFactory<User>
     {
