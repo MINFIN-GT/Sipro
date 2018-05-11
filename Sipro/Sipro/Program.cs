@@ -19,7 +19,8 @@ namespace Sipro
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .Build();
+		           .UseStartup<Startup>()
+		           .UseUrls("http://0.0.0.0:60000")
+                   .Build();
     }
 }

@@ -40,14 +40,18 @@ namespace SCooperante
                 .AddRoleStore<RoleStore>()
                 .AddUserStore<UserPasswordStore>()
                 .AddDefaultTokenProviders()
-                .AddUserManager<CustomUserManager>();
+                .AddUserManager<CustomUserManager>()
+			    .AddDefaultTokenProviders();
 
 			services.AddDataProtection()
-					.PersistKeysToFileSystem(new DirectoryInfo(@"C:\SIPRO"))
-                .SetApplicationName("SiproApp");
+					.PersistKeysToFileSystem(new DirectoryInfo(@"/SIPRO"))
+			        .SetApplicationName("SiproApp")
+			        .DisableAutomaticKeyGeneration();
 
             services.ConfigureApplicationCookie(options => {
                 options.Cookie.Name = ".AspNet.Sipro";
+				options.Cookie.HttpOnly = true;
+               
             });
 
             services.AddMvc();
