@@ -44,7 +44,8 @@ namespace SCooperante
 
 			services.AddDataProtection()
 					.PersistKeysToFileSystem(new DirectoryInfo(@"/SIPRO"))
-                .SetApplicationName("SiproApp");
+			        .SetApplicationName("SiproApp")
+			        .DisableAutomaticKeyGeneration();
 
             services.ConfigureApplicationCookie(options => {
                 options.Cookie.Name = ".AspNet.Sipro";
