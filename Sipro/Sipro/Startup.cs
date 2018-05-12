@@ -63,7 +63,8 @@ namespace Sipro
 				options.Cookie.HttpOnly = true;
                 options.Cookie.Name = ".AspNet.Sipro";
 				//options.Cookie.Domain = "localhost";
-				options.Cookie.Expiration = TimeSpan.FromMinutes(60);
+
+                options.Cookie.Expiration = TimeSpan.FromMinutes(60);
                 options.Events.OnRedirectToLogin = context =>
                 {
                     if (context.Request.Path.StartsWithSegments("/api") &&
@@ -107,7 +108,6 @@ namespace Sipro
                 }
             });
 
-            
             services.AddDistributedMemoryCache();
             
         }
