@@ -31,11 +31,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
     <Folder Include="Pages\" />
     <Folder Include="wwwroot\app\" />
     <Folder Include="wwwroot\app\components\" />
     <Folder Include="wwwroot\app\components\login\" />
+    <Folder Include="wwwroot\app\components\main\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Utilities\Identity\CustomRoleManager.cs" />
@@ -46,12 +46,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Remove="app.config" />
+    <Content Remove="wwwroot\app\components\main\main.controller.jsp" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Utilities\.DS_Store" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="wwwroot\app\components\main\main.controller.js" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SiproDAO\SiproDAO\SiproDAO.csproj" />

@@ -1,0 +1,190 @@
+﻿@using System.Security.Claims
+@{
+    var project_tag="";
+}
+@if (User.Identity.IsAuthenticated)
+{
+<nav ng-class="{'showbar' : !hidebar, 'hidebar': hidebar}" class="navbar navbar-inverse navbar-fixed-top">
+    <script type="text/javascript"></script>
+    <div class="container">
+        <input type="checkbox" id="navbar-toggle-cbox" />
+        <div class="navbar-header">
+            <script type="text/javascript"></script>
+            <label for="navbar-toggle-cbox" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </label>
+            <a class="navbar-brand" href="/main"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> </a>
+        </div>
+        <div class="collapse navbar-collapse" id="navBar">
+            <ul class="nav navbar-nav">
+                <li>
+                    @if (Identity.Check.Permission(User.Identity, "Programas - Visualizar"))
+                    {
+            <a href="/main#!/prestamo"><span class="glyphicon" aria-hidden="true"></span>Préstamos</a>
+}
+                </li>
+                @if (Identity.Check.Permission(User.Identity, "Configuraciones - Visualizar"))
+                {
+            <li uib-dropdown>
+                <a href="#" uib-dropdown-toggle><span class="glyphicon" aria-hidden="true"></span>Configuraciones <b class="caret"></b></a>
+                <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="split-button">
+                    <li class="dropdown-submenu">
+                        <a><span class="glyphicon" aria-hidden="true"></span> Catálogos</a>
+                        <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
+                            @if (Identity.Check.Permission(User.Identity, "Actividad Tipos - Visualizar"))
+                            {
+                    <li role="menuitem"><a href="/main#!/actividadtipo"> Tipo de Actividad</a></li>
+}
+                            @if (Identity.Check.Permission(User.Identity, "Componente Tipos - Visualizar"))
+                            {
+                    <li role="menuitem"><a href="/main#!/componentetipo"> Tipo de Componente</a></li>
+}
+                            @if (Identity.Check.Permission(User.Identity, "Componente Tipos - Visualizar"))
+                            {
+                    <li role="menuitem"><a href="/main#!/subcomponentetipo"> Tipo de Subcomponente</a></li>
+}
+                            @if (Identity.Check.Permission(User.Identity, "Hito Tipos - Visualizar"))
+                            {
+                    <li role="menuitem"><a href="/main#!/hitotipo"> Tipo de Hito</a></li>
+}
+                            @if (Identity.Check.Permission(User.Identity, "Meta Tipos - Visualizar"))
+                            {
+                    <li role="menuitem"><a href="/main#!/metatipo"> Tipo de Meta</a></li>
+}
+                            @if (Identity.Check.Permission(User.Identity, "Producto Tipos - Visualizar"))
+                            {
+                    <li role="menuitem"><a href="/main#!/productotipo"> Tipo de Producto</a></li>
+}
+                            @if (Identity.Check.Permission(User.Identity, "Préstamo o Proyecto Tipos - Visualizar"))
+                            {
+                    <li role="menuitem"><a href="/main#!/peptipo"> Tipo de @project_tag</a></li>
+}
+                            @if (Identity.Check.Permission(User.Identity, "Préstamo o Proyecto Tipos - Visualizar"))
+                            {
+                    <li role="menuitem"><a href="/main#!/prestamotipo"> Tipo de Préstamo</a></li>
+}
+                            @if (Identity.Check.Permission(User.Identity, "Riesgo Tipos - Visualizar"))
+                            {
+                    <li role="menuitem"><a href="/main#!/riesgotipo"> Tipo de Riesgo</a></li>
+}
+                            @if (Identity.Check.Permission(User.Identity, "Subproducto Tipos - Visualizar"))
+                            {
+                    <li role="menuitem"><a href="/main#!/subproductotipo"> Tipo de Subproducto</a></li>
+}
+                            @if (Identity.Check.Permission(User.Identity, "Meta Unidades de Medida - Visualizar"))
+                            {
+                    <li role="menuitem"><a href="/main#!/unidadmedida"> Unidades de Medida</a></li>
+}
+                            @if (Identity.Check.Permission(User.Identity, "Categoría de Adquisiciones - Visualizar"))
+                            {
+                    <li role="menuitem"><a href="/main#!/categoriaadquisicion"> Categoría de Adquisiciones</a></li>
+}
+                            @if (Identity.Check.Permission(User.Identity, "Tipos de Adquisiciones - Visualizar"))
+                            {
+                    <li role="menuitem"><a href="/main#!/tipoadquisicion"> Tipo de Adquisiciones</a></li>
+}
+                            @if (Identity.Check.Permission(User.Identity, "Roles Unidad Ejecutora - Visualizar"))
+                            {
+                    <li role="menuitem"><a href="/main#!/rolunidadejecutora"> Roles de Unidad Ejecutora</a></li>
+}
+                        </ul>
+                    </li>
+                <li class="dropdown-submenu">
+                    <a><span class="glyphicon" aria-hidden="true"></span> Propiedades</a>
+                    <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
+                        @if (Identity.Check.Permission(User.Identity, "Programa Propiedades - Visualizar"))
+                        {
+                <li role="menuitem"><a href="/main#!/prestamopropiedad"> Préstamo</a></li>
+}
+                        @if (Identity.Check.Permission(User.Identity, "Actividad Propiedades - Visualizar"))
+                        {
+                <li role="menuitem"><a href="/main#!/actividadpropiedad"> Actividad</a></li>
+}
+                        @if (Identity.Check.Permission(User.Identity, "Componente Propiedades - Visualizar"))
+                        {
+                <li role="menuitem"><a href="/main#!/componentepropiedad"> Componente</a></li>
+}
+                        @if (Identity.Check.Permission(User.Identity, "Componente Propiedades - Visualizar"))
+                        {
+                <li role="menuitem"><a href="/main#!/subcomponentepropiedad"> Subcomponente</a></li>
+}
+                        @if (Identity.Check.Permission(User.Identity, "Producto Propiedades - Visualizar"))
+                        {
+                <li role="menuitem"><a href="/main#!/productopropiedad"> Producto</a></li>
+}
+                        @if (Identity.Check.Permission(User.Identity, "Subproducto Propiedades - Visualizar"))
+                        {
+                <li role="menuitem"><a href="/main#!/subproductopropiedad"> Subproducto</a></li>
+}
+                        @if (Identity.Check.Permission(User.Identity, "Préstamo o Proyecto Propiedades - Visualizar"))
+                        {
+                <li role="menuitem"><a href="/main#!/peptipo"> @project_tag</a></li>
+}
+                        @if (Identity.Check.Permission(User.Identity, "Riesgo Propiedades - Visualizar"))
+                        {
+                <li role="menuitem"><a href="/main#!/riesgopropiedad"> Riesgo</a></li>
+}
+                    </ul>
+                </li>
+           </ul>
+           </li>
+}
+                @if (Identity.Check.Permission(User.Identity, "Reportes"))
+                {
+            <li uib-dropdown>
+                <a href="#" uib-dropdown-toggle><span class="glyphicon" aria-hidden="true"></span> Reportes <b class="caret"></b></a>
+                <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
+                    <li role="menuitem"><a href="/main#!/avanceactividades">Avance de Actividades e Hitos</a></li>
+                    <li role="menuitem"><a href="/main#!/prestamoindicadores">Avance de Indicadores</a></li>
+                    <li role="menuitem"><a href="/main#!/prestamometas">Avance de Metas</a></li>
+                    <li role="menuitem"><a href="/main#!/cargatrabajo">Carga de Trabajo</a></li>
+                    <li role="menuitem"><a href="/main#!/administracionTransaccional/">Detalle de Transacciones</a></li>
+                    <li role="menuitem"><a href="/main#!/desembolsos">Desembolsos</a></li>
+                    <li role="menuitem"><a href="/main#!/informacionPresupuestaria">Ejecución presupuestaria</a></li>
+                    <li role="menuitem"><a href="/main#!/flujocaja">Flujo de Caja</a></li>
+                    <li role="menuitem"><a href="/main#!/gestionadquisiciones">Gestión de adquisiciones</a></li>
+                    <li role="menuitem"><a href="/main#!/informeGeneralPEP">Informe General del PEP</a></li>
+                    <li role="menuitem"><a href="/main#!/planejecucion">Informe General del Préstamo</a></li>
+                    <li role="menuitem"><a href="/main#!/mapa">Mapa</a></li>
+                    <li role="menuitem"><a href="/main#!/matrizriesgo">Matriz de Riesgos</a></li>
+                    <li role="menuitem"><a href="/main#!/matrizraci">Matriz RACI</a></li>
+                    <li role="menuitem"><a href="/main#!/reportefinancieroadquisiciones">Reporte Financiero de Adquisiciones</a></li>
+                    <li role="menuitem"><a href="/main#!/planadquisiciones">Plan de Adquisiciones</a></li>
+                    <li role="menuitem"><a href="/main#!/planestructuralproyecto">Plan de Ejecución</a></li>
+                </ul>
+            </li>
+}
+                @if (Identity.Check.Permission(User.Identity, "Usuarios - Visualizar") || Identity.Check.Permission(User.Identity, "Colaboradores - Visualizar"))
+                {
+            <li uib-dropdown>
+                <a href="" uib-dropdown-toggle><span class="glyphicon" aria-hidden="true"></span> Usuarios <b class="caret"></b></a>
+                <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
+                    @if (Identity.Check.Permission(User.Identity, "Usuarios - Visualizar"))
+                    {
+                <li role="menuitem"><a href="/main#!/usuarios">Usuarios</a></li>
+}
+                    @if (Identity.Check.Permission(User.Identity, "Colaboradores - Visualizar"))
+                    {
+                    <li role="menuitem"><a href="/main#!/colaborador">Colaboradores</a></li>
+}
+                </ul>
+            </li>
+}
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/main#!/usuarioinfo"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>Mi info.</a></li>
+                <li><a href="/login"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>Entrar</a></li>
+                <li><a href="/api/Login/Out"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Salir</a></li>
+                <li><a><span class="glyphicon glyphicon-chevron-up" aria-hidden="true" ng-click="hideBarFromMenu()"></span> </a></li>
+            </ul>
+        </div>
+        <div ng-hide="!hidebar" class='triangle-down alineado' ng-click="showBarFromMenu()">
+            <p>
+                <i class='fa fa-chevron-down fa-12x isDown' id='toggle'></i>
+            </p>
+        </div>
+    </div>
+</nav>
+}

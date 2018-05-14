@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Dapper;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Identity;
+using Microsoft.AspNetCore.DataProtection;
 using SiproModelCore.Models;
+using Identity;
 using System.Net;
 using Sipro.Dao;
-using Microsoft.AspNetCore.DataProtection;
 using System.IO;
 using Utilities;
+using Dapper;
+
 
 namespace Sipro
 {
@@ -38,7 +37,7 @@ namespace Sipro
 
         public void ConfigureServices(IServiceCollection services)
         {
-            string[] files = Directory.GetFiles(@"C:\SIPRO");
+            string[] files = Directory.GetFiles(@"/SIPRO");
     //        foreach (string file in files)
 				//if (file.Contains("key-"))
     //                File.Delete(file);
@@ -46,7 +45,7 @@ namespace Sipro
 			services.AddMvc();
 
 			services.AddDataProtection()
-                    .PersistKeysToFileSystem(new DirectoryInfo(@"C:\SIPRO"))
+                    .PersistKeysToFileSystem(new DirectoryInfo(@"/SIPRO"))
                     .SetApplicationName("SiproApp");
 			
 			services.AddIdentity<User, Rol>()
