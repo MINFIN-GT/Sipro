@@ -22,6 +22,7 @@ namespace SiproDAO.Dao
             }
             catch (Exception e)
             {
+                ret = null;
                 CLogger.write("1", "CooperanteDAO.class", e);
             }
             return ret;
@@ -123,6 +124,7 @@ namespace SiproDAO.Dao
             }
             catch (Exception e)
             {
+                ret = null;
                 CLogger.write("6", "CooperanteDAO.class", e);
             }
             return ret;

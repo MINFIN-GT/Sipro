@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Dapper;
 using System.Data.Common;
 using Utilities;
@@ -32,14 +30,9 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    ret = db.Query<UnidadEjecutora, Entidad, UnidadEjecutora>("SELECT ue.*, e.entidad FROM UNIDAD_EJECUTORA ue INNER JOIN ENTIDAD e ON e.entidad=ue.entidadentidad " +
+                    ret = db.QueryFirstOrDefault<UnidadEjecutora>("SELECT ue.* FROM UNIDAD_EJECUTORA ue " +
                         "WHERE ue.unidad_ejecutora=:unidadEjecutora AND ue.entidadentidad=:entidad AND ue.ejercicio=:ejercicio",
-                        (ue, e) =>
-                        {
-                            ue.entidads = e;
-                            return ue;
-                        },
-                            new { unidadEjecutora = unidadEjecutora, entidad = entidad, ejercicio = ejercicio }, splitOn: "entidad").ElementAtOrDefault<UnidadEjecutora>(0);
+                        new { unidadEjecutora = unidadEjecutora, entidad = entidad, ejercicio = ejercicio });
                 }
             }
             catch (Exception e)
@@ -90,6 +83,8 @@ namespace SiproDAO.Dao
                 pojo = new UnidadEjecutora();
                 pojo.nombre = nombre;
                 pojo.entidadentidad = idEntidad;
+                pojo.ejercicio = ejercicio;
+                pojo.unidadEjecutora = id;
 
                 try
                 {
@@ -114,6 +109,8 @@ namespace SiproDAO.Dao
             {
                 pojo.nombre = nombre;
                 pojo.entidadentidad = idEntidad;
+                pojo.ejercicio = ejercicio;
+                pojo.unidadEjecutora = id;
 
                 try
                 {
@@ -137,16 +134,11 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    string query = String.Join(" ", "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT ue.*, e.entidad FROM UNIDAD_EJECUTORA ue " +
-                        "INNER JOIN ENTIDAD e ON e.entidad=ue.entidadentidad " + 
+                    string query = String.Join(" ", "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT ue.* FROM UNIDAD_EJECUTORA ue " +
                         "WHERE ue.entidadentidad=:entidad and ue.ejercicio=:ejercicio");
                     query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + registros + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + registros + ") + 1)");
-                    ret = db.Query<UnidadEjecutora, Entidad, UnidadEjecutora>(query,
-                        (ue, e) =>
-                        {
-                            ue.entidads = e;
-                            return ue;
-                        }, new { entidad = entidad, ejercicio = ejercicio }, splitOn: "entidad").AsList<UnidadEjecutora>();
+                    ret = db.Query<UnidadEjecutora>(query,
+                        new { entidad = entidad, ejercicio = ejercicio }).AsList<UnidadEjecutora>();
                 }
             }
             catch (Exception e)
@@ -164,15 +156,10 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    string query = String.Join(" ", "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT ue.*, e.entidad FROM UNIDAD_EJECUTORA ue " +
-                        "INNER JOIN ENTIDAD e ON e.entidad=ue.entidadentidad WHERE ue.entidadentidad=:entidadId AND ue.ejercicio=:ejercicio");
+                    string query = String.Join(" ", "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT ue.* FROM UNIDAD_EJECUTORA ue " +
+                        "WHERE ue.entidadentidad=:entidadId AND ue.ejercicio=:ejercicio");
                     query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + registros + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + registros + ") + 1)");
-                    ret = db.Query<UnidadEjecutora,Entidad, UnidadEjecutora>(query, 
-                        (ue, e) =>
-                        {
-                            ue.entidads = e;
-                            return ue;
-                        }, new { entidadId = entidadId, ejercicio = ejercicio }, splitOn: "entidad").AsList<UnidadEjecutora>();
+                    ret = db.Query<UnidadEjecutora>(query, new { entidadId = entidadId, ejercicio = ejercicio }).AsList<UnidadEjecutora>();
                 }
             }
             catch (Exception e)
@@ -267,14 +254,9 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    ret = db.Query<UnidadEjecutora, Entidad, UnidadEjecutora>("SELECT ue.*, e.entidad FROM UNIDAD_EJECUTORA ue INNER JOIN ENTIDAD e ON e.entidad=ue.entidadentidad " +
+                    ret = db.Query<UnidadEjecutora>("SELECT ue.* FROM UNIDAD_EJECUTORA ue INNER JOIN ENTIDAD e ON e.entidad=ue.entidadentidad " +
                         "WHERE ue.entidadentidad=:entidad AND ue.ejercicio=:ejercicio",
-                        (ue, e) =>
-                        {
-                            ue.entidads = e;
-                            return ue;
-                        },
-                        new { entidad = entidad, ejercicio = ejercicio }, splitOn: "entidad").AsList<UnidadEjecutora>();
+                        new { entidad = entidad, ejercicio = ejercicio }).AsList<UnidadEjecutora>();
                 }
             }
             catch (Exception e)

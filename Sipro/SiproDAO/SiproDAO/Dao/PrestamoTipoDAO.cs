@@ -58,12 +58,14 @@ namespace SiproDAO.Dao
                     long existe = db.ExecuteScalar<long>("SELECT COUNT(*) FROM PRESTAMO_TIPO WHERE id=:id", new { id = prestamotipo.id });
                     if (existe > 0)
                     {
-                        int result = db.Execute("UPDATE PRESTAMO_TIPO SET nombre=:nombre, descripcion=:descripcion, usuarioCreo=:usuario_creo, usuarioActualizo=:usuario_actual, fechaCreacion=:fecha_creacion, fechaActualizacion=:fecha_actualizacion, estado=:estado WHERE id=:id", prestamotipo);
+                        int result = db.Execute("UPDATE PRESTAMO_TIPO SET nombre=:nombre, descripcion=:descripcion, usuario_creo=:usuarioCreo, usuario_actualizo=:usuarioActualizo, fecha_creacion=:fechaCreacion, fecha_actualizacion=:fechaActualizacion, estado=:estado WHERE id=:id", prestamotipo);
                         ret = result > 0 ? true : false;
                     }
                     else
                     {
-                        int result = db.Execute("INSERT INTO PRESTAMO_TIPO VALUES (:id, :nombre, :descripcion, :usuario_creo, :usuario_actualizo, :fecha_creacion, :fecha_actualizacion, :estado)", prestamotipo);
+                        int sequenceId = db.ExecuteScalar<int>("SELECT seq_prestamo_tipo.nextval FROM DUAL");
+                        prestamotipo.id = sequenceId;
+                        int result = db.Execute("INSERT INTO PRESTAMO_TIPO VALUES (:id, :nombre, :descripcion, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion, :estado)", prestamotipo);
                         ret = result > 0 ? true : false;
                     }
                 }
@@ -115,7 +117,7 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    String query = "SELECT count(p.id) FROM PrestamoTipo p WHERE p.estado=1 ";
+                    String query = "SELECT count(p.id) FROM PRESTAMO_TIPO p WHERE p.estado=1 ";
                     String query_a = "";
                     if (filtro_nombre != null && filtro_nombre.Trim().Length > 0)
                         query_a = String.Join("", query_a, " p.nombre LIKE '%", filtro_nombre, "%' ");
@@ -145,8 +147,8 @@ namespace SiproDAO.Dao
                 using (DbConnection db = new OracleContext().getConnection())
                 {
                     prestamoTipo.estado = 0;
-                    guardarPrestamoTipo(prestamoTipo);
-                    ret = true;
+                    bool eliminado = guardarPrestamoTipo(prestamoTipo);
+                    ret = eliminado;
                 }
             }
             catch (Exception e)

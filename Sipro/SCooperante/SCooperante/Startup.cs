@@ -10,6 +10,8 @@ using Utilities;
 using SiproModelCore.Models;
 using Identity;
 using Microsoft.AspNetCore.Identity;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace SCooperante
 {
@@ -18,15 +20,10 @@ namespace SCooperante
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            Configuration = configuration;
-            Type[] types = typeof(Usuario).Assembly.GetTypes();
-            foreach (Type type in types)
-            {
-                var mapper = (SqlMapper.ITypeMap)Activator
+            var mapper = (SqlMapper.ITypeMap)Activator
                 .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
-                                .MakeGenericType(type));
-                SqlMapper.SetTypeMap(type, mapper);
-            }
+                .MakeGenericType(typeof(Cooperante)));
+            SqlMapper.SetTypeMap(typeof(Cooperante), mapper);
         }
 
         public IConfiguration Configuration { get; }
@@ -50,16 +47,45 @@ namespace SCooperante
             services.ConfigureApplicationCookie(options => {
                 options.Cookie.Name = ".AspNet.Sipro";
 				options.Cookie.HttpOnly = true;
-               
+
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    if (context.Response.StatusCode == (int)HttpStatusCode.OK)
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    }
+                    else
+                    {
+                        context.Response.Redirect(context.RedirectUri);
+                    }
+                    return Task.CompletedTask;
+                };
+
+                options.Events.OnRedirectToAccessDenied = context =>
+                {
+                    if (context.Response.StatusCode == (int)HttpStatusCode.OK)
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    }
+                    else
+                    {
+                        context.Response.Redirect(context.RedirectUri);
+                    }
+                    return Task.CompletedTask;
+                };
             });
 
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("Cooperantes - Visualizar",
                                   policy => policy.RequireClaim("sipro/permission", "Cooperantes - Visualizar"));
+                options.AddPolicy("Cooperantes - Crear",
+                                  policy => policy.RequireClaim("sipro/permission", "Cooperantes - Crear"));
+                options.AddPolicy("Cooperantes - Eliminar",
+                                  policy => policy.RequireClaim("sipro/permission", "Cooperantes - Eliminar"));
+                options.AddPolicy("Cooperantes - Editar",
+                                  policy => policy.RequireClaim("sipro/permission", "Cooperantes - Editar"));
             });
-
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
