@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "STipoMoneda", "STipoMoneda\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPrestamo", "SPrestamo\SPrestamo.csproj", "{14B93A42-86A5-4BEC-AFF6-55202D1D099B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SLogin", "SLogin\SLogin.csproj", "{CCEE0A75-77EC-46E9-8B51-964797BEF5D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{14B93A42-86A5-4BEC-AFF6-55202D1D099B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14B93A42-86A5-4BEC-AFF6-55202D1D099B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14B93A42-86A5-4BEC-AFF6-55202D1D099B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCEE0A75-77EC-46E9-8B51-964797BEF5D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCEE0A75-77EC-46E9-8B51-964797BEF5D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCEE0A75-77EC-46E9-8B51-964797BEF5D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCEE0A75-77EC-46E9-8B51-964797BEF5D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
