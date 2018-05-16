@@ -10,11 +10,11 @@ using Microsoft.AspNetCore.DataProtection;
 using SiproModelCore.Models;
 using Identity;
 using System.Net;
-using Sipro.Dao;
+using SiproDAO.Dao;
 using System.IO;
 using Utilities;
 using Dapper;
-
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 
 namespace Sipro
 {
@@ -125,16 +125,23 @@ namespace Sipro
             }
 
             app.UseStaticFiles();
-
-            app.UseAuthentication();
             
-			app.UseMvc(routes =>
+			app.UseAuthentication();
+            
+			/*app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
-            });
+            });*/
 
+			app.UseSpa(spa =>
+			{
+				spa.Options.SourcePath = "ClientApp";
+				if(env.IsDevelopment()){
+					spa.UseAngularCliServer(npmScript: "start");
+				}
+			});
 
 
 
