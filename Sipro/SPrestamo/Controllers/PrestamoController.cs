@@ -352,6 +352,14 @@ namespace SPrestamo.Controllers
                 prestamo.usuarioCreo = User.Identity.Name;
 
                 bool guardado = PrestamoDAO.guardarPrestamo(prestamo);
+                return Ok(new {
+                    success = guardado,
+                    id = prestamo.id,
+                    usuarioCreo = prestamo.usuarioCreo,
+                    fechaCreacion = prestamo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
+                    usuarioActualizo = prestamo.usuarioActualizo,
+                    fechaActualizacion = prestamo.fechaActualizacion != null ? prestamo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
+                });
             }
             catch (Exception e)
             {
