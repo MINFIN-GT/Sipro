@@ -108,6 +108,11 @@ namespace Sipro
             });
 
             services.AddDistributedMemoryCache();
+
+			services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/dist";
+            });
             
         }
 
@@ -128,12 +133,14 @@ namespace Sipro
             
 			app.UseAuthentication();
             
-			/*app.UseMvc(routes =>
+			app.UseMvc(routes =>
             {
-                routes.MapRoute(
+				routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });*/
+                    template: "/api/{controller=Home}/{action=Index}/{id?}");
+				
+				routes.MapSpaFallbackRoute("spa-fallback", null);
+            });
 
 			app.UseSpa(spa =>
 			{
@@ -142,9 +149,7 @@ namespace Sipro
 					spa.UseAngularCliServer(npmScript: "start");
 				}
 			});
-
-
-
+            
         }
     }
 }
