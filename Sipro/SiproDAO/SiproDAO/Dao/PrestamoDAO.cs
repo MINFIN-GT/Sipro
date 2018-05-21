@@ -300,12 +300,13 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        public static bool actualizarMatriz(int prestamoId, List<stunidadejecutora> unidadesEjecutoras)//Se debe crear otro schema de sipro_history
+        public static bool actualizarMatriz(int prestamoId, Object lstunidadesEjecutoras)//Se debe crear otro schema de sipro_history
         {
             bool actualizada = false;
 
             try
             {
+                List<stunidadejecutora> unidadesEjecutoras = (List<stunidadejecutora>)lstunidadesEjecutoras;
                 if (unidadesEjecutoras != null)
                 {
                     int version = getVersionHistoriaMatriz(prestamoId);
@@ -564,23 +565,42 @@ namespace SiproDAO.Dao
 
             if (componente == null)
             {
-
                 ComponenteTipo componenteTipo = ComponenteTipoDAO.getComponenteTipoPorId(1);
-
                 AcumulacionCosto acumulacionCosto = AcumulacionCostoDAO.getAcumulacionCostoById(3);
 
-                componente = new Componente(acumulacionCosto, componenteSigade, componenteTipo, proyecto, proyecto.getUnidadEjecutora(), nombreComponente
-                        , descripcion, usuario, null, new Date(), null, 1, null, null, null, null, null, null, null, null,
-                        null, null, null, proyecto.getFechaInicio(), proyecto.getFechaFin(), 1
-                        , "d", null, null, 1, 1, fPrestamo, donacion, nacional, null, null, 0, null, null, null, null);
+                componente = new Componente();
+                componente.acumulacionCostos = acumulacionCosto;
+                componente.acumulacionCostoid = acumulacionCosto.id;
+                componente.componenteSigades = componenteSigade;
+                componente.componenteSigadeid = componenteSigade.id;
+                componente.componenteTipos = componenteTipo;
+                componente.componenteTipoid = componenteTipo.id;
+                componente.proyectos = proyecto;
+                componente.proyectoid = proyecto.id;
+                componente.unidadEjecutoras = proyecto.unidadEjecutoras;
+                componente.nombre = nombreComponente;
+                componente.descripcion = descripcion;
+                componente.usuarioCreo = usuario;
+                componente.fechaCreacion = DateTime.Now;
+                componente.estado = 1;
+                componente.fechaInicio = proyecto.fechaInicio;
+                componente.fechaFin = proyecto.fechaFin;
+                componente.duracion = 1;
+                componente.duracionDimension = "d";
+                componente.nivel = 1;
+                componente.esDeSigade = 1;
+                componente.fuentePrestamo = fPrestamo;
+                componente.fuenteDonacion = donacion;
+                componente.fuenteNacional = nacional;
+                componente.inversionNueva = 0;
             }
             else
             {
-                componente.setFuentePrestamo(fPrestamo);
-                componente.setFuenteDonacion(donacion);
-                componente.setFuenteNacional(nacional);
-                componente.setFechaActualizacion(new Date());
-                componente.setUsuarioCreo(usuario);
+                componente.fuentePrestamo = fPrestamo;
+                componente.fuenteDonacion = donacion;
+                componente.fuenteNacional = nacional;
+                componente.fechaActualizacion = DateTime.Now;
+                componente.usuarioActualizo = usuario;
             }
             return ComponenteDAO.guardarComponente(componente, false);
         }

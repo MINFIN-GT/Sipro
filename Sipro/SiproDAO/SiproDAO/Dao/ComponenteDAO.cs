@@ -54,296 +54,347 @@ namespace SiproDAO.Dao
 			session.close();
 		}
 		return ret;
-	}
+	}*/
 
-	public static boolean guardarComponente(Componente Componente, boolean calcular_valores_agregados){
-		boolean ret = false;
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			session.beginTransaction();
-			if(Componente.getId()==null || Componente.getId()<1){
-				session.saveOrUpdate(Componente);
-				session.flush();
-				Componente.setTreePath(Componente.getProyecto().getTreePath()+""+(10000000+Componente.getId()));
-			}
-			session.saveOrUpdate(Componente);
-			Usuario usuario = UsuarioDAO.getUsuario(Componente.getUsuarioCreo());
-			ComponenteUsuario cu = new ComponenteUsuario(new ComponenteUsuarioId(Componente.getId(), Componente.getUsuarioCreo()), Componente, usuario);
-			session.saveOrUpdate(cu);
-			if(!Componente.getUsuarioCreo().equals("admin")){
-				ComponenteUsuario cu_admin = new ComponenteUsuario(new ComponenteUsuarioId(Componente.getId(), "admin"), Componente, UsuarioDAO.getUsuario("admin"));
-				session.saveOrUpdate(cu_admin);
-			}
-			session.getTransaction().commit();
-			session.close();
-			
-			if(calcular_valores_agregados){
-				ProyectoDAO.calcularCostoyFechas(Integer.parseInt(Componente.getTreePath().substring(0,8))-10000000);
-			}
-			ret = true;
-		}
-		catch(Throwable e){
-			CLogger.write("3", ComponenteDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
+        public static bool guardarComponente(Componente Componente, bool calcular_valores_agregados)
+        {
+            bool ret = false;
+            int guardado = 0;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    if (Componente.id < 1)
+                    {
+                        int sequenceId = db.ExecuteScalar<int>("SELECT seq_componente.nextval FROM DUAL");
+                        Componente.id = sequenceId;
+                        guardado = db.Execute("INSERT INTO COMPONENTE VALUES (:id, :nombre, :descripcion, :proyectoid, :componenteTipoid, :usuarioCreo, " +
+                            ":usuarioActualizo, :fechaCreacion, :fechaActualizacion, :estado, :ueunidadEjecutora, :snip, :programa, :subprograma, :proyecto, :actividad, " +
+                            ":obra, :latitud, :longitud, :costo, :acumulacionCostoid, :renglon, :ubicacionGeografica, :fechaInicio, :fechaFin, :duracion, :duracionDimension, " +
+                            ":orden, :treepath, :nivel, :ejercicio, :entidad, :esDeSigade, :fuentePrestamo, :fuenteDonacion, :fuenteNacional, :componenteSigadeid, :fechaInicioReal, " +
+                            ":fechaFinReal, :inversionNueva)", Componente);
 
-	public static boolean eliminarComponente(Componente Componente){
-		boolean ret = false;
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			Componente.setEstado(0);
-			Componente.setOrden(null);
-			session.beginTransaction();
-			session.update(Componente);
-			session.getTransaction().commit();
-			ret = true;
-		}
-		catch(Throwable e){
-			CLogger.write("4", ComponenteDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
+                        if (guardado > 0)
+                        {
+                            Componente.treepath = Componente.proyectos.treepath + "" + (10000000 + Componente.id);
+                        }
+                    }
 
-	public static boolean eliminarTotalComponente(Componente Componente){
-		boolean ret = false;
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			session.beginTransaction();
-			session.delete(Componente);
-			session.getTransaction().commit();
-			ret = true;
-		}
-		catch(Throwable e){
-			CLogger.write("5", ComponenteDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
+                    guardado = db.Execute("UPDATE COMPONENTE SET nombre=:nombre, descripcion=:descripcion, proyectoid=:proyectoid, componente_tipoid=:componenteTipoid, " +
+                        "usuario_creo=:usuarioCreo, usuario_actualizo=:usuarioActualizo, fecha_creacion=:fechaCreacion, fecha_actualizacion=:fechaActualizacion, estado=:estado, " +
+                        "ueunidad_ejecutora=:ueunidadEjecutora, snip=:snip, programa=:programa, subprograma=:subprograma, proyecto=:proyecto, actividad=:actividad, obra=:obra, " +
+                        "latitud=:latitud, longitud=:longitud, costo=:costo, acumulacion_costoid=:acumulacion_costoid, renglon=:renglon, ubicacion_geografica=:ubicacionGeografica, " +
+                        "fecha_inicio=:fechaInicio, fecha_fin=:fechaFin, duracion=:duracion, duracion_dimension=:duracionDimension, orden=:orden, treepath=:treepath, nivel=:nivel, " +
+                        "ejercicio=:ejercicio, entidad=:entidad, es_de_sigade=:esDeSigade, fuente_prestamo=:fuentePrestamo, fuente_donacion=:fuenteDonacion, fuente_nacional=:fuenteNacional, " +
+                        "componente_sigadeid=:componenteSigadeid, fecha_inicio_real=:fechaInicioReal, fecha_fin_real=:fechaFinReal, inversion_nueva=:inversionNueva WHERE id=:id", Componente);
 
-	public static List<Componente> getComponentesPagina(int pagina, int numeroComponentes, String usuario){
-		List<Componente> ret = new ArrayList<Componente>();
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			Query<Componente> criteria = session.createQuery("SELECT c FROM Componente c WHERE estado = 1 AND c.id in (SELECT u.id.componenteid from ComponenteUsuario u where u.id.usuario=:usuario )",Componente.class);
-			criteria.setParameter("usuario", usuario);
-			criteria.setFirstResult(((pagina-1)*(numeroComponentes)));
-			criteria.setMaxResults(numeroComponentes);
-			ret = criteria.getResultList();
-		}
-		catch(Throwable e){
-			CLogger.write("6", ComponenteDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
+                    if (guardado > 0)
+                    {
+                        Usuario usuario = UsuarioDAO.getUsuario(Componente.usuarioCreo);
+                        ComponenteUsuario cu = new ComponenteUsuario();
+                        cu.componenteid = Componente.id;
+                        cu.usuario = Componente.usuarioCreo;
+                        cu.componentes = Componente;
+                        cu.usuarioCreo = usuario.usuario;
 
-	public static Long getTotalComponentes(String usuario){
-		Long ret=0L;
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			Query<Long> conteo = session.createQuery("SELECT count(c.id) FROM Componente c WHERE c.estado=1 AND  c.id in (SELECT u.id.componenteid from ComponenteUsuario u where u.id.usuario=:usuario )",Long.class);
-			conteo.setParameter("usuario", usuario);
-			ret = conteo.getSingleResult();
-		} catch(Throwable e){
-			CLogger.write("7", ComponenteDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
+                        int existe = db.ExecuteScalar<int>("SELECT COUNT(*) FROM COMPONENTE_USUARIO WHERE componenteid=:id AND usuario=:usuario", new { id = cu.componenteid, usuario = cu.usuario });
 
-	public static List<Componente> getComponentesPaginaPorProyecto(int pagina, int numeroComponentes, int proyectoId,
-			String filtro_nombre, String filtro_usuario_creo, String filtro_fecha_creacion, String columna_ordenada, String orden_direccion, String usuario){
+                        if (existe > 0)
+                        {
+                            guardado = db.Execute("UPDATE COMPONENTE_USUARIO SET usuario_creo=:usuarioCreo, usuario_actualizo=:usuarioActualizo, fecha_creacion=:fechaCreacion, " +
+                                "fecha_actualizacion=:fechaActualizacion WHERE componenteid=:componenteid AND usuario=:usuario", cu);
+                        }
+                        else
+                        {
+                            guardado = db.Execute("INSERT INTO COMPONENTE_USUARIO(:componenteid, :usuario, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion)", cu);
+                        }
 
-		List<Componente> ret = new ArrayList<Componente>();
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
+                        if (guardado > 0 && !Componente.usuarioCreo.Equals("admin"))
+                        {
+                            ComponenteUsuario cu_admin = new ComponenteUsuario();
+                            cu_admin.componenteid = Componente.id;
+                            cu_admin.usuario = "admin";
+                            cu_admin.componentes = Componente;
+                            cu_admin.usuarioCreo = UsuarioDAO.getUsuario("admin").usuario;
 
-			String query = "SELECT c FROM Componente c WHERE estado = 1 AND c.proyecto.id = :proyId ";
-			String query_a="";
-			if(filtro_nombre!=null && filtro_nombre.trim().length()>0)
-				query_a = String.join("",query_a, " c.nombre LIKE '%",filtro_nombre,"%' ");
-			if(filtro_usuario_creo!=null && filtro_usuario_creo.trim().length()>0)
-				query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " c.usuarioCreo LIKE '%", filtro_usuario_creo,"%' ");
-			if(filtro_fecha_creacion!=null && filtro_fecha_creacion.trim().length()>0)
-				query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " str(date_format(c.fechaCreacion,'%d/%m/%YYYY')) LIKE '%", filtro_fecha_creacion,"%' ");
-			query = String.join(" ", query, (query_a.length()>0 ? String.join("","AND (",query_a,")") : ""));
-			query =String.join("",query," AND  c.id in (SELECT u.id.componenteid from ComponenteUsuario u where u.id.usuario=:usuario ) ");
-			query = columna_ordenada!=null && columna_ordenada.trim().length()>0 ? String.join(" ",query,"ORDER BY",columna_ordenada,orden_direccion ) : query;
-			Query<Componente> criteria = session.createQuery(query,Componente.class);
-			criteria.setParameter("proyId", proyectoId);
-			criteria.setParameter("usuario", usuario);
-			criteria.setFirstResult(((pagina-1)*(numeroComponentes)));
-			criteria.setMaxResults(numeroComponentes);
-			ret = criteria.getResultList();
-		}
-		catch(Throwable e){
-			CLogger.write("8", ComponenteDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
+                            existe = db.ExecuteScalar<int>("SELECT COUNT(*) FROM COMPONENTE_USUARIO WHERE componenteid=:id AND usuario=:usuario", new { id = cu_admin.componenteid, usuario = cu_admin.usuario });
+
+                            if (existe > 0)
+                            {
+                                guardado = db.Execute("UPDATE COMPONENTE_USUARIO SET usuario_creo=:usuarioCreo, usuario_actualizo=:usuarioActualizo, fecha_creacion=:fechaCreacion, " +
+                                    "fecha_actualizacion=:fechaActualizacion WHERE componenteid=:componenteid AND usuario=:usuario", cu_admin);
+                            }
+                            else
+                            {
+                                guardado = db.Execute("INSERT INTO COMPONENTE_USUARIO VALUES (:componenteid, :usuario, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion)", cu_admin);
+                            }
+
+                            if (guardado > 0 && calcular_valores_agregados)
+                            {
+                                ret = ProyectoDAO.calcularCostoyFechas(Convert.ToInt32(Componente.treepath.Substring(0, 8)) - 10000000);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("3", "ComponenteDAO.class", e);
+            }
+            return ret;
+        }
+
+        /*public static boolean eliminarComponente(Componente Componente){
+            boolean ret = false;
+            Session session = CHibernateSession.getSessionFactory().openSession();
+            try{
+                Componente.setEstado(0);
+                Componente.setOrden(null);
+                session.beginTransaction();
+                session.update(Componente);
+                session.getTransaction().commit();
+                ret = true;
+            }
+            catch(Throwable e){
+                CLogger.write("4", ComponenteDAO.class, e);
+            }
+            finally{
+                session.close();
+            }
+            return ret;
+        }
+
+        public static boolean eliminarTotalComponente(Componente Componente){
+            boolean ret = false;
+            Session session = CHibernateSession.getSessionFactory().openSession();
+            try{
+                session.beginTransaction();
+                session.delete(Componente);
+                session.getTransaction().commit();
+                ret = true;
+            }
+            catch(Throwable e){
+                CLogger.write("5", ComponenteDAO.class, e);
+            }
+            finally{
+                session.close();
+            }
+            return ret;
+        }
+
+        public static List<Componente> getComponentesPagina(int pagina, int numeroComponentes, String usuario){
+            List<Componente> ret = new ArrayList<Componente>();
+            Session session = CHibernateSession.getSessionFactory().openSession();
+            try{
+                Query<Componente> criteria = session.createQuery("SELECT c FROM Componente c WHERE estado = 1 AND c.id in (SELECT u.id.componenteid from ComponenteUsuario u where u.id.usuario=:usuario )",Componente.class);
+                criteria.setParameter("usuario", usuario);
+                criteria.setFirstResult(((pagina-1)*(numeroComponentes)));
+                criteria.setMaxResults(numeroComponentes);
+                ret = criteria.getResultList();
+            }
+            catch(Throwable e){
+                CLogger.write("6", ComponenteDAO.class, e);
+            }
+            finally{
+                session.close();
+            }
+            return ret;
+        }
+
+        public static Long getTotalComponentes(String usuario){
+            Long ret=0L;
+            Session session = CHibernateSession.getSessionFactory().openSession();
+            try{
+                Query<Long> conteo = session.createQuery("SELECT count(c.id) FROM Componente c WHERE c.estado=1 AND  c.id in (SELECT u.id.componenteid from ComponenteUsuario u where u.id.usuario=:usuario )",Long.class);
+                conteo.setParameter("usuario", usuario);
+                ret = conteo.getSingleResult();
+            } catch(Throwable e){
+                CLogger.write("7", ComponenteDAO.class, e);
+            }
+            finally{
+                session.close();
+            }
+            return ret;
+        }
+
+        public static List<Componente> getComponentesPaginaPorProyecto(int pagina, int numeroComponentes, int proyectoId,
+                String filtro_nombre, String filtro_usuario_creo, String filtro_fecha_creacion, String columna_ordenada, String orden_direccion, String usuario){
+
+            List<Componente> ret = new ArrayList<Componente>();
+            Session session = CHibernateSession.getSessionFactory().openSession();
+            try{
+
+                String query = "SELECT c FROM Componente c WHERE estado = 1 AND c.proyecto.id = :proyId ";
+                String query_a="";
+                if(filtro_nombre!=null && filtro_nombre.trim().length()>0)
+                    query_a = String.join("",query_a, " c.nombre LIKE '%",filtro_nombre,"%' ");
+                if(filtro_usuario_creo!=null && filtro_usuario_creo.trim().length()>0)
+                    query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " c.usuarioCreo LIKE '%", filtro_usuario_creo,"%' ");
+                if(filtro_fecha_creacion!=null && filtro_fecha_creacion.trim().length()>0)
+                    query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " str(date_format(c.fechaCreacion,'%d/%m/%YYYY')) LIKE '%", filtro_fecha_creacion,"%' ");
+                query = String.join(" ", query, (query_a.length()>0 ? String.join("","AND (",query_a,")") : ""));
+                query =String.join("",query," AND  c.id in (SELECT u.id.componenteid from ComponenteUsuario u where u.id.usuario=:usuario ) ");
+                query = columna_ordenada!=null && columna_ordenada.trim().length()>0 ? String.join(" ",query,"ORDER BY",columna_ordenada,orden_direccion ) : query;
+                Query<Componente> criteria = session.createQuery(query,Componente.class);
+                criteria.setParameter("proyId", proyectoId);
+                criteria.setParameter("usuario", usuario);
+                criteria.setFirstResult(((pagina-1)*(numeroComponentes)));
+                criteria.setMaxResults(numeroComponentes);
+                ret = criteria.getResultList();
+            }
+            catch(Throwable e){
+                CLogger.write("8", ComponenteDAO.class, e);
+            }
+            finally{
+                session.close();
+            }
+            return ret;
+        }
 
 
-	public static Long getTotalComponentesPorProyecto(int proyectoId,
-			String filtro_nombre,String filtro_usuario_creo,
-			String filtro_fecha_creacion, String usuario){
-		Long ret=0L;
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
+        public static Long getTotalComponentesPorProyecto(int proyectoId,
+                String filtro_nombre,String filtro_usuario_creo,
+                String filtro_fecha_creacion, String usuario){
+            Long ret=0L;
+            Session session = CHibernateSession.getSessionFactory().openSession();
+            try{
 
-			String query = "SELECT count(c.id) FROM Componente c WHERE c.estado=1 AND c.proyecto.id = :proyId ";
-			String query_a="";
-			if(filtro_nombre!=null && filtro_nombre.trim().length()>0)
-				query_a = String.join("",query_a, " c.nombre LIKE '%",filtro_nombre,"%' ");
-			if(filtro_usuario_creo!=null && filtro_usuario_creo.trim().length()>0)
-				query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " c.usuarioCreo LIKE '%", filtro_usuario_creo,"%' ");
-			if(filtro_fecha_creacion!=null && filtro_fecha_creacion.trim().length()>0)
-				query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " str(date_format(c.fechaCreacion,'%d/%m/%YYYY')) LIKE '%", filtro_fecha_creacion,"%' ");
-			query = String.join(" ", query, (query_a.length()>0 ? String.join("","AND (",query_a,")") : ""));
-			query = String.join("", query, " AND  c.id in (SELECT u.id.componenteid from ComponenteUsuario u where u.id.usuario=:usuario )");
-			Query<Long> conteo = session.createQuery(query,Long.class);
-			conteo.setParameter("proyId", proyectoId);
-			conteo.setParameter("usuario", usuario);
-			ret = conteo.getSingleResult();
-		}catch (NoResultException e){
-			
-		}catch(Throwable e){
-			CLogger.write("9", ComponenteDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
+                String query = "SELECT count(c.id) FROM Componente c WHERE c.estado=1 AND c.proyecto.id = :proyId ";
+                String query_a="";
+                if(filtro_nombre!=null && filtro_nombre.trim().length()>0)
+                    query_a = String.join("",query_a, " c.nombre LIKE '%",filtro_nombre,"%' ");
+                if(filtro_usuario_creo!=null && filtro_usuario_creo.trim().length()>0)
+                    query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " c.usuarioCreo LIKE '%", filtro_usuario_creo,"%' ");
+                if(filtro_fecha_creacion!=null && filtro_fecha_creacion.trim().length()>0)
+                    query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " str(date_format(c.fechaCreacion,'%d/%m/%YYYY')) LIKE '%", filtro_fecha_creacion,"%' ");
+                query = String.join(" ", query, (query_a.length()>0 ? String.join("","AND (",query_a,")") : ""));
+                query = String.join("", query, " AND  c.id in (SELECT u.id.componenteid from ComponenteUsuario u where u.id.usuario=:usuario )");
+                Query<Long> conteo = session.createQuery(query,Long.class);
+                conteo.setParameter("proyId", proyectoId);
+                conteo.setParameter("usuario", usuario);
+                ret = conteo.getSingleResult();
+            }catch (NoResultException e){
+
+            }catch(Throwable e){
+                CLogger.write("9", ComponenteDAO.class, e);
+            }
+            finally{
+                session.close();
+            }
+            return ret;
+        }
+
+        public static Componente getComponenteInicial(Integer proyectoId, String usuario, Session session){
+            Componente ret = null;
+            List<Componente> listRet = null;
+            try{
+                String query = "FROM Componente c where c.estado=1 and c.orden=1 and c.proyecto.id=:proyectoId and c.usuarioCreo=:usuario";
+                Query<Componente> criteria = session.createQuery(query, Componente.class);
+                criteria.setParameter("proyectoId", proyectoId);
+                criteria.setParameter("usuario", usuario);
+                listRet = criteria.getResultList();
+
+                ret = !listRet.isEmpty() ? listRet.get(0) : null;
+            } catch(Throwable e){
+                CLogger.write("10", ComponenteDAO.class, e);
+                session.getTransaction().rollback();
+                session.close();
+            }
+            return ret;
+        }
+
+        public static Componente getComponenteFechaMaxima(Integer proyectoId, String usuario, Session session){
+            Componente ret = null;
+            List<Componente> listRet = null;
+            try{
+                String query = "FROM Componente c where c.estado=1 and c.proyecto.id=:proyectoId and c.usuarioCreo=:usuario order by c.fechaFin desc";
+                Query<Componente> criteria = session.createQuery(query, Componente.class);
+                criteria.setMaxResults(1);
+                criteria.setParameter("proyectoId", proyectoId);
+                criteria.setParameter("usuario", usuario);
+
+                listRet = criteria.getResultList();
+
+                ret = !listRet.isEmpty() ? listRet.get(0) : null;
+            }catch (NoResultException e){
+
+            } catch(Throwable e){
+                CLogger.write("11", ComponenteDAO.class, e);
+                session.getTransaction().rollback();
+                session.close();
+            }
+            return ret;
+        }
+
+        public static List<Componente> getComponentesOrden(Integer proyectoId, String usuario, Session session){
+            List<Componente> ret = null;
+            try{
+                String query = String.join(" ", "SELECT c FROM Componente c where c.estado=1 and c.proyecto.id=:proyectoId");
+                query = String.join(" ", query, "AND c.id in (SELECT u.id.componenteid from ComponenteUsuario u where u.id.usuario=:usuario)");
+                Query<Componente> criteria = session.createQuery(query,Componente.class);
+                criteria.setParameter("proyectoId", proyectoId);
+                criteria.setParameter("usuario", usuario);
+                ret = criteria.getResultList();
+            }catch(Throwable e){
+                CLogger.write("12", ComponenteDAO.class, e);
+                session.getTransaction().rollback();
+                session.close();
+            }
+            return ret;
+        }
+
+        public static Componente getComponentePorIdOrden(int id, String usuario, Session session){
+            Componente ret = null;
+            List<Componente> listRet = null;
+            try{
+                Query<Componente> criteria = session.createQuery("FROM Componente where id=:id AND id in (SELECT u.id.componenteid from ComponenteUsuario u where u.id.usuario=:usuario )", Componente.class);
+                criteria.setParameter("id", id);
+                criteria.setParameter("usuario", usuario);
+                listRet = criteria.getResultList();
+
+                 ret = !listRet.isEmpty() ? listRet.get(0) : null;
+            } catch(Throwable e){
+                CLogger.write("13", ComponenteDAO.class, e);
+                session.getTransaction().rollback();
+                session.close();
+            }
+            return ret;
+        }
+
+        public static boolean guardarComponenteOrden(Componente Componente, Session session){
+            boolean ret = false;
+            try{
+                session.saveOrUpdate(Componente);
+                session.flush();
+                session.clear();
+                ret = true;
+            }
+            catch(Throwable e){
+                CLogger.write("14", ComponenteDAO.class, e);
+                session.getTransaction().rollback();
+                session.close();
+            }
+            return ret;
+        }*/
+
+        public static Componente getComponente(int id)
+        {
+            Componente ret = null;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    ret = db.QueryFirstOrDefault<Componente>("SELECT * FROM COMPONENTE WHERE id=:id", new { id = id });
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("15", "ComponenteDAO.class", e);
+            }
+            return ret;
+        }
 	
-	public static Componente getComponenteInicial(Integer proyectoId, String usuario, Session session){
-		Componente ret = null;
-		List<Componente> listRet = null;
-		try{
-			String query = "FROM Componente c where c.estado=1 and c.orden=1 and c.proyecto.id=:proyectoId and c.usuarioCreo=:usuario";
-			Query<Componente> criteria = session.createQuery(query, Componente.class);
-			criteria.setParameter("proyectoId", proyectoId);
-			criteria.setParameter("usuario", usuario);
-			listRet = criteria.getResultList();
-			
-			ret = !listRet.isEmpty() ? listRet.get(0) : null;
-		} catch(Throwable e){
-			CLogger.write("10", ComponenteDAO.class, e);
-			session.getTransaction().rollback();
-			session.close();
-		}
-		return ret;
-	}
-	
-	public static Componente getComponenteFechaMaxima(Integer proyectoId, String usuario, Session session){
-		Componente ret = null;
-		List<Componente> listRet = null;
-		try{
-			String query = "FROM Componente c where c.estado=1 and c.proyecto.id=:proyectoId and c.usuarioCreo=:usuario order by c.fechaFin desc";
-			Query<Componente> criteria = session.createQuery(query, Componente.class);
-			criteria.setMaxResults(1);
-			criteria.setParameter("proyectoId", proyectoId);
-			criteria.setParameter("usuario", usuario);
-			
-			listRet = criteria.getResultList();
-			
-			ret = !listRet.isEmpty() ? listRet.get(0) : null;
-		}catch (NoResultException e){
-			
-		} catch(Throwable e){
-			CLogger.write("11", ComponenteDAO.class, e);
-			session.getTransaction().rollback();
-			session.close();
-		}
-		return ret;
-	}
-	
-	public static List<Componente> getComponentesOrden(Integer proyectoId, String usuario, Session session){
-		List<Componente> ret = null;
-		try{
-			String query = String.join(" ", "SELECT c FROM Componente c where c.estado=1 and c.proyecto.id=:proyectoId");
-			query = String.join(" ", query, "AND c.id in (SELECT u.id.componenteid from ComponenteUsuario u where u.id.usuario=:usuario)");
-			Query<Componente> criteria = session.createQuery(query,Componente.class);
-			criteria.setParameter("proyectoId", proyectoId);
-			criteria.setParameter("usuario", usuario);
-			ret = criteria.getResultList();
-		}catch(Throwable e){
-			CLogger.write("12", ComponenteDAO.class, e);
-			session.getTransaction().rollback();
-			session.close();
-		}
-		return ret;
-	}
-	
-	public static Componente getComponentePorIdOrden(int id, String usuario, Session session){
-		Componente ret = null;
-		List<Componente> listRet = null;
-		try{
-			Query<Componente> criteria = session.createQuery("FROM Componente where id=:id AND id in (SELECT u.id.componenteid from ComponenteUsuario u where u.id.usuario=:usuario )", Componente.class);
-			criteria.setParameter("id", id);
-			criteria.setParameter("usuario", usuario);
-			listRet = criteria.getResultList();
-			 
-			 ret = !listRet.isEmpty() ? listRet.get(0) : null;
-		} catch(Throwable e){
-			CLogger.write("13", ComponenteDAO.class, e);
-			session.getTransaction().rollback();
-			session.close();
-		}
-		return ret;
-	}
-	
-	public static boolean guardarComponenteOrden(Componente Componente, Session session){
-		boolean ret = false;
-		try{
-			session.saveOrUpdate(Componente);
-			session.flush();
-			session.clear();
-			ret = true;
-		}
-		catch(Throwable e){
-			CLogger.write("14", ComponenteDAO.class, e);
-			session.getTransaction().rollback();
-			session.close();
-		}
-		return ret;
-	}
-	
-	public static Componente getComponente(int id){
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		Componente ret = null;
-		List<Componente> listRet = null;
-		try{
-			Query<Componente> criteria = session.createQuery("FROM Componente where id=:id", Componente.class);
-			criteria.setParameter("id", id);
-			 listRet = criteria.getResultList();
-			 
-			 ret = !listRet.isEmpty() ? listRet.get(0) : null;
-		} catch(Throwable e){
-			CLogger.write("15", ComponenteDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
-	
-	public static BigDecimal calcularCosto(Componente componente){
+	/*public static BigDecimal calcularCosto(Componente componente){
 		BigDecimal costo = new BigDecimal(0);
 		try{
 			Set<Producto> productos = componente.getProductos();

@@ -63,11 +63,11 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        /*public static bool guardarProyecto(Proyecto proyecto, bool calcular_valores_agregados)
+        public static bool guardarProyecto(Proyecto proyecto, bool calcular_valores_agregados)
         {
+            bool ret = false;
             try
-            {
-                bool ret = false;
+            { 
                 int result = 0;
                 using (DbConnection db = new OracleContext().getConnection())
                 {
@@ -115,6 +115,8 @@ namespace SiproDAO.Dao
                 CLogger.write("3", "ProyectoDAO.class", e);
                 return false;
             }
+
+            return ret;
         }
 
         /*public static Proyecto getProyectoPorId(int id, String usuario){
@@ -136,27 +138,26 @@ namespace SiproDAO.Dao
                 session.close();
             }
             return ret;
-        }
-        public static Proyecto getProyecto(int id){
+        }*/
 
-            Session session = CHibernateSession.getSessionFactory().openSession();
+        public static Proyecto getProyecto(int id)
+        {
             Proyecto ret = null;
-            try{
-                Query<Proyecto> criteria = session.createQuery("FROM Proyecto where id=:id", Proyecto.class);
-                criteria.setParameter("id", id);
-                 ret = criteria.getSingleResult();
-            } catch (NoResultException e){
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    ret = db.QueryFirstOrDefault<Proyecto>("SELECT * FROM PROYECTO WHERE id=:id", new { id = id });
+                }
             }
-            catch(Throwable e){
-                CLogger.write("5", ProyectoDAO.class, e);
-            }
-            finally{
-                session.close();
+            catch (Exception e)
+            {
+                CLogger.write("5", "ProyectoDAO.class", e);
             }
             return ret;
         }
 
-        public static boolean eliminarProyecto(Proyecto proyecto){
+        /*public static boolean eliminarProyecto(Proyecto proyecto){
             boolean ret = false;
             Session session = CHibernateSession.getSessionFactory().openSession();
             try{
@@ -539,28 +540,28 @@ namespace SiproDAO.Dao
             }
 
             return fechaActual.toDate();
-        }
+        }*/
 
         public static bool calcularCostoyFechas(int proyectoId){
             bool ret = false;
-            List<ArrayList<Nodo>> listas = EstructuraProyectoDAO.getEstructuraProyectoArbolCalculos(proyectoId, null);
-            for(int i=listas.size()-1; i>=0; i--){
-                for(int j=0; j<listas.get(i).size(); j++){
-                    Nodo nodo = listas.get(i).get(j);
+            List<List<Nodo>> listas = EstructuraProyectoDAO.getEstructuraProyectoArbolCalculos(proyectoId, null);
+            for(int i=listas.Count-1; i>=0; i--){
+                for(int j=0; j<listas[i].Count; j++){
+                    Nodo nodo = listas[i][j];
                     Double costo=0.0d;
-                    Timestamp fecha_maxima=new Timestamp(0);
-                    Timestamp fecha_minima=new Timestamp((new DateTime(2999,12,31,0,0,0)).getMillis());
-                    Timestamp fecha_maxima_real=null;
-                    Timestamp fecha_minima_real=null;
-                    for(Nodo nodo_hijo:nodo.children){
+                    DateTime fecha_maxima= new DateTime(0);
+                    DateTime fecha_minima =new DateTime(new DateTime(2999,12,31,0,0,0).Ticks);
+                    DateTime fecha_maxima_real = default(DateTime);
+                    DateTime fecha_minima_real = default(DateTime);
+                    foreach (Nodo nodo_hijo in nodo.children){
                         costo += nodo_hijo.costo;
-                        fecha_minima = (nodo_hijo.fecha_inicio.getTime()<fecha_minima.getTime()) ? nodo_hijo.fecha_inicio : fecha_minima;
-                        fecha_maxima = (nodo_hijo.fecha_fin.getTime()>fecha_maxima.getTime()) ? nodo_hijo.fecha_fin : fecha_maxima;
-                        fecha_minima_real = nodo_hijo.fecha_inicio_real != null ? fecha_minima_real != null ? ((nodo_hijo.fecha_inicio_real.getTime()<fecha_minima_real.getTime()) ? nodo_hijo.fecha_inicio_real : fecha_minima_real) : nodo_hijo.fecha_inicio_real : fecha_minima_real != null ? fecha_minima_real : fecha_minima_real;
-                        fecha_maxima_real = nodo_hijo.fecha_fin_real != null ? fecha_maxima_real != null ? ((nodo_hijo.fecha_fin_real.getTime() > fecha_maxima_real.getTime()) ? nodo_hijo.fecha_fin_real : fecha_maxima_real) : nodo_hijo.fecha_fin_real : fecha_maxima_real != null ? fecha_maxima_real : null;
+                        fecha_minima = (nodo_hijo.fecha_inicio.TimeOfDay<fecha_minima.TimeOfDay) ? nodo_hijo.fecha_inicio : fecha_minima;
+                        fecha_maxima = (nodo_hijo.fecha_fin.TimeOfDay > fecha_maxima.TimeOfDay) ? nodo_hijo.fecha_fin : fecha_maxima;
+                        fecha_minima_real = nodo_hijo.fecha_inicio_real != null ? fecha_minima_real != null ? ((nodo_hijo.fecha_inicio_real.TimeOfDay < fecha_minima_real.TimeOfDay) ? nodo_hijo.fecha_inicio_real : fecha_minima_real) : nodo_hijo.fecha_inicio_real : fecha_minima_real != null ? fecha_minima_real : fecha_minima_real;
+                        fecha_maxima_real = nodo_hijo.fecha_fin_real != null ? fecha_maxima_real != null ? ((nodo_hijo.fecha_fin_real.TimeOfDay > fecha_maxima_real.TimeOfDay) ? nodo_hijo.fecha_fin_real : fecha_maxima_real) : nodo_hijo.fecha_fin_real : fecha_maxima_real != default(DateTime) ? fecha_maxima_real : default(DateTime);
                     }
                     nodo.objeto = ObjetoDAO.getObjetoPorIdyTipo(nodo.id, nodo.objeto_tipo);
-                    if(nodo.children!=null && nodo.children.size()>0){
+                    if(nodo.children!=null && nodo.children.Count>0){
                         nodo.fecha_inicio = fecha_minima;
                         nodo.fecha_fin = fecha_maxima;
                         nodo.fecha_inicio_real = fecha_minima_real;
@@ -568,10 +569,10 @@ namespace SiproDAO.Dao
                         nodo.costo = costo;
                     }
                     else{
-                        BigDecimal costo_temp= ObjetoDAO.calcularCostoPlan(nodo.objeto, nodo.objeto_tipo);
-                        nodo.costo = (costo_temp!=null) ? costo_temp.doubleValue(): 0;
+                        decimal costo_temp= ObjetoDAO.calcularCostoPlan(nodo.objeto, nodo.objeto_tipo);
+                        nodo.costo = (Double)costo_temp;
                     }
-                    nodo.duracion = Utils.getWorkingDays(new DateTime(nodo.fecha_inicio), new DateTime(nodo.fecha_fin));
+                    nodo.duracion = Utils.getWorkingDays(nodo.fecha_inicio, nodo.fecha_fin);
                     setDatosCalculados(nodo.objeto,nodo.fecha_inicio,nodo.fecha_fin,nodo.costo, nodo.duracion, nodo.fecha_inicio_real, nodo.fecha_fin_real);
                 }
                 ret = true;
@@ -580,61 +581,83 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        /*private static void setDatosCalculados(Object objeto,Timestamp fecha_inicio, Timestamp fecha_fin, Double costo, int duracion, Timestamp fecha_inicio_real, Timestamp fecha_fin_real){
-            try{
-                if(objeto!=null){
-                    Method setFechaInicio =objeto.getClass().getMethod("setFechaInicio",Date.class);
-                    Method setFechaFin =  objeto.getClass().getMethod("setFechaFin",Date.class);
-                    Method setCosto = objeto.getClass().getMethod("setCosto",BigDecimal.class);
-                    Method setDuracion = objeto.getClass().getMethod("setDuracion", int.class);
-                    Method setFechaInicioReal = objeto.getClass().getMethod("setFechaInicioReal", Date.class);
-                    Method setFechaFinReal = objeto.getClass().getMethod("setFechaFinReal", Date.class);
-                    if(fecha_inicio!=null)
-                        setFechaInicio.invoke(objeto, new Date(fecha_inicio.getTime()));
-                    if(fecha_fin!=null)
-                        setFechaFin.invoke(objeto, new Date(fecha_fin.getTime()));
-                    if(costo!=null)
-                        setCosto.invoke(objeto, new BigDecimal(costo));
-                    setDuracion.invoke(objeto, duracion);
-                    if(fecha_inicio_real!=null)
-                        setFechaInicioReal.invoke(objeto, new Date(fecha_inicio_real.getTime()));
-                    if(fecha_fin_real!=null)
-                        setFechaFinReal.invoke(objeto, new Date(fecha_fin_real.getTime()));
+        private static void setDatosCalculados(Object objeto, DateTime fecha_inicio, DateTime fecha_fin, Double costo, int duracion, DateTime fecha_inicio_real, DateTime fecha_fin_real)
+        {
+            try
+            {
+                if (objeto != null)
+                {
+                    Type objetoType = objeto.GetType();
+                    var setFechaInicio = objetoType.GetMethod("setFechaInicio", new Type[] { typeof(object) });
+                    var setFechaFin = objetoType.GetMethod("setFechaFin", new Type[] { typeof(object) });
+                    var setCosto = objetoType.GetMethod("setCosto", new Type[] { typeof(object) });
+                    var setDuracion = objetoType.GetMethod("setDuracion", new Type[] { typeof(object) });
+                    var setFechaInicioReal = objetoType.GetMethod("setFechaInicioReal", new Type[] { typeof(object) });
+                    var setFechaFinReal = objetoType.GetMethod("setFechaFinReal", new Type[] { typeof(object) });
+
+                    if (fecha_inicio != null)
+                        setFechaInicio.Invoke(objeto, new object[] { fecha_inicio });
+                    if (fecha_fin != null)
+                        setFechaFin.Invoke(objeto, new object[] { fecha_fin });
+                    if (costo != default(Double))
+                        setCosto.Invoke(objeto, new object[] { (decimal)costo });
+                    setDuracion.Invoke(objeto, new object[] { duracion });
+                    if (fecha_inicio_real != null)
+                        setFechaInicioReal.Invoke(objeto, new object[] { fecha_inicio_real });
+                    if (fecha_fin_real != null)
+                        setFechaFinReal.Invoke(objeto, new object[] { fecha_fin_real });
                 }
             }
-            catch(Throwable e){
-                CLogger.write("19", ProyectoDAO.class, e);
+            catch (Exception e)
+            {
+                CLogger.write("19", "ProyectoDAO.class", e);
             }
-
         }
 
-        private static boolean guardarProyectoBatch(ArrayList<ArrayList<Nodo>> listas){
-            boolean ret = true;
-            try{
-                Session session = CHibernateSession.getSessionFactory().openSession();
-                session.beginTransaction();
-                int count=0;
-                for(int i=0; i<listas.size()-1; i++){
-                    for(int j=0; j<listas.get(i).size();j++){
-                        session.saveOrUpdate(listas.get(i).get(j).objeto);
-                        if ( ++count % 20 == 0 ) {
-                            session.flush();
-                            session.clear();
+        private static bool guardarProyectoBatch(List<List<Nodo>> listas)
+        {
+            bool ret = true;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    int count = 0;
+                    for (int i = 0; i < listas.Count - 1; i++)
+                    {
+                        for (int j = 0; j < listas[i].Count; j++)
+                        {
+                            switch (listas[i][j].objeto_tipo)
+                            {
+                                case 0:
+                                    guardarProyecto((Proyecto)listas[i][j].objeto, false);
+                                    break;
+                                case 1:
+                                    ComponenteDAO.guardarComponente((Componente)listas[i][j].objeto, false);
+                                    break;
+                                case 2:
+                                    SubComponenteDAO.guardarSubComponente((Subcomponente)listas[i][j].objeto, false);
+                                    break;
+                                case 3:
+                                    ProductoDAO.guardarProducto((Producto)listas[i][j].objeto, false);
+                                    break;
+                                case 4:
+                                    break;
+                                case 5:
+                                    break;
+                            }
                         }
                     }
                 }
-                session.flush();
-                session.getTransaction().commit();
-                session.close();
             }
-            catch(Throwable e){
+            catch (Exception e)
+            {
                 ret = false;
-                CLogger.write("20", ProyectoDAO.class, e);
+                CLogger.write("20", "ProyectoDAO.class", e);
             }
             return ret;
         }
 
-        public static PepDetalle getPepDetalle(int id){
+        /*public static PepDetalle getPepDetalle(int id){
 
             Session session = CHibernateSession.getSessionFactory().openSession();
             PepDetalle ret = null;

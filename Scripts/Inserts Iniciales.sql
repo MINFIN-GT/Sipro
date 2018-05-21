@@ -899,7 +899,17 @@ INSERT INTO PERMISO VALUES (46130,'Actividad Tipos - Visualizar','Permite visual
 INSERT INTO PERMISO VALUES (46140,'Actividad Tipos - Editar','Permite eidtar los tipos de actividades','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO PERMISO VALUES (46150,'Actividad Tipos - Eliminar','Permite eliminar los tipos de actividades','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO PERMISO VALUES (46160,'Actividad Tipos - Crear','Permite crear nuevos tipos de actividades','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO PERMISO VALUES (47000,'Reportes','Permite visualizar reportes','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO PERMISO VALUES (48110,'Tipos de Adquisiciones - Visualizar','Permite visualizar los tipos de adquisiciones','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO PERMISO VALUES (48120,'Tipos de Adquisiciones - Editar','Permite editar tipos de adquisiciones','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO PERMISO VALUES (48130,'Tipos de Adquisiciones - Eliminar','Permite eliminar tipos de adquisiciones','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO PERMISO VALUES (48140,'Tipos de Adquisiciones - Crear','Permite crear tipos de adquisiciones','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO PERMISO VALUES (48210,'Categorías de Adquisiciones - Visualizar','Permite visualizar los tipos de adquisiciones','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO PERMISO VALUES (48220,'Categorías de Adquisiciones - Editar','Permite editar tipos de adquisiciones','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO PERMISO VALUES (48230,'Categorías de Adquisiciones - Eliminar','Permite eliminar tipos de adquisiciones','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO PERMISO VALUES (48240,'Categorías de Adquisiciones - Crear','Permite crear tipos de adquisiciones','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO PERMISO VALUES (99999,'prueba treeview','prueba treeview','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+	
 INSERT INTO PRESTAMO_TIPO VALUES (1,'Inversión','Inversión','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO PRESTAMO_TIPO VALUES (2,'Sectorial','Sectorial','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO PRESTAMO_TIPO VALUES (3,'Apoyo presupuestario','Apoyo presupuestario','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
@@ -2001,6 +2011,7 @@ INSERT INTO UNIDAD_EJECUTORA VALUES (999,'PREVISION PAGO DE BONO Y REGULARIZACIO
 INSERT INTO UNIDAD_MEDIDA VALUES (1,'Casas',NULL,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO UNIDAD_MEDIDA VALUES (2,'Kilómetros',NULL,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO UNIDAD_MEDIDA VALUES ( 3,'Capacitaciones',NULL,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+
 INSERT INTO USUARIO VALUES ('admin','57kldOQR8YQxSpOwbNOIe7hlV6k2ewpEM++Fvy6YZHc=','J3iGT5W6I0uZtqu2vlfWHg==','admin@minfin.com','admin','admin',TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),1,1);
 
 INSERT INTO USUARIO_PERMISO VALUES ('admin',1010,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
