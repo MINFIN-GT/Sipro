@@ -39,3 +39,4 @@ C:/Users/pedro/git/Sipro/Sipro/Sipro/obj/Debug/netcoreapp2.0/Sipro.pdb
 /Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/Sipro/obj/Debug/netcoreapp2.0/Sipro.dll
 /Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/Sipro/obj/Debug/netcoreapp2.0/Sipro.pdb
 /Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/Sipro/obj/Debug/netcoreapp2.0/Sipro.csprojResolveAssemblyReference.cache
+/Users/rafa/Projects/MINFIN-GT/Sipro.git/Sipro/Sipro/obj/Debug/netcoreapp2.0/Sipro.csproj.CopyComplete

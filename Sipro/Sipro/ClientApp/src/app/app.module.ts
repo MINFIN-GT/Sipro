@@ -1,9 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { DynamicComponentModule } from 'ng-dynamic';
+
 import { Utilities } from './utilities';
-import { DynamicComponentModule } from 'ng-dynamic'
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
@@ -26,7 +28,8 @@ const routes: Routes = [{
       AccesodenegadoComponent
   ],
   imports: [
-      BrowserModule, 
+      BrowserModule,
+      FormsModule,
       RouterModule.forRoot(routes),
       HttpClientModule,
         DynamicComponentModule.forRoot({})

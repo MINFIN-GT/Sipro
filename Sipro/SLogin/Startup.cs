@@ -51,6 +51,17 @@ namespace SLogin
                
             });
 
+			services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllHeaders",
+                      builder =>
+                      {
+                          builder.AllowAnyOrigin()
+                                 .AllowAnyHeader()
+                                 .AllowAnyMethod();
+                      });
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,6 +74,8 @@ namespace SLogin
             }
 			app.UseAuthentication();
             app.UseMvc();
+
+			app.UseCors("AllowAllHeaders");
         }
     }
 }

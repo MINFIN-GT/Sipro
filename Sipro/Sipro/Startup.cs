@@ -113,6 +113,17 @@ namespace Sipro
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+			services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllHeaders",
+                      builder =>
+                      {
+                          builder.AllowAnyOrigin()
+                                 .AllowAnyHeader()
+                                 .AllowAnyMethod();
+                      });
+            });
             
         }
 
@@ -147,8 +158,11 @@ namespace Sipro
 				spa.Options.SourcePath = "ClientApp";
 				if(env.IsDevelopment()){
 					spa.UseAngularCliServer(npmScript: "start");
+					//spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
 				}
 			});
+
+			app.UseCors("AllowAllHeaders");
             
         }
     }
