@@ -10,6 +10,12 @@ CREATE TEMPORARY TABLESPACE sipro_history_temp
     SIZE 5M
     AUTOEXTEND ON;	
 	
+CREATE USER sipro_history
+  IDENTIFIED BY m1nf1n
+  DEFAULT TABLESPACE sipro_history
+  TEMPORARY TABLESPACE sipro_history_temp
+  QUOTA 20M on sipro_history;
+	
 GRANT create session TO sipro_history;
 GRANT create table TO sipro_history;
 GRANT create view TO sipro_history;

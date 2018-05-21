@@ -23,11 +23,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SEntidad", "SEntidad\SEntid
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SPrestamoTipo", "SPrestamoTipo\SPrestamoTipo.csproj", "{4BA6633D-6C2E-49BF-80AC-1AC2C04A4F53}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "STipoMoneda", "STipoMoneda\STipoMoneda.csproj", "{A57D5FD8-A555-4DD9-A1DB-933344AA0159}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "STipoMoneda", "STipoMoneda\STipoMoneda.csproj", "{A57D5FD8-A555-4DD9-A1DB-933344AA0159}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPrestamo", "SPrestamo\SPrestamo.csproj", "{14B93A42-86A5-4BEC-AFF6-55202D1D099B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SPrestamo", "SPrestamo\SPrestamo.csproj", "{14B93A42-86A5-4BEC-AFF6-55202D1D099B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SLogin", "SLogin\SLogin.csproj", "{CCEE0A75-77EC-46E9-8B51-964797BEF5D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SLogin", "SLogin\SLogin.csproj", "{CCEE0A75-77EC-46E9-8B51-964797BEF5D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiproModelAnalytic", "SiproModelAnalytic\SiproModelAnalytic.csproj", "{C0C7052E-08BD-4105-BAE4-AED32F5FFA2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiproModelAnalyticCore", "SiproModelAnalyticCore\SiproModelAnalyticCore.csproj", "{9351832F-765B-424B-B55E-FBFE431A7882}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,6 +91,14 @@ Global
 		{CCEE0A75-77EC-46E9-8B51-964797BEF5D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CCEE0A75-77EC-46E9-8B51-964797BEF5D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CCEE0A75-77EC-46E9-8B51-964797BEF5D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0C7052E-08BD-4105-BAE4-AED32F5FFA2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0C7052E-08BD-4105-BAE4-AED32F5FFA2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0C7052E-08BD-4105-BAE4-AED32F5FFA2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0C7052E-08BD-4105-BAE4-AED32F5FFA2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9351832F-765B-424B-B55E-FBFE431A7882}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9351832F-765B-424B-B55E-FBFE431A7882}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9351832F-765B-424B-B55E-FBFE431A7882}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9351832F-765B-424B-B55E-FBFE431A7882}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

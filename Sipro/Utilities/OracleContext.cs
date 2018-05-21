@@ -11,11 +11,13 @@ namespace Utilities
         public IDbConnection connection { get; set; }
         private string connectionString;
         private string connectionStringHistory;
+        private string connectionStringAnalytic;
 
         public OracleContext()
         {
             connectionString = ConfigurationManager.ConnectionStrings["oracle"].ConnectionString;
             connectionStringHistory = ConfigurationManager.ConnectionStrings["oracle"].ConnectionString;
+            connectionStringAnalytic = ConfigurationManager.ConnectionStrings["oracle_analytic"].ConnectionString;
         }
 
 
@@ -39,6 +41,20 @@ namespace Utilities
             try
             {
                 db = new OracleConnection(connectionStringHistory);
+            }
+            catch (Exception e)
+            {
+                CLogger.write("2", "OracleContext.class", e);
+            }
+            return db;
+        }
+
+        public DbConnection getConnectionAnalytic()
+        {
+            DbConnection db = null;
+            try
+            {
+                db = new OracleConnection(connectionStringAnalytic);
             }
             catch (Exception e)
             {

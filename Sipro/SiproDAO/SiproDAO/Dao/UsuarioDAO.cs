@@ -701,110 +701,109 @@ namespace SiproDAO.Dao
             }
 
             return ret;
-        }
+        }*/
 
-        public static boolean checkUsuarioPrestamo(String usuario, int prestmoid)
-    {
-        Session session = CHibernateSession.getSessionFactory().openSession();
-        boolean ret = false;
-        try
+        public static bool checkUsuarioPrestamo(String usuario, int prestmoid)
         {
-            Query<PrestamoUsuario> criteria = session.createQuery("FROM PrestamoUsuario where usuario.usuario=:usuario and prestamo.id=:id", PrestamoUsuario.class);
-                criteria.setParameter("usuario",usuario);
-                criteria.setParameter("id", prestmoid);
-                List<PrestamoUsuario> listRet = null;
-    listRet = criteria.getResultList();
-                ret = !listRet.isEmpty()? true : false;
-            } catch (Throwable e) {
-                CLogger.write("28", UsuarioDAO.class, e);
-            } finally {
-                session.close();
+            bool ret = false;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    int existe = db.ExecuteScalar<int>("SELECT COUNT(*) FROM PRESTAMO_USUARIO WHERE usuario=:usuario AND prestamoid=:id",
+                        new { usuario = usuario, id = prestmoid });
+
+                    ret = existe > 0 ? true : false;
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("28", "UsuarioDAO.class", e);
             }
             return ret;
         }
 
-        public static boolean checkUsuarioProyecto(String usuario, int proyectoid)
-    {
-        Session session = CHibernateSession.getSessionFactory().openSession();
-        boolean ret = false;
-        try
+        public static bool checkUsuarioProyecto(String usuario, int proyectoid)
         {
-            Query<ProyectoUsuario> criteria = session.createQuery("FROM ProyectoUsuario where usuario.usuario=:usuario and proyecto.id=:id", ProyectoUsuario.class);
-                criteria.setParameter("usuario",usuario);
-                criteria.setParameter("id", proyectoid);
-                List<ProyectoUsuario> listRet = null;
-    listRet = criteria.getResultList();
-                ret = !listRet.isEmpty()? true : false;
-            } catch (Throwable e) {
-                CLogger.write("28", UsuarioDAO.class, e);
-            } finally {
-                session.close();
+            bool ret = false;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    int existe = db.ExecuteScalar<int>("SELECT COUNT(*) FROM PROYECTO_USUARIO WHERE usuario=:usuario AND proyectoid=:id",
+                        new { usuario = usuario, id = proyectoid });
+
+                    ret = existe > 0 ? true : false;
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("28", "UsuarioDAO.class", e);
             }
             return ret;
         }
 
-        public static boolean checkUsuarioComponente(String usuario, int componenteid)
-    {
-        Session session = CHibernateSession.getSessionFactory().openSession();
-        boolean ret = false;
-        try
+        public static bool checkUsuarioComponente(String usuario, int componenteid)
         {
-            Query<ComponenteUsuario> criteria = session.createQuery("FROM ComponenteUsuario where id.usuario=:usuario and id.componenteid=:id", ComponenteUsuario.class);
-                criteria.setParameter("usuario",usuario);
-                criteria.setParameter("id", componenteid);
-                List<ComponenteUsuario> listRet = null;
-    listRet = criteria.getResultList();
-                ret = !listRet.isEmpty()? true : false;
-            } catch (Throwable e) {
-                CLogger.write("29", UsuarioDAO.class, e);
-            } finally {
-                session.close();
+            bool ret = false;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    int existe = db.ExecuteScalar<int>("SELECT COUNT(*) FROM COMPONENTE_USUARIO WHERE usuario=:usuario AND componenteid=:id",
+                        new { usuario = usuario, id = componenteid });
+
+                    ret = existe > 0 ? true : false;
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("29", "UsuarioDAO.class", e);
             }
             return ret;
         }
 
-        public static boolean checkUsuarioSubComponente(String usuario, int subcomponenteid)
-    {
-        Session session = CHibernateSession.getSessionFactory().openSession();
-        boolean ret = false;
-        try
+        public static bool checkUsuarioSubComponente(String usuario, int subcomponenteid)
         {
-            Query<SubcomponenteUsuario> criteria = session.createQuery("FROM SubcomponenteUsuario where id.usuario=:usuario and id.subcomponenteid=:id", SubcomponenteUsuario.class);
-                criteria.setParameter("usuario",usuario);
-                criteria.setParameter("id", subcomponenteid);
-                List<SubcomponenteUsuario> listRet = null;
-    listRet = criteria.getResultList();
-                ret = !listRet.isEmpty()? true : false;
-            } catch (Throwable e) {
-                CLogger.write("30", UsuarioDAO.class, e);
-            } finally {
-                session.close();
+            bool ret = false;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    int existe = db.ExecuteScalar<int>("SELECT COUNT(*) FROM SUBCOMPOENTE_USUARIO WHERE usuario=:usuario AND subcomponenteid=:id",
+                        new { usuario = usuario, id = subcomponenteid });
+
+                    ret = existe > 0 ? true : false;
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("30", "UsuarioDAO.class", e);
             }
             return ret;
         }
 
-        public static boolean checkUsuarioProducto(String usuario, int productoid)
-    {
-        Session session = CHibernateSession.getSessionFactory().openSession();
-        boolean ret = false;
-        try
+        public static bool checkUsuarioProducto(String usuario, int productoid)
         {
-            Query<ProductoUsuario> criteria = session.createQuery("FROM ProductoUsuario where id.usuario=:usuario and id.productoid=:id", ProductoUsuario.class);
-                criteria.setParameter("usuario",usuario);
-                criteria.setParameter("id", productoid);
-                List<ProductoUsuario> listRet = null;
-    listRet = criteria.getResultList();
-                ret = !listRet.isEmpty()? true : false;
-            } catch (Throwable e) {
-                CLogger.write("31", UsuarioDAO.class, e);
-            } finally {
-                session.close();
+            bool ret = false;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    int existe = db.ExecuteScalar<int>("SELECT COUNT(*) FROM PRODUCTO_USUARIO WHERE usuario=:usuario AND productoid=:id",
+                        new { usuario = usuario, id = productoid });
+
+                    ret = existe > 0 ? true : false;
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("31", "UsuarioDAO.class", e);
             }
             return ret;
         }
 
-
-        public static boolean asignarProductos(String usuario, List<Integer> productos, String usuario_creo)
+        /*public static boolean asignarProductos(String usuario, List<Integer> productos, String usuario_creo)
     {
         boolean ret = false;
         Session session = CHibernateSession.getSessionFactory().openSession();

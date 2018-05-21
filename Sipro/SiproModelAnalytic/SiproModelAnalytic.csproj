@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C0C7052E-08BD-4105-BAE4-AED32F5FFA2F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SiproModelAnalytic</RootNamespace>
+    <AssemblyName>SiproModelAnalytic</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Oracle.ManagedDataAccess, Version=4.122.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <HintPath>..\packages\Oracle.ManagedDataAccess.12.2.1100\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Oracle.ManagedDataAccess.EntityFramework, Version=6.122.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <HintPath>..\packages\Oracle.ManagedDataAccess.EntityFramework.12.2.1100\lib\net45\Oracle.ManagedDataAccess.EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\DtmAvanceFisfinanCmp.cs">
+      <DependentUpon>SiproAnalyticConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DtmAvanceFisfinanDetDti.cs">
+      <DependentUpon>SiproAnalyticConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DtmAvanceFisfinanDti.cs">
+      <DependentUpon>SiproAnalyticConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DtmAvanceFisfinanEnp.cs">
+      <DependentUpon>SiproAnalyticConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MvArbol.cs">
+      <DependentUpon>SiproAnalyticConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MvEjecucionPresupuestaria.cs">
+      <DependentUpon>SiproAnalyticConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MvEpEjecAsigVige.cs">
+      <DependentUpon>SiproAnalyticConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MvEpEstructura.cs">
+      <DependentUpon>SiproAnalyticConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MvEpMetas.cs">
+      <DependentUpon>SiproAnalyticConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MvEpPrestamo.cs">
+      <DependentUpon>SiproAnalyticConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MvGcAdquisiciones.cs">
+      <DependentUpon>SiproAnalyticConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MvPrEstructura.cs">
+      <DependentUpon>SiproAnalyticConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SiproAnalyticConfig.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SiproAnalyticConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Models\FileCreator.ttinclude">
+      <LastGenOutput>FileCreator1.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="Models\GenericModelGenerator.tt" />
+    <None Include="Models\SiproAnalytic.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Models\SiproAnalyticConfig.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SiproAnalyticConfig.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

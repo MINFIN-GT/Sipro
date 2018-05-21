@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Authorization;
 using SiproModelCore.Models;
 using SiproDAO.Dao;
 using Utilities;
+using SiproModelAnalyticCore.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace SPrestamo.Controllers
 {
@@ -116,9 +119,9 @@ namespace SPrestamo.Controllers
             public String entidad;
             public int entidadId;
             public int ejercicio;
-            public Double prestamo;
-            public Double donacion;
-            public Double nacional;
+            public decimal prestamo;
+            public decimal donacion;
+            public decimal nacional;
             public int esCoordinador;
             public String fechaElegibilidad;
             public String fechaCierre;
@@ -182,14 +185,17 @@ namespace SPrestamo.Controllers
                             temp.tipoInteresId = interesTipo.id;
                             temp.tipoInteresNombre = interesTipo.nombre;
                         }
-                       
+
                         temp.porcentajeInteres = prestamo.porcentajeInteres ?? default(decimal);
                         temp.porcentajeComisionCompra = prestamo.porcentajeComisionCompra ?? default(decimal);
 
                         prestamo.tipoMonedas = TipoMonedaDAO.getTipoMonedaPorId(prestamo.tipoMonedaid);
+                        if (prestamo.tipoMonedas != null)
+                        {
+                            temp.tipoMonedaId = prestamo.tipoMonedas.id;
+                            temp.tipoMonedaNombre = prestamo.tipoMonedas.nombre;
+                        }
 
-                        temp.tipoMonedaId = prestamo.tipoMonedas.id;
-                        temp.tipoMonedaNombre = prestamo.tipoMonedas.nombre;
                         temp.montoContratado = prestamo.montoContratado;
                         temp.amortizado = prestamo.amortizado ?? default(decimal);
                         temp.porAmortizar = prestamo.porAmortizar ?? default(decimal);
@@ -276,7 +282,7 @@ namespace SPrestamo.Controllers
             }
         }
 
-        // POST api/values/5
+        // POST api/Prestamos/Prestamo
         [HttpPost]
         public IActionResult Prestamo([FromBody]dynamic value)
         {
@@ -373,7 +379,8 @@ namespace SPrestamo.Controllers
                     }
                 }
 
-                return Ok(new {
+                return Ok(new
+                {
                     success = result,
                     id = prestamo.id,
                     usuarioCreo = prestamo.usuarioCreo,
@@ -389,7 +396,7 @@ namespace SPrestamo.Controllers
             }
         }
 
-        // PUT api/values/5
+        // PUT api/Prestamos/Prestamo/5
         [HttpPut("{id}")]
         public IActionResult Prestamo(int id, [FromBody]dynamic value)
         {
@@ -505,10 +512,434 @@ namespace SPrestamo.Controllers
             }
         }
 
-        // POST api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        // POST api/Prestamo/PrestamoPagina
+        [HttpPost]
+        public IActionResult PrestamosPagina([FromBody]dynamic value)
         {
+            try
+            {
+                List<Prestamo> lstprestamos = PrestamoDAO.getPrestamosPagina((int)value.pagina, (int)value.elementosPorPagina, (string)value.filtro_nombre, (long)value.filtro_codigo_presupuestario, (string)value.filtro_numero_prestamo,
+                        (string)value.filtro_usuario_creo, (string)value.filtro_fecha_creacion, (string)value.columna_ordenada, (string)value.orden_direccion, User.Identity.Name);
+
+                List<stprestamo> lstprestamo = new List<stprestamo>();
+                stprestamo temp = null;
+                foreach (Prestamo prestamo in lstprestamos)
+                {
+                    temp = new stprestamo();
+                    temp.id = prestamo.id;
+                    temp.fechaCorte = prestamo.fechaCorte != null ? prestamo.fechaCorte.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
+                    temp.codigoPresupuestario = prestamo.codigoPresupuestario;
+                    temp.numeroPrestamo = prestamo.numeroPrestamo;
+                    temp.destino = prestamo.destino;
+                    temp.sectorEconomico = prestamo.sectorEconomico;
+                    temp.fechaFirma = prestamo.fechaFirma != null ? prestamo.fechaFirma.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
+
+                    AutorizacionTipo autorizacionTipo = AutorizacionTipoDAO.getAutorizacionTipoById(prestamo.autorizacionTipoid ?? default(int));
+                    if (autorizacionTipo != null)
+                    {
+                        temp.tipoAutorizacionId = autorizacionTipo.id;
+                        temp.tipoAutorizacionNombre = autorizacionTipo.nombre;
+                    }
+
+                    temp.numeroAutorizacion = prestamo.numeroAutorizacion;
+                    temp.fechaAutorizacion = prestamo.fechaAutorizacion != null ? prestamo.fechaAutorizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
+                    temp.aniosPlazo = prestamo.aniosPlazo ?? default(int);
+                    temp.aniosGracia = prestamo.aniosGracia ?? default(int);
+                    temp.fechaFinEjecucion = prestamo.fechaFinEjecucion != null ? prestamo.fechaFinEjecucion.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
+                    temp.periodoEjecucion = prestamo.peridoEjecucion ?? default(int);
+
+                    InteresTipo interesTipo = InteresTipoDAO.getInteresTipoById(prestamo.interesTipoid ?? default(int));
+                    if (interesTipo != null)
+                    {
+                        temp.tipoInteresId = interesTipo.id;
+                        temp.tipoInteresNombre = interesTipo.nombre;
+                    }
+
+                    temp.porcentajeInteres = prestamo.porcentajeInteres ?? default(decimal);
+                    temp.porcentajeComisionCompra = prestamo.porcentajeComisionCompra ?? default(decimal);
+
+                    prestamo.tipoMonedas = TipoMonedaDAO.getTipoMonedaPorId(prestamo.tipoMonedaid);
+
+                    if (prestamo.tipoMonedas != null)
+                    {
+                        temp.tipoMonedaId = prestamo.tipoMonedas.id;
+                        temp.tipoMonedaNombre = prestamo.tipoMonedas.nombre;
+                    }
+
+                    temp.montoContratado = prestamo.montoContratado;
+                    temp.amortizado = prestamo.amortizado ?? default(decimal);
+                    temp.porAmortizar = prestamo.porAmortizar ?? default(decimal);
+                    temp.principalAnio = prestamo.principalAnio ?? default(decimal);
+                    temp.interesesAnio = prestamo.interesesAnio ?? default(decimal);
+                    temp.comisionCompromisoAnio = prestamo.comisionCompromisoAnio ?? default(decimal);
+                    temp.otrosGastos = prestamo.otrosGastos ?? default(decimal);
+                    temp.principalAcumulado = prestamo.principalAcumulado ?? default(decimal);
+                    temp.interesesAcumulados = prestamo.interesesAcumulados ?? default(decimal);
+                    temp.comisionCompromisoAcumulado = prestamo.comisionCompromisoAcumulado ?? default(decimal);
+                    temp.otrosCargosAcumulados = prestamo.otrosCargosAcumulados ?? default(decimal);
+                    temp.presupuestoAsignadoFuncionamiento = prestamo.presupuestoAsignadoFunc ?? default(decimal);
+                    temp.presupuestoAsignadoInversion = prestamo.presupuestoAsignadoInv ?? default(decimal);
+                    temp.presupuestoModificadoFun = prestamo.presupuestoModificadoFunc ?? default(decimal);
+                    temp.presupuestoModificadoInv = prestamo.presupuestoModificadoInv ?? default(decimal);
+                    temp.presupuestoVigenteFun = prestamo.presupuestoVigenteFunc ?? default(decimal);
+                    temp.presupuestoVigenteInv = prestamo.presupuestoVigenteInv ?? default(decimal);
+                    temp.presupuestoDevengadoFun = prestamo.presupuestoDevengadoFunc ?? default(decimal);
+                    temp.presupuestoDevengadoInv = prestamo.presupuestoDevengadoInv ?? default(decimal);
+                    temp.presupuestoPagadoFun = prestamo.presupuestoPagadoFunc ?? default(decimal);
+                    temp.presupuestoPagadoInv = prestamo.presupuestoPagadoInv ?? default(decimal);
+                    temp.saldoCuentas = prestamo.saldoCuentas ?? default(decimal); ;
+                    temp.desembolsoReal = prestamo.desembolsadoReal ?? default(decimal);
+
+                    EjecucionEstado ejecucionEstado = EjecucionEstadoDAO.getEjecucionEstadoById(prestamo.ejecucionEstadoid ?? default(int));
+                    if (ejecucionEstado != null)
+                    {
+                        temp.ejecucionEstadoId = Convert.ToInt32(ejecucionEstado.id);
+                        temp.ejecucionEstadoNombre = ejecucionEstado.nombre;
+                    }
+                    temp.proyectoPrograma = prestamo.proyectoPrograma;
+                    temp.fechaDecreto = prestamo.fechaDecreto.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.fechaSuscripcion = prestamo.fechaSuscripcion.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.fechaElegibilidadUe = prestamo.fechaElegibilidadUe.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.fechaCierreOrigianlUe = prestamo.fechaCierreOrigianlUe.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.fechaCierreActualUe = prestamo.fechaCierreActualUe.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.mesesProrrogaUe = prestamo.mesesProrrogaUe;
+                    temp.montoAsignadoUe = prestamo.montoAsignadoUe ?? default(decimal);
+                    temp.desembolsoAFechaUe = prestamo.desembolsoAFechaUe ?? default(decimal);
+                    temp.montoPorDesembolsarUe = prestamo.montoPorDesembolsarUe ?? default(decimal);
+                    temp.fechaVigencia = prestamo.fechaVigencia.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.montoContratadoUsd = prestamo.montoContratadoUsd;
+                    temp.montoContratadoQtz = prestamo.montoContratadoQtz;
+                    temp.desembolsoAFechaUsd = prestamo.desembolsoAFechaUeUsd ?? default(decimal); ;
+                    temp.montoPorDesembolsarUsd = prestamo.montoPorDesembolsarUeUsd ?? default(decimal);
+                    temp.montoAsignadoUeUsd = prestamo.montoAsignadoUeUsd ?? default(decimal);
+                    temp.montoAsignadoUeQtz = prestamo.montoAsignadoUeQtz ?? default(decimal);
+                    temp.desembolsoAFechaUeUsd = prestamo.desembolsoAFechaUeUsd ?? default(decimal); ;
+                    temp.montoPorDesembolsarUeUsd = prestamo.montoPorDesembolsarUeUsd ?? default(decimal);
+
+                    prestamo.cooperantes = CooperanteDAO.getCooperantePorCodigo(prestamo.cooperantecodigo ?? default(int));
+                    if (prestamo.cooperantes != null)
+                    {
+                        temp.cooperanteid = prestamo.cooperantes.codigo;
+                        temp.cooperantenombre = (prestamo.cooperantes.siglas != null ?
+                                prestamo.cooperantes.siglas + " - " : "") + prestamo.cooperantes.nombre;
+                    }
+
+                    prestamo.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(prestamo.ejercicio, prestamo.entidad, prestamo.ueunidadEjecutora);
+                    if (prestamo.unidadEjecutoras != null)
+                    {
+                        prestamo.unidadEjecutoras.entidads = EntidadDAO.getEntidad(prestamo.entidad, prestamo.ejercicio);
+                        temp.unidadEjecutora = prestamo.unidadEjecutoras.unidadEjecutora;
+                        temp.unidadEjecutoraNombre = prestamo.unidadEjecutoras.nombre;
+                        temp.nombreEntidadEjecutora = prestamo.unidadEjecutoras.entidads.nombre;
+                    }
+
+                    temp.usuarioCreo = prestamo.usuarioCreo;
+                    temp.usuarioActualizo = prestamo.usuarioActualizo;
+                    temp.fechaCreacion = prestamo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.fechaActualizacion = prestamo.fechaActualizacion != null ? prestamo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
+                    temp.objetivo = prestamo.objetivo;
+                    temp.objetivoEspecifico = prestamo.objetivoEspecifico;
+                    temp.porcentajeAvance = prestamo.porcentajeAvance;
+                    lstprestamo.Add(temp);
+                }
+
+                return Ok(new { success = true, prestamos = lstprestamo });
+            }
+            catch (Exception)
+            {
+                CLogger.write("4", "PrestamoController.class", e);
+                return BadRequest(500);
+            }
         }
+
+        // POST api/Prestamo/numeroPrestamos
+        [HttpPost]
+        public IActionResult NumeroPrestamos([FromBody]dynamic value)
+        {
+            try
+            {
+                long total = PrestamoDAO.getTotalPrestamos((string)value.filtro_nombre, (long)value.filtro_codigo_presupuestario, (string)value.filtro_numero_prestamo, (string)value.filtro_usuario_creo, (string)value.filtro_fecha_creacion, User.Identity.Name);
+
+                return Ok(new { success = true, totalprestamos = total });
+            }
+            catch (Exception e)
+            {
+                CLogger.write("5", "PrestamoController.class", e);
+                return BadRequest(500);
+            }
+        }
+
+        // POST api/Prestamo/numeroPrestamos
+        [HttpDelete("{prestamoId}")]
+        public IActionResult BorrarPrestamo(int prestamoId)
+        {
+            try
+            {
+                Prestamo prestamo = PrestamoDAO.getPrestamoById(prestamoId);
+                prestamo.usuarioActualizo = User.Identity.Name;
+                prestamo.fechaActualizacion = DateTime.Now;
+
+                bool eliminado = PrestamoDAO.borrarPrestamo(prestamo);
+
+                return Ok(new { success = eliminado });
+            }
+            catch (Exception e)
+            {
+                CLogger.write("6", "PrestamoController.class", e);
+                return BadRequest(500);
+            }
+        }
+
+        // GET api/Prestamo/ComponentesSigade
+        [HttpGet("{codigo_presupuestario}")]
+        public IActionResult ComponentesSigade(string codigoPresupuestario)
+        {
+            try
+            {
+                List<DtmAvanceFisfinanCmp> componentesSigade = DataSigadeDAO.getComponentes(codigoPresupuestario);
+                List<stcomponentessigade> lstcomponentes = new List<stcomponentessigade>();
+                stcomponentessigade temp = null;
+                foreach (Object objComponente in componentesSigade)
+                {
+                    Object[] componente = (Object[])objComponente;
+                    temp = new stcomponentessigade();
+                    temp.id = (int)componente[1];
+                    temp.nombre = (String)componente[2];
+                    temp.tipoMoneda = (String)componente[3];
+                    temp.techo = (decimal)componente[4];
+                    lstcomponentes.Add(temp);
+                }
+
+                return Ok(new { success = true, componentes = lstcomponentes });
+            }
+            catch (Exception e)
+            {
+                CLogger.write("7", "PrestamoController.class", e);
+                return BadRequest(500);
+            }
+        }
+
+        // POST api/Prestamo/UnidadesEjecutoras
+        [HttpPost]
+        public IActionResult UnidadesEjecutoras([FromBody]dynamic value)
+        {
+            try
+            {
+                int ejercicio = DateTime.Now.Year;
+                int prestamoId = (int)value.proyectoId;
+
+                List<DtmAvanceFisfinanEnp> unidadesEjecutoras = DataSigadeDAO.getUnidadesEjecutoras((string)value.codigoPresupuestario, (int)value.ejercicio);
+                List<stunidadejecutora> lstunidadesejecutoras = new List<stunidadejecutora>();
+                stunidadejecutora temp = null;
+                foreach (Object unidadEjecutora in unidadesEjecutoras)
+                {
+                    temp = new stunidadejecutora();
+                    Object[] objEU = (Object[])unidadEjecutora;
+
+                    UnidadEjecutora EU = UnidadEjecutoraDAO.getUnidadEjecutora((int)objEU[1], (int)objEU[2], (int)objEU[3]);
+                    if (EU != null)
+                    {
+                        EU.entidads = EntidadDAO.getEntidad(EU.entidadentidad, EU.ejercicio);
+                        temp.id = EU.unidadEjecutora;
+                        temp.ejercicio = EU.ejercicio;
+                        temp.entidad = EU.entidads.nombre;
+                        temp.entidadId = EU.entidads.entidad;
+                        temp.nombre = EU.nombre;
+
+                        if (prestamoId > 0)
+                        {
+                            Proyecto proyecto = ProyectoDAO.getProyectoPorUnidadEjecutora(temp.id, prestamoId, temp.entidadId);
+                            if (proyecto != null)
+                            {
+                                temp.esCoordinador = proyecto.coordinador ?? default(int);
+                                temp.fechaElegibilidad = proyecto.fechaElegibilidad != null ? proyecto.fechaElegibilidad.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
+                                temp.fechaCierre = proyecto.fechaCierre != null ? proyecto.fechaCierre.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
+                            }
+                        }
+
+                        lstunidadesejecutoras.Add(temp);
+                    }
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    unidadesEjecutoras = lstunidadesejecutoras
+                });
+            }
+            catch (Exception e)
+            {
+                CLogger.write("8", "PrestamoController.class", e);
+                return BadRequest(500);
+            }
+        }
+
+        // POST api/Prestamo/UnidadesEjecutoras
+        [HttpPost]
+        public IActionResult ObtenerMatriz([FromBody]dynamic value)
+        {
+            try
+            {
+                string codigoPresupuestario = (string)value.codigoPresupuestario;
+                int prestamoId = (int)value.prestamoId;
+                bool existenDatos = false;
+                int anio_actual = DateTime.Now.Year;
+                List<DtmAvanceFisfinanEnp> unidadesEjecutorasSigade = DataSigadeDAO.getUnidadesEjecutoras(codigoPresupuestario, anio_actual);
+                List<stunidadejecutora> unidadesEjecutroas = new List<stunidadejecutora>();
+
+
+                List<DtmAvanceFisfinanCmp> componentesSigade = DataSigadeDAO.getComponentes(codigoPresupuestario);
+                List<stcomponentessigade> stcomponentes = new List<stcomponentessigade>();
+                if (componentesSigade != null && componentesSigade.Count > 0)
+                {
+                    for (int i = 0; i < componentesSigade.Count; i++)
+                    {
+                        DtmAvanceFisfinanCmp componenteSigade = componentesSigade[i];
+                        stcomponentessigade temp = new stcomponentessigade();
+                        temp.nombre = componenteSigade.nombreComponente;
+                        temp.techo = componenteSigade.montoComponente ?? default(decimal);
+                        temp.orden = componenteSigade.numeroComponente ?? default(int);
+
+                        unidadesEjecutroas = new List<stunidadejecutora>();
+                        if (unidadesEjecutorasSigade != null && unidadesEjecutorasSigade.Count > 0)
+                        {
+                            for (int j = 0; j < unidadesEjecutorasSigade.Count; j++)
+                            {
+                                DtmAvanceFisfinanEnp unidadEjecutora = unidadesEjecutorasSigade[j];
+                                UnidadEjecutora unidade = UnidadEjecutoraDAO.getUnidadEjecutora(unidadEjecutora.ejercicioFiscal ?? default(int), unidadEjecutora.entidadPresupuestaria ?? default(int), unidadEjecutora.unidadEjecutora ?? default(int));
+                                stunidadejecutora temp_ = new stunidadejecutora();
+                                temp_.id = unidade.unidadEjecutora;
+                                temp_.entidad = unidade.entidadentidad + "";
+                                temp_.entidadId = unidade.entidadentidad;
+                                temp_.ejercicio = unidade.ejercicio;
+                                temp_.nombre = unidade.nombre;
+                                temp_.techo = Convert.ToInt32(temp.techo);
+                                temp_.prestamoId = prestamoId;
+
+                                Componente compTemp = ComponenteDAO.obtenerComponentePorEntidad(codigoPresupuestario, temp_.ejercicio,
+                                        Convert.ToInt32(temp_.entidad), temp_.id, temp.orden, prestamoId);
+                                if (compTemp != null)
+                                {
+                                    temp_.componenteId = compTemp.id;
+                                    temp_.componenteSigadeId = compTemp.componenteSigadeid;
+                                    temp_.prestamo = compTemp.fuentePrestamo ?? default(decimal);
+                                    temp_.donacion = compTemp.fuenteDonacion ?? default(decimal);
+                                    temp_.nacional = compTemp.fuenteNacional ?? default(decimal);
+                                    temp.descripcion = compTemp.descripcion;
+                                    existenDatos = true;
+                                }
+
+                                unidadesEjecutroas.Add(temp_);
+                            }
+                        }
+
+                        temp.unidadesEjecutoras = unidadesEjecutroas;
+                        stcomponentes.Add(temp);
+                    }
+                }
+
+                int diferencia = DataSigadeDAO.getDiferenciaMontos(codigoPresupuestario);
+
+                return Ok(new { success = true, unidadesEjecutoras = unidadesEjecutroas, componentes = stcomponentes, diferencia = diferencia, existenDatos = existenDatos });
+            }
+            catch (Exception e)
+            {
+                CLogger.write("9", "PrestamoController.class", e);
+                return BadRequest(500);
+            }
+        }
+
+        // POST api/Prestamo/UnidadesEjecutoras
+        [HttpPost]
+        public IActionResult GuardarMatriz([FromBody]dynamic value)
+        {
+            try
+            {
+                int prestamoId = (int)value.prestamoId;
+                Prestamo prestamo = PrestamoDAO.getPrestamoById(prestamoId);
+                String data = (string)value.estructura;
+                String unidadesEjecutoras = (string)value.unidadesEjecutoras;
+                int existenDatos = (bool)value.existenDatos == true ? 1 : 0;
+                bool ret = false;
+
+                PrestamoDAO.guardarComponentesSigade(prestamo.codigoPresupuestario + "", User.Identity.Name, existenDatos);
+
+                dynamic jsonData = JsonConvert.DeserializeObject<dynamic>(data);
+
+                JObject parser = new JObject();
+                JArray estructuras_ = JArray.Parse(data);
+                JArray est_unidadesEjecutoras_ = JArray.Parse(unidadesEjecutoras);
+
+                List<Proyecto> proyectos = new List<Proyecto>();
+                List<stunidadejecutora> unidadesEjecutorasMatriz = new List<stunidadejecutora>();
+                int k = 0;
+                foreach (JObject estructura in jsonData)
+                {
+                    JObject estructura_ = (JObject)estructuras_[k];
+                    k++;
+                    parser = new JObject();
+                    JObject unidades = (JObject)estructura_["unidadesEjecutoras"];
+
+                    for (int j = 0; j < unidades.Count; j++)
+                    {
+                        JObject unidad = (JObject)unidades[j];
+                        int posicion = PrestamoDAO.existeUnidad(proyectos, unidad);
+
+                        decimal fuentePrestamo = unidad["prestamo"] != null ? Convert.ToDecimal(unidad["prestamo"].ToString()) : default(decimal);
+                        decimal fuenteDonacion = unidad["donacion"] != null ? Convert.ToDecimal(unidad["donacion"].ToString()) : default(decimal);
+                        decimal fuenteNacional = unidad["nacional"] != null ? Convert.ToDecimal(unidad["nacional"].ToString()) : default(decimal);
+
+                        if (posicion == -1)
+                        {
+                            proyectos.Add(PrestamoDAO.crearEditarProyecto(unidad, prestamo, User.Identity.Name, est_unidadesEjecutoras_, existenDatos));
+                            ret = proyectos.Count > 0;
+                            if (fuentePrestamo.CompareTo(default(decimal)) > 0 ||
+                                    fuenteDonacion.CompareTo(default(decimal)) > 0 ||
+                                    fuenteNacional.CompareTo(default(decimal)) > 0)
+                            {
+                                ret = ret && crearEditarComponente(proyectos.get(proyectos.size() - 1), (String)estructura.get("nombre"), (String)estructura.get("descripcion"),
+                                        fuentePrestamo, fuenteDonacion, fuenteNacional, usuario,
+                                        prestamo.getCodigoPresupuestario(), ((Double)estructura.get("orden")).intValue());
+                            }
+                        }
+                        else
+                        {
+                            if (fuentePrestamo.compareTo(BigDecimal.ZERO) > 0 ||
+                                    fuenteDonacion.compareTo(BigDecimal.ZERO) > 0 ||
+                                    fuenteNacional.compareTo(BigDecimal.ZERO) > 0)
+                            {
+                                ret = ret && crearEditarComponente(proyectos[posicion], (String)estructura.get("nombre"), (String)estructura.get("descripcion"),
+                                        fuentePrestamo, fuenteDonacion, fuenteNacional, User.Identity.Name,
+                                        prestamo.codigoPresupuestario, ((Double)estructura.get("orden")).intValue());
+                            }
+                        }
+                        ComponenteSigade componenteSigade = ComponenteSigadeDAO.getComponenteSigadePorCodigoNumero(prestamo.codigoPresupuestario + "", ((Double)estructura.get("orden")).intValue());
+                        stunidadejecutora unidadMatriz = new stunidadejecutora();
+                        unidadMatriz.componenteSigadeId = componenteSigade.id;
+                        unidadMatriz.id = Convert.ToInt32(unidad["id"].getAsString());
+                        unidadMatriz.prestamoId = prestamo.id;
+                        unidadMatriz.entidadId = Convert.ToInt32(unidad.get("entidad").getAsString());
+                        unidadMatriz.ejercicio = Convert.ToInt32(unidad.get("ejercicio").getAsString());
+                        unidadMatriz.prestamo = fuentePrestamo;
+                        unidadMatriz.donacion = fuenteDonacion;
+                        unidadMatriz.nacional = fuenteNacional;
+                        unidadMatriz.techo = estructura_.get("techo").getAsBigDecimal();
+                        unidadesEjecutorasMatriz.Add(unidadMatriz);
+                    }
+                }
+                PrestamoDAO.actualizarMatriz(prestamo.id, unidadesEjecutorasMatriz);
+                int diferencia = DataSigadeDAO.getDiferenciaMontos(prestamo.getCodigoPresupuestario() + "");
+
+                response_text = String.join("", "{\"success\":", ret ? "true" : "false", response_text,
+                     ",\"diferencia\":", diferencia + "",
+                     "}");
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                CLogger.write("9", "PrestamoController.class", e);
+                return BadRequest(500);
+            }
+        }        
     }
 }

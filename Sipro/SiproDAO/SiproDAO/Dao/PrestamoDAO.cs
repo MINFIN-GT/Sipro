@@ -5,6 +5,8 @@ using Dapper;
 using System.Data.Common;
 using Utilities;
 using SiproModelCore.Models;
+using SiproModelAnalyticCore.Models;
+using Newtonsoft.Json.Linq;
 
 namespace SiproDAO.Dao
 {
@@ -76,8 +78,9 @@ namespace SiproDAO.Dao
                             ":montoAsignadoUeUsd, :montoAsignadoUeQtz, :desembolsoAFechaUeUsd, :montoPorDesembolsarUeUsd, :entidad, :ejercicio, :objetivo, :objetivoEspecifico, :porcentajeAvance, " +
                             ":cooperantecodigo, :cooperanteejercicio)", prestamo);
 
-                        db.Query<PrestamoUsuario>("INSERT INTO PRESTAMO_USUARIO VALUES (:prestamoid, :usuario, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion)",
-                            new { prestamoid = prestamo.id, usuario = prestamo.usuarioCreo, usuarioCreo = prestamo.usuarioCreo, fechaCreacion = DateTime.Now, usuarioActualizo = (string)null, fechaActualizacion = (DateTime?)null });
+                        if(result > 0)
+                            result = db.Execute("INSERT INTO PRESTAMO_USUARIO VALUES (:prestamoid, :usuario, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion)",
+                                new { prestamoid = prestamo.id, usuario = prestamo.usuarioCreo, usuarioCreo = prestamo.usuarioCreo, fechaCreacion = DateTime.Now, usuarioActualizo = (string)null, fechaActualizacion = (DateTime?)null });
 
                         ret = result > 0 ? true : false;
                     }
@@ -182,15 +185,13 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        public static bool borrarPrestamo(Prestamo prestamo, string usuario)
+        public static bool borrarPrestamo(Prestamo prestamo)
         {
             bool ret = false;
 
             try
             {
                 prestamo.estado = 0;
-                prestamo.usuarioActualizo = usuario;
-                prestamo.fechaActualizacion = DateTime.Now;
                 guardarPrestamo(prestamo);
                 ret = true;
             }
@@ -428,5 +429,160 @@ namespace SiproDAO.Dao
             return resultado;
         }*/
         #endregion
+
+        public static bool guardarComponentesSigade(String codigoPresupuestario, String usuario, int existeData)
+        {
+            bool ret = true;
+            List<DtmAvanceFisfinanCmp> componentesSigade = DataSigadeDAO.getComponentes(codigoPresupuestario);
+
+            foreach (DtmAvanceFisfinanCmp objComponente in componentesSigade)
+            {               
+                ComponenteSigade temp = new ComponenteSigade();
+                temp.codigoPresupuestario = objComponente.codigoPresupuestario;
+                temp.estado = 1;
+                temp.fechaCreacion = DateTime.Now;
+                temp.montoComponente = objComponente.montoComponente ?? default(decimal);
+                temp.nombre = objComponente.nombreComponente;
+                temp.numeroComponente = objComponente.numeroComponente ?? default(int);
+                temp.usuarioCreo = usuario;
+
+                ComponenteSigade comp = ComponenteSigadeDAO.getComponenteSigadePorCodigoNumero(temp.codigoPresupuestario, temp.numeroComponente);
+                if (comp == null)
+                    ret = ret && ComponenteSigadeDAO.guardarComponenteSigade(temp);
+                else if (comp != null && existeData == 1)
+                {
+                    comp.montoComponente = temp.montoComponente;
+                    comp.fechaActualizacion = DateTime.Now;
+                    comp.usuarioActualizo = usuario;
+                    ret = ret && ComponenteSigadeDAO.guardarComponenteSigade(comp);
+                }
+            }
+            return ret;
+        }
+
+        public static int existeUnidad(List<Proyecto> proyectos, JObject unidad)
+        {
+            int ejercicio = Convert.ToInt32(unidad["ejercicio"].ToString());
+            int entidad = Convert.ToInt32(unidad["entidad"].ToString());
+            int id = Convert.ToInt32(unidad["id"].ToString());
+
+            int x = -1;
+            foreach (Proyecto proyecto in proyectos)
+            {
+                x++;
+                if (proyecto.unidadEjecutoras.ejercicio == ejercicio &&
+                        proyecto.unidadEjecutoras.entidadentidad == entidad &&
+                        proyecto.unidadEjecutoras.unidadEjecutora == id)
+                    return x;
+
+            }
+            return -1;
+        }
+
+        public static Proyecto crearEditarProyecto(JObject unidad, Prestamo prestamo, String usuario, JArray est_unidadesEjecutoras, int existeData)
+        {
+            Proyecto ret = null;
+            int esCoordinador = 0;
+            DateTime fechaElegibilidad = default(DateTime);
+            DateTime fechaCierre = default(DateTime);
+
+            for (int j = 0; j < est_unidadesEjecutoras.Count; j++)
+            {
+                JObject unidad_ = (JObject)est_unidadesEjecutoras[j];
+                if (unidad["ejercicio"].ToString().Equals(unidad_["ejercicio"].ToString()) &&
+                        unidad["entidad"].ToString().Equals(unidad_["entidadId"].ToString()) &&
+                        (unidad["id"].ToString().Equals(unidad_["id"].ToString()) || Convert.ToInt32(unidad_["id"].ToString()) == 205))
+                {
+                    esCoordinador = (bool)unidad_["esCoordinador"] == true ? 1 : 0;
+                    fechaElegibilidad = (DateTime)unidad_["fechaElegibilidad"];
+                    fechaCierre = (DateTime)unidad_["fechaCierre"];
+                    break;
+                }
+            }
+
+            UnidadEjecutora unidadEjecutora = UnidadEjecutoraDAO.getUnidadEjecutora(
+                    Convert.ToInt32(unidad["ejercicio"].ToString()),
+                    Convert.ToInt32(unidad["entidad"].ToString()),
+                    Convert.ToInt32(unidad["id"].ToString()));
+
+            if (unidadEjecutora != null)
+            {
+                Proyecto proyecto = null;
+                if (existeData == 0)
+                {
+                    ProyectoTipo proyectoTipo = ProyectoTipoDAO.getProyectoTipoPorId(1);
+                    AcumulacionCosto acumulacionCosto = AcumulacionCostoDAO.getAcumulacionCostoById(3);
+
+                    proyecto = new Proyecto();
+                    proyecto.acumulacionCostos = acumulacionCosto;
+                    proyecto.acumulacionCostoid = acumulacionCosto.id;
+                    proyecto.proyectoClase = 1;
+                    proyecto.prestamos = prestamo;
+                    proyecto.prestamoid = prestamo.id;
+                    proyecto.proyectoTipos = proyectoTipo;
+                    proyecto.proyectoTipoid = proyectoTipo.id;
+                    proyecto.unidadEjecutoras = unidadEjecutora;
+                    proyecto.ueunidadEjecutora = unidadEjecutora.unidadEjecutora;
+                    proyecto.nombre = prestamo.numeroPrestamo + " - " + unidadEjecutora.nombre;
+                    proyecto.usuarioCreo = usuario;
+                    proyecto.fechaCreacion = DateTime.Now;
+                    proyecto.estado = 1;
+                    proyecto.fechaInicio = prestamo.fechaSuscripcion;
+                    proyecto.fechaFin = prestamo.fechaSuscripcion;
+                    proyecto.duracion = 1;
+                    proyecto.duracionDimension = "d";
+                    proyecto.nivel = 0;
+                    proyecto.ejecucionFisicaReal = 0;
+                    proyecto.projectCargado = 0;
+                    proyecto.coordinador = esCoordinador;
+                    proyecto.fechaElegibilidad = fechaElegibilidad;
+                    proyecto.fechaCierre = fechaCierre;
+                }
+                else
+                {
+                    proyecto = ProyectoDAO.getProyectoPorUnidadEjecutora(unidadEjecutora.unidadEjecutora, prestamo.id, unidadEjecutora.entidadentidad);
+                    proyecto.coordinador = esCoordinador;
+                    proyecto.fechaElegibilidad = fechaElegibilidad;
+                    proyecto.fechaCierre = fechaCierre;
+                    proyecto.fechaActualizacion = DateTime.Now;
+                    proyecto.usuarioActualizo = usuario;
+                }
+
+                //TODO return ProyectoDAO.guardarProyecto(proyecto, false) ? proyecto : null;
+            }
+
+            return ret;
+        }
+
+        public static bool crearEditarComponente(Proyecto proyecto, String nombreComponente, String descripcion, decimal fPrestamo, decimal donacion, 
+            decimal nacional, String usuario, long codigoPresupuestario, int orden)
+        {
+
+            ComponenteSigade componenteSigade = ComponenteSigadeDAO.getComponenteSigadePorCodigoNumero(codigoPresupuestario + "", orden);
+
+            Componente componente = ComponenteDAO.getComponentePorProyectoYComponenteSigade(proyecto.id, componenteSigade != null ? componenteSigade.id : 0);
+
+            if (componente == null)
+            {
+
+                ComponenteTipo componenteTipo = ComponenteTipoDAO.getComponenteTipoPorId(1);
+
+                AcumulacionCosto acumulacionCosto = AcumulacionCostoDAO.getAcumulacionCostoById(3);
+
+                componente = new Componente(acumulacionCosto, componenteSigade, componenteTipo, proyecto, proyecto.getUnidadEjecutora(), nombreComponente
+                        , descripcion, usuario, null, new Date(), null, 1, null, null, null, null, null, null, null, null,
+                        null, null, null, proyecto.getFechaInicio(), proyecto.getFechaFin(), 1
+                        , "d", null, null, 1, 1, fPrestamo, donacion, nacional, null, null, 0, null, null, null, null);
+            }
+            else
+            {
+                componente.setFuentePrestamo(fPrestamo);
+                componente.setFuenteDonacion(donacion);
+                componente.setFuenteNacional(nacional);
+                componente.setFechaActualizacion(new Date());
+                componente.setUsuarioCreo(usuario);
+            }
+            return ComponenteDAO.guardarComponente(componente, false);
+        }
     }
 }
