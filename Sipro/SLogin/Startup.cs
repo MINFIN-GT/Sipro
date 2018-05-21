@@ -18,7 +18,7 @@ namespace SLogin
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-			Type[] types = typeof(Usuario).Assembly.GetTypes();
+			Type[] types = { typeof(Usuario), typeof(Permiso), typeof(Rol)};
             foreach (Type type in types)
             {
                 var mapper = (SqlMapper.ITypeMap)Activator
@@ -51,6 +51,17 @@ namespace SLogin
                
             });
 
+			services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllHeaders",
+                      builder =>
+                      {
+                          builder.AllowAnyOrigin()
+                                 .AllowAnyHeader()
+                                 .AllowAnyMethod();
+                      });
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,10 +69,13 @@ namespace SLogin
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+				app.UseDeveloperExceptionPage();
+                
             }
 			app.UseAuthentication();
             app.UseMvc();
+
+			app.UseCors("AllowAllHeaders");
         }
     }
 }

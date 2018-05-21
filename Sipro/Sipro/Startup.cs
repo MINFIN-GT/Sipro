@@ -108,6 +108,22 @@ namespace Sipro
             });
 
             services.AddDistributedMemoryCache();
+
+			services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/dist";
+            });
+
+			services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllHeaders",
+                      builder =>
+                      {
+                          builder.AllowAnyOrigin()
+                                 .AllowAnyHeader()
+                                 .AllowAnyMethod();
+                      });
+            });
             
         }
 
@@ -128,23 +144,26 @@ namespace Sipro
             
 			app.UseAuthentication();
             
-			/*app.UseMvc(routes =>
+			app.UseMvc(routes =>
             {
-                routes.MapRoute(
+				routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });*/
+                    template: "/api/{controller=Home}/{action=Index}/{id?}");
+				
+				routes.MapSpaFallbackRoute("spa-fallback", null);
+            });
 
 			app.UseSpa(spa =>
 			{
 				spa.Options.SourcePath = "ClientApp";
 				if(env.IsDevelopment()){
 					spa.UseAngularCliServer(npmScript: "start");
+					//spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
 				}
 			});
 
-
-
+			app.UseCors("AllowAllHeaders");
+            
         }
     }
 }

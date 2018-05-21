@@ -3,25 +3,25 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sipro", "Sipro\Sipro.csproj", "{BE1FA8C7-8086-4A94-9498-D7A38404D5DB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sipro", "Sipro\Sipro.csproj", "{BE1FA8C7-8086-4A94-9498-D7A38404D5DB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SiproDAO", "SiproDAO\SiproDAO\SiproDAO.csproj", "{66BB583D-F8D1-4D12-949E-B2D4E5E81C38}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiproDAO", "SiproDAO\SiproDAO\SiproDAO.csproj", "{66BB583D-F8D1-4D12-949E-B2D4E5E81C38}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCooperante", "SCooperante\SCooperante\SCooperante.csproj", "{E0BC0CBD-E2CF-4E6E-9D31-73E1C7FA2098}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCooperante", "SCooperante\SCooperante\SCooperante.csproj", "{E0BC0CBD-E2CF-4E6E-9D31-73E1C7FA2098}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SiproModelCore", "SiproModelCore\SiproModelCore\SiproModelCore.csproj", "{7374D073-2D2C-45E4-96B7-B25EB22CADFC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiproModelCore", "SiproModelCore\SiproModelCore\SiproModelCore.csproj", "{7374D073-2D2C-45E4-96B7-B25EB22CADFC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity", "Identity\Identity.csproj", "{DF81DBD5-33EA-42EE-9D39-ABF02C846C00}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity", "Identity\Identity.csproj", "{DF81DBD5-33EA-42EE-9D39-ABF02C846C00}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utilities", "Utilities\Utilities.csproj", "{5ED333D8-A0C7-48E7-90F6-889732124588}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilities", "Utilities\Utilities.csproj", "{5ED333D8-A0C7-48E7-90F6-889732124588}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiproModel", "SiproModel\SiproModel.csproj", "{B4FF5881-C2E8-4FB5-9876-984B8E6107D6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SUnidadEjecutora", "SUnidadEjecutora\SUnidadEjecutora.csproj", "{2384F117-4E14-47A7-A8F5-2579A0A30351}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SUnidadEjecutora", "SUnidadEjecutora\SUnidadEjecutora.csproj", "{2384F117-4E14-47A7-A8F5-2579A0A30351}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SEntidad", "SEntidad\SEntidad.csproj", "{C69DD18C-94CD-4C24-95A3-1EFCDFA9BA61}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SEntidad", "SEntidad\SEntidad.csproj", "{C69DD18C-94CD-4C24-95A3-1EFCDFA9BA61}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SPrestamoTipo", "SPrestamoTipo\SPrestamoTipo.csproj", "{4BA6633D-6C2E-49BF-80AC-1AC2C04A4F53}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPrestamoTipo", "SPrestamoTipo\SPrestamoTipo.csproj", "{4BA6633D-6C2E-49BF-80AC-1AC2C04A4F53}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "STipoMoneda", "STipoMoneda\STipoMoneda.csproj", "{A57D5FD8-A555-4DD9-A1DB-933344AA0159}"
 EndProject
@@ -32,6 +32,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiproModelAnalytic", "SiproModelAnalytic\SiproModelAnalytic.csproj", "{C0C7052E-08BD-4105-BAE4-AED32F5FFA2F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiproModelAnalyticCore", "SiproModelAnalyticCore\SiproModelAnalyticCore.csproj", "{9351832F-765B-424B-B55E-FBFE431A7882}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microservicios", "Microservicios", "{0DA1BD0E-A90E-4608-ACE8-5971B84A1019}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -105,5 +107,14 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6BB888BE-6FA0-400D-B0C9-9F121D0B435A}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E0BC0CBD-E2CF-4E6E-9D31-73E1C7FA2098} = {0DA1BD0E-A90E-4608-ACE8-5971B84A1019}
+		{C69DD18C-94CD-4C24-95A3-1EFCDFA9BA61} = {0DA1BD0E-A90E-4608-ACE8-5971B84A1019}
+		{CCEE0A75-77EC-46E9-8B51-964797BEF5D1} = {0DA1BD0E-A90E-4608-ACE8-5971B84A1019}
+		{14B93A42-86A5-4BEC-AFF6-55202D1D099B} = {0DA1BD0E-A90E-4608-ACE8-5971B84A1019}
+		{2384F117-4E14-47A7-A8F5-2579A0A30351} = {0DA1BD0E-A90E-4608-ACE8-5971B84A1019}
+		{4BA6633D-6C2E-49BF-80AC-1AC2C04A4F53} = {0DA1BD0E-A90E-4608-ACE8-5971B84A1019}
+		{A57D5FD8-A555-4DD9-A1DB-933344AA0159} = {0DA1BD0E-A90E-4608-ACE8-5971B84A1019}
 	EndGlobalSection
 EndGlobal

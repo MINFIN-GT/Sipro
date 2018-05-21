@@ -35,4 +35,10 @@
     <ProjectReference Include="..\SiproModelCore\SiproModelCore\SiproModelCore.csproj" />
     <ProjectReference Include="..\Identity\Identity.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Remove="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
 </Project>
