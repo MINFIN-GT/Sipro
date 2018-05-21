@@ -144,66 +144,62 @@ namespace SiproDAO.Dao
             }
             return ret;
         }
-		
-	public static List<ComponenteTipo> getComponenteTiposPagina(int pagina, int numerocomponentestipo,String filtro_nombre, String filtro_usuario_creo, 
-			String filtro_fecha_creacion, String columna_ordenada, String orden_direccion){
-		List<ComponenteTipo> ret = new List<ComponenteTipo>();
-		try{
+
+        public static List<ComponenteTipo> getComponenteTiposPagina(int pagina, int numerocomponentestipo, String filtro_nombre, String filtro_usuario_creo,
+                String filtro_fecha_creacion, String columna_ordenada, String orden_direccion)
+        {
+            List<ComponenteTipo> ret = new List<ComponenteTipo>();
+            try
+            {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    String query = "SELECT * FROM COMPONENTE_TIPO c WHERE c.estado = 1 ";
+                    String query = "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT * FROM COMPONENTE_TIPO c WHERE c.estado = 1 ";
                     String query_a = "";
                     if (filtro_nombre != null && filtro_nombre.Trim().Length > 0)
                         query_a = String.Join("", query_a, " c.nombre LIKE '%", filtro_nombre, "%' ");
                     if (filtro_usuario_creo != null && filtro_usuario_creo.Trim().Length > 0)
                         query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " c.usuarioCreo LIKE '%", filtro_usuario_creo, "%' ");
                     if (filtro_fecha_creacion != null && filtro_fecha_creacion.Trim().Length > 0)
-                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(p.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE(:filtro_fecha_creacion,'DD/MM/YY') ");
+                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(c.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE(:filtro_fecha_creacion,'DD/MM/YY') ");
                     query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND (", query_a, ")") : ""));
                     query = columna_ordenada != null && columna_ordenada.Trim().Length > 0 ? String.Join(" ", query, "ORDER BY", columna_ordenada, orden_direccion) : query;
+                    query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + numerocomponentestipo + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + numerocomponentestipo + ") + 1)");
+
+                    ret = db.Query<ComponenteTipo>(query).AsList<ComponenteTipo>();
                 }
-                    
-			
-			Query<ComponenteTipo> criteria = session.createQuery(query,ComponenteTipo.class);
-			criteria.setFirstResult(((pagina-1)*(numerocomponentestipo)));
-			criteria.setMaxResults(numerocomponentestipo);
-			ret = criteria.getResultList();
-		}
-		catch(Exception e){
-			CLogger.write("6", "ComponenteTipoDAO.class", e);
-		}
-		return ret;
-	}
-	
-	/*public static Long getTotalComponenteTipo(String filtro_nombre, String filtro_usuario_creo, 
-			String filtro_fecha_creacion){
-		Long ret=0L;
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			
-			String query = "SELECT count(c.id) FROM ComponenteTipo c WHERE c.estado=1 ";
-			String query_a="";
-			if(filtro_nombre!=null && filtro_nombre.trim().length()>0)
-				query_a = String.join("",query_a, " c.nombre LIKE '%",filtro_nombre,"%' ");
-			if(filtro_usuario_creo!=null && filtro_usuario_creo.trim().length()>0)
-				query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " c.usuarioCreo LIKE '%", filtro_usuario_creo,"%' ");
-			if(filtro_fecha_creacion!=null && filtro_fecha_creacion.trim().length()>0)
-				query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " str(date_format(c.fechaCreacion,'%d/%m/%YYYY')) LIKE '%", filtro_fecha_creacion,"%' ");
-			query = String.join(" ", query, (query_a.length()>0 ? String.join("","AND (",query_a,")") : ""));
-			
-			
-			Query<Long> conteo = session.createQuery(query,Long.class);
-			ret = conteo.getSingleResult();
-		} catch(Throwable e){
-			CLogger.write("7", ComponenteTipoDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
-         
-         
-         */
+            }
+            catch (Exception e)
+            {
+                CLogger.write("6", "ComponenteTipoDAO.class", e);
+            }
+            return ret;
+        }
+
+        public static long getTotalComponenteTipo(String filtro_nombre, String filtro_usuario_creo, String filtro_fecha_creacion)
+        {
+            long ret = 0L;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    String query = "SELECT COUNT(*) FROM ComponenteTipo c WHERE c.estado=1 ";
+                    String query_a = "";
+                    if (filtro_nombre != null && filtro_nombre.Trim().Length > 0)
+                        query_a = String.Join("", query_a, " c.nombre LIKE '%", filtro_nombre, "%' ");
+                    if (filtro_usuario_creo != null && filtro_usuario_creo.Trim().Length > 0)
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " c.usuarioCreo LIKE '%", filtro_usuario_creo, "%' ");
+                    if (filtro_fecha_creacion != null && filtro_fecha_creacion.Trim().Length > 0)
+                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(c.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE(:filtro_fecha_creacion,'DD/MM/YY') ");
+                    query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND (", query_a, ")") : ""));
+
+                    ret = db.ExecuteScalar<long>(query);
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("7", "ComponenteTipoDAO.class", e);
+            }
+            return ret;
+        }
     }
 }
