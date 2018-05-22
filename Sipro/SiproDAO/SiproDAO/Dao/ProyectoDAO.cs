@@ -621,7 +621,6 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    int count = 0;
                     for (int i = 0; i < listas.Count - 1; i++)
                     {
                         for (int j = 0; j < listas[i].Count; j++)
@@ -641,8 +640,10 @@ namespace SiproDAO.Dao
                                     ProductoDAO.guardarProducto((Producto)listas[i][j].objeto, false);
                                     break;
                                 case 4:
+                                    SubproductoDAO.guardarSubproducto((Subproducto)listas[i][j].objeto, false);
                                     break;
                                 case 5:
+                                    ActividadDAO.guardarActividad((Actividad)listas[i][j].objeto, false);
                                     break;
                             }
                         }
@@ -693,33 +694,29 @@ namespace SiproDAO.Dao
                 session.close();
             }
             return ret;
-        }
+        }*/
 
 
-        public static Proyecto getProyectoHistory(int id,String lineaBase){
-
-            Session session = CHibernateSession.getSessionFactory().openSession();
+        public static Proyecto getProyectoHistory(int id, String lineaBase)
+        {
             Proyecto ret = null;
-            try{
-                String query = String.join(" ", "select * from sipro_history.proyecto p " ,
-                        "where p.estado = 1  ",
-                        "and  p.id = ?1 ",
-                        lineaBase != null ? "and p.linea_base like '%" + lineaBase + "%'" : "and p.actual = 1 ");
-                Query<Proyecto> criteria = session.createNativeQuery(query, Proyecto.class);
-                criteria.setParameter(1, id);
-                 ret = criteria.getSingleResult();
-            } catch (NoResultException e){
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnectionHistory())
+                {
+                    string query = String.Join(" ", "SELECT * FROM PROYECTO WHERE estado=1 AND id=:id",
+                        lineaBase != null ? "AND p.linea_base LIKE '%" + lineaBase + "%'" : "AND p.actual = 1 ");
+                    ret = db.QueryFirstOrDefault<Proyecto>(query, new { id = id });
+                }
             }
-            catch(Throwable e){
-                CLogger.write("21", ProyectoDAO.class, e);
-            }
-            finally{
-                session.close();
+            catch (Exception e)
+            {
+                CLogger.write("21", "ProyectoDAO.class", e);
             }
             return ret;
         }
 
-        public static List<Proyecto> getProyectosPorPrestamoHistory(int idPrograma,String lineaBase){
+        /*public static List<Proyecto> getProyectosPorPrestamoHistory(int idPrograma,String lineaBase){
             List<Proyecto> ret = new ArrayList<Proyecto>();
             Session session = CHibernateSession.getSessionFactory().openSession();
             try{

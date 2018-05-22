@@ -8,12 +8,14 @@ using Utilities;
 using SiproModelAnalyticCore.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Cors;
 
 namespace SPrestamo.Controllers
 {
     //[Authorize]
     [Produces("application/json")]
     [Route("/api/[controller]/[action]")]
+    [EnableCors("AllowAllHeaders")]
     public class PrestamoController : Controller
     {
         private class stprestamo
@@ -645,7 +647,7 @@ namespace SPrestamo.Controllers
 
                 return Ok(new { success = true, prestamos = lstprestamo });
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 CLogger.write("4", "PrestamoController.class", e);
                 return BadRequest(500);
@@ -893,53 +895,587 @@ namespace SPrestamo.Controllers
                         {
                             proyectos.Add(PrestamoDAO.crearEditarProyecto(unidad, prestamo, User.Identity.Name, est_unidadesEjecutoras_, existenDatos));
                             ret = proyectos.Count > 0;
-                            if (fuentePrestamo.CompareTo(default(decimal)) > 0 ||
-                                    fuenteDonacion.CompareTo(default(decimal)) > 0 ||
-                                    fuenteNacional.CompareTo(default(decimal)) > 0)
+                            if (fuentePrestamo.CompareTo(decimal.Zero) > 0 ||
+                                    fuenteDonacion.CompareTo(decimal.Zero) > 0 ||
+                                    fuenteNacional.CompareTo(decimal.Zero) > 0)
                             {
-                                ret = ret && crearEditarComponente(proyectos.get(proyectos.size() - 1), (String)estructura.get("nombre"), (String)estructura.get("descripcion"),
-                                        fuentePrestamo, fuenteDonacion, fuenteNacional, usuario,
-                                        prestamo.getCodigoPresupuestario(), ((Double)estructura.get("orden")).intValue());
+                                ret = ret && PrestamoDAO.crearEditarComponente(proyectos[proyectos.Count - 1], (String)estructura["nombre"], (String)estructura["descripcion"],
+                                        fuentePrestamo, fuenteDonacion, fuenteNacional, User.Identity.Name,
+                                        prestamo.codigoPresupuestario, Convert.ToInt32((Double)estructura["orden"]));
                             }
                         }
                         else
                         {
-                            if (fuentePrestamo.compareTo(BigDecimal.ZERO) > 0 ||
-                                    fuenteDonacion.compareTo(BigDecimal.ZERO) > 0 ||
-                                    fuenteNacional.compareTo(BigDecimal.ZERO) > 0)
+                            if (fuentePrestamo.CompareTo(decimal.Zero) > 0 ||
+                                    fuenteDonacion.CompareTo(decimal.Zero) > 0 ||
+                                    fuenteNacional.CompareTo(decimal.Zero) > 0)
                             {
-                                ret = ret && crearEditarComponente(proyectos[posicion], (String)estructura.get("nombre"), (String)estructura.get("descripcion"),
+                                ret = ret && PrestamoDAO.crearEditarComponente(proyectos[posicion], (String)estructura["nombre"], (String)estructura["descripcion"],
                                         fuentePrestamo, fuenteDonacion, fuenteNacional, User.Identity.Name,
-                                        prestamo.codigoPresupuestario, ((Double)estructura.get("orden")).intValue());
+                                        prestamo.codigoPresupuestario, Convert.ToInt32((Double)estructura["orden"]));
                             }
                         }
-                        ComponenteSigade componenteSigade = ComponenteSigadeDAO.getComponenteSigadePorCodigoNumero(prestamo.codigoPresupuestario + "", ((Double)estructura.get("orden")).intValue());
+                        ComponenteSigade componenteSigade = ComponenteSigadeDAO.getComponenteSigadePorCodigoNumero(prestamo.codigoPresupuestario + "", Convert.ToInt32((Double)estructura["orden"]));
                         stunidadejecutora unidadMatriz = new stunidadejecutora();
                         unidadMatriz.componenteSigadeId = componenteSigade.id;
-                        unidadMatriz.id = Convert.ToInt32(unidad["id"].getAsString());
+                        unidadMatriz.id = Convert.ToInt32(unidad["id"].ToString());
                         unidadMatriz.prestamoId = prestamo.id;
-                        unidadMatriz.entidadId = Convert.ToInt32(unidad.get("entidad").getAsString());
-                        unidadMatriz.ejercicio = Convert.ToInt32(unidad.get("ejercicio").getAsString());
+                        unidadMatriz.entidadId = Convert.ToInt32(unidad["entidad"].ToString());
+                        unidadMatriz.ejercicio = Convert.ToInt32(unidad["ejercicio"].ToString());
                         unidadMatriz.prestamo = fuentePrestamo;
                         unidadMatriz.donacion = fuenteDonacion;
                         unidadMatriz.nacional = fuenteNacional;
-                        unidadMatriz.techo = estructura_.get("techo").getAsBigDecimal();
+                        unidadMatriz.techo = Convert.ToInt32((decimal)estructura_["techo"]);
                         unidadesEjecutorasMatriz.Add(unidadMatriz);
                     }
                 }
                 PrestamoDAO.actualizarMatriz(prestamo.id, unidadesEjecutorasMatriz);
-                int diferencia = DataSigadeDAO.getDiferenciaMontos(prestamo.getCodigoPresupuestario() + "");
+                int diferencia = DataSigadeDAO.getDiferenciaMontos(prestamo.codigoPresupuestario + "");
 
-                response_text = String.join("", "{\"success\":", ret ? "true" : "false", response_text,
-                     ",\"diferencia\":", diferencia + "",
-                     "}");
-                return Ok();
+                return Ok(new { success = ret ? "true" : "false", diferencia = diferencia });
             }
             catch (Exception e)
             {
                 CLogger.write("9", "PrestamoController.class", e);
                 return BadRequest(500);
             }
-        }        
+        }
+
+        // POST api/Prestamo/ComponentesSigade
+        [HttpPost]
+        public IActionResult ComponentesSigade([FromBody]dynamic value)
+        {
+            try
+            {
+                Prestamo prestamo = PrestamoDAO.getPrestamoById((int)value.prestamoId);
+
+                bool ret = PrestamoDAO.guardarComponentes(prestamo.codigoPresupuestario + "", (int)value.proyectoId, User.Identity.Name, prestamo.fechaSuscripcion);
+                return Ok(new { success = ret });
+            }
+            catch (Exception e)
+            {
+                CLogger.write("10", "PrestamoController.class", e);
+                return BadRequest(500);
+            }
+        }
+
+        // GET api/Prestamo/ComponentesSigade/id
+        [HttpGet("{id}")]
+        public IActionResult PrestamoPorId(int id)
+        {
+            try
+            {
+                Prestamo prestamo = PrestamoDAO.getPrestamoById(id);
+                return Ok(new
+                {
+                    success = prestamo != null ? true : false,
+                    codigoPresupuestario = prestamo != null ? prestamo.codigoPresupuestario : default(long),
+                    montoPorDesembolsar = prestamo != null ? prestamo.montoPorDesembolsarUsd : default(decimal),
+                    desembolsoAFechaUsd = prestamo != null ? prestamo.desembolsoAFechaUsd : default(decimal),
+                    fechaEligibilidadUe = prestamo != null ? prestamo.fechaElegibilidadUe.ToString("dd/MM/yyyy H:mm:ss") : null,
+                    fechaCierreActualUe = prestamo != null ? prestamo.fechaCierreActualUe.ToString("dd/MM/yyyy H:mm:ss") : null,
+                    nombre = prestamo != null ? prestamo.proyectoPrograma : null
+                });
+            }
+            catch (Exception e)
+            {
+                CLogger.write("10", "PrestamoController.class", e);
+                return BadRequest(500);
+            }
+        }
+
+        // GET api/Prestamo/Tipos/prestamoId
+        [HttpGet("{prestamoId}")]
+        public IActionResult Tipos(int prestamoId)
+        {
+            try
+            {
+                List<PrestamoTipoPrestamo> tipos = PrestamoTipoDAO.getPrestamoTiposPrestamo(prestamoId);
+                List<sttiposprestamo> lsttipos = new List<sttiposprestamo>();
+                if (tipos != null && tipos.Count > 0)
+                {
+                    foreach (PrestamoTipoPrestamo tipo in tipos)
+                    {
+                        sttiposprestamo temp = new sttiposprestamo();
+                        temp.id = Convert.ToInt32(tipo.prestamoTipos.id);
+                        temp.nombre = tipo.prestamoTipos.nombre;
+                        temp.usuarioCreo = tipo.usuarioCreo;
+                        temp.usuarioActualizo = tipo.usuarioActualizo;
+                        temp.fechaCreacion = tipo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss");
+                        temp.fechaActualizacion = tipo.fechaActualizacion != null ? tipo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
+                        lsttipos.Add(temp);
+                    }
+                }
+
+                return Ok(new { success = true, prestamoTipos = lsttipos });
+            }
+            catch (Exception e)
+            {
+                CLogger.write("10", "PrestamoController.class", e);
+                return BadRequest(500);
+            }
+        }
+
+        // GET api/Prestamo/Prestamo/prestamoId
+        [HttpGet("{prestamoId}")]
+        public IActionResult Prestamo(int prestamoId)
+        {
+            try
+            {
+                Prestamo prestamo = PrestamoDAO.getPrestamoById(prestamoId);
+                stprestamo temp = null;
+                if (prestamo != null)
+                {
+                    temp = new stprestamo();
+                    temp.id = prestamo.id;
+                    temp.fechaCorte = prestamo.fechaCorte == null ? null : prestamo.fechaCorte.Value.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.codigoPresupuestario = prestamo.codigoPresupuestario;
+                    temp.numeroPrestamo = prestamo.numeroPrestamo;
+                    temp.destino = prestamo.destino;
+                    temp.sectorEconomico = prestamo.sectorEconomico;
+                    temp.fechaFirma = prestamo.fechaFirma == null ? null : prestamo.fechaFirma.Value.ToString("dd/MM/yyyy H:mm:ss");
+
+                    AutorizacionTipo autorizacionTipo = AutorizacionTipoDAO.getAutorizacionTipoById(prestamo.autorizacionTipoid ?? default(int));
+
+                    temp.tipoAutorizacionId = autorizacionTipo.id;
+                    temp.tipoAutorizacionNombre = autorizacionTipo.nombre;
+                    temp.numeroAutorizacion = prestamo.numeroAutorizacion;
+                    temp.fechaAutorizacion = prestamo.fechaAutorizacion == null ? null : prestamo.fechaAutorizacion.Value.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.aniosPlazo = prestamo.aniosPlazo ?? default(int);
+                    temp.aniosGracia = prestamo.aniosGracia ?? default(int);
+                    temp.fechaFinEjecucion = prestamo.fechaFinEjecucion == null ? null : prestamo.fechaFinEjecucion.Value.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.periodoEjecucion = prestamo.peridoEjecucion ?? default(int);
+
+                    InteresTipo interesTipo = InteresTipoDAO.getInteresTipoById(prestamo.interesTipoid ?? default(int));
+
+                    temp.tipoInteresId = interesTipo.id;
+                    temp.tipoInteresNombre = interesTipo.nombre;
+                    temp.porcentajeInteres = prestamo.porcentajeInteres ?? default(decimal);
+                    temp.porcentajeComisionCompra = prestamo.porcentajeComisionCompra ?? default(decimal);
+
+                    prestamo.tipoMonedas = TipoMonedaDAO.getTipoMonedaPorId(prestamo.tipoMonedaid);
+                    temp.tipoMonedaId = prestamo.tipoMonedas.id;
+                    temp.tipoMonedaNombre = prestamo.tipoMonedas.nombre;
+                    temp.montoContratado = prestamo.montoContratado;
+                    temp.amortizado = prestamo.amortizado ?? default(decimal);
+                    temp.porAmortizar = prestamo.porAmortizar ?? default(decimal);
+                    temp.principalAnio = prestamo.principalAnio ?? default(decimal);
+                    temp.interesesAnio = prestamo.interesesAnio ?? default(decimal);
+                    temp.comisionCompromisoAnio = prestamo.comisionCompromisoAnio ?? default(decimal);
+                    temp.otrosGastos = prestamo.otrosGastos ?? default(decimal);
+                    temp.principalAcumulado = prestamo.principalAcumulado ?? default(decimal);
+                    temp.interesesAcumulados = prestamo.interesesAcumulados ?? default(decimal);
+                    temp.comisionCompromisoAcumulado = prestamo.comisionCompromisoAcumulado ?? default(decimal);
+                    temp.otrosCargosAcumulados = prestamo.otrosCargosAcumulados ?? default(decimal);
+                    temp.presupuestoAsignadoFuncionamiento = prestamo.presupuestoAsignadoFunc ?? default(decimal);
+                    temp.presupuestoAsignadoInversion = prestamo.presupuestoAsignadoInv ?? default(decimal);
+                    temp.presupuestoModificadoFun = prestamo.presupuestoModificadoFunc ?? default(decimal);
+                    temp.presupuestoModificadoInv = prestamo.presupuestoModificadoInv ?? default(decimal);
+                    temp.presupuestoVigenteFun = prestamo.presupuestoVigenteFunc ?? default(decimal);
+                    temp.presupuestoVigenteInv = prestamo.presupuestoVigenteInv ?? default(decimal);
+                    temp.presupuestoDevengadoFun = prestamo.presupuestoDevengadoFunc ?? default(decimal);
+                    temp.presupuestoDevengadoInv = prestamo.presupuestoDevengadoInv ?? default(decimal);
+                    temp.presupuestoPagadoFun = prestamo.presupuestoPagadoFunc ?? default(decimal);
+                    temp.presupuestoPagadoInv = prestamo.presupuestoPagadoInv ?? default(decimal);
+                    temp.saldoCuentas = prestamo.saldoCuentas ?? default(decimal);
+                    temp.desembolsoReal = prestamo.desembolsadoReal ?? default(decimal);
+
+                    EjecucionEstado ejecucionEstado = EjecucionEstadoDAO.getEjecucionEstadoById(prestamo.ejecucionEstadoid ?? default(int));
+
+                    temp.ejecucionEstadoId = Convert.ToInt32(ejecucionEstado.id);
+                    temp.ejecucionEstadoNombre = ejecucionEstado.nombre;
+                    temp.proyectoPrograma = prestamo.proyectoPrograma;
+                    temp.fechaDecreto = prestamo.fechaDecreto.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.fechaSuscripcion = prestamo.fechaSuscripcion.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.fechaElegibilidadUe = prestamo.fechaElegibilidadUe.ToString("dd/MM/yyyy H:mm:ss"); 
+                    temp.fechaCierreOrigianlUe = prestamo.fechaCierreOrigianlUe.ToString("dd/MM/yyyy H:mm:ss"); 
+                    temp.fechaCierreActualUe = prestamo.fechaCierreActualUe.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.mesesProrrogaUe = prestamo.mesesProrrogaUe;
+                    temp.montoAsignadoUe = prestamo.montoAsignadoUe ?? default(decimal);
+                    temp.desembolsoAFechaUe = prestamo.desembolsoAFechaUe ?? default(decimal);
+                    temp.montoPorDesembolsarUe = prestamo.montoPorDesembolsarUe ?? default(decimal);
+                    temp.fechaVigencia = prestamo.fechaVigencia.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.montoContratadoUsd = prestamo.montoContratadoUsd;
+                    temp.montoContratadoQtz = prestamo.montoContratadoQtz;
+                    temp.desembolsoAFechaUsd = prestamo.desembolsoAFechaUsd ?? default(decimal);
+                    temp.montoPorDesembolsarUsd = prestamo.montoPorDesembolsarUsd;
+                    temp.montoAsignadoUeUsd = prestamo.montoAsignadoUeUsd ?? default(decimal);
+                    temp.montoAsignadoUeQtz = prestamo.montoAsignadoUeQtz ?? default(decimal);
+                    temp.desembolsoAFechaUeUsd = prestamo.desembolsoAFechaUeUsd ?? default(decimal);
+                    temp.montoPorDesembolsarUeUsd = prestamo.montoPorDesembolsarUeUsd ?? default(decimal);
+
+                    prestamo.cooperantes = CooperanteDAO.getCooperantePorCodigo(prestamo.cooperantecodigo ?? default(int));
+
+                    temp.cooperanteid = prestamo.cooperantes.codigo;
+                    temp.cooperantenombre = (prestamo.cooperantes.siglas != null ? prestamo.cooperantes.siglas + " - " : "") + prestamo.cooperantes.nombre;
+
+                    prestamo.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(prestamo.ejercicio, prestamo.entidad, prestamo.ueunidadEjecutora);
+
+                    if (prestamo.unidadEjecutoras != null)
+                    {
+                        prestamo.unidadEjecutoras.entidads = EntidadDAO.getEntidad(prestamo.entidad, prestamo.ejercicio);
+                        temp.unidadEjecutora = prestamo.unidadEjecutoras.unidadEjecutora;
+                        temp.unidadEjecutoraNombre = prestamo.unidadEjecutoras.nombre;
+                        temp.nombreEntidadEjecutora = prestamo.unidadEjecutoras.entidads.nombre;
+                    }
+
+                    temp.usuarioCreo = prestamo.usuarioCreo;
+                    temp.usuarioActualizo = prestamo.usuarioActualizo;
+                    temp.fechaCreacion = prestamo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.fechaActualizacion = prestamo.fechaActualizacion != null ? prestamo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
+                    temp.objetivo = prestamo.objetivo;
+                    temp.objetivoEspecifico = prestamo.objetivoEspecifico;
+                    temp.porcentajeAvance = prestamo.porcentajeAvance;
+                }
+
+                return Ok(new { success = true, prestamo = temp });
+            }
+            catch (Exception e)
+            {
+                CLogger.write("11", "PrestamoController.class", e);
+                return BadRequest(500);
+            }
+        }
+
+        // POST api/Prestamo/PrestamoPorPep
+        [HttpPost]
+        public IActionResult PrestamoPorPep([FromBody]dynamic value)
+        {
+            try
+            {
+                Proyecto proyecto = ProyectoDAO.getProyectoHistory((int)value.proyectoId, (string)value.lineaBase);
+                if (proyecto != null)
+                {
+                    Prestamo prestamo = PrestamoDAO.getPrestamoById(proyecto.prestamoid ?? default(int));
+                    if (prestamo != null)
+                    {
+                        stprestamo temp = new stprestamo();
+                        temp = new stprestamo();
+                        temp.id = prestamo.id;
+                        temp.fechaCorte = prestamo.fechaCorte == null ? null : prestamo.fechaCorte.Value.ToString("dd/MM/yyyy H:mm:ss");
+                        temp.codigoPresupuestario = prestamo.codigoPresupuestario;
+                        temp.numeroPrestamo = prestamo.numeroPrestamo;
+                        temp.destino = prestamo.destino;
+                        temp.sectorEconomico = prestamo.sectorEconomico;
+                        temp.fechaFirma = prestamo.fechaFirma == null ? null : prestamo.fechaFirma.Value.ToString("dd/MM/yyyy H:mm:ss");
+
+                        AutorizacionTipo autorizacionTipo = AutorizacionTipoDAO.getAutorizacionTipoById(prestamo.autorizacionTipoid ?? default(int));
+
+                        temp.tipoAutorizacionId = autorizacionTipo.id;
+                        temp.tipoAutorizacionNombre = autorizacionTipo.nombre;
+                        temp.numeroAutorizacion = prestamo.numeroAutorizacion;
+                        temp.fechaAutorizacion = prestamo.fechaAutorizacion == null ? null : prestamo.fechaAutorizacion.Value.ToString("dd/MM/yyyy H:mm:ss");
+                        temp.aniosPlazo = prestamo.aniosPlazo ?? default(int);
+                        temp.aniosGracia = prestamo.aniosGracia ?? default(int);
+                        temp.fechaFinEjecucion = prestamo.fechaFinEjecucion == null ? null : prestamo.fechaFinEjecucion.Value.ToString("dd/MM/yyyy H:mm:ss");
+                        temp.periodoEjecucion = prestamo.peridoEjecucion ?? default(int);
+
+                        InteresTipo interesTipo = InteresTipoDAO.getInteresTipoById(prestamo.interesTipoid ?? default(int));
+
+                        temp.tipoInteresId = interesTipo.id;
+                        temp.tipoInteresNombre = interesTipo.nombre;
+                        temp.porcentajeInteres = prestamo.porcentajeInteres ?? default(decimal);
+                        temp.porcentajeComisionCompra = prestamo.porcentajeComisionCompra ?? default(decimal);
+
+                        prestamo.tipoMonedas = TipoMonedaDAO.getTipoMonedaPorId(prestamo.tipoMonedaid);
+                        temp.tipoMonedaId = prestamo.tipoMonedas.id;
+                        temp.tipoMonedaNombre = prestamo.tipoMonedas.nombre;
+                        temp.montoContratado = prestamo.montoContratado;
+                        temp.amortizado = prestamo.amortizado ?? default(decimal);
+                        temp.porAmortizar = prestamo.porAmortizar ?? default(decimal);
+                        temp.principalAnio = prestamo.principalAnio ?? default(decimal);
+                        temp.interesesAnio = prestamo.interesesAnio ?? default(decimal);
+                        temp.comisionCompromisoAnio = prestamo.comisionCompromisoAnio ?? default(decimal);
+                        temp.otrosGastos = prestamo.otrosGastos ?? default(decimal);
+                        temp.principalAcumulado = prestamo.principalAcumulado ?? default(decimal);
+                        temp.interesesAcumulados = prestamo.interesesAcumulados ?? default(decimal);
+                        temp.comisionCompromisoAcumulado = prestamo.comisionCompromisoAcumulado ?? default(decimal);
+                        temp.otrosCargosAcumulados = prestamo.otrosCargosAcumulados ?? default(decimal);
+                        temp.presupuestoAsignadoFuncionamiento = prestamo.presupuestoAsignadoFunc ?? default(decimal);
+                        temp.presupuestoAsignadoInversion = prestamo.presupuestoAsignadoInv ?? default(decimal);
+                        temp.presupuestoModificadoFun = prestamo.presupuestoModificadoFunc ?? default(decimal);
+                        temp.presupuestoModificadoInv = prestamo.presupuestoModificadoInv ?? default(decimal);
+                        temp.presupuestoVigenteFun = prestamo.presupuestoVigenteFunc ?? default(decimal);
+                        temp.presupuestoVigenteInv = prestamo.presupuestoVigenteInv ?? default(decimal);
+                        temp.presupuestoDevengadoFun = prestamo.presupuestoDevengadoFunc ?? default(decimal);
+                        temp.presupuestoDevengadoInv = prestamo.presupuestoDevengadoInv ?? default(decimal);
+                        temp.presupuestoPagadoFun = prestamo.presupuestoPagadoFunc ?? default(decimal);
+                        temp.presupuestoPagadoInv = prestamo.presupuestoPagadoInv ?? default(decimal);
+                        temp.saldoCuentas = prestamo.saldoCuentas ?? default(decimal);
+                        temp.desembolsoReal = prestamo.desembolsadoReal ?? default(decimal);
+
+                        EjecucionEstado ejecucionEstado = EjecucionEstadoDAO.getEjecucionEstadoById(prestamo.ejecucionEstadoid ?? default(int));
+
+                        temp.ejecucionEstadoId = Convert.ToInt32(ejecucionEstado.id);
+                        temp.ejecucionEstadoNombre = ejecucionEstado.nombre;
+                        temp.proyectoPrograma = prestamo.proyectoPrograma;
+                        temp.fechaDecreto = prestamo.fechaDecreto.ToString("dd/MM/yyyy H:mm:ss");
+                        temp.fechaSuscripcion = prestamo.fechaSuscripcion.ToString("dd/MM/yyyy H:mm:ss");
+                        temp.fechaElegibilidadUe = prestamo.fechaElegibilidadUe.ToString("dd/MM/yyyy H:mm:ss");
+                        temp.fechaCierreOrigianlUe = prestamo.fechaCierreOrigianlUe.ToString("dd/MM/yyyy H:mm:ss");
+                        temp.fechaCierreActualUe = prestamo.fechaCierreActualUe.ToString("dd/MM/yyyy H:mm:ss");
+                        temp.mesesProrrogaUe = prestamo.mesesProrrogaUe;
+                        temp.montoAsignadoUe = prestamo.montoAsignadoUe ?? default(decimal);
+                        temp.desembolsoAFechaUe = prestamo.desembolsoAFechaUe ?? default(decimal);
+                        temp.montoPorDesembolsarUe = prestamo.montoPorDesembolsarUe ?? default(decimal);
+                        temp.fechaVigencia = prestamo.fechaVigencia.ToString("dd/MM/yyyy H:mm:ss");
+                        temp.montoContratadoUsd = prestamo.montoContratadoUsd;
+                        temp.montoContratadoQtz = prestamo.montoContratadoQtz;
+                        temp.desembolsoAFechaUsd = prestamo.desembolsoAFechaUsd ?? default(decimal);
+                        temp.montoPorDesembolsarUsd = prestamo.montoPorDesembolsarUsd;
+                        temp.montoAsignadoUeUsd = prestamo.montoAsignadoUeUsd ?? default(decimal);
+                        temp.montoAsignadoUeQtz = prestamo.montoAsignadoUeQtz ?? default(decimal);
+                        temp.desembolsoAFechaUeUsd = prestamo.desembolsoAFechaUeUsd ?? default(decimal);
+                        temp.montoPorDesembolsarUeUsd = prestamo.montoPorDesembolsarUeUsd ?? default(decimal);
+
+                        prestamo.cooperantes = CooperanteDAO.getCooperantePorCodigo(prestamo.cooperantecodigo ?? default(int));
+
+                        temp.cooperanteid = prestamo.cooperantes.codigo;
+                        temp.cooperantenombre = (prestamo.cooperantes.siglas != null ? prestamo.cooperantes.siglas + " - " : "") + prestamo.cooperantes.nombre;
+
+                        prestamo.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(prestamo.ejercicio, prestamo.entidad, prestamo.ueunidadEjecutora);
+
+                        if (prestamo.unidadEjecutoras != null)
+                        {
+                            prestamo.unidadEjecutoras.entidads = EntidadDAO.getEntidad(prestamo.entidad, prestamo.ejercicio);
+                            temp.unidadEjecutora = prestamo.unidadEjecutoras.unidadEjecutora;
+                            temp.unidadEjecutoraNombre = prestamo.unidadEjecutoras.nombre;
+                            temp.nombreEntidadEjecutora = prestamo.unidadEjecutoras.entidads.nombre;
+                        }
+
+                        temp.montoContratadoEntidadUsd = decimal.Zero;
+                        List<Componente> componentes = (List<Componente>)ComponenteDAO.getComponentesPorProyectoHistory(proyecto.id, null);
+                        if (componentes != null)
+                        {
+                            foreach (Componente c in componentes)
+                                temp.montoContratadoEntidadUsd += c.fuentePrestamo ?? default(decimal);
+                        }
+
+                        int anio = DateTime.Now.Year;
+                        int mes = DateTime.Now.Month;
+
+                        temp.desembolsadoAFecha = DataSigadeDAO.totalDesembolsadoAFechaRealDolaresPorEntidad(prestamo.codigoPresupuestario + "",
+                                anio, mes, proyecto.unidadEjecutoras.entidadentidad);
+
+                        temp.ejecucionFisicaRealPEP = proyecto.ejecucionFisicaReal ?? default(int);
+                        temp.usuarioCreo = prestamo.usuarioCreo;
+                        temp.usuarioActualizo = prestamo.usuarioActualizo;
+                        temp.fechaCreacion = prestamo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss");
+                        temp.fechaActualizacion = prestamo.fechaActualizacion != null ? prestamo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
+                        temp.objetivo = prestamo.objetivo;
+                        temp.objetivoEspecifico = prestamo.objetivoEspecifico;
+
+                        long tiempo1 = DateTime.Now.Ticks;
+                        Double f1 = (((DateTime.Now.Ticks * 1.0) - tiempo1) - proyecto.fechaInicio.Value.Ticks) / 86400000;
+                        Double f2 = (proyecto.fechaFin.Value.Ticks * 1.0 - proyecto.fechaInicio.Value.Ticks) / 86400000;
+                        temp.plazoEjecucionPEP = (f1 * 1.0 / f2 * 100);
+
+                        return Ok(new { success = true, prestamo = temp });
+                    }
+                    else
+                        return Ok(new { success = false });
+                }
+                else
+                    return Ok(new { success = false });
+            }
+            catch (Exception e)
+            {
+                CLogger.write("12", "PrestamoController.class", e);
+                return BadRequest(500);
+            }
+        }
+
+        // GET api/Prestamo/PrestamoPorPep/prestamoId
+        [HttpGet("{prestamoId}")]
+        public IActionResult PrestamoHistory(int prestamoId)
+        {
+            try
+            {
+                Prestamo prestamo = PrestamoDAO.getPrestamoByIdHistory(prestamoId, null);
+                stprestamo temp = null;
+
+                if (prestamo != null)
+                {
+                    temp = new stprestamo();
+                    temp.id = prestamo.id;
+                    temp.fechaCorte = prestamo.fechaCorte == null ? null : prestamo.fechaCorte.Value.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.codigoPresupuestario = prestamo.codigoPresupuestario;
+                    temp.numeroPrestamo = prestamo.numeroPrestamo;
+                    temp.destino = prestamo.destino;
+                    temp.sectorEconomico = prestamo.sectorEconomico;
+                    temp.fechaFirma = prestamo.fechaFirma == null ? null : prestamo.fechaFirma.Value.ToString("dd/MM/yyyy H:mm:ss");
+
+                    AutorizacionTipo autorizacionTipo = AutorizacionTipoDAO.getAutorizacionTipoById(prestamo.autorizacionTipoid ?? default(int));
+
+                    temp.tipoAutorizacionId = autorizacionTipo.id;
+                    temp.tipoAutorizacionNombre = autorizacionTipo.nombre;
+                    temp.numeroAutorizacion = prestamo.numeroAutorizacion;
+                    temp.fechaAutorizacion = prestamo.fechaAutorizacion == null ? null : prestamo.fechaAutorizacion.Value.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.aniosPlazo = prestamo.aniosPlazo ?? default(int);
+                    temp.aniosGracia = prestamo.aniosGracia ?? default(int);
+                    temp.fechaFinEjecucion = prestamo.fechaFinEjecucion == null ? null : prestamo.fechaFinEjecucion.Value.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.periodoEjecucion = prestamo.peridoEjecucion ?? default(int);
+
+                    InteresTipo interesTipo = InteresTipoDAO.getInteresTipoById(prestamo.interesTipoid ?? default(int));
+
+                    temp.tipoInteresId = interesTipo.id;
+                    temp.tipoInteresNombre = interesTipo.nombre;
+                    temp.porcentajeInteres = prestamo.porcentajeInteres ?? default(decimal);
+                    temp.porcentajeComisionCompra = prestamo.porcentajeComisionCompra ?? default(decimal);
+
+                    prestamo.tipoMonedas = TipoMonedaDAO.getTipoMonedaPorId(prestamo.tipoMonedaid);
+                    temp.tipoMonedaId = prestamo.tipoMonedas.id;
+                    temp.tipoMonedaNombre = prestamo.tipoMonedas.nombre;
+                    temp.montoContratado = prestamo.montoContratado;
+                    temp.amortizado = prestamo.amortizado ?? default(decimal);
+                    temp.porAmortizar = prestamo.porAmortizar ?? default(decimal);
+                    temp.principalAnio = prestamo.principalAnio ?? default(decimal);
+                    temp.interesesAnio = prestamo.interesesAnio ?? default(decimal);
+                    temp.comisionCompromisoAnio = prestamo.comisionCompromisoAnio ?? default(decimal);
+                    temp.otrosGastos = prestamo.otrosGastos ?? default(decimal);
+                    temp.principalAcumulado = prestamo.principalAcumulado ?? default(decimal);
+                    temp.interesesAcumulados = prestamo.interesesAcumulados ?? default(decimal);
+                    temp.comisionCompromisoAcumulado = prestamo.comisionCompromisoAcumulado ?? default(decimal);
+                    temp.otrosCargosAcumulados = prestamo.otrosCargosAcumulados ?? default(decimal);
+                    temp.presupuestoAsignadoFuncionamiento = prestamo.presupuestoAsignadoFunc ?? default(decimal);
+                    temp.presupuestoAsignadoInversion = prestamo.presupuestoAsignadoInv ?? default(decimal);
+                    temp.presupuestoModificadoFun = prestamo.presupuestoModificadoFunc ?? default(decimal);
+                    temp.presupuestoModificadoInv = prestamo.presupuestoModificadoInv ?? default(decimal);
+                    temp.presupuestoVigenteFun = prestamo.presupuestoVigenteFunc ?? default(decimal);
+                    temp.presupuestoVigenteInv = prestamo.presupuestoVigenteInv ?? default(decimal);
+                    temp.presupuestoDevengadoFun = prestamo.presupuestoDevengadoFunc ?? default(decimal);
+                    temp.presupuestoDevengadoInv = prestamo.presupuestoDevengadoInv ?? default(decimal);
+                    temp.presupuestoPagadoFun = prestamo.presupuestoPagadoFunc ?? default(decimal);
+                    temp.presupuestoPagadoInv = prestamo.presupuestoPagadoInv ?? default(decimal);
+                    temp.saldoCuentas = prestamo.saldoCuentas ?? default(decimal);
+                    temp.desembolsoReal = prestamo.desembolsadoReal ?? default(decimal);
+
+                    EjecucionEstado ejecucionEstado = EjecucionEstadoDAO.getEjecucionEstadoById(prestamo.ejecucionEstadoid ?? default(int));
+
+                    temp.ejecucionEstadoId = Convert.ToInt32(ejecucionEstado.id);
+                    temp.ejecucionEstadoNombre = ejecucionEstado.nombre;
+                    temp.proyectoPrograma = prestamo.proyectoPrograma;
+                    temp.fechaDecreto = prestamo.fechaDecreto.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.fechaSuscripcion = prestamo.fechaSuscripcion.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.fechaElegibilidadUe = prestamo.fechaElegibilidadUe.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.fechaCierreOrigianlUe = prestamo.fechaCierreOrigianlUe.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.fechaCierreActualUe = prestamo.fechaCierreActualUe.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.mesesProrrogaUe = prestamo.mesesProrrogaUe;
+                    temp.montoAsignadoUe = prestamo.montoAsignadoUe ?? default(decimal);
+                    temp.desembolsoAFechaUe = prestamo.desembolsoAFechaUe ?? default(decimal);
+                    temp.montoPorDesembolsarUe = prestamo.montoPorDesembolsarUe ?? default(decimal);
+                    temp.fechaVigencia = prestamo.fechaVigencia.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.montoContratadoUsd = prestamo.montoContratadoUsd;
+                    temp.montoContratadoQtz = prestamo.montoContratadoQtz;
+                    temp.desembolsoAFechaUsd = prestamo.desembolsoAFechaUsd ?? default(decimal);
+                    temp.montoPorDesembolsarUsd = prestamo.montoPorDesembolsarUsd;
+                    temp.montoAsignadoUeUsd = prestamo.montoAsignadoUeUsd ?? default(decimal);
+                    temp.montoAsignadoUeQtz = prestamo.montoAsignadoUeQtz ?? default(decimal);
+                    temp.desembolsoAFechaUeUsd = prestamo.desembolsoAFechaUeUsd ?? default(decimal);
+                    temp.montoPorDesembolsarUeUsd = prestamo.montoPorDesembolsarUeUsd ?? default(decimal);
+
+                    prestamo.cooperantes = CooperanteDAO.getCooperantePorCodigo(prestamo.cooperantecodigo ?? default(int));
+
+                    temp.cooperanteid = prestamo.cooperantes.codigo;
+                    temp.cooperantenombre = (prestamo.cooperantes.siglas != null ? prestamo.cooperantes.siglas + " - " : "") + prestamo.cooperantes.nombre;
+
+                    prestamo.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(prestamo.ejercicio, prestamo.entidad, prestamo.ueunidadEjecutora);
+
+                    if (prestamo.unidadEjecutoras != null)
+                    {
+                        prestamo.unidadEjecutoras.entidads = EntidadDAO.getEntidad(prestamo.entidad, prestamo.ejercicio);
+                        temp.unidadEjecutora = prestamo.unidadEjecutoras.unidadEjecutora;
+                        temp.unidadEjecutoraNombre = prestamo.unidadEjecutoras.nombre;
+                        temp.nombreEntidadEjecutora = prestamo.unidadEjecutoras.entidads.nombre;
+                    }
+
+                    temp.usuarioCreo = prestamo.usuarioCreo;
+                    temp.usuarioActualizo = prestamo.usuarioActualizo;
+                    temp.fechaCreacion = prestamo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.fechaActualizacion = prestamo.fechaActualizacion != null ? prestamo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
+                    temp.objetivo = prestamo.objetivo;
+                    temp.objetivoEspecifico = prestamo.objetivoEspecifico;
+                    temp.porcentajeAvance = prestamo.porcentajeAvance;
+                }
+
+                return Ok(new { success = true, prestamo = temp });
+            }
+            catch (Exception e)
+            {
+                CLogger.write("13", "PrestamoController.class", e);
+                return BadRequest(500);
+            }
+        }
+
+        // POST api/Prestamo/congelarDescongelar
+        [HttpPost]
+        public IActionResult congelarDescongelar([FromBody]dynamic value)
+        {
+            try
+            {
+                bool ret = true;
+                String peps = (string)value.peps;
+                String nombre = (string)value.nombre;
+                int generarLineasBases = (bool)value.lineaBase == true ? 1 : 0;
+                String lineaBaseId = (string)value.lineaBaseId;
+
+                JArray pepsArreglo = JArray.Parse(peps);
+                foreach (JObject objeto in pepsArreglo.Children<JObject>())
+                {
+                    foreach(JProperty propiedad in objeto.Properties())
+                    {
+                        int id = 0;
+                        int congelado = 0;
+                        int sobreescribir = 0;
+
+                        switch (propiedad.Name)
+                        {
+                            case "id":
+                                id = (int)propiedad.Value;
+                                break;
+                            case "congelado":
+                                congelado = (int)propiedad.Value;
+                                break;
+                            case "permiso":
+                                sobreescribir = (int)propiedad.Value;
+                                break;
+                        }
+                        int tipoLinea = (int)value.tipoLineaBase;
+                        Proyecto proyecto = ProyectoDAO.getProyecto(id);
+
+                        LineaBase ultimaLineaBase = LineaBaseDAO.getUltimaLinaBasePorProyecto(proyecto.id, 2);
+                        if (ultimaLineaBase != null)
+                        {
+                            ultimaLineaBase.sobreescribir = sobreescribir;
+                            ret = ret && LineaBaseDAO.guardarLineaBase(ultimaLineaBase);
+                        }
+
+                        if (!congelado.Equals(proyecto.congelado))
+                        {
+                            proyecto.congelado = congelado;
+                            ret = ret && ProyectoDAO.guardarProyecto(proyecto, false);
+                            
+                            if (ret && proyecto.congelado.Equals(1) && generarLineasBases.Equals(1))
+                            {
+                                LineaBase lineaBase = new LineaBase();
+                                lineaBase.proyectos = proyecto;
+                                lineaBase.proyectoid = proyecto.id;
+                                lineaBase.nombre = nombre;
+                                lineaBase.usuarioCreo = User.Identity.Name;
+                                lineaBase.fechaCreacion = DateTime.Now;
+                                lineaBase.tipoLineaBase = tipoLinea;
+                                ret = LineaBaseDAO.guardarLineaBase(lineaBase, lineaBaseId);
+                            }
+                        }
+                    }
+                }
+                return Ok(new { success = ret });
+            }
+            catch (Exception e)
+            {
+                CLogger.write("14", "PrestamoController.class", e);
+                return BadRequest(500);
+            }
+        }
     }
 }

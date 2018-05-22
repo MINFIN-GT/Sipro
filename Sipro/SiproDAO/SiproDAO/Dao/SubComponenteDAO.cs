@@ -136,6 +136,7 @@ namespace SiproDAO.Dao
                         {
                             ProyectoDAO.calcularCostoyFechas(Convert.ToInt32(SubComponente.treepath.Substring(0, 8)) - 10000000);
                         }
+
                         ret = true;
                     }
                 }

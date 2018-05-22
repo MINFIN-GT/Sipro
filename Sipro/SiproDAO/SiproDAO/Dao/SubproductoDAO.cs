@@ -96,46 +96,101 @@ namespace SiproDAO.Dao
 			session.close();
 		}
 		return ret;
-	}
+	}*/
 
-	public static boolean guardarSubproducto(Subproducto subproducto, boolean calcular_valores_agregados) {
-		boolean ret = false;
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try {
-			session.beginTransaction();
-			if(subproducto.getId()==null || subproducto.getId()<1){
-				session.saveOrUpdate(subproducto);
-				session.flush();
-				subproducto.setTreePath(subproducto.getProducto().getTreePath()+""+
-				(10000000+subproducto.getId()));
-			}
-			session.saveOrUpdate(subproducto);
-			Usuario usu = UsuarioDAO.getUsuario(subproducto.getUsuarioCreo());
-			SubproductoUsuario su = new SubproductoUsuario(new SubproductoUsuarioId(subproducto.getId(),subproducto.getUsuarioCreo())
-					, subproducto, usu, subproducto.getUsuarioCreo(), subproducto.getFechaCreacion());
-			session.saveOrUpdate(su);
-			if(!subproducto.getUsuarioCreo().equals("admin")){
-				SubproductoUsuario su_admin = new SubproductoUsuario(new SubproductoUsuarioId(subproducto.getId(),"admin")
-						, subproducto, usu, subproducto.getUsuarioCreo(), subproducto.getFechaCreacion());
-				session.saveOrUpdate(su_admin);
-			}
-			session.getTransaction().commit();
-			session.close();
-			
-			if(calcular_valores_agregados){
-				ProyectoDAO.calcularCostoyFechas(Integer.parseInt(subproducto.getTreePath().substring(0,8))-10000000);
-			}
-			
-			ret = true;
-		} catch (Throwable e) {
-			CLogger.write("3", SubproductoDAO.class, e);
-		} finally {
-			session.close();
-		}
-		return ret;
-	}
+        public static bool guardarSubproducto(Subproducto subproducto, bool calcular_valores_agregados)
+        {
+            bool ret = false;
+            int guardado = 0;
 
-	public static boolean eliminarSubproducto(Subproducto subproducto) {
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    if (subproducto.id < 1)
+                    {
+                        int sequenceId = db.ExecuteScalar<int>("SELECT seq_subproducto.nextval FROM DUAL");
+                        subproducto.id = sequenceId;
+                        guardado = db.Execute("INSERT INTO SUBPRODUCTO VALUES (:id, :nombre, :descripcion, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion, " +
+                            ":estado, :snip, :programa, :subprograma, :proyecto, :actividad, :obra, :productoid, :subproductoTipoid, :ueunidadEjecutora, :latitud, :longitud, " +
+                            ":costo, :acumulacionCostoid, :renglon, :ubicacionGeografica, :fechaInicio, :fechaFin, :duracion, :duracionDimension, :orden, :treePath, :nivel, " +
+                            ":ejercicio, :entidad, :fechaInicioReal, :fechaFinFeal, :inversionNueva)", subproducto);
+
+                        if (guardado > 0)
+                            subproducto.treepath = subproducto.productos.treepath + "" + (10000000 + subproducto.id);
+                    }
+
+                    guardado = db.Execute("UPDATE subproducto SET nombre=:nombre, descripcion=:descripcion, usuario_creo=:usuarioCreo, usuario_actualizo=:usuario_actualizo, " +
+                        "fecha_creacion=:fechaCreacion, fecha_actualizacion=:fechaActualizacion, estado=:estado, snip=:snip, programa=:programa, subprograma=:subprograma, " +
+                        "proyecto=:proyecto, actividad=:actividad, obra=:obra, productoid=:productoid, subproducto_tipoid=:subproductoTipoid, ueunidad_ejecutora=:ueunidadEjecutora, " +
+                        "latitud=:latitud, longitud=:longitud, costo=:costo, acumulacion_costoid=:acumulacionCostoid, renglon=:renglon, ubicacion_geografica=:ubicacionGeografica, " +
+                        "fecha_inicio=:fechaInicio, fecha_fin=:fechaFin, duracion=:duracion, duracion_dimension=:duracionDimension, orden=:orden, treePath=:treePath, " +
+                        "nivel=:nivel, ejercicio=:ejercicio, entidad=:entidad, fecha_inicio_real=:fechaInicioReal, fecha_fin_real=:fechaFinReal, inversion_nueva=:inversionNueva WHERE id=:id", subproducto);
+
+
+                    if (guardado > 0)
+                    {
+                        Usuario usu = UsuarioDAO.getUsuario(subproducto.usuarioCreo);
+                        SubproductoUsuario su = new SubproductoUsuario();
+                        su.subproductos = subproducto;
+                        su.subproductoid = subproducto.id;
+                        su.usuario = subproducto.usuarioCreo;
+                        su.usuarioCreo = subproducto.usuarioCreo;
+                        su.fechaCreacion = subproducto.fechaCreacion;
+
+                        int existe = db.ExecuteScalar<int>("SELECT COUNT(*) FROM SUBPRODUCTO_USUARIO WHERE subproductoid=:id AND usuario=:usuario", su);
+
+                        if (existe > 0)
+                        {
+                            guardado = db.Execute("UPDATE SUBPRODUCTO_USUARIO SET usuario_creo=:usuarioCreo, usuario_actualizo=:usuarioActualizo, fecha_creacion=:fechaCreacion, " +
+                                "fecha_actualizacion=:fechaActualizacion WHERE subproductoid=:subproductoid AND usuario=:usuario", su);
+                        }
+                        else
+                        {
+                            guardado = db.Execute("INSERT INTO SUBPRODUCTO_USUARIO VALUES (:subproductoid, :usuario, :usuarioCreo, :usuarioActualizo, " +
+                                ":fechaCreacion, :fechaActualizacion)", su);
+                        }
+
+                        if (guardado > 0 && !subproducto.usuarioCreo.Equals("admin"))
+                        {
+                            SubproductoUsuario su_admin = new SubproductoUsuario();
+                            su_admin.subproductos = subproducto;
+                            su_admin.subproductoid = subproducto.id;
+                            su_admin.usuario = "admin";
+                            su_admin.usuarioCreo = subproducto.usuarioCreo;
+                            su_admin.fechaCreacion = subproducto.fechaCreacion;
+
+                            existe = db.ExecuteScalar<int>("SELECT COUNT(*) FROM SUBPRODUCTO_USUARIO WHERE subproductoid=:id AND usuario=:usuario", su_admin);
+
+                            if (existe > 0)
+                            {
+                                guardado = db.Execute("UPDATE SUBPRODUCTO_USUARIO SET usuario_creo=:usuarioCreo, usuario_actualizo=:usuarioActualizo, fecha_creacion=:fechaCreacion, " +
+                                    "fecha_actualizacion=:fechaActualizacion WHERE subproductoid=:subproductoid AND usuario=:usuario", su_admin);
+                            }
+                            else
+                            {
+                                guardado = db.Execute("INSERT INTO SUBPRODUCTO_USUARIO VALUES (:subproductoid, :usuario, :usuarioCreo, :usuarioActualizo, " +
+                                    ":fechaCreacion, :fechaActualizacion)", su_admin);
+                            }
+                        }
+
+                        if (calcular_valores_agregados)
+                        {
+                            ProyectoDAO.calcularCostoyFechas(Convert.ToInt32(subproducto.treepath.Substring(0, 8)) - 10000000);
+                        }
+
+                        ret = true;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("3", "SubproductoDAO.class", e);
+            }
+            return ret;
+        }
+
+	/*public static boolean eliminarSubproducto(Subproducto subproducto) {
 		boolean ret = false;
 		Session session = CHibernateSession.getSessionFactory().openSession();
 		try {

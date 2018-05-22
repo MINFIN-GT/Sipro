@@ -93,68 +93,122 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-	/*public static boolean guardarActividad(Actividad Actividad, boolean calcular_valores_agregados){
-		boolean ret = false;
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			session.beginTransaction();
-			if(Actividad.getId()==null || Actividad.getId()<1){
-				session.save(Actividad);
-				session.flush();
-				switch(Actividad.getObjetoTipo()){
-					case 0:
-						Proyecto proyecto = ProyectoDAO.getProyecto(Actividad.getObjetoId());
-						Actividad.setTreePath(proyecto.getTreePath()+""+(10000000+Actividad.getId()));
-						break;
-					case 1:
-						Componente componente = ComponenteDAO.getComponente(Actividad.getObjetoId());
-						Actividad.setTreePath(componente.getTreePath()+""+(10000000+Actividad.getId()));
-						break;
-					case 2:
-						Subcomponente subcomponente = SubComponenteDAO.getSubComponente(Actividad.getObjetoId());
-						Actividad.setTreePath(subcomponente.getTreePath()+""+(10000000+Actividad.getId()));
-						break;
-					case 3:
-						Producto producto = ProductoDAO.getProductoPorId(Actividad.getObjetoId());
-						Actividad.setTreePath(producto.getTreePath()+""+(10000000+Actividad.getId()));
-						break;
-					case 4:
-						Subproducto subproducto = SubproductoDAO.getSubproductoPorId(Actividad.getObjetoId());
-						Actividad.setTreePath(subproducto.getTreePath()+""+(10000000+Actividad.getId()));
-						break;
-					case 5:
-						Actividad actividad = ActividadDAO.getActividadPorId(Actividad.getObjetoId());
-						Actividad.setTreePath(actividad.getTreePath()+""+(10000000+Actividad.getId()));
-						break;
-				}
-			}
-			session.saveOrUpdate(Actividad);
-			ActividadUsuario au = new ActividadUsuario(new ActividadUsuarioId(Actividad.getId(), Actividad.getUsuarioCreo()),Actividad);
-			session.saveOrUpdate(au);
-			if(!Actividad.getUsuarioCreo().equals("admin")){
-				ActividadUsuario au_admin = 
-						new ActividadUsuario(new ActividadUsuarioId(Actividad.getId(), "admin"), Actividad, "admin",null,new Date(),null);
-				session.saveOrUpdate(au_admin);
-			}
-			session.getTransaction().commit();
-			session.close();
-			
-			if(calcular_valores_agregados){
-				ProyectoDAO.calcularCostoyFechas(Integer.parseInt(Actividad.getTreePath().substring(0,8))-10000000);
-			}
-			
-			ret = true;
-		}
-		catch(Throwable e){
-			CLogger.write("3", ActividadDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
+        public static bool guardarActividad(Actividad Actividad, bool calcular_valores_agregados)
+        {
+            bool ret = false;
+            int guardado = 0;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    if (Actividad.id < 1)
+                    {
+                        guardado = db.Execute("INSERT INTO ACTIVIDAD VALUES (:id, :nombre, :descripcion, :fechaInicio, :fechaFin, :porcentajeAvance, :usuarioCreo, " +
+                            ":usuarioActualizo, :fechaCreacion, :fechaActualizacion, :estado, :actividadTipoid, :snip, :programa, :subprograma, :proyecto, :actividad, " +
+                            ":obra, :objetoId, :objetoTipo, :duracion, :duracionDimension, :predObjetoId, :predObjetoTipo, :latitud, :longitud, :costo, :acumulacionCosto, " +
+                            ":renglon, :ubicacionGeografica, :orden, :treePath, :nivel, :proyectoBase, :componenteBase, :productoBase, :fechaInicioReal, :fechaFinReal, " +
+                            ":inversionNueva)", Actividad);
 
-	public static boolean eliminarActividad(Actividad Actividad){
+                        if (guardado > 0)
+                        {
+                            switch (Actividad.objetoTipo)
+                            {
+                                case 0:
+                                    Proyecto proyecto = ProyectoDAO.getProyecto(Convert.ToInt32(Actividad.objetoId));
+                                    Actividad.treepath = proyecto.treepath + "" + (10000000 + Actividad.id);
+                                    break;
+                                case 1:
+                                    Componente componente = ComponenteDAO.getComponente(Convert.ToInt32(Actividad.objetoId));
+                                    Actividad.treepath = componente.treepath + "" + (10000000 + Actividad.id);
+                                    break;
+                                case 2:
+                                    Subcomponente subcomponente = SubComponenteDAO.getSubComponente(Convert.ToInt32(Actividad.objetoId));
+                                    Actividad.treepath = subcomponente.treepath + "" + (10000000 + Actividad.id);
+                                    break;
+                                case 3:
+                                    Producto producto = ProductoDAO.getProductoPorId(Convert.ToInt32(Actividad.objetoId));
+                                    Actividad.treepath = producto.treepath + "" + (10000000 + Actividad.id);
+                                    break;
+                                case 4:
+                                    Subproducto subproducto = SubproductoDAO.getSubproductoPorId(Convert.ToInt32(Actividad.objetoId));
+                                    Actividad.treepath = subproducto.treepath + "" + (10000000 + Actividad.id);
+                                    break;
+                                case 5:
+                                    Actividad actividad = ActividadDAO.getActividadPorId(Convert.ToInt32(Actividad.objetoId));
+                                    Actividad.treepath = actividad.treepath + "" + (10000000 + Actividad.id);
+                                    break;
+                            }
+                        }
+                    }
+
+                    guardado = db.Execute("UPDATE actividad SET nombre=:nombre, descripcion=:descripcion, fecha_inicio=:fechaInicio, fecha_fin=:fechaFin, porcentaje_avance=:porcentajeAvance, " +
+                        "usuario_creo=:usuarioCreo, usuario_actualizo=:usuarioActualizo, fecha_creacion=:fechaCreacion, fecha_actualizacion=:fechaActualizacion, " +
+                        "estado=:estado, actividad_tipoid=:actividadTipoid, snip=:snip, programa=:programa, subprograma=:subprograma, proyecto=:proyecto, actividad=:actividad, " +
+                        "obra=:obra, objeto_id=:objetoId, objeto_tipo=:objetoTipo, duracion=:duracion, duracion_dimension=:duracionDimension, pred_objeto_id=:predObjetoId, " +
+                        "pred_objeto_tipo=:predObjetoTipo, latitud=:latitud, longitud=:longitud, costo=:costo, acumulacion_costo=:acumulacionCosto, renglon=:renglon, " +
+                        "ubicacion_geografica=:ubicacionGeografica, orden=:orden, treePath=:treePath, nivel=:nivel, proyecto_base=:proyectoBase, componente_base=:componenteBase, " +
+                        "producto_base=:productoBase, fecha_inicio_real=:fechaInicioReal, fecha_fin_real=:fechaFinReal, inversion_nueva=:inversionNueva WHERE id=:id", Actividad);
+
+                    if (guardado > 0)
+                    {
+                        ActividadUsuario au = new ActividadUsuario();
+                        au.actividads = Actividad;
+                        au.actividadid = Actividad.id;
+                        au.usuario = Actividad.usuarioCreo;
+                        au.fechaCreacion = DateTime.Now;
+                        au.usuarioCreo = Actividad.usuarioCreo;
+
+                        int existe = db.ExecuteScalar<int>("SELECT COUNT(*) FROM ACTIVIDAD_USUARIO WHERE actividadid=:id AND usuario=:usuario", new { id = au.actividadid, usuario = au.usuario });
+
+                        if (existe > 0)
+                        {
+                            guardado = db.Execute("UPDATE ACTIVIDAD_USUARIO SET usuario_creo=:usuarioCreo, usuario_actualizo=:usuarioActualizo, fecha_creacion=:fechaCreacion, " +
+                                "fecha_actualizacion=:fechaActualizacion WHERE actividadid=:actividadid AND usuario=:usuario", au);
+                        }
+                        else
+                        {
+                            guardado = db.Execute("INSERT INTO actividad_usuario(:actividadid, :usuario, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion)", au);
+                        }
+
+                        if (guardado > 0 && !Actividad.usuarioCreo.Equals("admin"))
+                        {
+                            ActividadUsuario au_admin = new ActividadUsuario();
+                            au_admin.actividads = Actividad;
+                            au_admin.actividadid = Actividad.id;
+                            au_admin.usuario = "admin";
+                            au_admin.fechaCreacion = DateTime.Now;
+                            au.usuarioCreo = Actividad.usuarioCreo;
+
+                            existe = db.ExecuteScalar<int>("SELECT COUNT(*) FROM ACTIVIDAD_USUARIO WHERE actividadid=:id AND usuario=:usuario", new { id = au_admin.actividadid, usuario = au_admin.usuario });
+
+                            if (existe > 0)
+                            {
+                                guardado = db.Execute("UPDATE ACTIVIDAD_USUARIO SET usuario_creo=:usuarioCreo, usuario_actualizo=:usuarioActualizo, fecha_creacion=:fechaCreacion, " +
+                                    "fecha_actualizacion=:fechaActualizacion WHERE actividadid=:actividadid AND usuario=:usuario", au_admin);
+                            }
+                            else
+                            {
+                                guardado = db.Execute("INSERT INTO actividad_usuario(:actividadid, :usuario, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion)", au_admin);
+                            }
+                        }
+
+                        if (calcular_valores_agregados)
+                        {
+                            ProyectoDAO.calcularCostoyFechas(Convert.ToInt32(Actividad.treepath.Substring(0, 8)) - 10000000);
+                        }
+
+                        ret = true;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("3", "ActividadDAO.class", e);
+            }
+            return ret;
+        }
+
+	/*public static boolean eliminarActividad(Actividad Actividad){
 		boolean ret = false;
 		Session session = CHibernateSession.getSessionFactory().openSession();
 		try{

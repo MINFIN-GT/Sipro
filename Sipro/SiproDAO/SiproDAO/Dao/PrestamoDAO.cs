@@ -604,5 +604,70 @@ namespace SiproDAO.Dao
             }
             return ComponenteDAO.guardarComponente(componente, false);
         }
+
+        public static bool guardarComponentes(String codigoPresupuestario, int proyectoId, String usuario, DateTime fechaSuscripcion)
+        {
+            bool ret = true;
+            Proyecto proyecto = ProyectoDAO.getProyecto(proyectoId);
+            if (proyecto.projectCargado == null || !proyecto.projectCargado.Equals(1))
+            {
+                List <DtmAvanceFisfinanCmp> componentesSigade = DataSigadeDAO.getComponentes(codigoPresupuestario);
+                List<Componente> componentesSipro = ComponenteDAO.getComponentesPorProyecto(proyectoId);
+
+                if (componentesSigade != null && componentesSigade.Count > 0)
+                {
+                    for (int i = 0; i < componentesSigade.Count; i++)
+                    {
+                        if (i < componentesSipro.Count)
+                        {
+                            Componente componente = componentesSipro[i];
+                            componente.nombre = componentesSigade[i].nombreComponente;
+                            componente.esDeSigade = 1;
+                            componente.usuarioActualizo = usuario;;
+                            componente.fechaActualizacion = DateTime.Now;;
+                            ret = ret && ComponenteDAO.guardarComponente(componente, false);
+                        }
+                        else
+                        {
+                            ComponenteTipo componenteTipo = ComponenteTipoDAO.getComponenteTipoPorId(1);
+
+                            int year = DateTime.Now.Year;
+                            UnidadEjecutora unidadEjecutora = UnidadEjecutoraDAO.getUnidadEjecutora(year, 0, 0);
+                            AcumulacionCosto acumulacionCosto = AcumulacionCostoDAO.getAcumulacionCostoById(3);
+
+                            Componente componente = new Componente();
+                            componente.acumulacionCostos = acumulacionCosto;
+                            componente.acumulacionCostoid = acumulacionCosto.id;
+                            componente.componenteTipos = componenteTipo;
+                            componente.componenteTipoid = componenteTipo.id;
+                            componente.unidadEjecutoras = unidadEjecutora;
+                            componente.ueunidadEjecutora = unidadEjecutora.unidadEjecutora;
+                            componente.nombre = componentesSigade[i].nombreComponente;
+                            componente.usuarioCreo = usuario;
+                            componente.fechaCreacion = DateTime.Now;
+                            componente.estado = 1;
+                            componente.fechaInicio = fechaSuscripcion;
+                            componente.fechaFin = fechaSuscripcion;
+                            componente.duracionDimension = 1;
+                            componente.nivel = 1;
+                            componente.esDeSigade = 1;
+                            componente.inversionNueva = 0;
+
+                            ret = ret && ComponenteDAO.guardarComponente(componente, true);
+                        }
+                    }
+
+                    if (componentesSipro.Count> componentesSigade.Count)
+                    {
+                        for (int i = componentesSigade.Count; i < componentesSipro.Count; i++)
+                        {
+                            Componente componente = componentesSipro[i];
+                            ret = ret && ObjetoDAO.borrarHijos(componente.treepath, 2, usuario);
+                        }
+                    }
+                }
+            }
+            return ret;
+        }
     }
 }

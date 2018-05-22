@@ -3,6 +3,7 @@ using Dapper;
 using System.Data.Common;
 using Utilities;
 using SiproModelCore.Models;
+using System.Collections.Generic;
 
 namespace SiproDAO.Dao
 {
@@ -133,6 +134,8 @@ namespace SiproDAO.Dao
                             {
                                 ret = ProyectoDAO.calcularCostoyFechas(Convert.ToInt32(Componente.treepath.Substring(0, 8)) - 10000000);
                             }
+
+                            ret = true;
                         }
                     }
                 }
@@ -393,67 +396,68 @@ namespace SiproDAO.Dao
             }
             return ret;
         }
+
+        /*public static BigDecimal calcularCosto(Componente componente){
+            BigDecimal costo = new BigDecimal(0);
+            try{
+                Set<Producto> productos = componente.getProductos();
+                List<Actividad> actividades = ActividadDAO.getActividadesPorObjeto(componente.getId(), 2);
+                if((productos != null && productos.size() > 0) || (actividades!=null && actividades.size()>0) ){
+                    if(productos!=null){
+                        Iterator<Producto> iterador = productos.iterator();
+
+                        while(iterador.hasNext()){
+                            Producto producto = iterador.next();
+                            costo = costo.add(producto.getCosto() != null ? producto.getCosto() : new BigDecimal(0));
+                        }
+                    }
+
+                    if(actividades != null && actividades.size() > 0){
+                        for(Actividad actividad : actividades){
+                            costo = costo.add(actividad.getCosto() != null ? actividad.getCosto() : new BigDecimal(0));
+                        }
+                    }
+                }else{
+                    PlanAdquisicion pa = PlanAdquisicionDAO.getPlanAdquisicionByObjeto(2, componente.getId());
+                    if(pa!=null){
+                            if(pa.getPlanAdquisicionPagos()!=null && pa.getPlanAdquisicionPagos().size()>0){
+                                BigDecimal pagos = new BigDecimal(0);
+                                for(PlanAdquisicionPago pago: pa.getPlanAdquisicionPagos())
+                                    pagos.add(pago.getPago());
+                                costo = pagos;
+                            }
+                            else
+                                costo = pa.getMontoContrato();
+                    }
+                    else
+                        costo = componente.getCosto();
+                }
+            }catch(Exception e){
+                CLogger.write("16", Proyecto.class, e);
+            } 
+
+            return costo;
+        }*/
+
+        public static List<Componente> getComponentesPorProyecto(int proyectoId)
+        {
+            List<Componente> ret = new List<Componente>();
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    ret = db.Query<Componente>("SELECT * FROM COMPONENTE WHERE estado=1 AND proyectoid=:proyectoId AND es_de_sigade=1 ORDER BY id asc",
+                        new { proyectoId = proyectoId }).AsList<Componente>();
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("19", "ComponenteDAO.class", e);
+            }
+            return ret;
+        }
 	
-	/*public static BigDecimal calcularCosto(Componente componente){
-		BigDecimal costo = new BigDecimal(0);
-		try{
-			Set<Producto> productos = componente.getProductos();
-			List<Actividad> actividades = ActividadDAO.getActividadesPorObjeto(componente.getId(), 2);
-			if((productos != null && productos.size() > 0) || (actividades!=null && actividades.size()>0) ){
-				if(productos!=null){
-					Iterator<Producto> iterador = productos.iterator();
-					
-					while(iterador.hasNext()){
-						Producto producto = iterador.next();
-						costo = costo.add(producto.getCosto() != null ? producto.getCosto() : new BigDecimal(0));
-					}
-				}
-				
-				if(actividades != null && actividades.size() > 0){
-					for(Actividad actividad : actividades){
-						costo = costo.add(actividad.getCosto() != null ? actividad.getCosto() : new BigDecimal(0));
-					}
-				}
-			}else{
-				PlanAdquisicion pa = PlanAdquisicionDAO.getPlanAdquisicionByObjeto(2, componente.getId());
-				if(pa!=null){
-						if(pa.getPlanAdquisicionPagos()!=null && pa.getPlanAdquisicionPagos().size()>0){
-							BigDecimal pagos = new BigDecimal(0);
-							for(PlanAdquisicionPago pago: pa.getPlanAdquisicionPagos())
-								pagos.add(pago.getPago());
-							costo = pagos;
-						}
-						else
-							costo = pa.getMontoContrato();
-				}
-				else
-					costo = componente.getCosto();
-			}
-		}catch(Exception e){
-			CLogger.write("16", Proyecto.class, e);
-		} 
-		
-		return costo;
-	}
-	
-	public static List<Componente> getComponentesPorProyecto(Integer proyectoId){
-		List<Componente> ret = new ArrayList<Componente>();
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			Query<Componente> criteria = session.createQuery("FROM Componente c where estado = 1 and c.proyecto.id = :proyectoId and c.esDeSigade=1 order by c.id asc", Componente.class);
-			criteria.setParameter("proyectoId", proyectoId);
-			ret =   criteria.getResultList();
-		}
-		catch(Throwable e){
-			CLogger.write("19", ComponenteDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
-	
-	public static boolean calcularCostoyFechas(Integer componenteId){
+	/*public static boolean calcularCostoyFechas(Integer componenteId){
 		boolean ret = false;
 		ArrayList<ArrayList<Nodo>> listas = EstructuraProyectoDAO.getEstructuraObjetoArbolCalculos(componenteId, 2);
 		for(int i=listas.size()-2; i>=0; i--){
@@ -578,31 +582,29 @@ namespace SiproDAO.Dao
             }
             return ret;
         }
+
+        public static List<Componente> getComponentesPorProyectoHistory(int proyectoId, String lineaBase)
+        {
+            List<Componente> ret = new List<Componente>();
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnectionHistory())
+                {
+                    String query = String.Join(" ", "SELECT * FROM COMPONENTE ",
+                    "WHERE estado = 1 AND proyectoid=:proyectoId",
+                    lineaBase != null ? "AND linea_base LIKE '%" + lineaBase + "%'" : "AND actual = 1",
+                    "ORDER BY id DESC");
+                    ret = db.Query<Componente>(query, new { proyectoId = proyectoId }).AsList<Componente>();
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("19", "ComponenteDAO.class", e);
+            }
+            return ret;
+        }
 	
-	/*public static List<Componente> getComponentesPorProyectoHistory(Integer proyectoId,String lineaBase){
-		List<Componente> ret = new ArrayList<Componente>();
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			String query = String.join(" ", "select * ", 
-					"from sipro_history.componente c ",
-					"where c.estado = 1 ",
-					"and proyectoid = ?1 ",
-					lineaBase != null ? "and c.linea_base like '%" + lineaBase + "%'" : "and c.actual = 1",
-							"order by c.id desc");
-			Query<Componente> criteria = session.createNativeQuery(query, Componente.class);
-			criteria.setParameter(1, proyectoId);
-			ret =   criteria.getResultList();
-		}
-		catch(Throwable e){
-			CLogger.write("19", ComponenteDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
-	
-	public static Componente getComponenteHistory(Integer componenteId,String lineaBase){
+	/*public static Componente getComponenteHistory(Integer componenteId,String lineaBase){
 		Componente ret = null;
 		List<Componente> listRet = null;
 		Session session = CHibernateSession.getSessionFactory().openSession();

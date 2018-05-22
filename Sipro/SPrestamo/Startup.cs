@@ -91,6 +91,17 @@ namespace SPrestamo
                 options.AddPolicy("Préstamos o Proyectos - Crear",
                                   policy => policy.RequireClaim("sipro/permission", "Préstamos o Proyectos - Crear"));
             });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllHeaders",
+                      builder =>
+                      {
+                          builder.AllowAnyOrigin()
+                                 .AllowAnyHeader()
+                                 .AllowAnyMethod();
+                      });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -102,6 +113,8 @@ namespace SPrestamo
             }
             app.UseAuthentication();
             app.UseMvc();
+
+            app.UseCors("AllowAllHeaders");
         }
     }
 }

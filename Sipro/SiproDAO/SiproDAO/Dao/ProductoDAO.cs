@@ -134,8 +134,10 @@ namespace SiproDAO.Dao
 
                         if (calcular_valores_agregados)
                         {
-                            ret = ProyectoDAO.calcularCostoyFechas(Convert.ToInt32(producto.treepath.Substring(0, 8)) - 10000000);
+                            ProyectoDAO.calcularCostoyFechas(Convert.ToInt32(producto.treepath.Substring(0, 8)) - 10000000);
                         }
+
+                        ret = true;
                     }
                 }
             }
