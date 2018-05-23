@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Dapper;
 using Utilities;
 using SiproModelCore.Models;
+using SiproModelAnalyticCore.Models;
 using Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.DataProtection;
@@ -28,6 +25,81 @@ namespace SPrestamo
                 .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
                 .MakeGenericType(typeof(Prestamo)));
             SqlMapper.SetTypeMap(typeof(Prestamo), mapper);
+
+            var mapper2 = (SqlMapper.ITypeMap)Activator
+                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+                .MakeGenericType(typeof(AutorizacionTipo)));
+            SqlMapper.SetTypeMap(typeof(AutorizacionTipo), mapper2);
+
+            var mapper3 = (SqlMapper.ITypeMap)Activator
+                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+                .MakeGenericType(typeof(InteresTipo)));
+            SqlMapper.SetTypeMap(typeof(InteresTipo), mapper3);
+
+            var mapper4 = (SqlMapper.ITypeMap)Activator
+                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+                .MakeGenericType(typeof(TipoMoneda)));
+            SqlMapper.SetTypeMap(typeof(TipoMoneda), mapper4);
+
+            var mapper5 = (SqlMapper.ITypeMap)Activator
+                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+                .MakeGenericType(typeof(EjecucionEstado)));
+            SqlMapper.SetTypeMap(typeof(EjecucionEstado), mapper5);
+
+            var mapper6 = (SqlMapper.ITypeMap)Activator
+                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+                .MakeGenericType(typeof(Cooperante)));
+            SqlMapper.SetTypeMap(typeof(Cooperante), mapper6);
+
+            var mapper7 = (SqlMapper.ITypeMap)Activator
+                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+                .MakeGenericType(typeof(UnidadEjecutora)));
+            SqlMapper.SetTypeMap(typeof(UnidadEjecutora), mapper7);
+
+            var mapper8 = (SqlMapper.ITypeMap)Activator
+                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+                .MakeGenericType(typeof(PrestamoTipo)));
+            SqlMapper.SetTypeMap(typeof(PrestamoTipo), mapper8);
+
+            var mapper9 = (SqlMapper.ITypeMap)Activator
+                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+                .MakeGenericType(typeof(Entidad)));
+            SqlMapper.SetTypeMap(typeof(Entidad), mapper9);
+
+            var mapper10 = (SqlMapper.ITypeMap)Activator
+                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+                .MakeGenericType(typeof(Proyecto)));
+            SqlMapper.SetTypeMap(typeof(Proyecto), mapper10);
+
+            var mapper11 = (SqlMapper.ITypeMap)Activator
+                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+                .MakeGenericType(typeof(DtmAvanceFisfinanEnp)));
+            SqlMapper.SetTypeMap(typeof(DtmAvanceFisfinanEnp), mapper11);
+
+            var mapper12 = (SqlMapper.ITypeMap)Activator
+                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+                .MakeGenericType(typeof(DtmAvanceFisfinanCmp)));
+            SqlMapper.SetTypeMap(typeof(DtmAvanceFisfinanCmp), mapper12);
+
+            var mapper13 = (SqlMapper.ITypeMap)Activator
+                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+                .MakeGenericType(typeof(Componente)));
+            SqlMapper.SetTypeMap(typeof(Componente), mapper13);
+
+            var mapper14 = (SqlMapper.ITypeMap)Activator
+                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+                .MakeGenericType(typeof(ComponenteSigade)));
+            SqlMapper.SetTypeMap(typeof(ComponenteSigade), mapper14);
+
+            var mapper15 = (SqlMapper.ITypeMap)Activator
+                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+                .MakeGenericType(typeof(PrestamoTipoPrestamo)));
+            SqlMapper.SetTypeMap(typeof(PrestamoTipoPrestamo), mapper15);
+
+            var mapper16 = (SqlMapper.ITypeMap)Activator
+                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+                .MakeGenericType(typeof(LineaBase)));
+            SqlMapper.SetTypeMap(typeof(LineaBase), mapper16);
         }
 
         public IConfiguration Configuration { get; }

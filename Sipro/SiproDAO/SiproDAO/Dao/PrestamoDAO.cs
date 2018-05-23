@@ -275,7 +275,6 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        //Falta schema sipro_history
         #region sipro_historia
         public static Prestamo getPrestamoByIdHistory(int idPrestamo, String lineaBase)
         {
@@ -397,13 +396,13 @@ namespace SiproDAO.Dao
             return resultado;
         }
 
-        /*
         public static decimal[] getComponenteMatrizHistoria(int prestamoId, int orden, int entidadId, int ejercicio, int unidadEjuctoraId, int version){
             decimal[] resultado = new decimal[5];
-            List<?> ret = null;
-            Session session = CHibernateSession.getSessionFactory().openSession();
-            try{	
-                String query = "SELECT cm.techo, cm.fuente_prestamo, cm.fuente_donacion, cm.fuente_nacional, cm.fecha_actualizacion "
+            List<dynamic> ret = null;
+            try{
+                using (DbConnection db = new OracleContext().getConnectionHistory())
+                {
+                    String query = "SELECT cm.techo, cm.fuente_prestamo, cm.fuente_donacion, cm.fuente_nacional, cm.fecha_actualizacion "
                         + " FROM sipro_history.componente_matriz cm "
                         + " JOIN sipro.componente_sigade cs ON cm.componente_sigadeid = cs.id "
                         + " WHERE cm.prestamoid = " + prestamoId
@@ -413,22 +412,24 @@ namespace SiproDAO.Dao
                         + " AND cm.unidad_ejecutoraid = " + unidadEjuctoraId
                         + " AND cm.version = " + version;
 
-                Query<?> criteria = session.createNativeQuery(query);
-                ret = criteria.getResultList();
-                if(ret!=null){
-                    Object[] dato = (Object[])ret.get(0);
-                    resultado[0] = dato[0]!=null?(BigDecimal)dato[0]:new BigDecimal(0);
-                    resultado[1] = dato[1]!=null?(BigDecimal)dato[1]:new BigDecimal(0);
-                    resultado[2] = dato[2]!=null?(BigDecimal)dato[2]:new BigDecimal(0);
-                    resultado[3] = dato[3]!=null?(BigDecimal)dato[3]:new BigDecimal(0);
-                    resultado[4] = dato[4]!=null?new BigDecimal(((Date)dato[4]).getTime()):new BigDecimal(0);
-                }
+                    ret = db.Query<dynamic>(query).AsList<dynamic>();
+
+                    if (ret != null)
+                    {
+                        Object[] dato = (Object[])ret[0];
+                        resultado[0] = dato[0] != null ? (decimal)dato[0] : decimal.Zero;
+                        resultado[1] = dato[1] != null ? (decimal)dato[1] : decimal.Zero;
+                        resultado[2] = dato[2] != null ? (decimal)dato[2] : decimal.Zero;
+                        resultado[3] = dato[3] != null ? (decimal)dato[3] : decimal.Zero;
+                        resultado[4] = dato[4] != null ? ((DateTime)dato[4]).Ticks : decimal.Zero;
+                    }
+                }                
             }
             catch(Exception e){
                 CLogger.write("5", "PrestamoDAO", e);
             }
             return resultado;
-        }*/
+        }
         #endregion
 
         public static bool guardarComponentesSigade(String codigoPresupuestario, String usuario, int existeData)

@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Cors;
 
 namespace SPrestamo.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Produces("application/json")]
     [Route("/api/[controller]/[action]")]
     [EnableCors("AllowAllHeaders")]
@@ -147,6 +147,7 @@ namespace SPrestamo.Controllers
 
         // GET api/Prestamos/Prestamos
         [HttpGet]
+        [Authorize("Préstamos o Proyectos - Visualizar")]
         public IActionResult Prestamos()
         {
             try
@@ -286,6 +287,7 @@ namespace SPrestamo.Controllers
 
         // POST api/Prestamos/Prestamo
         [HttpPost]
+        [Authorize("Préstamos o Proyectos - Visualizar")]
         public IActionResult Prestamo([FromBody]dynamic value)
         {
             try
@@ -400,6 +402,7 @@ namespace SPrestamo.Controllers
 
         // PUT api/Prestamos/Prestamo/5
         [HttpPut("{id}")]
+        [Authorize("Préstamos o Proyectos - Editar")]
         public IActionResult Prestamo(int id, [FromBody]dynamic value)
         {
             try
@@ -516,6 +519,7 @@ namespace SPrestamo.Controllers
 
         // POST api/Prestamo/PrestamoPagina
         [HttpPost]
+        [Authorize("Préstamos o Proyectos - Visualizar")]
         public IActionResult PrestamosPagina([FromBody]dynamic value)
         {
             try
@@ -656,6 +660,7 @@ namespace SPrestamo.Controllers
 
         // POST api/Prestamo/numeroPrestamos
         [HttpPost]
+        [Authorize("Préstamos o Proyectos - Visualizar")]
         public IActionResult NumeroPrestamos([FromBody]dynamic value)
         {
             try
@@ -673,6 +678,7 @@ namespace SPrestamo.Controllers
 
         // POST api/Prestamo/numeroPrestamos
         [HttpDelete("{prestamoId}")]
+        [Authorize("Préstamos o Proyectos - Eliminar")]
         public IActionResult BorrarPrestamo(int prestamoId)
         {
             try
@@ -694,6 +700,7 @@ namespace SPrestamo.Controllers
 
         // GET api/Prestamo/ComponentesSigade
         [HttpGet("{codigo_presupuestario}")]
+        [Authorize("Préstamos o Proyectos - Visualizar")]
         public IActionResult ComponentesSigade(string codigoPresupuestario)
         {
             try
@@ -723,6 +730,7 @@ namespace SPrestamo.Controllers
 
         // POST api/Prestamo/UnidadesEjecutoras
         [HttpPost]
+        [Authorize("Préstamos o Proyectos - Visualizar")]
         public IActionResult UnidadesEjecutoras([FromBody]dynamic value)
         {
             try
@@ -778,6 +786,7 @@ namespace SPrestamo.Controllers
 
         // POST api/Prestamo/UnidadesEjecutoras
         [HttpPost]
+        [Authorize("Préstamos o Proyectos - Visualizar")]
         public IActionResult ObtenerMatriz([FromBody]dynamic value)
         {
             try
@@ -853,6 +862,7 @@ namespace SPrestamo.Controllers
 
         // POST api/Prestamo/UnidadesEjecutoras
         [HttpPost]
+        [Authorize("Préstamos o Proyectos - Crear")]
         public IActionResult GuardarMatriz([FromBody]dynamic value)
         {
             try
@@ -943,6 +953,7 @@ namespace SPrestamo.Controllers
 
         // POST api/Prestamo/ComponentesSigade
         [HttpPost]
+        [Authorize("Préstamos o Proyectos - Crear")]
         public IActionResult ComponentesSigade([FromBody]dynamic value)
         {
             try
@@ -961,6 +972,7 @@ namespace SPrestamo.Controllers
 
         // GET api/Prestamo/ComponentesSigade/id
         [HttpGet("{id}")]
+        [Authorize("Préstamos o Proyectos - Visualizar")]
         public IActionResult PrestamoPorId(int id)
         {
             try
@@ -986,6 +998,7 @@ namespace SPrestamo.Controllers
 
         // GET api/Prestamo/Tipos/prestamoId
         [HttpGet("{prestamoId}")]
+        [Authorize("Préstamos o Proyectos - Visualizar")]
         public IActionResult Tipos(int prestamoId)
         {
             try
@@ -1018,6 +1031,7 @@ namespace SPrestamo.Controllers
 
         // GET api/Prestamo/Prestamo/prestamoId
         [HttpGet("{prestamoId}")]
+        [Authorize("Préstamos o Proyectos - Visualizar")]
         public IActionResult Prestamo(int prestamoId)
         {
             try
@@ -1139,6 +1153,7 @@ namespace SPrestamo.Controllers
 
         // POST api/Prestamo/PrestamoPorPep
         [HttpPost]
+        [Authorize("Préstamos o Proyectos - Visualizar")]
         public IActionResult PrestamoPorPep([FromBody]dynamic value)
         {
             try
@@ -1287,6 +1302,7 @@ namespace SPrestamo.Controllers
 
         // GET api/Prestamo/PrestamoPorPep/prestamoId
         [HttpGet("{prestamoId}")]
+        [Authorize("Préstamos o Proyectos - Visualizar")]
         public IActionResult PrestamoHistory(int prestamoId)
         {
             try
@@ -1409,6 +1425,7 @@ namespace SPrestamo.Controllers
 
         // POST api/Prestamo/congelarDescongelar
         [HttpPost]
+        [Authorize("Préstamos o Proyectos - Editar")]
         public IActionResult congelarDescongelar([FromBody]dynamic value)
         {
             try
@@ -1474,6 +1491,93 @@ namespace SPrestamo.Controllers
             catch (Exception e)
             {
                 CLogger.write("14", "PrestamoController.class", e);
+                return BadRequest(500);
+            }
+        }
+
+        // GET api/Prestamo/VersionesMatriz/prestamoId
+        [HttpGet("{prestamoId}")]
+        [Authorize("Préstamos o Proyectos - Visualizar")]
+        public IActionResult VersionesMatriz(int prestamoId)
+        {
+            try
+            {
+                String resultado = PrestamoDAO.getVersionesMatriz(prestamoId);
+                return Ok(new { success = true, versiones = resultado });
+            }
+            catch (Exception e)
+            {
+                CLogger.write("15", "PrestamoController.class", e);
+                return BadRequest(500);
+            }
+        }
+
+        // POST api/Prestamo/HistoriaMatriz
+        [HttpPost]
+        [Authorize("Préstamos o Proyectos - Visualizar")]
+        public IActionResult HistoriaMatriz([FromBody]dynamic value)
+        {
+            try
+            {
+                int prestamoId = (int)value.prestamoId;
+                int version = (int)value.prestamoId;
+                String codigoPresupuestario = (string)value.codigoPresupuestario;
+
+                int anio_actual = DateTime.Now.Year;
+                List <DtmAvanceFisfinanEnp> unidadesEjecutorasSigade = DataSigadeDAO.getUnidadesEjecutoras(codigoPresupuestario, anio_actual);
+                List<stunidadejecutora> unidadesEjecutoras = new List<stunidadejecutora>();
+
+
+                List <DtmAvanceFisfinanCmp> componentesSigade = DataSigadeDAO.getComponentes(codigoPresupuestario);
+                List<stcomponentessigade> stcomponentes = new List<stcomponentessigade>();
+                if (componentesSigade != null && componentesSigade.Count > 0)
+                {
+                    for (int i = 0; i < componentesSigade.Count; i++)
+                    {
+                        stcomponentessigade temp = new stcomponentessigade();
+                        temp.nombre = componentesSigade[i].nombreComponente;
+                        temp.orden = (int)componentesSigade[i].numeroComponente;
+                        unidadesEjecutoras = new List<stunidadejecutora>();
+                        if (unidadesEjecutorasSigade != null && unidadesEjecutorasSigade.Count > 0)
+                        {
+                            for (int j = 0; j < unidadesEjecutorasSigade.Count; j++)
+                            {
+                                UnidadEjecutora unidad = UnidadEjecutoraDAO.getUnidadEjecutora((int)unidadesEjecutorasSigade[j].ejercicioFiscal, (int)unidadesEjecutorasSigade[j].entidadPresupuestaria,
+                                        (int)unidadesEjecutorasSigade[j].unidadEjecutora);
+                                stunidadejecutora temp_ = new stunidadejecutora();
+                                temp_.id = unidad.unidadEjecutora;
+                                temp_.entidad = unidad.entidads.nombre + "";
+                                temp_.entidadId = unidad.entidads.entidad;
+                                temp_.ejercicio = unidad.ejercicio;
+                                temp_.nombre = unidad.nombre;
+                                temp_.techo = Convert.ToInt32(temp.techo);
+                                temp_.prestamoId = prestamoId;
+
+                                decimal[] techos = PrestamoDAO.getComponenteMatrizHistoria(prestamoId, temp.orden,
+                                        temp_.entidadId, temp_.ejercicio, temp_.id, version);
+
+                                if (techos != null)
+                                {
+                                    temp.techo = techos[0];
+                                    temp_.prestamo = techos[1];
+                                    temp_.donacion = techos[2];
+                                    temp_.nacional = techos[3];
+                                    temp.fechaActualizacion = Convert.ToInt64(techos[4]);
+                                }
+                                unidadesEjecutoras.Add(temp_);
+                            }
+                        }
+
+                        temp.unidadesEjecutoras = unidadesEjecutoras;
+                        stcomponentes.Add(temp);
+                    }
+                }
+
+                return Ok(new { success = true, unidadesEjecutoras = unidadesEjecutoras, componentes= stcomponentes });
+            }
+            catch (Exception e)
+            {
+                CLogger.write("16", "PrestamoController.class", e);
                 return BadRequest(500);
             }
         }
