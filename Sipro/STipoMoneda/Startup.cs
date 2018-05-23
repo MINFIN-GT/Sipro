@@ -87,6 +87,17 @@ namespace STipoMoneda
                 options.AddPolicy("Tipo Moneda - Crear",
                                   policy => policy.RequireClaim("sipro/permission", "Tipo Moneda - Crear"));
             });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllHeaders",
+                      builder =>
+                      {
+                          builder.AllowAnyOrigin()
+                                 .AllowAnyHeader()
+                                 .AllowAnyMethod();
+                      });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -98,6 +109,8 @@ namespace STipoMoneda
             }
             app.UseAuthentication();
             app.UseMvc();
+
+            app.UseCors("AllowAllHeaders");
         }
     }
 }

@@ -5,12 +5,14 @@ using Microsoft.AspNetCore.Authorization;
 using SiproModelCore.Models;
 using SiproDAO.Dao;
 using Utilities;
+using Microsoft.AspNetCore.Cors;
 
 namespace SPrestamoTipo.Controllers
 {
     [Authorize]
     [Produces("application/json")]
     [Route("/api/[controller]/[action]")]
+    [EnableCors("AllowAllHeaders")]
     public class PrestamoTipoController : Controller
     {
         private class stprestamotipo

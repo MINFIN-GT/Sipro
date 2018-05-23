@@ -4,12 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 using SiproModelCore.Models;
 using SiproDAO.Dao;
 using Utilities;
+using Microsoft.AspNetCore.Cors;
 
 namespace STipoMoneda.Controllers
 {
     //[Authorize]
     [Route("api/[controller]/[action]")]
     [Produces("application/json")]
+    [EnableCors("AllowAllHeaders")]
     public class TipoMonedaController : Controller
     {
         private class stTipoMoneda

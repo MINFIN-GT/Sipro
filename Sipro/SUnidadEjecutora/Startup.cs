@@ -22,8 +22,13 @@ namespace SUnidadEjecutora
             Configuration = configuration;
             var mapper = (SqlMapper.ITypeMap)Activator
                 .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
-                .MakeGenericType(typeof(Cooperante)));
-            SqlMapper.SetTypeMap(typeof(Cooperante), mapper);
+                .MakeGenericType(typeof(UnidadEjecutora)));
+            SqlMapper.SetTypeMap(typeof(UnidadEjecutora), mapper);
+
+            var mapper2 = (SqlMapper.ITypeMap)Activator
+                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+                .MakeGenericType(typeof(Entidad)));
+            SqlMapper.SetTypeMap(typeof(Entidad), mapper2);
         }
 
         public IConfiguration Configuration { get; }
@@ -87,6 +92,17 @@ namespace SUnidadEjecutora
                 options.AddPolicy("Unidades Ejecutoras - Crear",
                                   policy => policy.RequireClaim("sipro/permission", "Unidades Ejecutoras - Crear"));
             });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllHeaders",
+                      builder =>
+                      {
+                          builder.AllowAnyOrigin()
+                                 .AllowAnyHeader()
+                                 .AllowAnyMethod();
+                      });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -98,6 +114,8 @@ namespace SUnidadEjecutora
             }
             app.UseAuthentication();
             app.UseMvc();
+
+            app.UseCors("AllowAllHeaders");
         }
     }
 }
