@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.DataProtection;
 using System.IO;
 using System.Net;
 
-namespace SEntidad
+namespace SAcumulacionCosto
 {
     public class Startup
     {
@@ -22,8 +22,8 @@ namespace SEntidad
             Configuration = configuration;
             var mapper = (SqlMapper.ITypeMap)Activator
                 .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
-                .MakeGenericType(typeof(Entidad)));
-            SqlMapper.SetTypeMap(typeof(Entidad), mapper);
+                .MakeGenericType(typeof(AcumulacionCosto)));
+            SqlMapper.SetTypeMap(typeof(AcumulacionCosto), mapper);
         }
 
         public IConfiguration Configuration { get; }
@@ -77,14 +77,8 @@ namespace SEntidad
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Entidades - Visualizar",
-                                  policy => policy.RequireClaim("sipro/permission", "Entidades - Visualizar"));
-                options.AddPolicy("Entidades - Editar",
-                                  policy => policy.RequireClaim("sipro/permission", "Entidades - Editar"));
-                options.AddPolicy("Entidades - Eliminar",
-                                  policy => policy.RequireClaim("sipro/permission", "Entidades - Eliminar"));
-                options.AddPolicy("Entidades - Crear",
-                                  policy => policy.RequireClaim("sipro/permission", "Entidades - Crear"));
+                options.AddPolicy("Acumulación Costo - Visualizar",
+                                  policy => policy.RequireClaim("sipro/permission", "Acumulación Costo - Visualizar"));                
             });
 
             services.AddCors(options =>
