@@ -37,6 +37,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microservicios", "Microserv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAcumulacionCosto", "SAcumulacionCosto\SAcumulacionCosto.csproj", "{D3EB5553-5662-4ACE-A715-59B8C43C3065}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAutorizacionTipo", "SAutorizacionTipo\SAutorizacionTipo.csproj", "{CECA2D01-6FFA-45D6-A80C-734D0DAB64F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,6 +109,10 @@ Global
 		{D3EB5553-5662-4ACE-A715-59B8C43C3065}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3EB5553-5662-4ACE-A715-59B8C43C3065}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3EB5553-5662-4ACE-A715-59B8C43C3065}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CECA2D01-6FFA-45D6-A80C-734D0DAB64F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CECA2D01-6FFA-45D6-A80C-734D0DAB64F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CECA2D01-6FFA-45D6-A80C-734D0DAB64F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CECA2D01-6FFA-45D6-A80C-734D0DAB64F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -120,6 +126,7 @@ Global
 		{14B93A42-86A5-4BEC-AFF6-55202D1D099B} = {0DA1BD0E-A90E-4608-ACE8-5971B84A1019}
 		{CCEE0A75-77EC-46E9-8B51-964797BEF5D1} = {0DA1BD0E-A90E-4608-ACE8-5971B84A1019}
 		{D3EB5553-5662-4ACE-A715-59B8C43C3065} = {0DA1BD0E-A90E-4608-ACE8-5971B84A1019}
+		{CECA2D01-6FFA-45D6-A80C-734D0DAB64F5} = {0DA1BD0E-A90E-4608-ACE8-5971B84A1019}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6BB888BE-6FA0-400D-B0C9-9F121D0B435A}

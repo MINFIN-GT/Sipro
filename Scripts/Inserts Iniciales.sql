@@ -908,6 +908,8 @@ INSERT INTO PERMISO VALUES (48210,'Categorías de Adquisiciones - Visualizar','P
 INSERT INTO PERMISO VALUES (48220,'Categorías de Adquisiciones - Editar','Permite editar tipos de adquisiciones','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO PERMISO VALUES (48230,'Categorías de Adquisiciones - Eliminar','Permite eliminar tipos de adquisiciones','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO PERMISO VALUES (48240,'Categorías de Adquisiciones - Crear','Permite crear tipos de adquisiciones','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO PERMISO VALUES (48250,'Acumulacion Costo - Visualizar','Permite visualizar las acumulaciones de costo','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO PERMISO VALUES (48260,'Autorización Tipo - Visualizar','Permite visualizar tipos de autorizaciones','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO PERMISO VALUES (99999,'prueba treeview','prueba treeview','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 	
 INSERT INTO PRESTAMO_TIPO VALUES (1,'Inversión','Inversión','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
