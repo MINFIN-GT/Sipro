@@ -1,20 +1,20 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Utilities;
 using SiproModelCore.Models;
-using SiproModelAnalyticCore.Models;
 using Identity;
 using Microsoft.AspNetCore.Identity;
 using Dapper;
 using Microsoft.AspNetCore.DataProtection;
 using System.IO;
 using System.Net;
+using System.Threading.Tasks;
 
-namespace SDataSigade
+namespace SEjecucionEstado
 {
     public class Startup
     {
@@ -23,18 +23,8 @@ namespace SDataSigade
             Configuration = configuration;
             var mapper = (SqlMapper.ITypeMap)Activator
                 .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
-                .MakeGenericType(typeof(DtmAvanceFisfinanDti)));
-            SqlMapper.SetTypeMap(typeof(DtmAvanceFisfinanDti), mapper);
-
-            var mapper2 = (SqlMapper.ITypeMap)Activator
-                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
-                .MakeGenericType(typeof(Cooperante)));
-            SqlMapper.SetTypeMap(typeof(Cooperante), mapper2);
-
-            var mapper3 = (SqlMapper.ITypeMap)Activator
-                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
-                .MakeGenericType(typeof(TipoMoneda)));
-            SqlMapper.SetTypeMap(typeof(TipoMoneda), mapper3);
+                .MakeGenericType(typeof(EjecucionEstado)));
+            SqlMapper.SetTypeMap(typeof(EjecucionEstado), mapper);
         }
 
         public IConfiguration Configuration { get; }
@@ -88,8 +78,8 @@ namespace SDataSigade
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Data Sigade - Visualizar",
-                                  policy => policy.RequireClaim("sipro/permission", "Data Sigade - Visualizar"));
+                options.AddPolicy("Ejecución Estado - Visualizar",
+                                  policy => policy.RequireClaim("sipro/permission", "Ejecución Estado - Visualizar"));
             });
 
             services.AddCors(options =>
