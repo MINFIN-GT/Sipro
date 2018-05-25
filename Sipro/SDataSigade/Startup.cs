@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -6,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Utilities;
 using SiproModelCore.Models;
+using SiproModelAnalyticCore.Models;
 using Identity;
 using Microsoft.AspNetCore.Identity;
 using Dapper;
@@ -13,7 +16,7 @@ using Microsoft.AspNetCore.DataProtection;
 using System.IO;
 using System.Net;
 
-namespace SAutorizacionTipo
+namespace SDataSigade
 {
     public class Startup
     {
@@ -22,8 +25,18 @@ namespace SAutorizacionTipo
             Configuration = configuration;
             var mapper = (SqlMapper.ITypeMap)Activator
                 .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
-                .MakeGenericType(typeof(AutorizacionTipo)));
-            SqlMapper.SetTypeMap(typeof(AutorizacionTipo), mapper);
+                .MakeGenericType(typeof(DtmAvanceFisfinanDti)));
+            SqlMapper.SetTypeMap(typeof(DtmAvanceFisfinanDti), mapper);
+
+            var mapper2 = (SqlMapper.ITypeMap)Activator
+                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+                .MakeGenericType(typeof(Cooperante)));
+            SqlMapper.SetTypeMap(typeof(Cooperante), mapper2);
+
+            var mapper3 = (SqlMapper.ITypeMap)Activator
+                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+                .MakeGenericType(typeof(TipoMoneda)));
+            SqlMapper.SetTypeMap(typeof(TipoMoneda), mapper3);
         }
 
         public IConfiguration Configuration { get; }
@@ -34,10 +47,10 @@ namespace SAutorizacionTipo
             services.AddMvc();
 
             services.AddIdentity<User, Rol>()
-                .AddRoleStore<RoleStore>()
-                .AddUserStore<UserPasswordStore>()
-                .AddUserManager<CustomUserManager>()
-                .AddDefaultTokenProviders();
+               .AddRoleStore<RoleStore>()
+               .AddUserStore<UserPasswordStore>()
+               .AddUserManager<CustomUserManager>()
+               .AddDefaultTokenProviders();
 
             services.AddDataProtection()
                     .PersistKeysToFileSystem(new DirectoryInfo(@"/SIPRO"))
@@ -77,8 +90,8 @@ namespace SAutorizacionTipo
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Autorización Tipo - Visualizar",
-                                  policy => policy.RequireClaim("sipro/permission", "Autorización Tipo - Visualizar"));
+                options.AddPolicy("Data Sigade - Visualizar",
+                                  policy => policy.RequireClaim("sipro/permission", "Data Sigade - Visualizar"));
             });
 
             services.AddCors(options =>
@@ -103,7 +116,7 @@ namespace SAutorizacionTipo
 
             app.UseMvc();
 
-            app.UseCors("AllowAllHeaders");
+            pp.UseCors("AllowAllHeaders");
         }
     }
 }
