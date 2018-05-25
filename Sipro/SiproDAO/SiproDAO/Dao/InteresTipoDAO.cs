@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Dapper;
 using System.Data.Common;
 using Utilities;
@@ -10,7 +9,6 @@ namespace SiproDAO.Dao
 {
     public class InteresTipoDAO
     {
-
         public static long getTotalInteresTipos()
         {
             long ret = 0L;

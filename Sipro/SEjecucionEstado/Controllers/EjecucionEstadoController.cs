@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using SiproModelAnalyticCore.Models;
 using SiproModelCore.Models;
 using SiproDAO.Dao;
 using Utilities;
