@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using SiproDAO.Dao;
 using SiproModelCore.Models;
+using Utilities;
 
 namespace Identity
 {
@@ -47,16 +48,26 @@ namespace Identity
 
         public Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            Usuario usuario = UsuarioDAO.getUsuario(userId);
-            User iusuario = new User()
-            {
-                UserName = usuario.usuario,
-                Email = usuario.email,
-                PasswordHash = usuario.password,
-                Salt = usuario.salt
-            };
-            return Task.FromResult(iusuario);
+			try
+			{
+				cancellationToken.ThrowIfCancellationRequested();
+				Usuario usuario = UsuarioDAO.getUsuario(userId);
+				if (usuario != null)
+				{
+					User iusuario = new User()
+					{
+						UserName = usuario.usuario,
+						Email = usuario.email,
+						PasswordHash = usuario.password,
+						Salt = usuario.salt
+					};
+					return Task.FromResult(iusuario);
+				}
+            }
+			catch(Exception e){
+				CLogger.writeFullConsole("1", e);
+			}
+			return null;
         }
 
         public Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
@@ -64,14 +75,18 @@ namespace Identity
             cancellationToken.ThrowIfCancellationRequested();
 
             Usuario usuario = UsuarioDAO.getUsuario(normalizedUserName.ToLower());
-            User iusuario = new User()
-            {
-                UserName = usuario.usuario,
-                Email = usuario.email,
-                PasswordHash = usuario.password,
-                Salt = usuario.salt
-            };
-            return Task.FromResult(iusuario);
+			if (usuario != null)
+			{
+				User iusuario = new User()
+				{
+					UserName = usuario.usuario,
+					Email = usuario.email,
+					PasswordHash = usuario.password,
+					Salt = usuario.salt
+				};
+				return Task.FromResult(iusuario);
+			}
+			return null;
         }
 
         public Task<string> GetNormalizedUserNameAsync(User user, CancellationToken cancellationToken)

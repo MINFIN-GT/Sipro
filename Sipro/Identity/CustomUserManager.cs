@@ -25,8 +25,12 @@ namespace Identity
 
         public override Task<bool> CheckPasswordAsync(User user, string password)
         {
-            string hash = SHA256Hasher.ComputeHash(password, user.Salt);
-            return Task.FromResult<bool>(hash.Equals(user.PasswordHash));
+			if (user != null)
+			{
+				string hash = SHA256Hasher.ComputeHash(password, user.Salt);
+				return Task.FromResult(hash.Equals(user.PasswordHash));
+			}
+			return Task.FromResult(false);
         }
 
 

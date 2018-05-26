@@ -5,6 +5,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Identity;
 using SiproModelCore.Models;
+using Microsoft.AspNetCore.Cors;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Security.Cryptography;
+using SiproDAO.Dao;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,6 +21,7 @@ namespace Sipro.Controllers
     [Authorize]
     [Route("/api/[controller]/[action]")]
     [Produces("application/json")]
+	[EnableCors("AllowAllHeaders")]
     public class LoginController : Controller
     {
         private readonly UserManager<User> _userManager;
@@ -30,30 +39,60 @@ namespace Sipro.Controllers
             _roleManager = roleManager;
         }
 
+		private string generateJWT(string username){
+            HMACSHA256 hmac = new HMACSHA256();
+            string secret = Convert.ToBase64String(hmac.Key);
+			byte[] key = Convert.FromBase64String(secret);
+            SymmetricSecurityKey securityKey = new SymmetricSecurityKey(key);
+			ClaimsIdentity claimsIdentity = new ClaimsIdentity(new[] {
+				new Claim(ClaimTypes.Name, username)});
+			UsuarioDAO.getPermisosActivosUsuario(username).ForEach(
+				permiso =>
+				{
+					claimsIdentity.AddClaim(new Claim(CustomClaimType.Permission, permiso.nombre));
+				}
+			);
+			SecurityTokenDescriptor descriptor = new SecurityTokenDescriptor
+			{
+				Subject = claimsIdentity,
+				NotBefore = DateTime.UtcNow,
+                Expires = DateTime.UtcNow.AddMinutes(60),
+                SigningCredentials = new SigningCredentials(securityKey,
+                SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+            JwtSecurityToken token = handler.CreateJwtSecurityToken(descriptor);
+			return handler.WriteToken(token);
+		}
+
         // POST /<controller>
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> In([FromBody]dynamic data)
         {
-            String ret = "";
             String susuario = data.username;
             String password = data.password;
-            User usuario = await _userManager.FindByIdAsync(susuario);
-            var result = await _signInManager.PasswordSignInAsync(susuario, password, false, lockoutOnFailure: false);
-            if (result.Succeeded)
-            {
-                return Ok(new { success=true });
-            }
-            if (result.IsLockedOut)
-            {
-                ret = "Usuario bloqueado";
-                return Ok(ret);
-            }
-            else
-            {
-                ret = "Login fallido";
-                return Ok(ret);
-            }
+			try
+			{
+				var result = await _signInManager.PasswordSignInAsync(susuario, password, false, lockoutOnFailure: false);
+				if (result.Succeeded)
+				{
+
+					return Ok(new { success = true, jwt = generateJWT(susuario) });
+				}
+				if (result.IsLockedOut)
+				{
+					return Ok(new { success = false, mensaje = "Usuario bloqueado" });
+				}
+				else
+				{
+					return Ok(new { success = false, mensaje = "Login fallido" });
+				}
+			}
+			catch(Exception e){
+				return Ok(new { success = false, mensaje = "Login fallido" });
+			}
         }
 
         [HttpGet]

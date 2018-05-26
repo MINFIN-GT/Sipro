@@ -24,8 +24,8 @@ namespace Identity
 
         public override async Task SignInAsync(TUser user, bool isPersistent, string authenticationMethod = null)
         {
-            var userId = await UserManager.GetUserIdAsync(user);
-            await base.SignInAsync(user, isPersistent, authenticationMethod);
+			if (user != null)
+				await base.SignInAsync(user, isPersistent, authenticationMethod);
         }
     }
 }
