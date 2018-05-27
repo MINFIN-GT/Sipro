@@ -1,0 +1,33 @@
+.menu-center{
+    flex: 1 1 auto;
+}
+
+.mat-toolbar {
+    font-size: 12px;
+}
+
+.material-icons{
+    font-size: 18px;
+}
+
+.mat-toolbar-single-row{
+    height: 36px;
+    padding: 0 32px 0px 32px;
+}
+
+.mat-button{
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.mat-menu-item {
+    font-size: 12px;
+    font-weight: 400;
+    height: 24px;
+    line-height: 24px;
+}
+
+.mat-toolbar.mat-primary {
+    background: #1f3b6a;
+    color: white;
+}

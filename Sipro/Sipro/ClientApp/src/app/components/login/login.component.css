@@ -7,17 +7,6 @@
   margin: 0 auto;
 }
 
-#inputUsername {
-  margin-bottom: -1px;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
-#inputPassword {
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-}
-
 .container-fluid {
   height: 100%;
   display: table;
@@ -35,3 +24,33 @@
   float: none;
   margin: 0 auto;
 }
+
+.mat-card{
+  padding: 0px 0px 20px 0px;
+}
+
+.mat-card-title{
+  margin-bottom: 0px;
+  padding: 10px;
+  text-align: center;
+}
+
+.mat-card-header{
+  background-color: #1f3b6a; 
+  color: #ffffff;
+}
+.mat-card-header /deep/ .mat-card-header-text {
+  margin: 0 auto;
+}
+
+.alert {
+  padding: .75rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.alert-danger {
+  color: #a94442;
+}
+
+
+

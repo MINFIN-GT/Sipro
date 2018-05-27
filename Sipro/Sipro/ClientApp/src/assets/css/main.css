@@ -18,19 +18,6 @@
 	top: 0;
 }
 
-#navbar-toggle-cbox:checked ~ .collapse {
-    display: block;
-}
-
-#navbar-toggle-cbox {
-  display:none
-}
-
-nav.navbar{
-   -webkit-transition: all 0.4s ease-in-out;
-   transition: all 0.4s ease-in-out;
-}
-
 .id_class{
 	font-size: 8px;
 }

@@ -1,14 +1,15 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders } from '@angular/common/http';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router} from '@angular/router';
+import { AuthService} from '../../auth.service';
+import { UtilsService } from '../../utils.service';
 
-import { Utilities } from  '../../utilities';
 
 @Component({
     selector: 'login',
-    encapsulation: ViewEncapsulation.None,
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.css']
 })
@@ -18,36 +19,47 @@ export class LoginComponent implements OnInit {
     @Input() password : string;
     showerror : boolean;
     _loginUrl = 'http://localhost:59999/api/Login/In'; 
-    template : string;
-    sistema_nombre : string;
+    sistemaNombre : string;
+    isMasterPage: boolean;
+    isLoggedIn: boolean;
 
-    constructor(private _http: HttpClient,private utils: Utilities) { 
-        window.document.title =  this.utils.sistema_nombre + ' - Login';
-        this.username = "";
-        this.password = "";
-        this.utils.etiquetas = null;
-        this.showerror = false;
-        this.sistema_nombre = this.utils.sistema_nombre;
-        _http.get("/api/Templates/Login", {responseType: 'text'}).subscribe(data => {  
-            this.template=data.toString();
-        });
+    constructor(private _http: HttpClient, private router : Router, 
+        private auth : AuthService, private utils: UtilsService) { 
+
     }
 
     ngOnInit() { 
-        
+        window.document.title =  this.utils.getSistemaNombre() + ' - Login';
+        this.username = "";
+        this.password = "";
+        this.showerror = false;
+        this.sistemaNombre = this.utils.getSistemaNombre()
+        this.isMasterPage = false;
+        this.utils.setIsMasterPage(false);
     }
 
     login(){ 
         if(this.username!='' && this.password!=''){
           var data = { username: this.username, password: this.password};
           this._http.post(this._loginUrl, data).subscribe((response)=>{
-            if(response['success']==true)
-                window.location.href = '/main';
-            else
-                this.showerror = true;
+                if(response['success']==true){
+                    this.isLoggedIn = true;
+                    this.isMasterPage = true;
+                    this.auth.setJWT(response['jwt']);
+                    window.location.href = '/main';
+                }
+                else{
+                    this.showerror = true;
+                    this.isLoggedIn = false;
+                    this.auth.logoff();
+                    this.utils.setIsMasterPage(false);
+                }
             }, 
             reponse => {
-              this.showerror = true;
+                this.showerror = true;
+                this.isLoggedIn = false;
+                this.auth.logoff();
+                this.utils.setIsMasterPage(false);
             },
             () =>
             {

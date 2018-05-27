@@ -56,9 +56,11 @@
     <Content Remove="wwwroot\app\components\main\main.controller.jsp" />
     <Content Remove="ClientApp\src\app\components\login\login.component.cshtml" />
     <Content Remove="ClientApp\package.json" />
+    <Content Remove="Views\Templates\login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Utilities\.DS_Store" />
+    <None Remove="ClientApp\src\app\components\main\main.controller.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -1,3 +1,72 @@
-<p>
-  mainmenu works!
-</p>
+<div *ngIf="isMasterPage">
+  <mat-toolbar color="primary">
+    <span>
+      <button mat-button routerLink="/">
+        <mat-icon>home</mat-icon>
+      </button>
+    </span>
+    <span class="menu-center" fxLayout="row" fxHide fxShow.gt-xs>
+      <button mat-button *ngIf="hasClaim('Programas - Visualizar')">Préstamos</button>
+      <button mat-button *ngIf="hasClaim('Configuraciones - Visualizar')" [matMenuTriggerFor]="mConfiguraciones" >Configuraciones</button>
+      <button mat-button *ngIf="hasClaim('Reportes')" [matMenuTriggerFor]="mReportes"> Reportes</button>
+      <button mat-button *ngIf="hasClaim('Usuarios - Visualizar') || hasClaim('Colaboradores - Visualizar')" [matMenuTriggerFor]="mUsuarios"> Usuarios</button>
+      <mat-menu #mConfiguraciones="matMenu" [overlapTrigger]="false">
+        <button mat-menu-item [matMenuTriggerFor]="mCatalogos"> Catálogos</button>
+        <button mat-menu-item [matMenuTriggerFor]="mPropiedades"> Propiedades</button>
+      </mat-menu>
+      <mat-menu #mCatalogos="matMenu" [overlapTrigger]="false">
+        <button mat-menu-item *ngIf="hasClaim('Actividad Tipos - Visualizar')" [routerLink]="main/actividadtipo"> Tipo de Actividad</button>
+        <button mat-menu-item *ngIf="hasClaim('Componente Tipos - Visualizar')" [routerLink]="main/componentetipo"> Tipo de Componente</button>
+        <button mat-menu-item *ngIf="hasClaim('Componente Tipos - Visualizar')" [routerLink]="main/subcomponentetipo"> Tipo de Subcomponente</button>
+        <button mat-menu-item *ngIf="hasClaim('Hito Tipos - Visualizar')" [routerLink]="main/hitotipo"> Tipo de Hito</button>
+        <button mat-menu-item *ngIf="hasClaim('Meta Tipos - Visualizar')" [routerLink]="main/metatipo"> Tipo de Meta</button>
+        <button mat-menu-item *ngIf="hasClaim('Producto Tipos - Visualizar')" [routerLink]="main/productotipo"> Tipo de Producto</button>
+        <button mat-menu-item *ngIf="hasClaim('Préstamo o Proyecto Tipos - Visualizar')" [routerLink]="main/peptipo"> Tipo de @project_tag</button>
+        <button mat-menu-item *ngIf="hasClaim('Préstamo o Proyecto Tipos - Visualizar')" [routerLink]="main/prestamotipo"> Tipo de Préstamo</button>
+        <button mat-menu-item *ngIf="hasClaim('Riesgo Tipos - Visualizar')" [routerLink]="main/riesgotipo"> Tipo de Riesgo</button>
+        <button mat-menu-item *ngIf="hasClaim('Subproducto Tipos - Visualizar')" [routerLink]="main/subproductotipo"> Tipo de Subproducto</button>
+        <button mat-menu-item *ngIf="hasClaim('Meta Unidades de Medida - Visualizar')" [routerLink]="main/unidadmedida"> Unidades de Medida</button>
+        <button mat-menu-item *ngIf="hasClaim('Categoría de Adquisiciones - Visualizar')" [routerLink]="main/categoriaadquisicion"> Categoría de Adquisiciones</button>
+        <button mat-menu-item *ngIf="hasClaim('Tipos de Adquisiciones - Visualizar')" [routerLink]="main/tipoadquisicion"> Tipo de Adquisiciones</button>
+        <button mat-menu-item *ngIf="hasClaim('Roles Unidad Ejecutora - Visualizar')" [routerLink]="main/rolunidadejecutora"> Roles de Unidad Ejecutora</button>
+      </mat-menu>
+      <mat-menu #mPropiedades="matMenu" [overlapTrigger]="false">
+        <button mat-menu-item *ngIf="hasClaim('Programa Propiedades - Visualizar')" [routerLink]="main/prestamopropiedad"> Préstamo</button>
+        <button mat-menu-item *ngIf="hasClaim('Actividad Propiedades - Visualizar')" [routerLink]="main/actividadpropiedad"> Actividad</button>
+        <button mat-menu-item *ngIf="hasClaim('Componente Propiedades - Visualizar')" [routerLink]="main/componentepropiedad"> Componente</button>
+        <button mat-menu-item *ngIf="hasClaim('Componente Propiedades - Visualizar')" [routerLink]="main/subcomponentepropiedad"> Subcomponente</button>
+        <button mat-menu-item *ngIf="hasClaim('Producto Propiedades - Visualizar')" [routerLink]="main/productopropiedad"> Producto</button>
+        <button mat-menu-item *ngIf="hasClaim('Subproducto Propiedades - Visualizar')" [routerLink]="main/subproductopropiedad"> Subproducto</button>
+        <button mat-menu-item *ngIf="hasClaim('Préstamo o Proyecto Propiedades - Visualizar')" [routerLink]="main/peptipo"> @project_tag</button>
+        <button mat-menu-item *ngIf="hasClaim('Riesgo Propiedades - Visualizar')" [routerLink]="main/riesgopropiedad"> Riesgo</button>
+      </mat-menu>
+      <mat-menu #mReportes="matMenu" [overlapTrigger]="false">
+        <button mat-menu-item [routerLink]="main/avanceactividades">Avance de Actividades e Hitos</button>
+        <button mat-menu-item [routerLink]="main/prestamoindicadores">Avance de Indicadores</button>
+        <button mat-menu-item [routerLink]="main/prestamometas">Avance de Metas</button>
+        <button mat-menu-item [routerLink]="main/cargatrabajo">Carga de Trabajo</button>
+        <button mat-menu-item [routerLink]="main/administracionTransaccional">Detalle de Transacciones</button>
+        <button mat-menu-item [routerLink]="main/desembolsos">Desembolsos</button>
+        <button mat-menu-item [routerLink]="main/informacionPresupuestaria">Ejecución presupuestaria</button>
+        <button mat-menu-item [routerLink]="main/flujocaja">Flujo de Caja</button>
+        <button mat-menu-item [routerLink]="main/gestionadquisiciones">Gestión de adquisiciones</button>
+        <button mat-menu-item [routerLink]="main/informeGeneralPEP">Informe General del PEP</button>
+        <button mat-menu-item [routerLink]="main/planejecucion">Informe General del Préstamo</button>
+        <button mat-menu-item [routerLink]="main/mapa">Mapa</button>
+        <button mat-menu-item [routerLink]="main/matrizriesgo">Matriz de Riesgos</button>
+        <button mat-menu-item [routerLink]="main/matrizraci">Matriz RACI</button>
+        <button mat-menu-item [routerLink]="main/reportefinancieroadquisiciones">Reporte Financiero de Adquisiciones</button>
+        <button mat-menu-item [routerLink]="main/planadquisiciones">Plan de Adquisiciones</button>
+        <button mat-menu-item [routerLink]="main/planestructuralproyecto">Plan de Ejecución</button>
+      </mat-menu>
+      <mat-menu #mUsuarios="matMenu" [overlapTrigger]="false">
+        <button mat-menu-item *ngIf="hasClaim('Usuarios - Visualizar')" [routerLink]="main/usuarios">Usuarios</button>
+        <button mat-menu-item *ngIf="hasClaim('Colaboradores - Visualizar')" [routerLink]="main/colaborador">Colaboradores</button>
+      </mat-menu>
+    </span>
+    <span>
+      <button mat-button [routerLink]="main/usuarioinfo"><mat-icon>person</mat-icon>Mi info.</button>
+      <button mat-button [routerLink]="logout"><mat-icon>exit_to_app</mat-icon> Salir</button>
+    </span> 
+  </mat-toolbar>
+</div>
