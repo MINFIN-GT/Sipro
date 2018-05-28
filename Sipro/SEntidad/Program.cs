@@ -20,7 +20,7 @@ namespace SEntidad
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-		        .UseUrls("http://0.0.0.0:60005")
+		        .UseUrls("http://0.0.0.0:60024")
                 .Build();
     }
 }

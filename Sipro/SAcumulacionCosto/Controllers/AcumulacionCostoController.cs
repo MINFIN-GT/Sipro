@@ -23,7 +23,7 @@ namespace SAcumulacionCosto.Controllers
             public string usuarioActualizo;
             public string fechaCreacion;
             public string fechaActualizacion;
-            int estado;
+            public int estado;
         }
 
         // GET api/AcumulacionCosto/AcumulacionesCosto
@@ -41,6 +41,11 @@ namespace SAcumulacionCosto.Controllers
                     stAcumulacionCosto temp = new stAcumulacionCosto();
                     temp.id = Convert.ToInt32(acumulacionCosto.id);
                     temp.nombre = acumulacionCosto.nombre;
+                    temp.usuarioCreo = acumulacionCosto.usuarioCreo;
+                    temp.usuarioActualizo = acumulacionCosto.usuarioActualizo;
+                    temp.fechaCreacion = acumulacionCosto.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.fechaActualizacion = acumulacionCosto.fechaActualizacion != null ? acumulacionCosto.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
+                    temp.estado = acumulacionCosto.estado;
                     stacumulacioncosto.Add(temp);
                 }
 

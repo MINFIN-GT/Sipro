@@ -112,7 +112,6 @@ namespace SPlanAdquisicion.Controllers
             }
         }
 
-        
         // PUT api/values/5
         [HttpPut("{id}")]
         public IActionResult Adquisicion(int id, [FromBody]dynamic value)
@@ -160,6 +159,8 @@ namespace SPlanAdquisicion.Controllers
                 CLogger.write("2", "PlanAdquisicionController.class", e);
                 return BadRequest(500);
             }
-        }        
+        } 
+        
+
     }
 }

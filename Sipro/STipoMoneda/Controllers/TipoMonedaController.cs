@@ -5,10 +5,11 @@ using SiproModelCore.Models;
 using SiproDAO.Dao;
 using Utilities;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
 
 namespace STipoMoneda.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]/[action]")]
     [Produces("application/json")]
     [EnableCors("AllowAllHeaders")]
@@ -23,6 +24,7 @@ namespace STipoMoneda.Controllers
 
         // POST api/TipoMoneda/TipoMonedaPagina
         [HttpPost]
+        [Authorize("Tipo Moneda - Visualizar")]
         public IActionResult TipoMonedaPagina([FromBody]dynamic value)
         {
             try
@@ -50,6 +52,7 @@ namespace STipoMoneda.Controllers
 
         // POST api/TipoMoneda/numeroTipoMonedas
         [HttpPost]
+        [Authorize("Tipo Moneda - Visualizar")]
         public IActionResult numeroTipoMonedas([FromBody]dynamic value)
         {
             try
@@ -66,6 +69,7 @@ namespace STipoMoneda.Controllers
 
         // GET api/TipoMoneda/TipoMonedas
         [HttpGet]
+        [Authorize("Tipo Moneda - Visualizar")]
         public IActionResult TipoMonedas()
         {
             try

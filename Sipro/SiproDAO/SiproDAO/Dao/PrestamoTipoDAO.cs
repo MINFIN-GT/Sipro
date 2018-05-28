@@ -91,9 +91,9 @@ namespace SiproDAO.Dao
                     if (filtro_nombre != null && filtro_nombre.Trim().Length > 0)
                         query_a = String.Join("", query_a, " p.nombre LIKE '%", filtro_nombre, "%' ");
                     if (filtro_usuario_creo != null && filtro_usuario_creo.Trim().Length > 0)
-                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " usuario_creo LIKE :filtro_usuario_creo ");
+                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " p.usuario_creo LIKE :filtro_usuario_creo ");
                     if (filtro_fecha_creacion != null && filtro_fecha_creacion.Trim().Length > 0)
-                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE(:filtro_fecha_creacion,'DD/MM/YY') ");
+                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(p.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE(:filtro_fecha_creacion,'DD/MM/YY') ");
                     query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND (", query_a, ")") : ""));
                     query = String.Join(" ", query, (excluir != null && excluir.Length > 0 ? "and p.id not in (" + excluir + ")" : ""));
                     query = columna_ordenada != null && columna_ordenada.Trim().Length > 0 ? String.Join(" ", query, "ORDER BY", columna_ordenada, orden_direccion) : query;
@@ -117,7 +117,7 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    String query = "SELECT count(p.id) FROM PRESTAMO_TIPO p WHERE p.estado=1 ";
+                    String query = "SELECT COUNT(*) FROM PRESTAMO_TIPO p WHERE p.estado=1 ";
                     String query_a = "";
                     if (filtro_nombre != null && filtro_nombre.Trim().Length > 0)
                         query_a = String.Join("", query_a, " p.nombre LIKE '%", filtro_nombre, "%' ");

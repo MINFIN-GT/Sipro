@@ -53,7 +53,7 @@ namespace SPrestamoTipo.Controllers
                     stcooperantes.Add(temp);
                 }
 
-                return Ok(new { success = true, poryectotipos = stcooperantes });
+                return Ok(new { success = true, proyectotipos = stcooperantes });
             }
             catch (Exception e)
             {

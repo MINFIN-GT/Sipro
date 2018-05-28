@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.DataProtection;
 using System.IO;
 using System.Net;
+using Microsoft.AspNetCore.Http;
 
 namespace SUnidadEjecutora
 {
@@ -36,13 +37,20 @@ namespace SUnidadEjecutora
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
-
             services.AddIdentity<User, Rol>()
                 .AddRoleStore<RoleStore>()
                 .AddUserStore<UserPasswordStore>()
                 .AddUserManager<CustomUserManager>()
                 .AddDefaultTokenProviders();
+
+            services.AddScoped<IUserClaimsPrincipalFactory<User>, ApplicationClaimsIdentityFactory>();
+
+            services.AddAuthentication(sharedOptions =>
+            {
+                sharedOptions.DefaultAuthenticateScheme = "Identity.Application";
+                sharedOptions.DefaultSignInScheme = "Identity.Application";
+                // sharedOptions.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+            });
 
             services.AddDataProtection()
                     .PersistKeysToFileSystem(new DirectoryInfo(@"/SIPRO"))
@@ -51,9 +59,10 @@ namespace SUnidadEjecutora
 
             services.ConfigureApplicationCookie(options =>
             {
-                options.Cookie.Name = ".AspNet.Sipro";
+                options.Cookie.Name = ".AspNet.Identity.Application";
                 options.Cookie.HttpOnly = true;
-
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.Path = "/";
                 options.Events.OnRedirectToLogin = context =>
                 {
                     if (context.Response.StatusCode == (int)HttpStatusCode.OK)
@@ -100,9 +109,12 @@ namespace SUnidadEjecutora
                       {
                           builder.AllowAnyOrigin()
                                  .AllowAnyHeader()
+                                 .AllowCredentials()
                                  .AllowAnyMethod();
                       });
             });
+
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -112,10 +124,10 @@ namespace SUnidadEjecutora
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseAuthentication();
-            app.UseMvc();
 
+            app.UseAuthentication();
             app.UseCors("AllowAllHeaders");
+            app.UseMvc();
         }
     }
 }

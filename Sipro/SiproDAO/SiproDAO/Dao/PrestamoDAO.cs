@@ -5,7 +5,7 @@ using Dapper;
 using System.Data.Common;
 using Utilities;
 using SiproModelCore.Models;
-//using SiproModelAnalyticCore.Models;
+using SiproModelAnalyticCore.Models;
 using Newtonsoft.Json.Linq;
 
 namespace SiproDAO.Dao
@@ -102,12 +102,8 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    String query = "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT p.*, ue.unidad_ejecutora, e.entidad as entidadentidad, c.codigo, tm.id as tipoMonedaId " +
+                    String query = "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT p.* " +
                         "FROM PRESTAMO p " +
-                        "INNER JOIN UNIDAD_EJECUTORA ue ON ue.unidad_ejecutora=p.ueunidad_ejecutora " +
-                        "INNER JOIN ENTIDAD e ON e.entidad=ue.entidadentidad AND e.entidad=p.entidad " +
-                        "INNER JOIN COOPERANTE c ON c.codigo=p.cooperantecodigo AND c.ejercicio=p.cooperanteejercicio " +
-                        "INNER JOIN TIPO_MONEDA tm ON tm.id=p.tipo_monedaid " +
                         "WHERE p.estado=1 ";
                     String query_a = "";
                     if (filtro_nombre != null && filtro_nombre.Trim().Length > 0)
@@ -128,18 +124,8 @@ namespace SiproDAO.Dao
                         String.Join(" ", query, "ORDER BY p.fecha_creacion ASC");
                     query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + elementosPorPagina + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + elementosPorPagina + ") + 1)");
 
-                    ret = db.Query<Prestamo, UnidadEjecutora, Entidad, Cooperante, TipoMoneda, Prestamo>(query, 
-                        (p, ue, e, c, tm) => 
-                        {
-                            p.unidadEjecutoras = ue;
-                            ue.entidads = e;
-                            p.cooperantes = c;
-                            p.tipoMonedas = tm;
-                            return p;
-                        }
-                        , new { filtro_codigo_presupuestario = filtro_codigo_presupuestario,
-                        filtro_usuario_creo = filtro_usuario_creo, filtro_fecha_creacion = filtro_fecha_creacion, usuario = usuario }, 
-                        splitOn : "unidad_ejecutora, entidadentidad, codigo, tipoMonedaId").AsList<Prestamo>();
+                    ret = db.Query<Prestamo>(query, new { filtro_codigo_presupuestario = filtro_codigo_presupuestario,
+                        filtro_usuario_creo = filtro_usuario_creo, filtro_fecha_creacion = filtro_fecha_creacion, usuario = usuario }).AsList<Prestamo>();
                 }
             }
             catch (Exception e)
@@ -211,22 +197,10 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    ret = db.Query<Prestamo, UnidadEjecutora, Entidad, Cooperante, TipoMoneda, Prestamo>("SELECT p.*, ue.unidad_ejecutora, e.entidad as entidadentidad, c.codigo, tm.id as tipoMonedaId " +
+                    ret = db.Query<Prestamo>("SELECT p.* " +
                         "FROM PRESTAMO p " +
-                        "INNER JOIN UNIDAD_EJECUTORA ue ON ue.unidad_ejecutora=p.ueunidad_ejecutora " +
-                        "INNER JOIN ENTIDAD e ON e.entidad=ue.entidadentidad AND e.entidad=p.entidad " +
-                        "INNER JOIN COOPERANTE c ON c.codigo=p.cooperantecodigo AND c.ejercicio=p.cooperanteejercicio " +
-                        "INNER JOIN TIPO_MONEDA tm ON tm.id=p.tipo_monedaid " +
                         "WHERE p.id=:id", 
-                        (p, ue, e, c, tm) =>
-                        {
-                            p.unidadEjecutoras = ue;
-                            p.cooperantes = c;
-                            ue.entidads = e;
-                            p.tipoMonedas = tm;
-                            return p;
-                        },
-                        new { id = idPrestamo }, splitOn : "unidad_ejecutora, entidadentidad, codigo, tipoMonedaId").ElementAtOrDefault<Prestamo>(0);
+                        new { id = idPrestamo }).ElementAtOrDefault<Prestamo>(0);
                 }
             }
             catch (Exception e)
@@ -245,7 +219,7 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    String query = "SELECT p.*, ue.unidad_ejecutora, e.entidad as entidadentidad, c.codigo, tm.id as tipoMonedaId " +
+                    String query = "SELECT p.* " +
                         "FROM PRESTAMO p " +
                         "INNER JOIN UNIDAD_EJECUTORA ue ON ue.unidad_ejecutora=p.ueunidad_ejecutora " +
                         "INNER JOIN ENTIDAD e ON e.entidad=ue.entidadentidad AND e.entidad=p.entidad " +
@@ -255,16 +229,8 @@ namespace SiproDAO.Dao
                     if (usuario != null)
                         query += "and p.id in (SELECT u.prestamoid FROM Prestamo_Usuario u where u.usuario=:usuario ) ";
 
-                    ret = db.Query<Prestamo, UnidadEjecutora, Entidad, Cooperante, TipoMoneda, Prestamo>(query,
-                        (p, ue, e, c, tm) => 
-                        {
-                            p.unidadEjecutoras = ue;
-                            ue.entidads = e;
-                            p.cooperantes = c;
-                            p.tipoMonedas = tm;
-                            return p;
-                        },
-                        new { usuario = usuario }, splitOn: "unidad_ejecutora,entidadentidad, codigo, tipoMonedaId").AsList<Prestamo>();
+                    ret = db.Query<Prestamo>(query,
+                        new { usuario = usuario }).AsList<Prestamo>();
                 }
             }
             catch (Exception e)
@@ -435,7 +401,7 @@ namespace SiproDAO.Dao
         public static bool guardarComponentesSigade(String codigoPresupuestario, String usuario, int existeData)
         {
             bool ret = true;
-            /*List<DtmAvanceFisfinanCmp> componentesSigade = DataSigadeDAO.getComponentes(codigoPresupuestario);
+            List<DtmAvanceFisfinanCmp> componentesSigade = DataSigadeDAO.getComponentes(codigoPresupuestario);
 
             foreach (DtmAvanceFisfinanCmp objComponente in componentesSigade)
             {               
@@ -458,7 +424,7 @@ namespace SiproDAO.Dao
                     comp.usuarioActualizo = usuario;
                     ret = ret && ComponenteSigadeDAO.guardarComponenteSigade(comp);
                 }
-            }*/
+            }
             return ret;
         }
 
@@ -550,7 +516,7 @@ namespace SiproDAO.Dao
                     proyecto.usuarioActualizo = usuario;
                 }
 
-                //TODO return ProyectoDAO.guardarProyecto(proyecto, false) ? proyecto : null;
+                return ProyectoDAO.guardarProyecto(proyecto, false) ? proyecto : null;
             }
 
             return ret;
@@ -612,7 +578,7 @@ namespace SiproDAO.Dao
             Proyecto proyecto = ProyectoDAO.getProyecto(proyectoId);
             if (proyecto.projectCargado == null || !proyecto.projectCargado.Equals(1))
             {
-                /*List <DtmAvanceFisfinanCmp> componentesSigade = DataSigadeDAO.getComponentes(codigoPresupuestario);
+                List <DtmAvanceFisfinanCmp> componentesSigade = DataSigadeDAO.getComponentes(codigoPresupuestario);
                 List<Componente> componentesSipro = ComponenteDAO.getComponentesPorProyecto(proyectoId);
 
                 if (componentesSigade != null && componentesSigade.Count > 0)
@@ -649,7 +615,8 @@ namespace SiproDAO.Dao
                             componente.estado = 1;
                             componente.fechaInicio = fechaSuscripcion;
                             componente.fechaFin = fechaSuscripcion;
-                            componente.duracionDimension = 1;
+                            componente.duracion = 1;
+                            componente.duracionDimension = "d";
                             componente.nivel = 1;
                             componente.esDeSigade = 1;
                             componente.inversionNueva = 0;
@@ -666,7 +633,7 @@ namespace SiproDAO.Dao
                             ret = ret && ObjetoDAO.borrarHijos(componente.treepath, 2, usuario);
                         }
                     }
-                }*/
+                }
             }
             return ret;
         }
