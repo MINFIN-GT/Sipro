@@ -48,7 +48,7 @@ namespace SEntidad.Controllers
             catch (Exception e)
             {
                 CLogger.write("2", "EntidadController.class", e);
-                return BadRequest(500);
+                return BadRequest(500); 
             }
         }
 
