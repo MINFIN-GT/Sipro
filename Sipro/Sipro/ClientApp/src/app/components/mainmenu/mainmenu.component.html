@@ -66,7 +66,7 @@
     </span>
     <span>
       <button mat-button [routerLink]="main/usuarioinfo"><mat-icon>person</mat-icon>Mi info.</button>
-      <button mat-button [routerLink]="logout"><mat-icon>exit_to_app</mat-icon> Salir</button>
+      <button mat-button (click)="logoff()"><mat-icon>exit_to_app</mat-icon> Salir</button>
     </span> 
   </mat-toolbar>
 </div>

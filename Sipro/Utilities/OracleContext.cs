@@ -17,7 +17,7 @@ namespace Utilities
         {
             connectionString = ConfigurationManager.ConnectionStrings["oracle"].ConnectionString;
             connectionStringHistory = ConfigurationManager.ConnectionStrings["oracle"].ConnectionString;
-            connectionStringAnalytic = ConfigurationManager.ConnectionStrings["oracle_analytic"].ConnectionString;
+            connectionStringAnalytic = ConfigurationManager.ConnectionStrings["oracle"].ConnectionString;
         }
 
 

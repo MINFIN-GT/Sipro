@@ -31,4 +31,8 @@ export class MainmenuComponent implements OnInit {
         return this.auth.hasClaim(val);
     }
 
+    logoff(){
+        this.auth.logoffRemote();
+    }
+
 }

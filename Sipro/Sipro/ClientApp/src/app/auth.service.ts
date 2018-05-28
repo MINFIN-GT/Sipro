@@ -34,6 +34,18 @@ export class AuthService {
 
   public hasClaim(claim:string){
     this.claims = JSON.parse(localStorage.getItem("claims"));
-    return this.claims.indexOf(claim) > -1;
+    return this.claims!=null && this.claims.indexOf(claim) > -1;
+  }
+
+  public logoffRemote(){
+    this.http.get(this._loginUrl+'/Login/Out', { withCredentials: true}).subscribe( response =>{
+      if(response['success']==true){
+          this.logoff();
+          window.location.href = '/login';
+      }
+      else{
+          console.log('Error al hacer logout');
+      }
+  });
   }
 }

@@ -5,7 +5,7 @@ using Dapper;
 using System.Data.Common;
 using Utilities;
 using SiproModelCore.Models;
-using SiproModelAnalyticCore.Models;
+//using SiproModelAnalyticCore.Models;
 using Newtonsoft.Json.Linq;
 
 namespace SiproDAO.Dao
@@ -435,7 +435,7 @@ namespace SiproDAO.Dao
         public static bool guardarComponentesSigade(String codigoPresupuestario, String usuario, int existeData)
         {
             bool ret = true;
-            List<DtmAvanceFisfinanCmp> componentesSigade = DataSigadeDAO.getComponentes(codigoPresupuestario);
+            /*List<DtmAvanceFisfinanCmp> componentesSigade = DataSigadeDAO.getComponentes(codigoPresupuestario);
 
             foreach (DtmAvanceFisfinanCmp objComponente in componentesSigade)
             {               
@@ -458,7 +458,7 @@ namespace SiproDAO.Dao
                     comp.usuarioActualizo = usuario;
                     ret = ret && ComponenteSigadeDAO.guardarComponenteSigade(comp);
                 }
-            }
+            }*/
             return ret;
         }
 
@@ -612,7 +612,7 @@ namespace SiproDAO.Dao
             Proyecto proyecto = ProyectoDAO.getProyecto(proyectoId);
             if (proyecto.projectCargado == null || !proyecto.projectCargado.Equals(1))
             {
-                List <DtmAvanceFisfinanCmp> componentesSigade = DataSigadeDAO.getComponentes(codigoPresupuestario);
+                /*List <DtmAvanceFisfinanCmp> componentesSigade = DataSigadeDAO.getComponentes(codigoPresupuestario);
                 List<Componente> componentesSipro = ComponenteDAO.getComponentesPorProyecto(proyectoId);
 
                 if (componentesSigade != null && componentesSigade.Count > 0)
@@ -666,7 +666,7 @@ namespace SiproDAO.Dao
                             ret = ret && ObjetoDAO.borrarHijos(componente.treepath, 2, usuario);
                         }
                     }
-                }
+                }*/
             }
             return ret;
         }

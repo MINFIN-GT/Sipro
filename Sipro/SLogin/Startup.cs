@@ -1,10 +1,14 @@
 ﻿using System;
 using System.IO;
+using System.Net;
+using System.Threading.Tasks;
 using Dapper;
 using Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,23 +37,57 @@ namespace SLogin
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            
 
 			services.AddIdentity<User, Rol>()
-                .AddRoleStore<RoleStore>()
-                .AddUserStore<UserPasswordStore>()
-                .AddUserManager<CustomUserManager>()
-                .AddDefaultTokenProviders();
+				.AddRoleStore<RoleStore>()
+				.AddUserStore<UserPasswordStore>()
+				.AddUserManager<CustomUserManager>()
+			    .AddDefaultTokenProviders();
 
+			services.AddScoped<IUserClaimsPrincipalFactory<User>, ApplicationClaimsIdentityFactory>();
+
+			services.AddAuthentication(sharedOptions =>
+			{
+				sharedOptions.DefaultAuthenticateScheme = "Identity.Application";
+				sharedOptions.DefaultSignInScheme = "Identity.Application";
+				// sharedOptions.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+			});
             services.AddDataProtection()
                     .PersistKeysToFileSystem(new DirectoryInfo(@"/SIPRO"))
                     .SetApplicationName("SiproApp");
 
-            services.ConfigureApplicationCookie(options => {
+			services.ConfigureApplicationCookie(options => {
+				options.Cookie.Name = ".AspNet.Identity.Application";
+				options.Cookie.HttpOnly = true;
+				options.Cookie.Expiration = TimeSpan.FromMinutes(60);
+				options.SlidingExpiration = true;
+				options.Cookie.SameSite = SameSiteMode.None;
+				options.Cookie.Path = "/";
+				options.Events.OnRedirectToAccessDenied = context =>
+                {
+                    if (context.Response.StatusCode == (int)HttpStatusCode.OK)
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    }
+                    return Task.CompletedTask;
+                };
+			});
+
+            /*services.ConfigureApplicationCookie(options => {
                 options.Cookie.Name = ".AspNet.Sipro";
                 options.Cookie.HttpOnly = true;
-               
-            });
+				options.Cookie.Path = "/";
+				options.Cookie.SameSite = SameSiteMode.None;
+				options.Events.OnRedirectToAccessDenied = context =>
+                {
+                    if (context.Response.StatusCode == (int)HttpStatusCode.OK)
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    }
+                    return Task.CompletedTask;
+                };
+            });*/
 
 			services.AddCors(options =>
             {
@@ -58,9 +96,12 @@ namespace SLogin
                       {
                           builder.AllowAnyOrigin()
                                  .AllowAnyHeader()
-                                 .AllowAnyMethod();
+                                 .AllowAnyMethod()
+					             .AllowCredentials();
                       });
             });
+
+			services.AddMvc();
 
         }
 
@@ -72,10 +113,12 @@ namespace SLogin
 				app.UseDeveloperExceptionPage();
                 
             }
-			app.UseAuthentication();
-            app.UseMvc();
 
+			app.UseAuthentication();
 			app.UseCors("AllowAllHeaders");
+			app.UseMvc();
+
+
         }
     }
 }
