@@ -5029,6 +5029,7 @@
           "Dapper": "1.50.4",
           "Newtonsoft.Json": "11.0.2",
           "Oracle.ManagedDataAccess.Core": "2.12.0-beta2",
+          "SiproModelAnalyticCore": "1.0.0",
           "SiproModelCore": "1.0.0",
           "System.Configuration.ConfigurationManager": "4.4.1",
           "Utilities": "1.0.0",
@@ -5039,6 +5040,16 @@
         },
         "runtime": {
           "bin/placeholder/SiproDAO.dll": {}
+        }
+      },
+      "SiproModelAnalyticCore/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v2.0",
+        "compile": {
+          "bin/placeholder/SiproModelAnalyticCore.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/SiproModelAnalyticCore.dll": {}
         }
       },
       "SiproModelCore/1.0.0": {
@@ -13362,6 +13373,11 @@
       "type": "project",
       "path": "../SiproDAO/SiproDAO/SiproDAO.csproj",
       "msbuildProject": "../SiproDAO/SiproDAO/SiproDAO.csproj"
+    },
+    "SiproModelAnalyticCore/1.0.0": {
+      "type": "project",
+      "path": "../SiproModelAnalyticCore/SiproModelAnalyticCore.csproj",
+      "msbuildProject": "../SiproModelAnalyticCore/SiproModelAnalyticCore.csproj"
     },
     "SiproModelCore/1.0.0": {
       "type": "project",
