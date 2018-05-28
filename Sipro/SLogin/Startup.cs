@@ -64,6 +64,18 @@ namespace SLogin
 				options.SlidingExpiration = true;
 				options.Cookie.SameSite = SameSiteMode.None;
 				options.Cookie.Path = "/";
+				options.Events.OnRedirectToLogin = context =>
+                {
+                    if (context.Response.StatusCode == (int)HttpStatusCode.OK)
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    }
+                    else
+                    {
+                        context.Response.Redirect(context.RedirectUri);
+                    }
+                    return Task.CompletedTask;
+                };
 				options.Events.OnRedirectToAccessDenied = context =>
                 {
                     if (context.Response.StatusCode == (int)HttpStatusCode.OK)

@@ -65,7 +65,7 @@
       </mat-menu>
     </span>
     <span>
-      <button mat-button [routerLink]="main/usuarioinfo"><mat-icon>person</mat-icon>Mi info.</button>
+      <button mat-button (click)="getEntidades()"><mat-icon>person</mat-icon>Mi info.</button>
       <button mat-button (click)="logoff()"><mat-icon>exit_to_app</mat-icon> Salir</button>
     </span> 
   </mat-toolbar>
