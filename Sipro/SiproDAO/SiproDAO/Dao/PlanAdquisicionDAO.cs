@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Dapper;
 using System.Data.Common;
 using Utilities;
 using SiproModelCore.Models;
+using SiproModelAnalyticCore.Models;
 using Newtonsoft.Json.Linq;
 
 namespace SiproDAO.Dao
@@ -90,297 +90,327 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        /*public static List<PlanAdquisicion> getPlanAdquisicionesByObjeto(int objetoTipo, int ObjetoId){
+        public static List<PlanAdquisicion> getPlanAdquisicionesByObjeto(int objetoTipo, int ObjetoId)
+        {
             List<PlanAdquisicion> retList = null;
-            Session session = CHibernateSession.getSessionFactory().openSession();
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    string query = "SELECT * FROM PLAN_ADQUISICION pa " +
+                        "WHERE pa.objetoId=:objetoId AND pa.objetoTipo=:objetoTipo AND pa.estado=1";
 
-            try{
-                String query = "FROM PlanAdquisicion pa where pa.objetoId=:objetoId and pa.objetoTipo=:objetoTipo and pa.estado=1";
-                Query<PlanAdquisicion> criteria = session.createQuery(query, PlanAdquisicion.class);
-                criteria.setParameter("objetoId", ObjetoId);
-                criteria.setParameter("objetoTipo", objetoTipo);
-                retList = criteria.getResultList();
-
-            }catch(Throwable e){
-                CLogger.write("4", PlanAdquisicionDAO.class, e);
+                    retList = db.Query<PlanAdquisicion>(query, new { objetoId = ObjetoId, objetoTipo = objetoTipo }).AsList<PlanAdquisicion>();
+                }
             }
-            finally{
-                session.close();
-                retList = (retList.size()>0) ? retList : null;
+            catch (Exception e)
+            {
+                CLogger.write("4", "PlanAdquisicionDAO.class", e);
             }
             return retList;
         }
 
-        public static boolean borrarPlan(PlanAdquisicion plan){
-            boolean ret = false;
-            Session session = CHibernateSession.getSessionFactory().openSession();
-            try{
-                session.beginTransaction();
-                session.delete(plan);
-                session.getTransaction().commit();
-                ret = true;
-            }catch(Throwable e){
-                CLogger.write("5", PlanAdquisicionDAO.class, e);
-            }
-            finally{
-                session.close();
-            }
+        public static bool borrarPlan(PlanAdquisicion plan)
+        {
+            bool ret = false;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    int eliminado = db.Execute("DELETE FROM PLAN_ADQUISICION WHERE id=:id", new { id = plan.id });
 
+                    ret = eliminado > 0 ? true : false;
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("5", "PlanAdquisicionDAO.class", e);
+            }
             return ret;
         }
 
-        public static boolean borrarTodosPlan(Integer objetoId, Integer objetoTipo){
-            boolean ret = false;
-            if(objetoId!=null){
-                List<PlanAdquisicion> planes = getPlanAdquisicionesByObjeto(objetoTipo, objetoId);
-                Session session = CHibernateSession.getSessionFactory().openSession();
-                try{
-                    session.beginTransaction();
-                    if(planes!=null){
-                        for(int i=0; i<planes.size();i++){
-                            planes.get(i).setEstado(0);
-                            session.saveOrUpdate(planes.get(i));
-                        }
+        public static bool borrarTodosPlan(int objetoId, int objetoTipo)
+        {
+            bool ret = false;
+            List<PlanAdquisicion> planes = getPlanAdquisicionesByObjeto(objetoTipo, objetoId);
+            try
+            {
+                if (planes != null)
+                {
+                    for (int i = 0; i < planes.Count; i++)
+                    {
+                        planes[i].estado = 0;
+                        guardarPlanAdquisicion(planes[i]);
                     }
-                    session.getTransaction().commit();
-                    ret = true;
-                }catch(Throwable e){
-                    CLogger.write("6", PlanAdquisicionDAO.class, e);
                 }
-                finally{
-                    session.close();
-                }
+                ret = true;
+            }
+            catch (Exception e)
+            {
+                CLogger.write("6", "PlanAdquisicionDAO.class", e);
             }
             return ret;
         }
 
-        public static List<PlanAdquisicion> getAdquisicionesNotIn(Integer objetoId, Integer objetoTipo,List<Integer> adquisiciones){
-            List<PlanAdquisicion> ret = new ArrayList<PlanAdquisicion>();
-            Session session = CHibernateSession.getSessionFactory().openSession();
-            try{
-                String query = "SELECT pa FROM PlanAdquisicion as pa "
+        public static List<PlanAdquisicion> getAdquisicionesNotIn(int objetoId, int objetoTipo, List<int> adquisiciones)
+        {
+            List<PlanAdquisicion> ret = new List<PlanAdquisicion>();
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    String query = "SELECT pa FROM PlanAdquisicion as pa "
                         + "WHERE pa.estado = 1 "
                         + "and pa.objetoId = :objid "
                         + "and pa.objetoTipo = :objetoTipo "
                         + "and pa.id NOT IN (:ids)";
 
-                Query<PlanAdquisicion> criteria = session.createQuery(query,PlanAdquisicion.class);
-                criteria.setParameter("objid", objetoId);
-                criteria.setParameter("objetoTipo", objetoTipo);
-                criteria.setParameterList("ids", adquisiciones);
-                ret = criteria.getResultList();
+                    ret = db.Query<PlanAdquisicion>(query, new { objid = objetoId, objetoTipo = objetoTipo, ids = adquisiciones }).AsList<PlanAdquisicion>();
+                }
             }
-            catch(Throwable e){
-                CLogger.write("7", PlanAdquisicionDAO.class, e);
-            }
-            finally{
-                session.close();
+            catch (Exception e)
+            {
+                CLogger.write("7", "PlanAdquisicionDAO.class", e);
             }
             return ret;
         }
 
-        public static void actualizarCostoPlanificadoObjeto(PlanAdquisicion pa,Session session){
-            BigDecimal ret = new BigDecimal(0);
-            Integer objetoId = pa.getObjetoId();
-            Integer objetoTipo = pa.getObjetoTipo();
+        public static void actualizarCostoPlanificadoObjeto(PlanAdquisicion pa)
+        {
+            decimal ret = decimal.Zero;
+            int objetoId = Convert.ToInt32(pa.objetoId);
+            int objetoTipo = Convert.ToInt32(pa.objetoTipo);
+            List<PlanAdquisicionPago> pagos = PlanAdquisicionPagoDAO.getPagosByPlan(Convert.ToInt32(pa.id));
             List<Actividad> actividades = ActividadDAO.getActividadesPorObjeto(objetoId, objetoTipo);
-            for(Actividad actividad: actividades)
-                ret = ret.add(actividad.getCosto());
-            switch(objetoTipo){
-                case 0: Proyecto proyecto = ProyectoDAO.getProyecto(objetoId);
-                    if(proyecto.getComponentes()==null || proyecto.getComponentes().size()==0){
-                        if(actividades==null || actividades.size()==0){
-                            if(pa.getPlanAdquisicionPagos()!=null && pa.getPlanAdquisicionPagos().size()>0){
-                                Iterator<PlanAdquisicionPago> iPagos = pa.getPlanAdquisicionPagos().iterator();
-                                while(iPagos.hasNext()){
-                                    PlanAdquisicionPago pago = iPagos.next();
-                                    ret=ret.add(pago.getPago()!=null ? pago.getPago() : new BigDecimal(0));
-                                }
+            foreach (Actividad actividad in actividades)
+                ret += actividad.costo ?? default(decimal);
+
+            switch (objetoTipo)
+            {
+                case 0:
+                    Proyecto proyecto = ProyectoDAO.getProyecto(objetoId);
+                    List<Componente> componentes = ComponenteDAO.getComponentesPorProyecto(proyecto.id);
+                    if (componentes == null || componentes.Count == 0)
+                    {
+                        if (actividades == null || actividades.Count == 0)
+                        {
+                            if (pagos != null && pagos.Count > 0)
+                            {
+                                foreach (PlanAdquisicionPago pago in pagos)
+                                    ret += pago.pago ?? default(decimal);
                             }
                             else
-                                ret=pa.getTotal();
+                                ret = pa.total ?? default(decimal);
                         }
                     }
-                    else{
-                        for(Componente componente:proyecto.getComponentes())
-                            ret = ret.add(componente.getCosto()!=null ? componente.getCosto() : new BigDecimal(0));
+                    else
+                    {
+                        foreach (Componente cmp in componentes)
+                            ret += cmp.costo ?? default(decimal);
                     }
-                    proyecto.setCosto(ret);
-                    session.saveOrUpdate(proyecto);
+                    proyecto.costo = ret;
+                    ProyectoDAO.guardarProyecto(proyecto, false);
                     break;
-                case 1: Componente componente = ComponenteDAO.getComponente(objetoId);
-                    if(componente.getProductos()==null || componente.getProductos().size()==0 || componente.getSubcomponentes()==null || componente.getSubcomponentes().size()==0 ){
-                        if(actividades==null || actividades.size()==0){
-                            if(pa.getPlanAdquisicionPagos()!=null && pa.getPlanAdquisicionPagos().size()>0){
-                                Iterator<PlanAdquisicionPago> iPagos = pa.getPlanAdquisicionPagos().iterator();
-                                while(iPagos.hasNext()){
-                                    PlanAdquisicionPago pago = iPagos.next();
-                                    ret=ret.add(pago.getPago()!=null ? pago.getPago() : new BigDecimal(0));
-                                }
+                case 1:
+                    Componente componente = ComponenteDAO.getComponente(objetoId);
+                    List<Producto> productos = ProductoDAO.getProductosByComponente(componente.id);
+                    List<Subcomponente> subcomponentes = SubComponenteDAO.getSubComponentesPorComponente(componente.id);
+                    if (productos == null || productos.Count == 0 || subcomponentes == null || subcomponentes.Count == 0)
+                    {
+                        if (actividades == null || actividades.Count == 0)
+                        {
+                            if (pagos != null && pagos.Count > 0)
+                            {
+                                foreach (PlanAdquisicionPago pago in pagos)
+                                    ret += pago.pago ?? default(decimal);
                             }
                             else
-                                ret=pa.getTotal();
+                                ret = pa.total ?? default(decimal);
                         }
                     }
-                    else{
-                        if(componente.getProductos()!=null)
-                            for(Producto producto:componente.getProductos())
-                                ret = ret.add(producto.getCosto()!=null ? producto.getCosto() : new BigDecimal(0));
-                        if(componente.getSubcomponentes()!=null)
-                            for(Subcomponente subcomponente:componente.getSubcomponentes())
-                                ret = ret.add(subcomponente.getCosto()!=null ? subcomponente.getCosto() : new BigDecimal(0));
+                    else
+                    {
+                        if (productos != null)
+                            foreach (Producto prod in productos)
+                                ret += prod.costo ?? default(decimal);
+                        if (subcomponentes != null)
+                            foreach (Subcomponente subcomponente in subcomponentes)
+                                ret += subcomponente.costo ?? default(decimal);
                     }
-                    componente.setCosto(ret);
-                    session.saveOrUpdate(componente);
+                    componente.costo = ret;
+                    ComponenteDAO.guardarComponente(componente, false);
                     break;
-                case 3: Producto producto = ProductoDAO.getProductoPorId(objetoId);
-                    if(producto.getSubproductos()==null || producto.getSubproductos().size()==0){
-                        if(actividades==null || actividades.size()==0){
-                            if(pa.getPlanAdquisicionPagos()!=null && pa.getPlanAdquisicionPagos().size()>0){
-                                Iterator<PlanAdquisicionPago> iPagos = pa.getPlanAdquisicionPagos().iterator();
-                                while(iPagos.hasNext()){
-                                    PlanAdquisicionPago pago = iPagos.next();
-                                    ret=ret.add(pago.getPago()!=null ? pago.getPago() : new BigDecimal(0));
-                                }
+                case 3:
+                    Producto producto = ProductoDAO.getProductoPorId(objetoId);
+                    List<Subproducto> subproductos = SubproductoDAO.getSubproductosByProductoid(producto.id);
+                    if (subproductos == null || subproductos.Count == 0)
+                    {
+                        if (actividades == null || actividades.Count == 0)
+                        {
+                            if (pagos != null && pagos.Count > 0)
+                            {
+                                foreach (PlanAdquisicionPago pago in pagos)
+                                    ret += pago.pago ?? default(decimal);
                             }
                             else
-                                ret= pa.getTotal();
+                                ret = pa.total ?? default(decimal);
                         }
                     }
-                    else{
-                        for(Subproducto subproducto:producto.getSubproductos())
-                            ret = ret.add(subproducto.getCosto()!=null ? subproducto.getCosto() : new BigDecimal(0));
+                    else
+                    {
+                        foreach (Subproducto subprod in subproductos)
+                            ret += subprod.costo ?? default(decimal);
                     }
-                    producto.setCosto(ret);
-                    session.saveOrUpdate(producto);
+                    producto.costo = ret;
+                    ProductoDAO.guardarProducto(producto, false);
                     break;
                 case 4:
                     Subproducto subproducto = SubproductoDAO.getSubproductoPorId(objetoId);
-                    if(actividades!=null && actividades.size()>0){
-                        subproducto.setCosto(ret);
-                        session.saveOrUpdate(subproducto);
+                    if (actividades != null && actividades.Count > 0)
+                    {
+                        subproducto.costo = ret;
+                        SubproductoDAO.guardarSubproducto(subproducto, false);
                     }
                     break;
                 case 5:
                     Actividad actividad = ActividadDAO.getActividadPorId(objetoId);
-                    if(actividades!=null && actividades.size()>0){
-                        actividad.setCosto(ret);
-                        session.saveOrUpdate(actividad);
+                    if (actividades != null && actividades.Count > 0)
+                    {
+                        actividad.costo = ret;
+                        ActividadDAO.guardarActividad(actividad, false);
                     }
                     break;
             }
         }
 
-        public static List<PlanAdquisicionPago> getPagos(Integer planadquisicionId){
+        public static List<PlanAdquisicionPago> getPagos(int planadquisicionId)
+        {
             List<PlanAdquisicionPago> ret = null;
-            Session session = CHibernateSession.getSessionFactory().openSession();
-            try{
-                Query<PlanAdquisicionPago> criteria = session.createQuery("FROM PlanAdquisicionPago pap where pap.planAdquisicion.id=:planadquisicionId order by pap.fechaPago", PlanAdquisicionPago.class);
-                criteria.setParameter("planadquisicionId", planadquisicionId);
-                ret = criteria.getResultList();
-            }catch(Exception e){
-                CLogger.write("8", PlanAdquisicionDAO.class, e);
-            }finally {
-                session.close();
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    ret = db.Query<PlanAdquisicionPago>("SELECT * FROM PLAN_ADQUISICION_PAGO pap WHERE pap.id=:planadquisicionId ORDER BY pap.fecha_pago",
+                        new { planadquisicionId = planadquisicionId }).AsList<PlanAdquisicionPago>();
+                }
             }
-
+            catch (Exception e)
+            {
+                CLogger.write("8", "PlanAdquisicionDAO.class", e);
+            }
             return ret;
         }
 
-        public static List<?> getInfoNog(Integer nog){
-            List<?> ret = null;
-            Session session = CHibernateSession.getSessionFactory().openSession();
-            try{
-                String query = String.join(" ", "Select * from sipro_analytic.mv_gc_adquisiciones",
-                        "where nog=?1");
-                Query<?> criteria = session.createNativeQuery(query);
-                criteria.setParameter("1", nog);
-                ret = criteria.getResultList();
-            }catch(Exception e){
-                CLogger.write("9", PlanAdquisicionDAO.class, e);
-            }finally{
-                session.close();
-            }
+        public static List<MvGcAdquisiciones> getInfoNog(int nog)
+        {
+            List<MvGcAdquisiciones> ret = null;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    String query = String.Join(" ", "SELECT * FROM sipro_analytic.MV_GC_ADQUISICIONES",
+                        "WHERE nog=:nog");
 
+                    ret = db.Query<MvGcAdquisiciones>(query, new { nog = nog }).AsList<MvGcAdquisiciones>();
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("9", "PlanAdquisicionDAO.class", e);
+            }
             return ret;
         }
 
-
-        public static List<PlanAdquisicion> getPlanAdquisicionesByObjetoLB(int objetoTipo, int ObjetoId, String lineaBase){
+        public static List<PlanAdquisicion> getPlanAdquisicionesByObjetoLB(int objetoTipo, int ObjetoId, String lineaBase)
+        {
             List<PlanAdquisicion> retList = null;
-            Session session = CHibernateSession.getSessionFactory().openSession();
-
-            try{
-                String query = String.join(" ", "SELECT pa.* FROM sipro_history.plan_adquisicion pa",
-                        "where pa.objeto_id=:objetoId",
-                        "and pa.objeto_tipo=:objetoTipo",
-                        lineaBase != null ? "and pa.linea_base like '%"+lineaBase+"%'" : "and pa.actual=1",
-                        "and pa.estado=1");
-                Query<PlanAdquisicion> criteria = session.createNativeQuery(query, PlanAdquisicion.class);
-                criteria.setParameter("objetoId", ObjetoId);
-                criteria.setParameter("objetoTipo", objetoTipo);
-                retList = criteria.getResultList();
-
-            }catch(Throwable e){
-                CLogger.write("4", PlanAdquisicionDAO.class, e);
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    String query = String.Join(" ", "SELECT pa.* FROM sipro_history.PLAN_ADQUISICION pa",
+                        "WHERE pa.objeto_id=:objetoId",
+                        "AND pa.objeto_tipo=:objetoTipo",
+                        lineaBase != null ? "AND pa.linea_base LIKE '%" + lineaBase + "%'" : "AND pa.actual=1",
+                        "AND pa.estado=1");
+                    retList = db.Query<PlanAdquisicion>(query, new { objetoId = ObjetoId, objetoTipo = objetoTipo }).AsList<PlanAdquisicion>();
+                }
             }
-            finally{
-                session.close();
-                retList = (retList.size()>0) ? retList : null;
+            catch (Exception e)
+            {
+                CLogger.write("4", "PlanAdquisicionDAO.class", e);
             }
             return retList;
         }
 
-        public static PlanAdquisicion getPlanAdquisicionByObjetoLB(int objetoTipo, int ObjetoId, String lineaBase){
-            List<PlanAdquisicion> retList = null;
-            Session session = CHibernateSession.getSessionFactory().openSession();
+        public static PlanAdquisicion getPlanAdquisicionByObjetoLB(int objetoTipo, int ObjetoId, String lineaBase)
+        {
+            PlanAdquisicion ret = null;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    String query = String.Join(" ", "SELECT pa.* FROM sipro_history.plan_adquisicion pa",
+                        "WHERE pa.objeto_id=:objetoId",
+                        "AND pa.objeto_tipo=:objetoTipo",
+                        lineaBase != null ? "AND pa.linea_base LIKE '%" + lineaBase + "%'" : "AND pa.actual=1",
+                        "AND pa.estado=1");
 
-            try{
-                String query = String.join(" ", "SELECT pa.* FROM sipro_history.plan_adquisicion pa",
-                        "where pa.objeto_id=:objetoId",
-                        "and pa.objeto_tipo=:objetoTipo",
-                        lineaBase != null ? "and pa.linea_base like '%" + lineaBase + "%'" : "and pa.actual=1",
-                        "and pa.estado=1");
-                Query<PlanAdquisicion> criteria = session.createNativeQuery(query, PlanAdquisicion.class);
-                criteria.setParameter("objetoId", ObjetoId);
-                criteria.setParameter("objetoTipo", objetoTipo);
-                retList = criteria.getResultList();
-
-            }catch(Throwable e){
-                CLogger.write("3", PlanAdquisicionDAO.class, e);
+                    ret = db.QueryFirstOrDefault<PlanAdquisicion>(query, new { objetoId = ObjetoId, objetoTipo = objetoTipo });
+                }
             }
-            finally{
-                retList = (retList.size()>0) ? retList : null;
-                session.close();
+            catch (Exception e)
+            {
+                CLogger.write("3", "PlanAdquisicionDAO.class", e);
             }
-            return retList!=null ? retList.get(0) : null;
+            return ret;
         }
 
-        public static String getVersiones(Integer objeto_id, Integer objeto_tipo){
+        public static String getVersiones(int objeto_id, int objeto_tipo)
+        {
             String resultado = "";
-            String query = "SELECT DISTINCT(version) "
-                    + " FROM sipro_history.plan_adquisicion "
-                    + " WHERE objeto_id = "+objeto_id
-                    + " and objeto_tipo= " +objeto_tipo;
-            List<?> versiones = CHistoria.getVersiones(query);
-            if(versiones!=null){
-                for(int i=0; i<versiones.size(); i++){
-                    if(!resultado.isEmpty()){
-                        resultado+=",";
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    String query = "SELECT DISTINCT(version) "
+                        + " FROM sipro_history.PLAN_ADQUISICION "
+                        + " WHERE objeto_id=:objetoId"
+                        + " AND objeto_tipo=:objetoTipo";
+
+                    List<dynamic> versiones = db.Query<dynamic>(query, new { objetoId = objeto_id, objetoTipo = objeto_tipo }).AsList<dynamic>();
+                    if (versiones.Count > 0)
+                    {
+                        for (int i = 0; i < versiones.Count; i++)
+                        {
+                            if (resultado.Length != 0)
+                            {
+                                resultado += ",";
+                            }
+                            resultado += (int)versiones[i];
+                        }
                     }
-                    resultado+=(Integer)versiones.get(i);
                 }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("6", "PlanAdquisicionDAO.class", e);
             }
             return resultado;
         }
 
-        public static String getHistoria(Integer objeto_id, Integer objeto_tipo, Integer version){
+        public static String getHistoria(int objeto_id, int objeto_tipo, int version)
+        {
             String resultado = "";
-            String query = "SELECT pa.version, ta.nombre as tipo_adquisicion, ca.nombre as categoria_adquisicion, pa.unidad_medida, pa.cantidad, pa.precio_unitario, pa.total, "
-                    + "pa.numero_contrato, pa.monto_contrato, pa.nog, " 
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    String query = "SELECT pa.version, ta.nombre as tipo_adquisicion, ca.nombre as categoria_adquisicion, pa.unidad_medida, pa.cantidad, pa.precio_unitario, pa.total, "
+                    + "pa.numero_contrato, pa.monto_contrato, pa.nog, "
                     + "CASE pa.tipo_revision "
-                    + "WHEN 1 THEN 'RevisiÃ³n Ex-Ante' "
-                    + "WHEN 2 THEN 'RevisiÃ³n Ex-Post' "
+                    + "WHEN 1 THEN 'Revisión Ex-Ante' "
+                    + "WHEN 2 THEN 'Revisión Ex-Post' "
                     + "WHEN null THEN '' "
                     + "END as tipo_revision, "
                     + "pa.preparacion_doc_planificado, pa.preparacion_doc_real, pa.lanzamiento_evento_planificado, pa.lanzamiento_evento_real, "
@@ -397,17 +427,42 @@ namespace SiproDAO.Dao
                     + " AND ca.id=pa.categoria_adquisicion "
                     + " AND pa.version=" + version;
 
-            String [] campos = {"Version", "Tipo adquisicion", "CategorÃ­a adquisiciÃ³n", "Unidad Medida", "Cantidad", "Costo", "Total", 
-                    "NÃºmero del Contrato", "Monto del Contrato", "NOG", "Tipo RevisiÃ³n", 
-                    "PreparaciÃ³n de Documentos (Planificado)", "PreparaciÃ³n de Documentos (Real)", "Lanzamiento del Evento(Planificado)", "Lanzamiento del Evento(Real)", 
-                    "RecepciÃ³n de Ofertas (Planificado)", "RecepciÃ³n de Ofertas (Real)", "AdjudicaciÃ³n (Planificado)", "AdjudicaciÃ³n (Real)", 
-                    "Firma de Contrato (Planificado)", "Firma de Contrato (Real)", "Fecha CreaciÃ³n", "Usuario que creo", "Fecha ActualizaciÃ³n", "Usuario que actualizÃ³", 
+                    String[] campos = {"Version", "Tipo adquisicion", "Categoría adquisición", "Unidad Medida", "Cantidad", "Costo", "Total",
+                    "Número del Contrato", "Monto del Contrato", "NOG", "Tipo Revisión",
+                    "Preparación de Documentos (Planificado)", "Preparación de Documentos (Real)", "Lanzamiento del Evento(Planificado)", "Lanzamiento del Evento(Real)",
+                    "Recepció de Ofertas (Planificado)", "Recepción de Ofertas (Real)", "Adjudicación (Planificado)", "Adjudicación (Real)",
+                    "Firma de Contrato (Planificado)", "Firma de Contrato (Real)", "Fecha Creación", "Usuario que creo", "Fecha Actualización", "Usuario que actualizó",
                     "Estado"};
-            resultado = CHistoria.getHistoria(query, campos);
+
+                    List<dynamic> datos = db.Query<dynamic>(query).AsList<dynamic>();
+
+                    for (int d = 0; d < datos.Count; d++)
+                    {
+                        Object[] dato = (Object[])datos[d];
+                        if (resultado.Length != 0)
+                        {
+                            resultado += ", ";
+                        }
+                        resultado += "[";
+                        String objeto = "";
+                        for (int c = 0; c < campos.Length; c++)
+                        {
+                            if (objeto.Length != 0)
+                            {
+                                objeto += ", ";
+                            }
+                            objeto += "{\"nombre\": \"" + campos[c] + "\", \"valor\": \"" + (dato[c] != null ? ((Object)dato[c]).ToString() : "") + "\"}";
+                        }
+                        resultado += objeto + "]";
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("7", "PlanAdquisicionDAO.class", e);
+            }
             return resultado;
         }
-
-             */
 
         public static bool actualizarNivelesPagos(String pagosString, PlanAdquisicion pa, string usuario, int objetoId, int objetoTipo)
         {

@@ -140,7 +140,6 @@ namespace SiproDAO.Dao
                         ret = true;
                     }
                 }
-
             }
             catch (Exception e)
             {
@@ -398,67 +397,68 @@ namespace SiproDAO.Dao
             }
             return ret;
         }
+
+        /*public static BigDecimal calcularCosto(Subcomponente subcomponente){
+            BigDecimal costo = new BigDecimal(0);
+            try{
+                Set<Producto> productos = subcomponente.getProductos();
+                List<Actividad> actividades = ActividadDAO.getActividadesPorObjeto(subcomponente.getId(), 2);
+                if((productos != null && productos.size() > 0) || (actividades!=null && actividades.size()>0) ){
+                    if(productos!=null){
+                        Iterator<Producto> iterador = productos.iterator();
+
+                        while(iterador.hasNext()){
+                            Producto producto = iterador.next();
+                            costo = costo.add(producto.getCosto() != null ? producto.getCosto() : new BigDecimal(0));
+                        }
+                    }
+
+                    if(actividades != null && actividades.size() > 0){
+                        for(Actividad actividad : actividades){
+                            costo = costo.add(actividad.getCosto() != null ? actividad.getCosto() : new BigDecimal(0));
+                        }
+                    }
+                }else{
+                    PlanAdquisicion pa = PlanAdquisicionDAO.getPlanAdquisicionByObjeto(2, subcomponente.getId());
+                    if(pa!=null){
+                            if(pa.getPlanAdquisicionPagos()!=null && pa.getPlanAdquisicionPagos().size()>0){
+                                BigDecimal pagos = new BigDecimal(0);
+                                for(PlanAdquisicionPago pago: pa.getPlanAdquisicionPagos())
+                                    pagos.add(pago.getPago());
+                                costo = pagos;
+                            }
+                            else
+                                costo = pa.getMontoContrato();
+                    }
+                    else
+                        costo = subcomponente.getCosto();
+                }
+            }catch(Exception e){
+                CLogger.write("16", Proyecto.class, e);
+            } 
+
+            return costo;
+        }*/
+
+        public static List<Subcomponente> getSubComponentesPorComponente(int componenteId)
+        {
+            List<Subcomponente> ret = new List<Subcomponente>();
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    ret = db.Query<Subcomponente>("SELECT * FROM SUBCOMPONENTE c WHERE c.estado=1 AND c.componenteid=:componenteId ORDER BY c.id ASC",
+                        new { componenteId = componenteId }).AsList<Subcomponente>();
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("19", "SubComponenteDAO.class", e);
+            }
+            return ret;
+        }
 	
-	/*public static BigDecimal calcularCosto(Subcomponente subcomponente){
-		BigDecimal costo = new BigDecimal(0);
-		try{
-			Set<Producto> productos = subcomponente.getProductos();
-			List<Actividad> actividades = ActividadDAO.getActividadesPorObjeto(subcomponente.getId(), 2);
-			if((productos != null && productos.size() > 0) || (actividades!=null && actividades.size()>0) ){
-				if(productos!=null){
-					Iterator<Producto> iterador = productos.iterator();
-					
-					while(iterador.hasNext()){
-						Producto producto = iterador.next();
-						costo = costo.add(producto.getCosto() != null ? producto.getCosto() : new BigDecimal(0));
-					}
-				}
-				
-				if(actividades != null && actividades.size() > 0){
-					for(Actividad actividad : actividades){
-						costo = costo.add(actividad.getCosto() != null ? actividad.getCosto() : new BigDecimal(0));
-					}
-				}
-			}else{
-				PlanAdquisicion pa = PlanAdquisicionDAO.getPlanAdquisicionByObjeto(2, subcomponente.getId());
-				if(pa!=null){
-						if(pa.getPlanAdquisicionPagos()!=null && pa.getPlanAdquisicionPagos().size()>0){
-							BigDecimal pagos = new BigDecimal(0);
-							for(PlanAdquisicionPago pago: pa.getPlanAdquisicionPagos())
-								pagos.add(pago.getPago());
-							costo = pagos;
-						}
-						else
-							costo = pa.getMontoContrato();
-				}
-				else
-					costo = subcomponente.getCosto();
-			}
-		}catch(Exception e){
-			CLogger.write("16", Proyecto.class, e);
-		} 
-		
-		return costo;
-	}
-	
-	public static List<Subcomponente> getSubComponentesPorComponente(Integer componenteId){
-		List<Subcomponente> ret = new ArrayList<Subcomponente>();
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			Query<Subcomponente> criteria = session.createQuery("FROM Subcomponente c where estado = 1 and c.componente.id = :componenteId order by c.id asc", Subcomponente.class);
-			criteria.setParameter("componenteId", componenteId);
-			ret =   criteria.getResultList();
-		}
-		catch(Throwable e){
-			CLogger.write("19", SubComponenteDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
-	
-	public static boolean calcularCostoyFechas(Integer subcomponenteId){
+	/*public static boolean calcularCostoyFechas(Integer subcomponenteId){
 		boolean ret = false;
 		ArrayList<ArrayList<Nodo>> listas = EstructuraProyectoDAO.getEstructuraObjetoArbolCalculos(subcomponenteId, 2);
 		for(int i=listas.size()-2; i>=0; i--){
