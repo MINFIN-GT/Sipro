@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Dapper;
 using System.Data.Common;
 using Utilities;
@@ -10,7 +9,6 @@ namespace SiproDAO.Dao
 {
     public class PlanAdquisicionPagoDAO
     {
-
         public static List<PlanAdquisicionPago> getPagosByPlan(int planId)
         {
             List<PlanAdquisicionPago> ret = null;
@@ -68,81 +66,86 @@ namespace SiproDAO.Dao
 
             return ret;
         }
-	
-	/*public static PlanAdquisicionPago getPagobyId(int idPago){
-		PlanAdquisicionPago ret = null;
-		List<PlanAdquisicionPago> listRet = null;
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		
-		try{
-			Query<PlanAdquisicionPago> pago = session.createQuery("FROM PlanAdquisicionPago p where p.id=:id",PlanAdquisicionPago.class);
-			pago.setParameter("id", idPago);
-			listRet = pago.getResultList();
-			
-			ret = !listRet.isEmpty() ? listRet.get(0) : null;
-		}
-		catch(Throwable e){
-			CLogger.write("4", PlanAdquisicionPagoDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		
-		return ret;
-	}*/
-	
-	public static bool eliminarPagos(int planId){
-		bool ret = false;
-		List<PlanAdquisicionPago> Pagos = getPagosByPlan(planId);
-		try{
-			foreach (PlanAdquisicionPago pago in Pagos){
-				if(eliminarPago(pago))
-					ret = true;
-				else
-					return false;
-			}
-			ret = true;
-		}catch(Exception e){
-			CLogger.write("5", "PlanAdquisicionPagoDAO.class", e);
-		}
-		
-		return ret;
-	}
-	
-	public static bool eliminarPagos(List<PlanAdquisicionPago> pagos){
-		bool ret = false;
-		try{
-			foreach(PlanAdquisicionPago pago in pagos){
-				if(eliminarPago(pago))
-					ret = true;
-				else
-					return false;
-			}
-			ret = true;
-		}catch(Exception e){
-			CLogger.write("6", "PlanAdquisicionPagoDAO.class", e);
-		}
-		
-		return ret;
-	}
-	
-	/*public static List<PlanAdquisicionPago> getPagosByObjetoTipo(Integer objetoId,Integer objetoTipo){
-		List<PlanAdquisicionPago> ret = null;
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			Query<PlanAdquisicionPago> criteria = session.createQuery("FROM PlanAdquisicionPago p where p.planAdquisicion.objetoId=:objetoId AND p.planAdquisicio.objetoTipo=:objetoTipo",PlanAdquisicionPago.class);
-			criteria.setParameter("objetoId", objetoId);
-			criteria.setParameter("objetoTipo", objetoTipo);
-			ret = criteria.getResultList();
-		}catch(Throwable e){
-			CLogger.write("7", PlanAdquisicionPagoDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
-         
-         */
+
+        public static PlanAdquisicionPago getPagobyId(int idPago)
+        {
+            PlanAdquisicionPago ret = null;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    ret = db.QueryFirstOrDefault<PlanAdquisicionPago>("SELECT * FROM PLAN_ADQUISICION_PAGO p WHERE p.id=:id", new { id = idPago });
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("4", "PlanAdquisicionPagoDAO.class", e);
+            }
+            return ret;
+        }
+
+        public static bool eliminarPagos(int planId)
+        {
+            bool ret = false;
+            List<PlanAdquisicionPago> Pagos = getPagosByPlan(planId);
+            try
+            {
+                foreach (PlanAdquisicionPago pago in Pagos)
+                {
+                    if (eliminarPago(pago))
+                        ret = true;
+                    else
+                        return false;
+                }
+                ret = true;
+            }
+            catch (Exception e)
+            {
+                CLogger.write("5", "PlanAdquisicionPagoDAO.class", e);
+            }
+
+            return ret;
+        }
+
+        public static bool eliminarPagos(List<PlanAdquisicionPago> pagos)
+        {
+            bool ret = false;
+            try
+            {
+                foreach (PlanAdquisicionPago pago in pagos)
+                {
+                    if (eliminarPago(pago))
+                        ret = true;
+                    else
+                        return false;
+                }
+                ret = true;
+            }
+            catch (Exception e)
+            {
+                CLogger.write("6", "PlanAdquisicionPagoDAO.class", e);
+            }
+
+            return ret;
+        }
+
+        public static List<PlanAdquisicionPago> getPagosByObjetoTipo(int objetoId, int objetoTipo)
+        {
+            List<PlanAdquisicionPago> ret = null;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    ret = db.Query<PlanAdquisicionPago>("SELECT * FROM PLAN_ADQUISICION_PAGO p WHERE p.objeto_id=:objetoId AND p.objeto_tipo=:objetoTipo",
+                        new { objetoId = objetoId, objetoTipo = objetoTipo }).AsList<PlanAdquisicionPago>();
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("7", "PlanAdquisicionPagoDAO.class", e);
+            }
+            return ret;
+        }
+
     }
 }
