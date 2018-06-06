@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Dapper;
 using System.Data.Common;
 using Utilities;
@@ -10,41 +9,39 @@ namespace SiproDAO.Dao
 {
     public class LineaBaseDAO
     {
-        /*
-         public static List<LineaBase> getLineasBaseById(Integer proyectoid){
-		List<LineaBase> ret = null;
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			Query<LineaBase> criteria = session.createQuery("FROM LineaBase lb where lb.proyecto.id=:proyectoid", LineaBase.class);
-			criteria.setParameter("proyectoid", proyectoid);
-			ret = criteria.getResultList();
-		}catch(Throwable e){
-			CLogger.write("1", LineaBaseDAO.class, e);
-		}finally{
-			session.close();
-		}
-		return ret;
-	}
-	
-	public static LineaBase getLineaBasePorId(int id){
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		List<LineaBase> listRet = null;
-		LineaBase ret = null;
-		try{
-			String query = "FROM LineaBase l where l.id=:id";
-			Query<LineaBase> criteria = session.createQuery(query, LineaBase.class);
-			criteria.setParameter("id", id);
-			listRet = criteria.getResultList();
-			
-			ret = !listRet.isEmpty() ? listRet.get(0) : null;
-		} catch(Throwable e){
-			CLogger.write("2", LineaBaseDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}*/
+        public static List<LineaBase> getLineasBaseById(int proyectoid)
+        {
+            List<LineaBase> ret = null;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    ret = db.Query<LineaBase>("SELECT * FROM LINEA_BASE lb WHERE lb.proyectoid=:proyectoId", new { proyectoId = proyectoid }).AsList<LineaBase>();
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("1", "LineaBaseDAO.class", e);
+            }
+            return ret;
+        }
+
+        public static LineaBase getLineaBasePorId(int id)
+        {
+            LineaBase ret = null;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    ret = db.QueryFirstOrDefault<LineaBase>("SELECT * FROM LINEA_BASE WHERE id=:id", new { id = id });
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("2", "LineaBaseDAO.class", e);
+            }
+            return ret;
+        }
 
         public static bool guardarLineaBase(LineaBase lineaBase, String lineaBaseEditar)
         {
@@ -807,44 +804,43 @@ namespace SiproDAO.Dao
 
             return ret;
         }
-	
-	/*public static boolean eliminarTotalLineaBase(LineaBase lineaBase){
-		boolean ret = false;
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			session.beginTransaction();
-			session.delete(lineaBase);
-			session.getTransaction().commit();
-			ret = true;
-		}
-		catch(Throwable e){
-			CLogger.write("24", LineaBaseDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
-	
-	public static LineaBase getLineasBaseByNombre(Integer proyectoId, String nombre){
-		LineaBase ret = null;
-		List<LineaBase> listRet = null;
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			Query<LineaBase> criteria = session.createQuery("select l from LineaBase l where l.proyecto.id = ?1 and l.nombre = ?2 ", LineaBase.class);
-			criteria.setParameter(1, proyectoId);
-			criteria.setParameter(2, nombre);
-			listRet = criteria.getResultList();
-			
-			ret = !listRet.isEmpty() ? listRet.get(0) : null;
-			
-		}catch(Throwable e){
-			CLogger.write("25", LineaBaseDAO.class, e);
-		}finally{
-			session.close();
-		}
-		return ret;
-	}*/
+
+        public static bool eliminarTotalLineaBase(LineaBase lineaBase)
+        {
+            bool ret = false;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    int eliminado = db.Execute("DELETE FROM LINEA_BASE WHERE id=:id", new { id = lineaBase.id });
+
+                    ret = eliminado > 0 ? true : false;
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("24", "LineaBaseDAO.class", e);
+            }
+            return ret;
+        }
+
+        public static LineaBase getLineasBaseByNombre(int proyectoId, String nombre)
+        {
+            LineaBase ret = null;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    ret = db.QueryFirstOrDefault<LineaBase>("SELECT * FROM LINEA_BASE WHERE proyectoid=:proyectoId AND nombre=:nombre",
+                        new { proyectoId = proyectoId, nombre = nombre });
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("25", "LineaBaseDAO.class", e);
+            }
+            return ret;
+        }
 
         public static LineaBase getUltimaLinaBasePorProyecto(int proyectoId, int tipoLineaBase)
         {
@@ -897,24 +893,23 @@ namespace SiproDAO.Dao
             }
             return ret;
         }
-	
-	/*public static List<LineaBase> getLineasBaseByIdProyectoTipo(Integer proyectoid,Integer tipoLineaBase){
-		List<LineaBase> ret = new ArrayList<LineaBase>();
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			Query<LineaBase> criteria = session.createQuery("FROM LineaBase lb where lb.proyecto.id=:proyectoid and lb.tipoLineaBase = :tipoLinea", LineaBase.class);
-			criteria.setParameter("proyectoid", proyectoid);
-			criteria.setParameter("tipoLinea", tipoLineaBase);
-			ret = criteria.getResultList();
-		}catch(Throwable e){
-			CLogger.write("1", LineaBaseDAO.class, e);
-		}finally{
-			session.close();
-		}
-		return ret;
-	}
-         
-         
-         */
+
+        public static List<LineaBase> getLineasBaseByIdProyectoTipo(int proyectoid, int tipoLineaBase)
+        {
+            List<LineaBase> ret = new List<LineaBase>();
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    ret = db.Query<LineaBase>("SELECT * FROM LINEA_BASE lb WHERE lb.proyectoid=:proyectoid AND lb.tipo_linea_base=:tipoLinea",
+                        new { proyectoid = proyectoid, tipoLinea = tipoLineaBase }).AsList<LineaBase>();
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("1", "LineaBaseDAO.class", e);
+            }
+            return ret;
+        }
     }
 }

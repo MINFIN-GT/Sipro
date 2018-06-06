@@ -9,6 +9,7 @@ using SiproModelAnalyticCore.Models;
 using SiproDAO.Dao;
 using Utilities;
 using Microsoft.AspNetCore.Cors;
+using FluentValidation.Results;
 
 namespace SPlanAdquisicion.Controllers
 {
@@ -72,40 +73,51 @@ namespace SPlanAdquisicion.Controllers
         {
             try
             {
-                PlanAdquisicion pa = new PlanAdquisicion();
-                pa.categoriaAdquisicions = CategoriaAdquisicionDAO.getCategoriaPorId((int)value.categoriaId);
-                pa.categoriaAdquisicion = pa.categoriaAdquisicions.id;
-                pa.tipoAdquisicions = TipoAdquisicionDAO.getTipoAdquisicionPorId((int)value.tipoId);
-                pa.unidadMedida = (string)value.medidaNombre;
-                pa.cantidad = (int)value.cantidad;
-                pa.total = (int)value.total;
-                pa.precioUnitario = (decimal)value.precioUnitario;
-                pa.preparacionDocPlanificado = (DateTime)value.preparacionDocumentosPlanificada;
-                pa.preparacionDocReal = (DateTime)value.preparacionDocReal;
-                pa.lanzamientoEventoPlanificado = (DateTime)value.lanzamientoEventoPlanificada;
-                pa.lanzamientoEventoReal = (DateTime)value.lanzamientoEventoReal;
-                pa.recepcionOfertasPlanificado = (DateTime)value.recepcionOfertasPlanificada;
-                pa.recepcionOfertasReal = (DateTime)value.recepcionOfertasReal;
-                pa.adjudicacionPlanificado = (DateTime)value.adjudicacionPlanificada;
-                pa.adjudicacionReal = (DateTime)value.adjudicacionReal;
-                pa.firmaContratoPlanificado = (DateTime)value.firmaContratoPlanificada;
-                pa.firmaContratoReal = (DateTime)value.firmaContratoReal;
-                pa.objetoId = (int)value.objetoId;
-                pa.objetoTipo = (int)value.objetoTipo;
-                pa.usuarioCreo = User.Identity.Name;
-                pa.fechaCreacion = DateTime.Now;
-                pa.estado = 1;
-                pa.bloqueado = 0;
-                pa.numeroContrato = (string)value.numeroContrato;
-                pa.montoContrato = (decimal)value.montoContrato;
-                pa.nog = (int)value.nog;
-                pa.tipoRevision = (int)value.tipoRevision;
+                PlanAdquisicionValidator validator = new PlanAdquisicionValidator();
+                ValidationResult results = validator.Validate(value);
 
-                PlanAdquisicionDAO.guardarPlanAdquisicion(pa);
+                if (results.IsValid)
+                {
+                    PlanAdquisicion pa = new PlanAdquisicion();
+                    pa.categoriaAdquisicions = CategoriaAdquisicionDAO.getCategoriaPorId(value.categoriaAdquisicion);
+                    pa.categoriaAdquisicion = pa.categoriaAdquisicions.id;
+                    pa.tipoAdquisicions = TipoAdquisicionDAO.getTipoAdquisicionPorId(value.tipoId);
+                    pa.unidadMedida = value.medidaNombre;
+                    pa.cantidad = value.cantidad;
+                    pa.total = value.tota;
+                    pa.precioUnitario = value.precioUnitario;
+                    pa.preparacionDocPlanificado = value.preparacionDocumentosPlanificada;
+                    pa.preparacionDocReal = value.preparacionDocReal;
+                    pa.lanzamientoEventoPlanificado = value.lanzamientoEventoPlanificada;
+                    pa.lanzamientoEventoReal = value.lanzamientoEventoReal;
+                    pa.recepcionOfertasPlanificado = value.recepcionOfertasPlanificada;
+                    pa.recepcionOfertasReal = value.recepcionOfertasReal;
+                    pa.adjudicacionPlanificado = value.adjudicacionPlanificada;
+                    pa.adjudicacionReal = value.adjudicacionReal;
+                    pa.firmaContratoPlanificado = value.firmaContratoPlanificada;
+                    pa.firmaContratoReal = value.firmaContratoReal;
+                    pa.objetoId = value.objetoId;
+                    pa.objetoTipo = value.objetoTipo;
+                    pa.usuarioCreo = User.Identity.Name;
+                    pa.fechaCreacion = DateTime.Now;
+                    pa.estado = 1;
+                    pa.bloqueado = 0;
+                    pa.numeroContrato = value.numeroContrato;
+                    pa.montoContrato = value.montoContrato;
+                    pa.nog = value.nog;
+                    pa.tipoRevision = value.tipoRevision;
 
-                bool guardado = PlanAdquisicionDAO.actualizarNivelesPagos((string)value.pagos, pa, User.Identity.Name, (int)value.objetoId, (int)value.objetoTipo);
+                    PlanAdquisicionDAO.guardarPlanAdquisicion(pa);
+                    string pagos = value.pagos;
+                    int objetoId = value.objetoId;
+                    int objetoTipo = value.objetoTipo;
 
-                return Ok(new { success = guardado, id = pa.id });
+                    bool guardado = PlanAdquisicionDAO.actualizarNivelesPagos(pagos, pa, User.Identity.Name, objetoId, objetoTipo);
+
+                    return Ok(new { success = guardado, id = pa.id });
+                }
+                else
+                    return Ok(new { success = false });
             }
             catch (Exception e)
             {
@@ -121,41 +133,50 @@ namespace SPlanAdquisicion.Controllers
         {
             try
             {
-                PlanAdquisicion pa = PlanAdquisicionDAO.getPlanAdquisicionById(id);
-                pa.categoriaAdquisicions = CategoriaAdquisicionDAO.getCategoriaPorId((int)value.categoriaId);
-                pa.categoriaAdquisicion = pa.categoriaAdquisicions.id;
-                pa.tipoAdquisicions = TipoAdquisicionDAO.getTipoAdquisicionPorId((int)value.tipoId);
-                pa.unidadMedida = (string)value.medidaNombre;
-                pa.cantidad = (int)value.cantidad;
-                pa.total = (int)value.total;
-                pa.precioUnitario = (decimal)value.precioUnitario;
-                pa.preparacionDocPlanificado = (DateTime)value.preparacionDocumentosPlanificada;
-                pa.preparacionDocReal = (DateTime)value.preparacionDocReal;
-                pa.lanzamientoEventoPlanificado = (DateTime)value.lanzamientoEventoPlanificada;
-                pa.lanzamientoEventoReal = (DateTime)value.lanzamientoEventoReal;
-                pa.recepcionOfertasPlanificado = (DateTime)value.recepcionOfertasPlanificada;
-                pa.recepcionOfertasReal = (DateTime)value.recepcionOfertasReal;
-                pa.adjudicacionPlanificado = (DateTime)value.adjudicacionPlanificada;
-                pa.adjudicacionReal = (DateTime)value.adjudicacionReal;
-                pa.firmaContratoPlanificado = (DateTime)value.firmaContratoPlanificada;
-                pa.firmaContratoReal = (DateTime)value.firmaContratoReal;
-                pa.objetoId = (int)value.objetoId;
-                pa.objetoTipo = (int)value.objetoTipo;
-                pa.usuarioCreo = User.Identity.Name;
-                pa.fechaCreacion = DateTime.Now;
-                pa.estado = 1;
-                pa.bloqueado = 0;
-                pa.numeroContrato = (string)value.numeroContrato;
-                pa.montoContrato = (decimal)value.montoContrato;
-                pa.nog = (int)value.nog;
-                pa.tipoRevision = (int)value.tipoRevision;
-                PlanAdquisicionPagoDAO.eliminarPagos(PlanAdquisicionPagoDAO.getPagosByPlan(Convert.ToInt32(pa.id)));
+                PlanAdquisicionValidator validator = new PlanAdquisicionValidator();
+                ValidationResult results = validator.Validate(value);
 
-                PlanAdquisicionDAO.guardarPlanAdquisicion(pa);
+                if (results.IsValid)
+                {
+                    PlanAdquisicion pa = PlanAdquisicionDAO.getPlanAdquisicionById(id);
+                    pa.categoriaAdquisicions = CategoriaAdquisicionDAO.getCategoriaPorId(value.categoriaAdquisicion);
+                    pa.categoriaAdquisicion = pa.categoriaAdquisicions.id;
+                    pa.tipoAdquisicions = TipoAdquisicionDAO.getTipoAdquisicionPorId(value.tipoId);
+                    pa.unidadMedida = value.unidadMedida;
+                    pa.cantidad = value.cantidad;
+                    pa.total = value.total;
+                    pa.precioUnitario = value.precioUnitario;
+                    pa.preparacionDocPlanificado = value.preparacionDocumentosPlanificada;
+                    pa.preparacionDocReal = value.preparacionDocReal;
+                    pa.lanzamientoEventoPlanificado = value.lanzamientoEventoPlanificada;
+                    pa.lanzamientoEventoReal = value.lanzamientoEventoReal;
+                    pa.recepcionOfertasPlanificado = value.recepcionOfertasPlanificada;
+                    pa.recepcionOfertasReal = value.recepcionOfertasReal;
+                    pa.adjudicacionPlanificado = value.adjudicacionPlanificada;
+                    pa.adjudicacionReal = value.adjudicacionReal;
+                    pa.firmaContratoPlanificado = value.firmaContratoPlanificada;
+                    pa.firmaContratoReal = value.firmaContratoReal;
+                    pa.objetoId = value.objetoId;
+                    pa.objetoTipo = value.objetoTipo;
+                    pa.usuarioActualizo = User.Identity.Name;
+                    pa.fechaActualizacion = DateTime.Now;
+                    pa.estado = 1;
+                    pa.bloqueado = 0;
+                    pa.numeroContrato = value.numeroContrato;
+                    pa.montoContrato = value.montoContrato;
+                    pa.nog = value.nog;
+                    pa.tipoRevision = value.tipoRevision;
 
-                bool guardado = PlanAdquisicionDAO.actualizarNivelesPagos((string)value.pagos, pa, User.Identity.Name, (int)value.objetoId, (int)value.objetoTipo);
+                    PlanAdquisicionPagoDAO.eliminarPagos(PlanAdquisicionPagoDAO.getPagosByPlan(Convert.ToInt32(pa.id)));
 
-                return Ok(new { success = guardado, id = pa.id });
+                    PlanAdquisicionDAO.guardarPlanAdquisicion(pa);
+
+                    bool guardado = PlanAdquisicionDAO.actualizarNivelesPagos(value.pagos, pa, User.Identity.Name, value.objetoId, value.objetoTipo);
+
+                    return Ok(new { success = guardado, id = pa.id });
+                }
+                else
+                    return Ok(new { success = false });
             }
             catch (Exception e)
             {
@@ -238,7 +259,10 @@ namespace SPlanAdquisicion.Controllers
         {
             try
             {
-                bool eliminado = PlanAdquisicionDAO.borrarTodosPlan((int)value.objetoId, (int)value.objetoTipo);
+                int objetoId = value.objetoId != null ? (int)value.objetoId : default(int);
+                int objetoTipo = value.objetoTipo != null ? (int)value.objetoTipo : default(int);
+
+                bool eliminado = PlanAdquisicionDAO.borrarTodosPlan(objetoId, objetoTipo);
                 return Ok(new { success = eliminado });
             }
             catch (Exception e)
@@ -291,7 +315,10 @@ namespace SPlanAdquisicion.Controllers
         {
             try
             {
-                String resultado = PlanAdquisicionDAO.getVersiones((int)value.id, (int)value.objetoTipo);
+                int id = value.id != null ? (int)value.id : default(int);
+                int objetoTipo = value.objetoTipo != null ? (int)value.objetoTipo : default(int);
+
+                String resultado = PlanAdquisicionDAO.getVersiones(id, objetoTipo);
                 return Ok(new { success = true, versiones = resultado });
             }
             catch (Exception e)
@@ -308,7 +335,11 @@ namespace SPlanAdquisicion.Controllers
         {
             try
             {
-                String resultado = PlanAdquisicionDAO.getHistoria((int)value.objetoId, (int)value.objetoTipo, (int)value.version);
+                int objetoId = value.objetoId != null ? (int)value.objetoId : default(int);
+                int objetoTipo = value.objetoTipo != null ? (int)value.objetoTipo : default(int);
+                int version = value.version != null ? (int)value.version : default(int);
+
+                String resultado = PlanAdquisicionDAO.getHistoria(objetoId, objetoTipo, version);
                 return Ok(new { success = true, historia = resultado });
             }
             catch (Exception e)

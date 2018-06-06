@@ -82,6 +82,7 @@ namespace Sipro.Controllers
 				{
                     
 					var identity = new ClaimsIdentity("Identity.Application");
+                    identity.AddClaim(new Claim(ClaimTypes.Name, susuario));
                     identity.AddClaim(new Claim(ClaimTypes.Role, "General"));
 					List<Permiso> permisos = UsuarioDAO.getPermisosActivosUsuario(susuario);
                     foreach (Permiso permiso in permisos)
@@ -90,7 +91,7 @@ namespace Sipro.Controllers
                     }
 					var _User = new ClaimsPrincipal(identity);
                     
-					await this.HttpContext.SignInAsync(
+                    await this.HttpContext.SignInAsync(
 						"Identity.Application",
 						_User,
 						new AuthenticationProperties()

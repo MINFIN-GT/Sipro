@@ -29,7 +29,10 @@ namespace STipoMoneda.Controllers
         {
             try
             {
-                List<TipoMoneda> lsttipomoneda = TipoMonedaDAO.getAutorizacionTiposPagina((int)value.pagina, (int)value.numeroTipoMoneda);
+                int pagina = value.pagina != null ? (int)value.pagina : default(int);
+                int numeroTipoMoneda = value.numeroTipoMoneda != null ? (int)value.numeroTipoMoneda : default(int);
+
+                List <TipoMoneda> lsttipomoneda = TipoMonedaDAO.getAutorizacionTiposPagina(pagina, numeroTipoMoneda);
 
                 List<stTipoMoneda> sttipomoneda = new List<stTipoMoneda>();
                 foreach (TipoMoneda tipoMoneda in lsttipomoneda)

@@ -6,6 +6,7 @@ using SiproModelCore.Models;
 using SiproDAO.Dao;
 using Utilities;
 using Microsoft.AspNetCore.Cors;
+using FluentValidation.Results;
 
 namespace SUnidadEjecutora.Controllers
 {
@@ -30,7 +31,12 @@ namespace SUnidadEjecutora.Controllers
         {
             try
             {
-                List<UnidadEjecutora> lstunidadejecutora = UnidadEjecutoraDAO.getPagina((int)value.pagina, (int)value.registros, (int)value.ejercicio, (int)value.entidad);
+                int pagina = value.pagina != null ? (int)value.pagina : default(int);
+                int registros = value.registros != null ? (int)value.registros : default(int);
+                int ejercicio = value.ejercicio != null ? (int)value.ejercicio : default(int);
+                int ventidad = value.entidad != null ? (int)value.entidad : default(int);
+
+                List <UnidadEjecutora> lstunidadejecutora = UnidadEjecutoraDAO.getPagina(pagina, registros, ejercicio, ventidad);
 
                 if (lstunidadejecutora != null)
                 {
@@ -65,8 +71,21 @@ namespace SUnidadEjecutora.Controllers
         {
             try
             {
-                bool guardado = UnidadEjecutoraDAO.guardar((int)value.entidad, (int)value.ejercicio, (int)value.id, (string)value.nombre);
-                return Ok(new { success = guardado });
+                UnidadEjecutoraValidator validator = new UnidadEjecutoraValidator();
+                ValidationResult results = validator.Validate(value);
+
+                if (results.IsValid)
+                {
+                    int ejercicio = value.ejercicio;
+                    int entidad = value.entidad;
+                    int id = value.unidadEjecutora;
+                    string nombre = value.nombre;
+
+                    bool guardado = UnidadEjecutoraDAO.guardar(entidad, ejercicio, id, nombre);
+                    return Ok(new { success = guardado });
+                }
+                else
+                    return Ok(new { success = false });
             }
             catch (Exception e)
             {
@@ -82,8 +101,21 @@ namespace SUnidadEjecutora.Controllers
         {
             try
             {
-                bool guardado = UnidadEjecutoraDAO.actualizar((int)value.entidad, (int)value.ejercicio, (int)value.id, (string)value.nombre);
-                return Ok(new { success = guardado });
+                UnidadEjecutoraValidator validator = new UnidadEjecutoraValidator();
+                ValidationResult results = validator.Validate(value);
+
+                if (results.IsValid)
+                {
+                    int ejercicio = value.ejercicio;
+                    int entidad = value.entidad;
+                    int id = value.unidadEjecutora;
+                    string nombre = value.nombre;
+
+                    bool guardado = UnidadEjecutoraDAO.actualizar(entidad, ejercicio, id, nombre);
+                    return Ok(new { success = guardado });
+                }
+                else
+                    return Ok(new { success = false });
             }
             catch (Exception e)
             {
@@ -99,7 +131,10 @@ namespace SUnidadEjecutora.Controllers
         {
             try
             {
-                long total = UnidadEjecutoraDAO.getTotal((int)value.ejercicio, (int)value.entidad);
+                int ejercicio = value.ejercicio != null ? (int)value.ejercicio : default(int);
+                int entidad = value.entidad != null ? (int)value.entidad : default(int);
+
+                long total = UnidadEjecutoraDAO.getTotal(ejercicio, entidad);
                 return Ok(new { success = true, total = total });
             }
             catch (Exception e)

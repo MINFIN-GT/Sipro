@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation.AspNetCore" Version="7.6.0" />
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="Dapper" Version="1.50.4" />
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.12.0-beta2" />

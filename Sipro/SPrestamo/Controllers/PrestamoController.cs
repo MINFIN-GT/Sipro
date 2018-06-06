@@ -9,6 +9,7 @@ using SiproModelAnalyticCore.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Cors;
+using FluentValidation.Results;
 
 namespace SPrestamo.Controllers
 {
@@ -292,106 +293,116 @@ namespace SPrestamo.Controllers
         {
             try
             {
-                Prestamo prestamo = new Prestamo();
-                prestamo.amortizado = (decimal)value.amortizado;
-                prestamo.aniosGracia = (int)value.aniosGracia;
-                prestamo.aniosPlazo = (int)value.aniosPlazo;
-                prestamo.autorizacionTipoid = (int)value.autorizacionTipoid;
-                prestamo.codigoPresupuestario = (long)value.codigoPresupuestario;
-                prestamo.comisionCompromisoAcumulado = (decimal)value.comisionCompromisoAcumulado;
-                prestamo.comisionCompromisoAnio = (decimal)value.comisionCompromisoAnio;
-                prestamo.cooperantecodigo = (int)value.cooperantecodigo;
-                prestamo.cooperanteejercicio = (int)value.ejercicio;
-                prestamo.desembolsadoReal = (decimal)value.desembolsoReal;
-                prestamo.desembolsoAFechaUe = (decimal)value.desembolsoAFechaUe;
-                prestamo.desembolsoAFechaUeUsd = (decimal)value.desembolsoAFechaUeUsd;
-                prestamo.desembolsoAFechaUsd = (decimal)value.desembolsoAFechaUsd;
-                prestamo.destino = (string)value.destino;
-                prestamo.ejecucionEstadoid = (int)value.ejecucionEstadoId;
-                prestamo.ejercicio = (int)value.ejercicio;
-                prestamo.entidad = (int)value.entidad;
-                prestamo.estado = 1;
-                prestamo.fechaAutorizacion = (DateTime)value.fechaAutorizacion;
-                prestamo.fechaCierreActualUe = (DateTime)value.fechaCierreActual;
-                prestamo.fechaCierreOrigianlUe = (DateTime)value.fechaCierreOriginal;
-                prestamo.fechaCorte = (DateTime)value.fechaCorte;
-                prestamo.fechaCreacion = DateTime.Now;
-                prestamo.fechaDecreto = (DateTime)value.fechaDecreto;
-                prestamo.fechaElegibilidadUe = (DateTime)value.fechaElegibilidad;
-                prestamo.fechaFinEjecucion = (DateTime)value.fechaFinEjecucion;
-                prestamo.fechaFirma = (DateTime)value.fechaFirma;
-                prestamo.fechaSuscripcion = (DateTime)value.fechaSuscripcion;
-                prestamo.fechaVigencia = (DateTime)value.fechaVigencia;
-                prestamo.interesesAcumulados = (int)value.interesesAcumulados;
-                prestamo.interesesAnio = (int)value.interesesAnio;
-                prestamo.interesTipoid = (int)value.tipoInteresId;
-                prestamo.mesesProrrogaUe = (int)value.mesesProrroga;
-                prestamo.montoAsignadoUe = (decimal)value.montoAisignadoUe;
-                prestamo.montoAsignadoUeQtz = (decimal)value.montoAsignadoUeQtz;
-                prestamo.montoAsignadoUeUsd = (decimal)value.montoAsignadoUeUsd;
-                prestamo.montoContratado = (decimal)value.montoContratado;
-                prestamo.montoContratadoQtz = (decimal)value.montoContratadoQtz;
-                prestamo.montoContratadoUsd = (decimal)value.montoContratadoUsd;
-                prestamo.montoPorDesembolsarUe = (decimal)value.montoPorDesembolsarUe;
-                prestamo.montoPorDesembolsarUeUsd = (decimal)value.montoPorDesembolsarUeUsd;
-                prestamo.montoPorDesembolsarUsd = (decimal)value.montoPorDesembolsarUsd;
-                prestamo.numeroAutorizacion = (string)value.numeroAutorizacion;
-                prestamo.numeroPrestamo = (string)value.numeroPrestamo;
-                prestamo.objetivo = (string)value.objetivo;
-                prestamo.objetivoEspecifico = (string)value.objetivoEspecifico;
-                prestamo.otrosCargosAcumulados = (decimal)value.otrosCargosAcumulados;
-                prestamo.otrosGastos = (decimal)value.otrosGastos;
-                prestamo.peridoEjecucion = (int)value.periodoEjecucion;
-                prestamo.porAmortizar = (decimal)value.porAmortizar;
-                prestamo.porcentajeAvance = (int)value.porcentajeAvance;
-                prestamo.porcentajeComisionCompra = (decimal)value.porcentajeComisionCompra;
-                prestamo.porcentajeInteres = (decimal)value.porcentajeInteres;
-                prestamo.presupuestoAsignadoFunc = (decimal)value.presupuestoAsignadoFuncionamiento;
-                prestamo.presupuestoAsignadoInv = (decimal)value.presupuestoAsignadoInversion;
-                prestamo.presupuestoDevengadoFunc = (decimal)value.presupuestoDevengadoFunconamiento;
-                prestamo.presupuestoDevengadoInv = (decimal)value.presupuestoDevengadoInversion;
-                prestamo.presupuestoModificadoFunc = (decimal)value.presupuestoModificadoFuncionamiento;
-                prestamo.presupuestoModificadoInv = (decimal)value.presupuestoModificadoInversion;
-                prestamo.presupuestoPagadoFunc = (decimal)value.presupuestoPagadoFuncionamiento;
-                prestamo.presupuestoPagadoInv = (decimal)value.presupuestoPagadoInversion;
-                prestamo.presupuestoVigenteFunc = (decimal)value.presupuestoVigenteFuncionamiento;
-                prestamo.presupuestoVigenteInv = (decimal)value.presupuestoVigenteInversion;
-                prestamo.principalAcumulado = (decimal)value.principalAcumulado;
-                prestamo.principalAnio = (decimal)value.principalAnio;
-                prestamo.proyectoPrograma = (string)value.proyetoPrograma;
-                prestamo.saldoCuentas = (decimal)value.saldoCuentas;
-                prestamo.sectorEconomico = (string)value.sectorEconomico;
-                prestamo.tipoMonedaid = (int)value.tipoMonedaId;
-                prestamo.ueunidadEjecutora = (int)value.unidadEjecutora;
-                prestamo.usuarioCreo = User.Identity.Name;
+                PrestamoValidator validator = new PrestamoValidator();
+                ValidationResult results = validator.Validate(value);
 
-                bool result = PrestamoDAO.guardarPrestamo(prestamo);
-
-                if (result)
+                if (results.IsValid)
                 {
-                    PrestamoTipoDAO.desasignarTiposAPrestamo(prestamo.id);
-                    string idPrestamoTipos = (string)value.idPrestamoTipos;
-                    if (idPrestamoTipos != null && idPrestamoTipos.Length > 0)
+                    Prestamo prestamo = new Prestamo();
+                    prestamo.amortizado = value.amortizado;
+                    prestamo.aniosGracia = value.aniosGracia;
+                    prestamo.aniosPlazo = value.aniosPlazo;
+                    prestamo.autorizacionTipoid = value.autorizacionTipoid;
+                    prestamo.codigoPresupuestario = value.codigoPresupuestario;
+                    prestamo.comisionCompromisoAcumulado = value.comisionCompromisoAcumulado;
+                    prestamo.comisionCompromisoAnio = value.comisionCompromisoAnio;
+                    prestamo.cooperantecodigo = value.cooperantecodigo;
+                    prestamo.cooperanteejercicio = value.ejercicio;
+                    prestamo.desembolsadoReal = value.desembolsoReal;
+                    prestamo.desembolsoAFechaUe = value.desembolsoAFechaUe;
+                    prestamo.desembolsoAFechaUeUsd = value.desembolsoAFechaUeUsd;
+                    prestamo.desembolsoAFechaUsd = value.desembolsoAFechaUsd;
+                    prestamo.destino = value.destino;
+                    prestamo.ejecucionEstadoid = value.ejecucionEstadoId;
+                    prestamo.ejercicio = value.ejercicio;
+                    prestamo.entidad = value.entidad;
+                    prestamo.estado = 1;
+                    prestamo.fechaAutorizacion = value.fechaAutorizacion;
+                    prestamo.fechaCierreActualUe = value.fechaCierreActual;
+                    prestamo.fechaCierreOrigianlUe = value.fechaCierreOriginal;
+                    prestamo.fechaCorte = value.fechaCorte;
+                    prestamo.fechaCreacion = DateTime.Now;
+                    prestamo.fechaDecreto = value.fechaDecreto;
+                    prestamo.fechaElegibilidadUe = value.fechaElegibilidad;
+                    prestamo.fechaFinEjecucion = value.fechaFinEjecucion;
+                    prestamo.fechaFirma = value.fechaFirma;
+                    prestamo.fechaSuscripcion = value.fechaSuscripcion;
+                    prestamo.fechaVigencia = value.fechaVigencia;
+                    prestamo.interesesAcumulados = value.interesesAcumulados;
+                    prestamo.interesesAnio = value.interesesAnio;
+                    prestamo.interesTipoid = value.tipoInteresId;
+                    prestamo.mesesProrrogaUe = value.mesesProrroga;
+                    prestamo.montoAsignadoUe = value.montoAisignadoUe;
+                    prestamo.montoAsignadoUeQtz = value.montoAsignadoUeQtz;
+                    prestamo.montoAsignadoUeUsd = value.montoAsignadoUeUsd;
+                    prestamo.montoContratado = value.montoContratado;
+                    prestamo.montoContratadoQtz = value.montoContratadoQtz;
+                    prestamo.montoContratadoUsd = value.montoContratadoUsd;
+                    prestamo.montoPorDesembolsarUe = value.montoPorDesembolsarUe;
+                    prestamo.montoPorDesembolsarUeUsd = value.montoPorDesembolsarUeUsd;
+                    prestamo.montoPorDesembolsarUsd = value.montoPorDesembolsarUsd;
+                    prestamo.numeroAutorizacion = value.numeroAutorizacion;
+                    prestamo.numeroPrestamo = value.numeroPrestamo;
+                    prestamo.objetivo = value.objetivo;
+                    prestamo.objetivoEspecifico = value.objetivoEspecifico;
+                    prestamo.otrosCargosAcumulados = value.otrosCargosAcumulados;
+                    prestamo.otrosGastos = value.otrosGastos;
+                    prestamo.peridoEjecucion = value.periodoEjecucion;
+                    prestamo.porAmortizar = value.porAmortizar;
+                    prestamo.porcentajeAvance = value.porcentajeAvance;
+                    prestamo.porcentajeComisionCompra = value.porcentajeComisionCompra;
+                    prestamo.porcentajeInteres = value.porcentajeInteres;
+                    prestamo.presupuestoAsignadoFunc = value.presupuestoAsignadoFuncionamiento;
+                    prestamo.presupuestoAsignadoInv = value.presupuestoAsignadoInversion;
+                    prestamo.presupuestoDevengadoFunc = value.presupuestoDevengadoFunconamiento;
+                    prestamo.presupuestoDevengadoInv = value.presupuestoDevengadoInversion;
+                    prestamo.presupuestoModificadoFunc = value.presupuestoModificadoFuncionamiento;
+                    prestamo.presupuestoModificadoInv = value.presupuestoModificadoInversion;
+                    prestamo.presupuestoPagadoFunc = value.presupuestoPagadoFuncionamiento;
+                    prestamo.presupuestoPagadoInv = value.presupuestoPagadoInversion;
+                    prestamo.presupuestoVigenteFunc = value.presupuestoVigenteFuncionamiento;
+                    prestamo.presupuestoVigenteInv = value.presupuestoVigenteInversion;
+                    prestamo.principalAcumulado = value.principalAcumulado;
+                    prestamo.principalAnio = value.principalAnio;
+                    prestamo.proyectoPrograma = value.proyetoPrograma;
+                    prestamo.saldoCuentas = value.saldoCuentas;
+                    prestamo.sectorEconomico = value.sectorEconomico;
+                    prestamo.tipoMonedaid = value.tipoMonedaId;
+                    prestamo.ueunidadEjecutora = value.unidadEjecutora;
+                    prestamo.usuarioCreo = User.Identity.Name;
+                    
+                    bool result = PrestamoDAO.guardarPrestamo(prestamo);
+
+                    if (result)
                     {
-                        String[] prestamoTipos = idPrestamoTipos.Split(",");
-                        List<int> tipos = new List<int>();
-                        foreach (String tipo in prestamoTipos)
+                        PrestamoTipoDAO.desasignarTiposAPrestamo(prestamo.id);
+                        string idPrestamoTipos = (string)value.idPrestamoTipos;
+                        if (idPrestamoTipos != null && idPrestamoTipos.Length > 0)
                         {
-                            tipos.Add(Convert.ToInt32(tipo));
+                            String[] prestamoTipos = idPrestamoTipos.Split(",");
+                            List<int> tipos = new List<int>();
+                            foreach (String tipo in prestamoTipos)
+                            {
+                                tipos.Add(Convert.ToInt32(tipo));
+                            }
+                            result = PrestamoTipoDAO.asignarTiposAPrestamo(tipos, prestamo, User.Identity.Name);
                         }
-                        result = PrestamoTipoDAO.asignarTiposAPrestamo(tipos, prestamo, User.Identity.Name);
                     }
-                }
 
-                return Ok(new
+                    return Ok(new
+                    {
+                        success = result,
+                        id = prestamo.id,
+                        usuarioCreo = prestamo.usuarioCreo,
+                        fechaCreacion = prestamo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
+                        usuarioActualizo = prestamo.usuarioActualizo,
+                        fechaActualizacion = prestamo.fechaActualizacion != null ? prestamo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
+                    });
+                }
+                else
                 {
-                    success = result,
-                    id = prestamo.id,
-                    usuarioCreo = prestamo.usuarioCreo,
-                    fechaCreacion = prestamo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
-                    usuarioActualizo = prestamo.usuarioActualizo,
-                    fechaActualizacion = prestamo.fechaActualizacion != null ? prestamo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
-                });
+                    return Ok(new { success = false, errores = results.Errors });
+                }
             }
             catch (Exception e)
             {
@@ -407,108 +418,116 @@ namespace SPrestamo.Controllers
         {
             try
             {
-                Prestamo prestamo = PrestamoDAO.getPrestamoById(id);
-                prestamo.amortizado = (decimal)value.amortizado;
-                prestamo.aniosGracia = (int)value.aniosGracia;
-                prestamo.aniosPlazo = (int)value.aniosPlazo;
-                prestamo.autorizacionTipoid = (int)value.autorizacionTipoid;
-                prestamo.codigoPresupuestario = (long)value.codigoPresupuestario;
-                prestamo.comisionCompromisoAcumulado = (decimal)value.comisionCompromisoAcumulado;
-                prestamo.comisionCompromisoAnio = (decimal)value.comisionCompromisoAnio;
-                prestamo.cooperantecodigo = (int)value.cooperantecodigo;
-                prestamo.cooperanteejercicio = (int)value.ejercicio;
-                prestamo.desembolsadoReal = (decimal)value.desembolsoReal;
-                prestamo.desembolsoAFechaUe = (decimal)value.desembolsoAFechaUe;
-                prestamo.desembolsoAFechaUeUsd = (decimal)value.desembolsoAFechaUeUsd;
-                prestamo.desembolsoAFechaUsd = (decimal)value.desembolsoAFechaUsd;
-                prestamo.destino = (string)value.destino;
-                prestamo.ejecucionEstadoid = (int)value.ejecucionEstadoId;
-                prestamo.ejercicio = (int)value.ejercicio;
-                prestamo.entidad = (int)value.entidad;
-                prestamo.estado = 1;
-                prestamo.fechaActualizacion = DateTime.Now;
-                prestamo.fechaAutorizacion = (DateTime)value.fechaAutorizacion;
-                prestamo.fechaCierreActualUe = (DateTime)value.fechaCierreActual;
-                prestamo.fechaCierreOrigianlUe = (DateTime)value.fechaCierreOriginal;
-                prestamo.fechaCorte = (DateTime)value.fechaCorte;
-                prestamo.fechaCreacion = prestamo.fechaCreacion;
-                prestamo.fechaDecreto = (DateTime)value.fechaDecreto;
-                prestamo.fechaElegibilidadUe = (DateTime)value.fechaElegibilidad;
-                prestamo.fechaFinEjecucion = (DateTime)value.fechaFinEjecucion;
-                prestamo.fechaFirma = (DateTime)value.fechaFirma;
-                prestamo.fechaSuscripcion = (DateTime)value.fechaSuscripcion;
-                prestamo.fechaVigencia = (DateTime)value.fechaVigencia;
-                prestamo.interesesAcumulados = (int)value.interesesAcumulados;
-                prestamo.interesesAnio = (int)value.interesesAnio;
-                prestamo.interesTipoid = (int)value.tipoInteresId;
-                prestamo.mesesProrrogaUe = (int)value.mesesProrroga;
-                prestamo.montoAsignadoUe = (decimal)value.montoAisignadoUe;
-                prestamo.montoAsignadoUeQtz = (decimal)value.montoAsignadoUeQtz;
-                prestamo.montoAsignadoUeUsd = (decimal)value.montoAsignadoUeUsd;
-                prestamo.montoContratado = (decimal)value.montoContratado;
-                prestamo.montoContratadoQtz = (decimal)value.montoContratadoQtz;
-                prestamo.montoContratadoUsd = (decimal)value.montoContratadoUsd;
-                prestamo.montoPorDesembolsarUe = (decimal)value.montoPorDesembolsarUe;
-                prestamo.montoPorDesembolsarUeUsd = (decimal)value.montoPorDesembolsarUeUsd;
-                prestamo.montoPorDesembolsarUsd = (decimal)value.montoPorDesembolsarUsd;
-                prestamo.numeroAutorizacion = (string)value.numeroAutorizacion;
-                prestamo.numeroPrestamo = (string)value.numeroPrestamo;
-                prestamo.objetivo = (string)value.objetivo;
-                prestamo.objetivoEspecifico = (string)value.objetivoEspecifico;
-                prestamo.otrosCargosAcumulados = (decimal)value.otrosCargosAcumulados;
-                prestamo.otrosGastos = (decimal)value.otrosGastos;
-                prestamo.peridoEjecucion = (int)value.periodoEjecucion;
-                prestamo.porAmortizar = (decimal)value.porAmortizar;
-                prestamo.porcentajeAvance = (int)value.porcentajeAvance;
-                prestamo.porcentajeComisionCompra = (decimal)value.porcentajeComisionCompra;
-                prestamo.porcentajeInteres = (decimal)value.porcentajeInteres;
-                prestamo.presupuestoAsignadoFunc = (decimal)value.presupuestoAsignadoFuncionamiento;
-                prestamo.presupuestoAsignadoInv = (decimal)value.presupuestoAsignadoInversion;
-                prestamo.presupuestoDevengadoFunc = (decimal)value.presupuestoDevengadoFunconamiento;
-                prestamo.presupuestoDevengadoInv = (decimal)value.presupuestoDevengadoInversion;
-                prestamo.presupuestoModificadoFunc = (decimal)value.presupuestoModificadoFuncionamiento;
-                prestamo.presupuestoModificadoInv = (decimal)value.presupuestoModificadoInversion;
-                prestamo.presupuestoPagadoFunc = (decimal)value.presupuestoPagadoFuncionamiento;
-                prestamo.presupuestoPagadoInv = (decimal)value.presupuestoPagadoInversion;
-                prestamo.presupuestoVigenteFunc = (decimal)value.presupuestoVigenteFuncionamiento;
-                prestamo.presupuestoVigenteInv = (decimal)value.presupuestoVigenteInversion;
-                prestamo.principalAcumulado = (decimal)value.principalAcumulado;
-                prestamo.principalAnio = (decimal)value.principalAnio;
-                prestamo.proyectoPrograma = (string)value.proyetoPrograma;
-                prestamo.saldoCuentas = (decimal)value.saldoCuentas;
-                prestamo.sectorEconomico = (string)value.sectorEconomico;
-                prestamo.tipoMonedaid = (int)value.tipoMonedaId;
-                prestamo.ueunidadEjecutora = (int)value.unidadEjecutora;
-                prestamo.usuarioCreo = prestamo.usuarioCreo;
-                prestamo.usuarioActualizo = User.Identity.Name;
+                PrestamoValidator validator = new PrestamoValidator();
+                ValidationResult results = validator.Validate(value);
 
-                bool result = PrestamoDAO.guardarPrestamo(prestamo);
-
-                if (result)
+                if (results.IsValid)
                 {
-                    PrestamoTipoDAO.desasignarTiposAPrestamo(prestamo.id);
-                    string idPrestamoTipos = (string)value.idPrestamoTipos;
-                    if (idPrestamoTipos != null && idPrestamoTipos.Length > 0)
+                    Prestamo prestamo = PrestamoDAO.getPrestamoById(id);
+                    prestamo.amortizado = value.amortizado;
+                    prestamo.aniosGracia = value.aniosGracia;
+                    prestamo.aniosPlazo = value.aniosPlazo;
+                    prestamo.autorizacionTipoid = value.autorizacionTipoid;
+                    prestamo.codigoPresupuestario = value.codigoPresupuestario;
+                    prestamo.comisionCompromisoAcumulado = value.comisionCompromisoAcumulado;
+                    prestamo.comisionCompromisoAnio = value.comisionCompromisoAnio;
+                    prestamo.cooperantecodigo = value.cooperantecodigo;
+                    prestamo.cooperanteejercicio = value.ejercicio;
+                    prestamo.desembolsadoReal = value.desembolsoReal;
+                    prestamo.desembolsoAFechaUe = value.desembolsoAFechaUe;
+                    prestamo.desembolsoAFechaUeUsd = value.desembolsoAFechaUeUsd;
+                    prestamo.desembolsoAFechaUsd = value.desembolsoAFechaUsd;
+                    prestamo.destino = value.destino;
+                    prestamo.ejecucionEstadoid = value.ejecucionEstadoId;
+                    prestamo.ejercicio = value.ejercicio;
+                    prestamo.entidad = value.entidad;
+                    prestamo.estado = 1;
+                    prestamo.fechaActualizacion = DateTime.Now;
+                    prestamo.fechaAutorizacion = value.fechaAutorizacion;
+                    prestamo.fechaCierreActualUe = value.fechaCierreActual;
+                    prestamo.fechaCierreOrigianlUe = value.fechaCierreOriginal;
+                    prestamo.fechaCorte = value.fechaCorte;
+                    prestamo.fechaCreacion = prestamo.fechaCreacion;
+                    prestamo.fechaDecreto = value.fechaDecreto;
+                    prestamo.fechaElegibilidadUe = value.fechaElegibilidad;
+                    prestamo.fechaFinEjecucion = value.fechaFinEjecucion;
+                    prestamo.fechaFirma = value.fechaFirma;
+                    prestamo.fechaSuscripcion = value.fechaSuscripcion;
+                    prestamo.fechaVigencia = value.fechaVigencia;
+                    prestamo.interesesAcumulados = value.interesesAcumulados;
+                    prestamo.interesesAnio = value.interesesAnio;
+                    prestamo.interesTipoid = value.tipoInteresId;
+                    prestamo.mesesProrrogaUe = value.mesesProrroga;
+                    prestamo.montoAsignadoUe = value.montoAisignadoUe;
+                    prestamo.montoAsignadoUeQtz = value.montoAsignadoUeQtz;
+                    prestamo.montoAsignadoUeUsd = value.montoAsignadoUeUsd;
+                    prestamo.montoContratado = value.montoContratado;
+                    prestamo.montoContratadoQtz = value.montoContratadoQtz;
+                    prestamo.montoContratadoUsd = value.montoContratadoUsd;
+                    prestamo.montoPorDesembolsarUe = value.montoPorDesembolsarUe;
+                    prestamo.montoPorDesembolsarUeUsd = value.montoPorDesembolsarUeUsd;
+                    prestamo.montoPorDesembolsarUsd = value.montoPorDesembolsarUsd;
+                    prestamo.numeroAutorizacion = value.numeroAutorizacion;
+                    prestamo.numeroPrestamo = value.numeroPrestamo;
+                    prestamo.objetivo = value.objetivo;
+                    prestamo.objetivoEspecifico = value.objetivoEspecifico;
+                    prestamo.otrosCargosAcumulados = value.otrosCargosAcumulados;
+                    prestamo.otrosGastos = value.otrosGastos;
+                    prestamo.peridoEjecucion = value.periodoEjecucion;
+                    prestamo.porAmortizar = value.porAmortizar;
+                    prestamo.porcentajeAvance = value.porcentajeAvance;
+                    prestamo.porcentajeComisionCompra = value.porcentajeComisionCompra;
+                    prestamo.porcentajeInteres = value.porcentajeInteres;
+                    prestamo.presupuestoAsignadoFunc = value.presupuestoAsignadoFuncionamiento;
+                    prestamo.presupuestoAsignadoInv = value.presupuestoAsignadoInversion;
+                    prestamo.presupuestoDevengadoFunc = value.presupuestoDevengadoFunconamiento;
+                    prestamo.presupuestoDevengadoInv = value.presupuestoDevengadoInversion;
+                    prestamo.presupuestoModificadoFunc = value.presupuestoModificadoFuncionamiento;
+                    prestamo.presupuestoModificadoInv = value.presupuestoModificadoInversion;
+                    prestamo.presupuestoPagadoFunc = value.presupuestoPagadoFuncionamiento;
+                    prestamo.presupuestoPagadoInv = value.presupuestoPagadoInversion;
+                    prestamo.presupuestoVigenteFunc = value.presupuestoVigenteFuncionamiento;
+                    prestamo.presupuestoVigenteInv = value.presupuestoVigenteInversion;
+                    prestamo.principalAcumulado = value.principalAcumulado;
+                    prestamo.principalAnio = value.principalAnio;
+                    prestamo.proyectoPrograma = value.proyetoPrograma;
+                    prestamo.saldoCuentas = value.saldoCuentas;
+                    prestamo.sectorEconomico = value.sectorEconomico;
+                    prestamo.tipoMonedaid = value.tipoMonedaId;
+                    prestamo.ueunidadEjecutora = value.unidadEjecutora;
+                    prestamo.usuarioCreo = prestamo.usuarioCreo;
+                    prestamo.usuarioActualizo = User.Identity.Name;
+
+                    bool result = PrestamoDAO.guardarPrestamo(prestamo);
+
+                    if (result)
                     {
-                        String[] prestamoTipos = idPrestamoTipos.Split(",");
-                        List<int> tipos = new List<int>();
-                        foreach (String tipo in prestamoTipos)
+                        PrestamoTipoDAO.desasignarTiposAPrestamo(prestamo.id);
+                        string idPrestamoTipos = (string)value.idPrestamoTipos;
+                        if (idPrestamoTipos != null && idPrestamoTipos.Length > 0)
                         {
-                            tipos.Add(Convert.ToInt32(tipo));
+                            String[] prestamoTipos = idPrestamoTipos.Split(",");
+                            List<int> tipos = new List<int>();
+                            foreach (String tipo in prestamoTipos)
+                            {
+                                tipos.Add(Convert.ToInt32(tipo));
+                            }
+                            result = PrestamoTipoDAO.asignarTiposAPrestamo(tipos, prestamo, User.Identity.Name);
                         }
-                        result = PrestamoTipoDAO.asignarTiposAPrestamo(tipos, prestamo, User.Identity.Name);
                     }
-                }
 
-                return Ok(new
-                {
-                    success = result,
-                    id = prestamo.id,
-                    usuarioCreo = prestamo.usuarioCreo,
-                    fechaCreacion = prestamo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
-                    usuarioActualizo = prestamo.usuarioActualizo,
-                    fechaActualizacion = prestamo.fechaActualizacion != null ? prestamo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
-                });
+                    return Ok(new
+                    {
+                        success = result,
+                        id = prestamo.id,
+                        usuarioCreo = prestamo.usuarioCreo,
+                        fechaCreacion = prestamo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
+                        usuarioActualizo = prestamo.usuarioActualizo,
+                        fechaActualizacion = prestamo.fechaActualizacion != null ? prestamo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
+                    });
+                }
+                else
+                    return Ok(new { success = false });                
             }
             catch (Exception e)
             {
@@ -867,6 +886,7 @@ namespace SPrestamo.Controllers
         {
             try
             {
+
                 int prestamoId = (int)value.prestamoId;
                 Prestamo prestamo = PrestamoDAO.getPrestamoById(prestamoId);
                 String data = (string)value.estructura;

@@ -35,7 +35,10 @@ namespace SEjecucionEstado.Controllers
         {
             try
             {
-                List<EjecucionEstado> ejecucionEstados = EjecucionEstadoDAO.getEjecucionEstadosPagina((int)value.pagina, (int)value.numeroEjecucionEstado);
+                int pagina = value.pagina != null ? (int)value.pagina : default(int);
+                int numeroEjecucionEstado = value.numeroEjecucionEstado != null ? (int)value.numeroEjecucionEstado : default(int);
+
+                List <EjecucionEstado> ejecucionEstados = EjecucionEstadoDAO.getEjecucionEstadosPagina(pagina, numeroEjecucionEstado);
 
                 List<stprograma> sttipomoneda = new List<stprograma>();
                 foreach (EjecucionEstado tipoMoneda in ejecucionEstados)

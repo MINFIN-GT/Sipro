@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Dapper;
 using System.Data.Common;
 using Utilities;
@@ -119,26 +118,23 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        /*public static Proyecto getProyectoPorId(int id, String usuario){
-
-            Session session = CHibernateSession.getSessionFactory().openSession();
+        public static Proyecto getProyectoPorId(int id, String usuario)
+        {
             Proyecto ret = null;
-            try{
-                Query<Proyecto> criteria = session.createQuery("FROM Proyecto where id=:id AND id in (SELECT u.id.proyectoid from ProyectoUsuario u where u.id.usuario=:usuario )", Proyecto.class);
-                criteria.setParameter("id", id);
-                criteria.setParameter("usuario", usuario);
-                 ret = criteria.getSingleResult();
-            } catch (NoResultException e){
-
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    ret = db.QueryFirstOrDefault<Proyecto>("SELECT * FROM PROYECTO WHERE id=:id AND id " +
+                        "IN(SELECT u.proyectoid FROM PROYECTO_USUARIO u WHERE u.usaurio=:usuario)", new { id = id, usuario = usuario });
+                }
             }
-            catch(Throwable e){
-                CLogger.write("4", ProyectoDAO.class, e);
-            }
-            finally{
-                session.close();
+            catch (Exception e)
+            {
+                CLogger.write("4", "ProyectoDAO.class", e);
             }
             return ret;
-        }*/
+        }
 
         public static Proyecto getProyecto(int id)
         {
@@ -159,7 +155,7 @@ namespace SiproDAO.Dao
 
         /*public static boolean eliminarProyecto(Proyecto proyecto){
             boolean ret = false;
-            Session session = CHibernateSession.getSessionFactory().openSession();
+            
             try{
                 proyecto.setEstado(0);
                 session.beginTransaction();
@@ -167,154 +163,157 @@ namespace SiproDAO.Dao
                 session.getTransaction().commit();
                 ret = true;
             }
-            catch(Throwable e){
+            catch(Exception e){
                 CLogger.write("6", ProyectoDAO.class, e);
             }
             finally{
                 session.close();
             }
             return ret;
-        }
+        }*/
 
-        public static Long getTotalProyectos(String filtro_nombre, String filtro_usuario_creo,
-                String filtro_fecha_creacion, String usuario, Integer prestamoId){
-            Long ret=0L;
-            Session session = CHibernateSession.getSessionFactory().openSession();
-            try{
-                String query = "SELECT count(p.id) FROM Proyecto p WHERE p.estado=1 ";
-                String query_a="";
-                if(prestamoId != null && prestamoId > 0)
-                    query_a = String.join("", " p.prestamo.id=", prestamoId+"");
-                if(prestamoId == null)
-                    query_a = String.join("", " p.prestamo.id=null");
-                if(filtro_nombre!=null && filtro_nombre.trim().length()>0)
-                    query_a = String.join("",query_a, " p.nombre LIKE '%",filtro_nombre,"%' ");
-                if(filtro_usuario_creo!=null && filtro_usuario_creo.trim().length()>0)
-                    query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " p.usuarioCreo LIKE '%", filtro_usuario_creo,"%' ");
-                if(filtro_fecha_creacion!=null && filtro_fecha_creacion.trim().length()>0)
-                    query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " str(date_format(p.fechaCreacion,'%d/%m/%YYYY')) LIKE '%", filtro_fecha_creacion,"%' ");
-                query = String.join(" ", query, (query_a.length()>0 ? String.join("","AND (",query_a,")") : ""));
-                if(usuario!=null)
-                    query = String.join("", query, " AND p.id in (SELECT u.id.proyectoid from ProyectoUsuario u where u.id.usuario=:usuario )");
-                Query<Long> criteria = session.createQuery(query,Long.class);
-                criteria.setParameter("usuario", usuario);
-                ret = criteria.getSingleResult();
+        public static long getTotalProyectos(String filtro_nombre, String filtro_usuario_creo, String filtro_fecha_creacion, String usuario, int? prestamoId)
+        {
+            long ret = 0L;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    String query = "SELECT COUNT(*) FROM Proyecto p WHERE p.estado=1 ";
+                    String query_a = "";
+                    if (prestamoId > 0)
+                        query_a = String.Join("", " p.prestamoid=", prestamoId + "");
+                    if (prestamoId == null)
+                        query_a = String.Join("", " p.prestamoid=null");
+                    if (filtro_nombre != null && filtro_nombre.Trim().Length > 0)
+                        query_a = String.Join("", query_a, " p.nombre LIKE '%", filtro_nombre, "%' ");
+                    if (filtro_usuario_creo != null && filtro_usuario_creo.Trim().Length > 0)
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.usuario_creo LIKE '%", filtro_usuario_creo, "%' ");
+                    if (filtro_fecha_creacion != null && filtro_fecha_creacion.Trim().Length > 0)
+                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(p.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE(:filtro_fecha_creacion,'DD/MM/YY') ");
+                    query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND (", query_a, ")") : ""));
+                    if (usuario != null)
+                        query = String.Join("", query, " AND p.id in (SELECT u.proyectoid FROM PROYECTO_USUARIO u WHERE u.usuario=:usuario )");
+
+                    ret = db.ExecuteScalar<long>(query, new { filtro_fecha_creacion = filtro_fecha_creacion, usuario = usuario });
+                }
             }
-            catch(Throwable e){
-                CLogger.write("7", ProyectoDAO.class, e);
-            }
-            finally{
-                session.close();
+            catch (Exception e)
+            {
+                CLogger.write("7", "ProyectoDAO.class", e);
             }
             return ret;
         }
 
-        public static List<Proyecto> getProyectosPagina(int pagina, int numeroproyecto,
-                String filtro_nombre, String filtro_usuario_creo,
-                String filtro_fecha_creacion, String columna_ordenada, String orden_direccion, String usuario, Integer prestamoId){
-            List<Proyecto> ret = new ArrayList<Proyecto>();
-            Session session = CHibernateSession.getSessionFactory().openSession();
-            try{
-                String query = "SELECT p FROM Proyecto p WHERE p.estado = 1";
-                String query_a="";
-                if(prestamoId != null && prestamoId > 0)
-                    query_a = String.join("", " p.prestamo.id=", prestamoId+"");
-                if(prestamoId == null)
-                    query_a = String.join("", " p.prestamo.id=null");
-                if(filtro_nombre!=null && filtro_nombre.trim().length()>0)
-                    query_a = String.join("",query_a, " p.nombre LIKE '%",filtro_nombre,"%' ");
-                if(filtro_usuario_creo!=null && filtro_usuario_creo.trim().length()>0)
-                    query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " p.usuarioCreo LIKE '%", filtro_usuario_creo,"%' ");
-                if(filtro_fecha_creacion!=null && filtro_fecha_creacion.trim().length()>0)
-                    query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " str(date_format(p.fechaCreacion,'%d/%m/%YYYY')) LIKE '%", filtro_fecha_creacion,"%' ");
-                query = String.join(" ", query, (query_a.length()>0 ? String.join("","AND (",query_a,")") : ""));
-                if(usuario!=null)
-                    query = String.join("", query, " AND p.id in (SELECT u.id.proyectoid from ProyectoUsuario u where u.id.usuario=:usuario )");
-                query = columna_ordenada!=null && columna_ordenada.trim().length()>0 ? String.join(" ",query,"ORDER BY",columna_ordenada,orden_direccion ) :
-                            String.join(" ", query, "ORDER BY fecha_creacion ASC");
+        public static List<Proyecto> getProyectosPagina(int pagina, int numeroproyecto, String filtro_nombre, String filtro_usuario_creo,
+                String filtro_fecha_creacion, String columna_ordenada, String orden_direccion, String usuario, int? prestamoId)
+        {
+            List<Proyecto> ret = new List<Proyecto>();
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    String query = "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT * FROM PROYECTO p WHERE p.estado = 1";
+                    String query_a = "";
+                    if (prestamoId != null && prestamoId > 0)
+                        query_a = String.Join("", " p.prestamo.id=", prestamoId + "");
+                    if (prestamoId == null)
+                        query_a = String.Join("", " p.prestamo.id=null");
+                    if (filtro_nombre != null && filtro_nombre.Trim().Length > 0)
+                        query_a = String.Join("", query_a, " p.nombre LIKE '%", filtro_nombre, "%' ");
+                    if (filtro_usuario_creo != null && filtro_usuario_creo.Trim().Length > 0)
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.usuario_creo LIKE '%", filtro_usuario_creo, "%' ");
+                    if (filtro_fecha_creacion != null && filtro_fecha_creacion.Trim().Length > 0)
+                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(p.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE(:filtro_fecha_creacion,'DD/MM/YY') ");
+                    query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND (", query_a, ")") : ""));
+                    if (usuario != null)
+                        query = String.Join("", query, " AND p.id in (SELECT u.proyectoid FROM PROYECTO_USUARIO u where u.usuario=:usuario )");
+                    query = columna_ordenada != null && columna_ordenada.Trim().Length > 0 ? String.Join(" ", query, "ORDER BY", columna_ordenada, orden_direccion) :
+                                String.Join(" ", query, "ORDER BY fecha_creacion ASC");
+                    query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + numeroproyecto + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + numeroproyecto + ") + 1)");
 
-                Query<Proyecto> criteria = session.createQuery(query,Proyecto.class);
-                criteria.setParameter("usuario", usuario);
-                criteria.setFirstResult(((pagina-1)*(numeroproyecto)));
-                criteria.setMaxResults(numeroproyecto);
-                ret = criteria.getResultList();
+                    ret = db.Query<Proyecto>(query, new { filtro_fecha_creacion = filtro_fecha_creacion, usuario = usuario }).AsList<Proyecto>();
+                }
             }
-            catch(Throwable e){
-                CLogger.write("8", Proyecto.class, e);
-            }
-            finally{
-                session.close();
+            catch (Exception e)
+            {
+                CLogger.write("8", "Proyecto.class", e);
             }
             return ret;
         }
 
-        public static List<Proyecto> getProyectosPaginaDisponibles(int pagina, int numeroproyecto,
-                String filtro_nombre, String filtro_usuario_creo,
-                String filtro_fecha_creacion, String columna_ordenada, String orden_direccion,String idsProyectos){
-            List<Proyecto> ret = new ArrayList<Proyecto>();
-            Session session = CHibernateSession.getSessionFactory().openSession();
-            try{
-                String query = "SELECT p FROM Proyecto p WHERE p.estado = 1";
-                if (idsProyectos!=null && idsProyectos.trim().length()>0)
-                    query = String.join("", query," AND p.id not in (" + idsProyectos + ")");
-                String query_a="";
-                if(filtro_nombre!=null && filtro_nombre.trim().length()>0)
-                    query_a = String.join("",query_a, " p.nombre LIKE '%",filtro_nombre,"%' ");
-                if(filtro_usuario_creo!=null && filtro_usuario_creo.trim().length()>0)
-                    query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " p.usuarioCreo LIKE '%", filtro_usuario_creo,"%' ");
-                if(filtro_fecha_creacion!=null && filtro_fecha_creacion.trim().length()>0)
-                    query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " str(date_format(p.fechaCreacion,'%d/%m/%YYYY')) LIKE '%", filtro_fecha_creacion,"%' ");
+        public static List<Proyecto> getProyectosPaginaDisponibles(int pagina, int numeroproyecto, String filtro_nombre, String filtro_usuario_creo,
+            String filtro_fecha_creacion, String columna_ordenada, String orden_direccion, String idsProyectos)
+        {
+            List<Proyecto> ret = new List<Proyecto>();
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    String query = "SELECT * FROM PROYECTO p WHERE p.estado = 1";
+                    if (idsProyectos != null && idsProyectos.Trim().Length > 0)
+                        query = String.Join("", query, " AND p.id NOT IN (" + idsProyectos + ")");
+                    String query_a = "";
+                    if (filtro_nombre != null && filtro_nombre.Trim().Length > 0)
+                        query_a = String.Join("", query_a, " p.nombre LIKE '%", filtro_nombre, "%' ");
+                    if (filtro_usuario_creo != null && filtro_usuario_creo.Trim().Length > 0)
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.usuario_creo LIKE '%", filtro_usuario_creo, "%' ");
+                    if (filtro_fecha_creacion != null && filtro_fecha_creacion.Trim().Length > 0)
+                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(p.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE(:filtro_fecha_creacion,'DD/MM/YY') ");
 
-                query = String.join(" ", query, (query_a.length()>0 ? String.join("","AND (",query_a,")") : ""));
-                query = columna_ordenada!=null && columna_ordenada.trim().length()>0 ? String.join(" ",query,"ORDER BY",columna_ordenada,orden_direccion ) : query;
+                    query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND (", query_a, ")") : ""));
+                    query = columna_ordenada != null && columna_ordenada.Trim().Length > 0 ? String.Join(" ", query, "ORDER BY", columna_ordenada, orden_direccion) : query;
+                    query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + numeroproyecto + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + numeroproyecto + ") + 1)");
 
-                Query<Proyecto> criteria = session.createQuery(query,Proyecto.class);
-                criteria.setFirstResult(((pagina-1)*(numeroproyecto)));
-                criteria.setMaxResults(numeroproyecto);
-                ret = criteria.getResultList();
+                    ret = db.Query<Proyecto>(query, new { filtro_fecha_creacion = filtro_fecha_creacion }).AsList<Proyecto>();
+                }
             }
-            catch(Throwable e){
-                CLogger.write("9", Proyecto.class, e);
-            }
-            finally{
-                session.close();
+            catch (Exception e)
+            {
+                CLogger.write("9", "Proyecto.class", e);
             }
             return ret;
         }
 
-        public static Long getTotalProyectosDisponibles(String filtro_nombre, String filtro_usuario_creo,
-                String filtro_fecha_creacion, String idsProyectos){
-            Long ret=0L;
-            Session session = CHibernateSession.getSessionFactory().openSession();
-            try{
-                String query = "SELECT count(p.id) FROM Proyecto p WHERE p.estado=1 ";
-                String query_a="";
-                if(filtro_nombre!=null && filtro_nombre.trim().length()>0)
-                    query_a = String.join("",query_a, " p.nombre LIKE '%",filtro_nombre,"%' ");
-                if(filtro_usuario_creo!=null && filtro_usuario_creo.trim().length()>0)
-                    query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " p.usuarioCreo LIKE '%", filtro_usuario_creo,"%' ");
-                if(filtro_fecha_creacion!=null && filtro_fecha_creacion.trim().length()>0)
-                    query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " str(date_format(p.fechaCreacion,'%d/%m/%YYYY')) LIKE '%", filtro_fecha_creacion,"%' ");
-                query = String.join(" ", query, (query_a.length()>0 ? String.join("","AND (",query_a,")") : ""));
-                if(idsProyectos!=null && idsProyectos.trim().length()>0)
-                    query = String.join("", query, " AND p.id not in ("+idsProyectos + " )");
-                Query<Long> criteria = session.createQuery(query,Long.class);
-                ret = criteria.getSingleResult();
-            } catch (NoResultException e){
+        public static long getTotalProyectosDisponibles(String filtro_nombre, String filtro_usuario_creo, String filtro_fecha_creacion, String idsProyectos)
+        {
+            long ret = 0L;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    String query = "SELECT COUNT(*) FROM PROYECTO p WHERE p.estado=1 ";
+                    String query_a = "";
+                    if (filtro_nombre != null && filtro_nombre.Trim().Length > 0)
+                        query_a = String.Join("", query_a, " p.nombre LIKE '%", filtro_nombre, "%' ");
+                    if (filtro_usuario_creo != null && filtro_usuario_creo.Trim().Length > 0)
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.usuario_creo LIKE '%", filtro_usuario_creo, "%' ");
+                    if (filtro_fecha_creacion != null && filtro_fecha_creacion.Trim().Length > 0)
+                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(p.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE(:filtro_fecha_creacion,'DD/MM/YY') ");
+                    query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND (", query_a, ")") : ""));
+                    if (idsProyectos != null && idsProyectos.Trim().Length > 0)
+                        query = String.Join("", query, " AND p.id not in (" + idsProyectos + " )");
+
+                    ret = db.ExecuteScalar<long>(query, new { filtro_fecha_creacion = filtro_fecha_creacion });
+                }
             }
-            catch(Throwable e){
-                CLogger.write("10", ProyectoDAO.class, e);
-            }
-            finally{
-                session.close();
+            catch (Exception e)
+            {
+                CLogger.write("10", "ProyectoDAO.class", e);
             }
             return ret;
         }
 
-        public static List<Proyecto> getProyectosPorPrograma(int idPrograma){
-            List<Proyecto> ret = new ArrayList<Proyecto>();
-            Session session = CHibernateSession.getSessionFactory().openSession();
+       /*public static List<Proyecto> getProyectosPorPrograma(int idPrograma){
+            List<Proyecto> ret = new List<Proyecto>();
+            
             try{
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    string query = String.Join(" ", "SELECT * FROM PROYECTO p",
+                        "INNER JOIN ");
+                    ret = db.Query<Proyecto>()
+                }
                 Query<Proyecto> criteria = session.createQuery("select p from Proyecto p "
                         + "inner join p.programaProyectos pp "
                         + "where pp.estado = 1 "
@@ -323,38 +322,32 @@ namespace SiproDAO.Dao
                 criteria.setParameter("idProg", idPrograma);
                 ret =   criteria.getResultList();
             }
-            catch(Throwable e){
-                CLogger.write("11", ProyectoDAO.class, e);
+            catch(Exception e){
+                CLogger.write("11", "ProyectoDAO.class", e);
             }
-            finally{
-                session.close();
-            }
-
-            return ret;
-        }
-
-        public static List<Proyecto> getProyectosPorUnidadEjecutora(String usuario, int unidadEjecutoraId){
-            List<Proyecto> ret = new ArrayList<Proyecto>();
-            Session session = CHibernateSession.getSessionFactory().openSession();
-            try{
-                Query<Proyecto> criteria = session.createQuery("select p from Proyecto p "
-                        + "inner join p.unidadEjecutora pp "
-                        + "where p.id in (SELECT u.id.proyectoid from ProyectoUsuario u where u.id.usuario=:usuario ) "
-                        + "and p.estado=1 and pp.unidadEjecutora=:unidadEjecutora", Proyecto.class);
-                criteria.setParameter("usuario", usuario);
-                criteria.setParameter("unidadEjecutora", unidadEjecutoraId);
-                ret =   criteria.getResultList();
-            }
-            catch(Throwable e){
-                e.printStackTrace();
-                CLogger.write("12", Proyecto.class, e);
-            }
-            finally{
-                session.close();
-            }
-
             return ret;
         }*/
+
+        public static List<Proyecto> getProyectosPorUnidadEjecutora(String usuario, int unidadEjecutoraId)
+        {
+            List<Proyecto> ret = new List<Proyecto>();
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    string query = String.Join(" ", "SELECT * FROM PROYECTO p",
+                        "INNER JOIN UNIDAD_EJECUTORA ue ON ue.unidad_ejecutora=p.ueunidad_ejecutora",
+                        "WHERE p.id IN (SELECT u.proyectoid FROM PROYECTO_USUARIO u WHERE u.usuario=:usuario)",
+                        "AND p.estado=1 AND ue.unidad_ejecutora=:unidadEjecutora");
+                    ret = db.Query<Proyecto>(query, new { usuario = usuario, unidadEjecutora = unidadEjecutoraId }).AsList<Proyecto>();
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("12", "Proyecto.class", e);
+            }
+            return ret;
+        }
 
         public static Proyecto getProyectoPorUnidadEjecutora(int unidadEjecutoraId, int prestamoId, int entidad)
         {
@@ -600,7 +593,7 @@ namespace SiproDAO.Dao
                     if (fecha_fin != null)
                         setFechaFin.Invoke(objeto, new object[] { fecha_fin });
                     if (costo != default(Double))
-                        setCosto.Invoke(objeto, new object[] { (decimal)costo });
+                        setCosto.Invoke(objeto, new object[] { costo });
                     setDuracion.Invoke(objeto, new object[] { duracion });
                     if (fecha_inicio_real != null)
                         setFechaInicioReal.Invoke(objeto, new object[] { fecha_inicio_real });
@@ -660,7 +653,7 @@ namespace SiproDAO.Dao
 
         /*public static PepDetalle getPepDetalle(int id){
 
-            Session session = CHibernateSession.getSessionFactory().openSession();
+            
             PepDetalle ret = null;
             try{
                 List<PepDetalle> listRet = null;
@@ -669,7 +662,7 @@ namespace SiproDAO.Dao
                 listRet=criteria.getResultList();
                  ret =!listRet.isEmpty() ? listRet.get(0) : null;
             }
-            catch(Throwable e){
+            catch(Exception e){
                 CLogger.write("21", ProyectoDAO.class, e);
             }
             finally{
@@ -680,14 +673,14 @@ namespace SiproDAO.Dao
 
         public static boolean guardarPepDetalle(PepDetalle pepDetalle){
             boolean ret = false;
-            Session session = CHibernateSession.getSessionFactory().openSession();
+            
             try{
                 session.beginTransaction();
                 session.saveOrUpdate(pepDetalle);
                 session.getTransaction().commit();
                 ret = true;
             }
-            catch(Throwable e){
+            catch(Exception e){
                 CLogger.write("22", ProyectoDAO.class, e);
             }
             finally{
@@ -717,10 +710,10 @@ namespace SiproDAO.Dao
         }
 
         /*public static List<Proyecto> getProyectosPorPrestamoHistory(int idPrograma,String lineaBase){
-            List<Proyecto> ret = new ArrayList<Proyecto>();
-            Session session = CHibernateSession.getSessionFactory().openSession();
+            List<Proyecto> ret = new List<Proyecto>();
+            
             try{
-                String query = String.join(" ","select * ",
+                String query = String.Join(" ","select * ",
                         "from sipro_history.proyecto p",
                         "where p.prestamoid = ?1",
                         "and p.estado = 1",
@@ -733,7 +726,7 @@ namespace SiproDAO.Dao
                     criteria.setParameter(2, lineaBase);
                 ret =   criteria.getResultList();
             }
-            catch(Throwable e){
+            catch(Exception e){
                 CLogger.write("22", ProyectoDAO.class, e);
             }
             finally{
@@ -745,7 +738,7 @@ namespace SiproDAO.Dao
 
         public static Proyecto getProyectobyTreePath(String treePath){
             Proyecto ret = null;
-            Session session = CHibernateSession.getSessionFactory().openSession();
+            
             try{
                 String treePathProyecto = treePath.substring(0,8);
                 Integer proyectoId = Utils.String2Int(treePathProyecto) - 10000000;

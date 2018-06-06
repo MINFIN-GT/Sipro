@@ -6,6 +6,7 @@ using SiproModelCore.Models;
 using SiproDAO.Dao;
 using Utilities;
 using Microsoft.AspNetCore.Cors;
+using FluentValidation.Results;
 
 namespace SPrestamoTipo.Controllers
 {
@@ -34,8 +35,17 @@ namespace SPrestamoTipo.Controllers
         {
             try
             {
-                List<PrestamoTipo> lstprestamotipo = PrestamoTipoDAO.getPrestamosTipoPagina((int)value.pagina, (int)value.numeroproyectotipos, (string)value.filtroNombre,
-                    (string)value.filtroUsuarioCreo, (string)value.filtroFechaCreacion, (string)value.columnaOrdenada, (string)value.ordenDireccion, (string)value.excluir);
+                int pagina = value.pagina != null ? (int)value.pagina : default(int);
+                int numeroproyectotipos = value.numeroproyectotipos != null ? (int)value.numeroproyectotipos : default(int);
+                string filtroNombre = value.filtroNombre != null ? (string)value.filtroNombre : default(string);
+                string filtroUsuarioCreo = value.filtroUsuarioCreo != null ? (string)value.filtroUsuarioCreo : default(string);
+                string filtroFechaCreacion = value.filtroFechaCreacion != null ? (string)value.filtroFechaCreacion : default(string);
+                string columnaOrdenada = value.columnaOrdenada != null ? (string)value.columnaOrdenada : default(string);
+                string ordenDireccion = value.ordenDireccion != null ? (string)value.ordenDireccion : default(string);
+                string excluir = value.excluir != null ? (string)value.excluir : default(string);
+
+                List <PrestamoTipo> lstprestamotipo = PrestamoTipoDAO.getPrestamosTipoPagina(pagina, numeroproyectotipos, filtroNombre,
+                    filtroUsuarioCreo, filtroFechaCreacion, columnaOrdenada, ordenDireccion, excluir);
 
                 List<stprestamotipo> stcooperantes = new List<stprestamotipo>();
 
@@ -69,7 +79,11 @@ namespace SPrestamoTipo.Controllers
         {
             try
             {
-                long total = PrestamoTipoDAO.getTotalPrestamosTipos((string)value.filtoNombre, (string)value.filtroUsuarioCreo, (string)value.filtroFechaCreacion);
+                string filtroNombre = value.filtroNombre != null ? (string)value.filtroNombre : default(string);
+                string filtroUsuarioCreo = value.filtroUsuarioCreo != null ? (string)value.filtroUsuarioCreo : default(string);
+                string filtroFechaCreacion = value.filtroFechaCreacion != null ? (string)value.filtroFechaCreacion : default(string);
+
+                long total = PrestamoTipoDAO.getTotalPrestamosTipos(filtroNombre, filtroUsuarioCreo, filtroFechaCreacion);
                 return Ok(new { success = true, totalprestamotipos = total });
             }
             catch (Exception e)
@@ -86,23 +100,32 @@ namespace SPrestamoTipo.Controllers
         {
             try
             {
-                PrestamoTipo prestamoTipo = new PrestamoTipo();
-                prestamoTipo.nombre = (string)value.nombre;
-                prestamoTipo.descripcion = (string)value.descripcion;
-                prestamoTipo.estado = 1;
-                prestamoTipo.usuarioCreo = User.Identity.Name;
-                prestamoTipo.fechaCreacion = DateTime.Now;
+                PrestamoTipoValidator validator = new PrestamoTipoValidator();
+                ValidationResult results = validator.Validate(value);
 
-                bool guardado = PrestamoTipoDAO.guardarPrestamoTipo(prestamoTipo);
+                if (results.IsValid)
+                {
+                    PrestamoTipo prestamoTipo = new PrestamoTipo();
+                    prestamoTipo.nombre = value.nombre != null ? (string)value.nombre : default(string);
+                    prestamoTipo.descripcion = value.descripcion != null ? (string)value.descripcion : default(string);
+                    prestamoTipo.estado = 1;
+                    prestamoTipo.usuarioCreo = User.Identity.Name;
+                    prestamoTipo.fechaCreacion = DateTime.Now;
 
-                return Ok(new {
-                    success = guardado,
-                    id = prestamoTipo.id,
-                    usuarioCreo = prestamoTipo.usuarioCreo,
-                    fechaCreacion = prestamoTipo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
-                    usuarioactualizo = prestamoTipo.usuarioActualizo,
-                    fechaactualizacion = prestamoTipo.fechaActualizacion != null ? prestamoTipo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
-                });
+                    bool guardado = PrestamoTipoDAO.guardarPrestamoTipo(prestamoTipo);
+
+                    return Ok(new
+                    {
+                        success = guardado,
+                        id = prestamoTipo.id,
+                        usuarioCreo = prestamoTipo.usuarioCreo,
+                        fechaCreacion = prestamoTipo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
+                        usuarioactualizo = prestamoTipo.usuarioActualizo,
+                        fechaactualizacion = prestamoTipo.fechaActualizacion != null ? prestamoTipo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
+                    });
+                }
+                else
+                    return Ok(new { success = true });
             }
             catch (Exception e)
             {
@@ -118,23 +141,31 @@ namespace SPrestamoTipo.Controllers
         {
             try
             {
-                PrestamoTipo prestamoTipo = PrestamoTipoDAO.getPrestamoTipoPorId(id);
-                prestamoTipo.nombre = (string)value.nombre;
-                prestamoTipo.descripcion = (string)value.descripcion;
-                prestamoTipo.usuarioActualizo = User.Identity.Name;
-                prestamoTipo.fechaActualizacion = DateTime.Now;
+                PrestamoTipoValidator validator = new PrestamoTipoValidator();
+                ValidationResult results = validator.Validate(value);
 
-                bool modificado = PrestamoTipoDAO.guardarPrestamoTipo(prestamoTipo);
-
-                return Ok(new
+                if (results.IsValid)
                 {
-                    success = modificado,
-                    id = prestamoTipo.id,
-                    usuarioCreo = prestamoTipo.usuarioCreo,
-                    fechaCreacion = prestamoTipo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
-                    usuarioactualizo = prestamoTipo.usuarioActualizo,
-                    fechaactualizacion = prestamoTipo.fechaActualizacion != null ? prestamoTipo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
-                });
+                    PrestamoTipo prestamoTipo = PrestamoTipoDAO.getPrestamoTipoPorId(id);
+                    prestamoTipo.nombre = value.nombre != null ? (string)value.nombre : default(string);
+                    prestamoTipo.descripcion = value.descripcion != null ? (string)value.descripcion : default(string);
+                    prestamoTipo.usuarioActualizo = User.Identity.Name;
+                    prestamoTipo.fechaActualizacion = DateTime.Now;
+
+                    bool modificado = PrestamoTipoDAO.guardarPrestamoTipo(prestamoTipo);
+
+                    return Ok(new
+                    {
+                        success = modificado,
+                        id = prestamoTipo.id,
+                        usuarioCreo = prestamoTipo.usuarioCreo,
+                        fechaCreacion = prestamoTipo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
+                        usuarioactualizo = prestamoTipo.usuarioActualizo,
+                        fechaactualizacion = prestamoTipo.fechaActualizacion != null ? prestamoTipo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
+                    });
+                }
+                else
+                    return Ok(new { success = false });
             }
             catch (Exception e)
             {

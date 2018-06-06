@@ -46,7 +46,10 @@ namespace SInteresTipo.Controllers
         {
             try
             {
-                List<InteresTipo> autorizacionTipos = InteresTipoDAO.getInteresTiposPagina((int)value.pagina, (int)value.numeroInteresTipo);
+                int pagina = value.pagina != null ? (int)value.pagina : default(int);
+                int numeroInteresTipo = value.numeroInteresTipo != null ? (int)value.numeroInteresTipo : default(int);
+
+                List <InteresTipo> autorizacionTipos = InteresTipoDAO.getInteresTiposPagina(pagina, numeroInteresTipo);
 
                 List<stinteresTipo> stautorizaciontipos = new List<stinteresTipo>();
                 foreach (InteresTipo autorizacionTipo in autorizacionTipos)

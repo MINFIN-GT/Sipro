@@ -193,7 +193,12 @@ namespace SDataSigade.Controllers
         {
             try
             {
-                List<DtmAvanceFisfinanDetDti> lstDesembolsos = DataSigadeDAO.getInfPorUnidadEjecutora((string)value.codPrep, (int)value.ejercicio, (int)value.entidad, (int)value.ue);
+                string codPrep = value.codPrep != null ? (string)value.codPrep : default(string);
+                int ejercicio = value.ejercicio != null ? (int)value.ejercicio : default(int);
+                int entidad = value.entidad != null ? (int)value.entidad : default(int);
+                int ue = value.ue != null ? (int)value.ue : default(int);
+
+                List <DtmAvanceFisfinanDetDti> lstDesembolsos = DataSigadeDAO.getInfPorUnidadEjecutora(codPrep, ejercicio, entidad, ue);
                 List<stdesembolsos> lstDesembolsosUE = new List<stdesembolsos>();
                 foreach (DtmAvanceFisfinanDetDti desembolso in lstDesembolsos)
                 {
@@ -228,7 +233,12 @@ namespace SDataSigade.Controllers
         {
             try
             {
-                List<DtmAvanceFisfinanDetDti> lstDesembolsos = DataSigadeDAO.getInfPorUnidadEjecutora((string)value.codPrep, (int)value.ejercicio, (int)value.entidad, (int)value.ue);
+                string codPrep = value.codPrep != null ? (string)value.codPrep : default(string);
+                int ejercicio = value.ejercicio != null ? (int)value.ejercicio : default(int);
+                int entidad = value.entidad != null ? (int)value.entidad : default(int);
+                int ue = value.ue != null ? (int)value.ue : default(int);
+
+                List<DtmAvanceFisfinanDetDti> lstDesembolsos = DataSigadeDAO.getInfPorUnidadEjecutora(codPrep, ejercicio, entidad, ue);
 
                 decimal montoDesembolsado = decimal.Zero;
 
@@ -253,7 +263,10 @@ namespace SDataSigade.Controllers
         {
             try
             {
-                List<DtmAvanceFisfinanDetDti> lstDesembolsos = DataSigadeDAO.getInfPorUnidadEjecutoraALaFecha((string)value.codPrep, (int)value.entidad);
+                string codPrep = value.codPrep != null ? (string)value.codPrep : default(string);
+                int entidad = value.entidad != null ? (int)value.entidad : default(int);
+                
+                List<DtmAvanceFisfinanDetDti> lstDesembolsos = DataSigadeDAO.getInfPorUnidadEjecutoraALaFecha(codPrep, entidad);
 
                 decimal montoDesembolsado = decimal.Zero;
 

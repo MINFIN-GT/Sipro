@@ -22,7 +22,7 @@ namespace SAutorizacionTipo.Controllers
             public String descripcion;
         }
 
-        // GET api/values
+        // GET api/AutorizacionTipo/numeroAutorizacionTipo
         [HttpGet]
         [Authorize("Autorización Tipo - Visualizar")]
         public IActionResult numeroAutorizacionTipo()
@@ -39,14 +39,16 @@ namespace SAutorizacionTipo.Controllers
             }
         }
 
-        // POST api/values
+        // POST api/AutorizacionTipo/AutorizacionTipoPagina
         [HttpPost]
         [Authorize("Autorización Tipo - Visualizar")]
         public IActionResult AutorizacionTipoPagina([FromBody]dynamic value)
         {
             try
             {
-                List<AutorizacionTipo> autorizacionTipos = AutorizacionTipoDAO.getAutorizacionTiposPagina((int)value.pagina, (int)value.numeroAutorizacionTipo);
+                int pagina = value.pagina != null ? (int)value.pagina : default(int);
+                int numeroAutorizacionTipo = value.numeroAutorizacionTipo != null ? (int)value.numeroAutorizacionTipo : default(int);
+                List <AutorizacionTipo> autorizacionTipos = AutorizacionTipoDAO.getAutorizacionTiposPagina(pagina, numeroAutorizacionTipo);
 
                 List<stautorizacionTipo> stautorizaciontipos = new List<stautorizacionTipo>();
                 foreach (AutorizacionTipo autorizacionTipo in autorizacionTipos)

@@ -351,3 +351,7 @@ storage.ide-wal
 /Sipro/.vs/Sipro/v15
 /Sipro/obj/
 /SiproModel/obj/Debug
+/SiproFluentValidator
+/SiproFluentValidatorCore
+/SiproModel
+/SiproModelAnalytic

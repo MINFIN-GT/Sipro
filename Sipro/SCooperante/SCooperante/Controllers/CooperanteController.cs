@@ -6,8 +6,9 @@ using SiproModelCore.Models;
 using SiproDAO.Dao;
 using Utilities;
 using Microsoft.AspNetCore.Cors;
+using FluentValidation.Results;
 
-namespace Sipro.Controllers
+namespace SCooperante.Controllers
 {
     [Authorize]
     [Produces("application/json")]
@@ -73,29 +74,37 @@ namespace Sipro.Controllers
         {
             try
             {
-                Cooperante cooperante = new Cooperante();
-                cooperante.codigo = (int)value.codigo;
-                cooperante.descripcion = (string)value.descripcion;
-                cooperante.ejercicio = (int)value.ejercicio;
-                cooperante.estado = (int)value.estado;
-                cooperante.fechaCreacion = DateTime.Now;
-                cooperante.nombre = (string)value.nombre;
-                cooperante.siglas = (string)value.siglas;
-                cooperante.usuarioCreo = User.Identity.Name;
+                CooperanteValidator validator = new CooperanteValidator();
+                ValidationResult results = validator.Validate(value);
 
-                bool result = CooperanteDAO.guardarCooperante(cooperante);
-
-                if (result)
+                if (results.IsValid)
                 {
-                    return Ok(new
+                    Cooperante cooperante = new Cooperante();
+                    cooperante.codigo = value.codigo;
+                    cooperante.descripcion = value.descripcion;
+                    cooperante.ejercicio = value.ejercicio;
+                    cooperante.estado = value.estado;
+                    cooperante.fechaCreacion = DateTime.Now;
+                    cooperante.nombre = value.nombre;
+                    cooperante.siglas = value.siglas;
+                    cooperante.usuarioCreo = User.Identity.Name;
+
+                    bool result = CooperanteDAO.guardarCooperante(cooperante);
+
+                    if (result)
                     {
-                        success = true,
-                        id = cooperante.codigo,
-                        usuarioCreo = cooperante.usuarioCreo,
-                        fechaCreacion = cooperante.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
-                        usuarioactualizo = cooperante.usuarioActualizo != null ? cooperante.usuarioActualizo : "",
-                        fechaactualizacion = cooperante.fechaActualizacion != null ? cooperante.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : ""
-                    });
+                        return Ok(new
+                        {
+                            success = true,
+                            id = cooperante.codigo,
+                            usuarioCreo = cooperante.usuarioCreo,
+                            fechaCreacion = cooperante.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
+                            usuarioactualizo = cooperante.usuarioActualizo != null ? cooperante.usuarioActualizo : "",
+                            fechaactualizacion = cooperante.fechaActualizacion != null ? cooperante.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : ""
+                        });
+                    }
+                    else
+                        return Ok(new { success = false });
                 }
                 else
                     return Ok(new { success = false });
@@ -114,28 +123,36 @@ namespace Sipro.Controllers
         {
             try
             {
-                Cooperante cooperante = CooperanteDAO.getCooperantePorCodigo(codigo);
-                cooperante.descripcion = (string)value.descripcion;
-                cooperante.ejercicio = (int)value.ejercicio;
-                cooperante.estado = (int)value.estado;
-                cooperante.fechaActualizacion = DateTime.Now;
-                cooperante.nombre = (string)value.nombre;
-                cooperante.siglas = (string)value.siglas;
-                cooperante.usuarioActualizo = User.Identity.Name;
+                CooperanteValidator validator = new CooperanteValidator();
+                ValidationResult results = validator.Validate(value);
 
-                bool result = CooperanteDAO.guardarCooperante(cooperante);
+                if (results.IsValid)
+                {
+                    Cooperante cooperante = CooperanteDAO.getCooperantePorCodigo(codigo);
+                    cooperante.descripcion = value["descripcion"] != null ? (string)value.descripcion : default(string);
+                    cooperante.ejercicio = value.ejercicio != null ? (int)value.ejercicio : default(int);
+                    cooperante.estado = value.estado != null ? (int)value.estado : default(int);
+                    cooperante.fechaActualizacion = DateTime.Now;
+                    cooperante.nombre = value.nombre != null ? (string)value.nombre : default(string);
+                    cooperante.siglas = value.siglas != null ? (string)value.siglas : default(string);
+                    cooperante.usuarioActualizo = User.Identity.Name;
 
-                if (result)
-                {                    
-                    return Ok(new
+                    bool result = CooperanteDAO.guardarCooperante(cooperante);
+
+                    if (result)
                     {
-                        success = true,
-                        id = cooperante.codigo,
-                        usuarioCreo = cooperante.usuarioCreo,
-                        fechaCreacion = cooperante.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
-                        usuarioactualizo = cooperante.usuarioActualizo != null ? cooperante.usuarioActualizo : "",
-                        fechaactualizacion = cooperante.fechaActualizacion != null ? cooperante.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : ""
-                    });
+                        return Ok(new
+                        {
+                            success = true,
+                            id = cooperante.codigo,
+                            usuarioCreo = cooperante.usuarioCreo,
+                            fechaCreacion = cooperante.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
+                            usuarioactualizo = cooperante.usuarioActualizo != null ? cooperante.usuarioActualizo : "",
+                            fechaactualizacion = cooperante.fechaActualizacion != null ? cooperante.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : ""
+                        });
+                    }
+                    else
+                        return Ok(new { success = false });
                 }
                 else
                     return Ok(new { success = false });
@@ -180,9 +197,17 @@ namespace Sipro.Controllers
         {
             try
             {
-                List<Cooperante> cooperantes = CooperanteDAO.getCooperantesPagina((int)value.pagina, (int)value.numerocooperantes, (string)value.filtro_codigo,
-                (string)value.filtro_nombre, (string)value.filtro_usuario_creo, (string)value.filtro_fecha_creacion, (string)value.columna_ordenada,
-                (string)value.orden_direccion);
+                int pagina = value.pagina != null ? (int)value.pagina : default(int);
+                int numerocooperantes = value.numerocooperantes != null ? (int)value.numerocooperantes : default(int);
+                string filtro_codigo = value.filtro_codigo != null ? value.filtro_codigo : default(string);
+                string filtro_nombre = value.filtro_nombre != null ? (string)value.filtro_nombre : default(string);
+                string filtro_usuario_creo = value.filtro_usuario_creo != null ? (string)value.filtro_usuario_creo : default(string);
+                string filtro_fecha_creacion = value.filtro_fecha_creacion != null ? (string)value.filtro_fecha_creacion : default(string);
+                string columna_ordenada = value.columna_ordenada != null ? (string)value.columna_ordenada : default(string);
+                string orden_direccion = value.orden_direccion != null ? (string)value.orden_direccion : default(string);
+
+                List<Cooperante> cooperantes = CooperanteDAO.getCooperantesPagina(pagina, numerocooperantes, filtro_codigo,
+                filtro_nombre, filtro_usuario_creo, filtro_fecha_creacion, columna_ordenada, orden_direccion);
 
                 if (cooperantes != null)
                 {
@@ -221,8 +246,13 @@ namespace Sipro.Controllers
         {
             try
             {
-                long total = CooperanteDAO.getTotalCooperantes((string)value.filtro_codigo,
-                (string)value.filtro_nombre, (string)value.filtro_usuario_creo, (string)value.filtro_fecha_creacion);
+                string filtro_codigo = value.filtro_codigo != null ? value.filtro_codigo : default(string);
+                string filtro_nombre = value.filtro_nombre != null ? (string)value.filtro_nombre : default(string);
+                string filtro_usuario_creo = value.filtro_usuario_creo != null ? (string)value.filtro_usuario_creo : default(string);
+                string filtro_fecha_creacion = value.filtro_fecha_creacion != null ? (string)value.filtro_fecha_creacion : default(string);
+                
+                long total = CooperanteDAO.getTotalCooperantes(filtro_codigo, filtro_nombre, filtro_usuario_creo, 
+                    filtro_fecha_creacion);
 
                 return Ok(new { success = true, totalcooperantes = total });
             }
