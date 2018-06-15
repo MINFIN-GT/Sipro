@@ -9,6 +9,9 @@ import { AuthService } from './auth.service';
 import { RouteguardService } from './routeguard.service';
 import { MaterialModule } from './material/material.module';
 import { utils } from 'protractor'; 
+import { Ng2SmartTableModule } from 'ng2-smart-table';
+import { MatPaginatorModule, MatTabsModule, MatDatepickerModule, MatNativeDateModule } from '@angular/material';
+import { MomentModule } from 'angular2-moment/moment.module';
 
 import { AppComponent } from './app.component';
 import { MainComponent } from './components/main/main.component';
@@ -17,6 +20,7 @@ import { AccesodenegadoComponent } from './components/accesodenegado/accesodeneg
 import { PagenotfoundComponent } from './components/pagenotfound/pagenotfound.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { MainmenuComponent } from './components/mainmenu/mainmenu.component';
+import { PrestamoComponent } from './components/prestamo/prestamo.component';
 
 const routes: Routes = [{
           path: '',    // Va a Main
@@ -27,6 +31,9 @@ const routes: Routes = [{
           component: MainComponent,
           canActivate: [RouteguardService]
         },{
+          path: 'main/prestamo',
+          component: PrestamoComponent
+        },{
           path: 'accesodenegado',
           component: AccesodenegadoComponent
         },{
@@ -35,13 +42,13 @@ const routes: Routes = [{
         },{
           path: '**',
           component: PagenotfoundComponent
-    }];
+        }];
 
 @NgModule({
   declarations: [
       AppComponent,
       LoginComponent, 
-      AccesodenegadoComponent, MainComponent, PagenotfoundComponent, FooterComponent, MainmenuComponent
+      AccesodenegadoComponent, MainComponent, PagenotfoundComponent, FooterComponent, MainmenuComponent, PrestamoComponent      
   ],
   imports: [
       BrowserModule,
@@ -49,7 +56,10 @@ const routes: Routes = [{
       RouterModule.forRoot(routes),
       HttpClientModule,
       FlashMessagesModule.forRoot(),
-      MaterialModule
+      MaterialModule,
+      Ng2SmartTableModule, 
+      MatPaginatorModule, 
+      MatTabsModule, MatDatepickerModule, MatNativeDateModule, MomentModule
   ],
   providers: [UtilsService, AuthService, RouteguardService],
   bootstrap: [AppComponent]

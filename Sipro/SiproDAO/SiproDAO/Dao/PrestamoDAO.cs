@@ -107,9 +107,9 @@ namespace SiproDAO.Dao
                         "WHERE p.estado=1 ";
                     String query_a = "";
                     if (filtro_nombre != null && filtro_nombre.Trim().Length > 0)
-                        query_a = String.Join("", query_a, " p.proyectoPrograma LIKE '%", filtro_nombre, "%' ");
+                        query_a = String.Join("", query_a, " p.proyecto_programa LIKE '%", filtro_nombre, "%' ");
                     if (filtro_codigo_presupuestario != null)
-                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.codigo_Presupuestario= :filtro_codigo_presupuestario");
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.codigo_presupuestario= :filtro_codigo_presupuestario");
                     if (filtro_numero_prestamo != null && filtro_numero_prestamo.Trim().Length > 0)
                         query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.numero_prestamo LIKE '%", filtro_numero_prestamo, "%' ");
                     if (filtro_usuario_creo != null && filtro_usuario_creo.Trim().Length > 0)

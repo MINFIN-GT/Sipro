@@ -1,0 +1,69 @@
+mat-card {
+    font-size: 20px;
+    font-weight: bold;
+    border-collapse:collapse;
+}
+
+.mat-paginator-range-actions {
+    margin: 0 auto;
+}
+
+.datos-numericos{
+    text-align: right;
+}
+
+.nuevo-edicion{
+    text-align: left;
+    font-weight: normal;
+    line-height: 1;
+    color: #777;
+    font-size: 15px;
+}
+
+.demo-tab-group {
+    border: 1px solid #e8e8e8;
+}
+  
+.demo-tab-content {
+    text-align: left;
+    width: 95%;
+    margin: 0 auto;
+}
+
+.mat-tab-header-pagination.mat-tab-header-pagination-disabled {
+    display: none !important;
+}
+
+.mat-tab-header-pagination.mat-tab-header-pagination-before.mat-elevation-z4.mat-ripple{
+    display: none !important;
+}
+
+.mat-tab-header-pagination.mat-tab-header-pagination-after.mat-elevation-z4.mat-ripple{
+    display: none !important;
+}
+
+.col-sm-12 {
+    width: 100%;
+}
+
+.col-sm-6 {
+    width: 50%;
+}
+
+.col-sm-4 {
+    width: 33.33%;
+}
+
+.mat-form-field.mat-form-field {
+    width: 100%;
+}
+
+.label-id{
+    font-size: 10px;
+    color: rgba(0,0,0,0.38);
+    font-weight: bold;
+}
+
+.search-info{
+    cursor: pointer;
+}

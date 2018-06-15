@@ -6,7 +6,7 @@
       </button>
     </span>
     <span class="menu-center" fxLayout="row" fxHide fxShow.gt-xs>
-      <button mat-button *ngIf="hasClaim('Programas - Visualizar')">Préstamos</button>
+      <button mat-button *ngIf="hasClaim('Préstamos o Proyectos - Visualizar')" [routerLink]="['main/prestamo']">Préstamos</button>
       <button mat-button *ngIf="hasClaim('Configuraciones - Visualizar')" [matMenuTriggerFor]="mConfiguraciones" >Configuraciones</button>
       <button mat-button *ngIf="hasClaim('Reportes')" [matMenuTriggerFor]="mReportes"> Reportes</button>
       <button mat-button *ngIf="hasClaim('Usuarios - Visualizar') || hasClaim('Colaboradores - Visualizar')" [matMenuTriggerFor]="mUsuarios"> Usuarios</button>

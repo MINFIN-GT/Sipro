@@ -6,6 +6,8 @@ export class UtilsService {
     sistemaNombre : string = 'SIPRO';
     _isMasterPage = false;
     _isLoggedIn = false;
+    _elementosPorPagina = 20;
+    _numeroMaximoPaginas = 5;
 
     @Output() changeMasterPage : EventEmitter<boolean> = new EventEmitter();
 

@@ -1,0 +1,25 @@
+.column {
+    float: left;
+}
+
+.column-left, .column-right {
+  float: left;
+  height: 1px;
+}
+
+.left, .right {
+  width: 5%;
+}
+
+.middle {
+  width: 90%;
+  Position:relative;
+}
+
+.material-icons{
+  font-size: 20px;
+}
+
+#body-pagina{
+  height: calc(100%-30px);
+}

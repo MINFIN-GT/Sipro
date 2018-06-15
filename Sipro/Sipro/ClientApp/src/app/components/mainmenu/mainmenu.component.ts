@@ -3,6 +3,7 @@ import { UtilsService } from '../../utils.service';
 import { AuthService } from '../../auth.service';
 import { MatToolbar } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'main-menu',
@@ -36,15 +37,36 @@ export class MainmenuComponent implements OnInit {
         this.auth.logoffRemote();
     }
 
+    irPrestamo(){
+      window.location.href = '/prestamo';
+    }
+
     getEntidades(){
-        this.http.get('http://localhost:60005/api/Entidad/EntidadesPorEjercicio/2017', { withCredentials: true}).subscribe( response =>{
+      this.http.get('http://localhost:60064/api/Proyecto/Proyecto/1', { withCredentials: true}).subscribe( response =>{
             if(response['success']==true){
-                console.log(response['entidades']);
+              console.log(response['entidades']);
             }
             else{
                 console.log('Error al hacer logout');
             }
-        });
+      });
+
+      /*var data = {  codigo: 11101, fechaCreacion:"01/01/2018", fechaActualizacion:"01/01/2018", descripcion: "prueba 1", ejercicio: 2017, estado: 1, nombre: "prueba 1", siglas: "LS", usuarioCreo : "admin", usuarioActualizo : "admin"};
+
+      this.http.post('http://localhost:60015/api/Cooperante/Cooperante', data, { withCredentials: true }).subscribe(response => {
+        if (response['success'] == true) {
+          console.log(response['unidadesEjecutoras']);
+        } else {
+          console.log('Error');
+        }
+      },
+        reponse => {
+          this.auth.logoff();
+          this.utils.setIsMasterPage(false);
+        },
+        () => {
+        }
+      );*/
     }
 
 }
