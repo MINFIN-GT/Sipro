@@ -545,16 +545,11 @@ namespace SPrestamo.Controllers
             {
                 int pagina = value.pagina != null ? value.pagina : default(int);
                 int elementosPorPagina = value.elementosPorPagina != null ? value.elementosPorPagina : default(int);
-                string filtro_nombre = value.filtro_nombre != null ? value.filtro_nombre : default(string);
-                long? filtro_codigo_presupuestario = value.filtro_codigo_presupuestario != null ? value.filtro_codigo_presupuestario : null;
-                string filtro_numero_prestamo = value.filtro_numero_prestamo != null ? value.filtro_numero_prestamo : default(string);
-                string filtro_usuario_creo = value.filtro_usuario_creo != null ? value.filtro_usuario_creo : default(string);
-                string filtro_fecha_creacion = value.filtro_fecha_creacion != null ? value.filtro_fecha_creacion : default(string);
+                string filtro_busqueda = value.filtro_busqueda != null ? value.filtro_busqueda : default(string);                
                 string columna_ordenada = value.columna_ordenada != null ? value.columna_ordenada : default(string);
                 string orden_direccion = value.orden_direccion != null ? value.orden_direccion : default(string);
 
-                List <Prestamo> lstprestamos = PrestamoDAO.getPrestamosPagina(pagina, elementosPorPagina, filtro_nombre, filtro_codigo_presupuestario, filtro_numero_prestamo,
-                        filtro_usuario_creo, filtro_fecha_creacion, columna_ordenada, orden_direccion, User.Identity.Name);
+                List <Prestamo> lstprestamos = PrestamoDAO.getPrestamosPagina(pagina, elementosPorPagina, filtro_busqueda, columna_ordenada, orden_direccion, User.Identity.Name);
 
                 List<stprestamo> lstprestamo = new List<stprestamo>();
                 stprestamo temp = null;
@@ -694,14 +689,9 @@ namespace SPrestamo.Controllers
         {
             try
             {
-                string filtro_nombre = value.filtro_nombre != null ? value.filtro_nombre : default(string);
-                long? filtro_codigo_presupuestario = value.filtro_codigo_presupuestario != null ? value.filtro_codigo_presupuestario : null;
-                string filtro_numero_prestamo = value.filtro_numero_prestamo != null ? value.filtro_numero_prestamo : default(string);
-                string filtro_usuario_creo = value.filtro_usuario_creo != null ? value.filtro_usuario_creo : default(string);
-                string filtro_fecha_creacion = value.filtro_fecha_creacion != null ? value.filtro_fecha_creacion : default(string);
+                string filtro_busqueda = value.filtro_busqueda != null ? value.filtro_busqueda : default(string);                
 
-                long total = PrestamoDAO.getTotalPrestamos(filtro_nombre, filtro_codigo_presupuestario, filtro_numero_prestamo, 
-                    filtro_usuario_creo, filtro_fecha_creacion, User.Identity.Name);
+                long total = PrestamoDAO.getTotalPrestamos(filtro_busqueda, User.Identity.Name);
 
                 return Ok(new { success = true, totalprestamos = total });
             }

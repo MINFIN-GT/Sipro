@@ -93,8 +93,7 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        public static List<Prestamo> getPrestamosPagina(int pagina, int elementosPorPagina, String filtro_nombre, long? filtro_codigo_presupuestario, String filtro_numero_prestamo,
-            String filtro_usuario_creo, String filtro_fecha_creacion, String columna_ordenada, String orden_direccion, String usuario)
+        public static List<Prestamo> getPrestamosPagina(int pagina, int elementosPorPagina, String filtro_busqueda, String columna_ordenada, String orden_direccion, String usuario)
         {
             List<Prestamo> ret = null;
 
@@ -106,16 +105,26 @@ namespace SiproDAO.Dao
                         "FROM PRESTAMO p " +
                         "WHERE p.estado=1 ";
                     String query_a = "";
-                    if (filtro_nombre != null && filtro_nombre.Trim().Length > 0)
-                        query_a = String.Join("", query_a, " p.proyecto_programa LIKE '%", filtro_nombre, "%' ");
-                    if (filtro_codigo_presupuestario != null)
-                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.codigo_presupuestario= :filtro_codigo_presupuestario");
-                    if (filtro_numero_prestamo != null && filtro_numero_prestamo.Trim().Length > 0)
-                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.numero_prestamo LIKE '%", filtro_numero_prestamo, "%' ");
-                    if (filtro_usuario_creo != null && filtro_usuario_creo.Trim().Length > 0)
-                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " p.usuario_creo LIKE :filtro_usuario_creo ");
-                    if (filtro_fecha_creacion != null && filtro_fecha_creacion.Trim().Length > 0)
-                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(p.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE(:filtro_fecha_creacion,'DD/MM/YY') ");
+                    if (filtro_busqueda != null)
+                    {
+                        query_a = String.Join("", query_a, " p.proyecto_programa LIKE '%", filtro_busqueda, "%' ");
+
+                        long codigo_presupuestario;
+                        if (long.TryParse(filtro_busqueda, out codigo_presupuestario))
+                        {
+                            query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.codigo_presupuestario LIKE '%" + codigo_presupuestario + "%' ");
+                        }
+
+                        DateTime fecha_creacion;
+                        if (DateTime.TryParse(filtro_busqueda, out fecha_creacion))
+                        {
+                            query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(p.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE('" + fecha_creacion.ToString("dd/MM/yyyy") + "','DD/MM/YY') ");
+                        }
+                        
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.numero_prestamo LIKE '%" + filtro_busqueda + "%' ");
+                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " p.usuario_creo LIKE '%" + filtro_busqueda + "%'");                        
+                    }
+                    
                     query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND (", query_a, ")") : ""));
                     if (usuario != null)
                         query = String.Join("", query, " AND p.id in (SELECT u.prestamoid from Prestamo_Usuario u where u.usuario=:usuario )");
@@ -124,8 +133,7 @@ namespace SiproDAO.Dao
                         String.Join(" ", query, "ORDER BY p.fecha_creacion ASC");
                     query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + elementosPorPagina + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + elementosPorPagina + ") + 1)");
 
-                    ret = db.Query<Prestamo>(query, new { filtro_codigo_presupuestario = filtro_codigo_presupuestario,
-                        filtro_usuario_creo = filtro_usuario_creo, filtro_fecha_creacion = filtro_fecha_creacion, usuario = usuario }).AsList<Prestamo>();
+                    ret = db.Query<Prestamo>(query, new { usuario = usuario }).AsList<Prestamo>();
                 }
             }
             catch (Exception e)
@@ -136,8 +144,7 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        public static long getTotalPrestamos(String filtro_nombre, long? filtro_codigo_presupuestario, String filtro_numero_prestamo, String filtro_usuario_creo,
-            String filtro_fecha_creacion, String usuario)
+        public static long getTotalPrestamos(String filtro_busqueda, String usuario)
         {
             long ret = 0L;
 
@@ -147,21 +154,31 @@ namespace SiproDAO.Dao
                 {
                     String query = "SELECT COUNT(*) FROM PRESTAMO p WHERE p.estado=1 ";
                     String query_a = "";
-                    if (filtro_nombre != null && filtro_nombre.Trim().Length > 0)
-                        query_a = String.Join("", query_a, " p.proyectoPrograma LIKE '%", filtro_nombre, "%' ");
-                    if (filtro_codigo_presupuestario != null)
-                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.codigo_presupuestario= :filtro_codigo_presupuestario");
-                    if (filtro_numero_prestamo != null && filtro_numero_prestamo.Trim().Length > 0)
-                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.numero_prestamo LIKE '%", filtro_numero_prestamo, "%' ");
-                    if (filtro_usuario_creo != null && filtro_usuario_creo.Trim().Length > 0)
-                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " p.usuario_creo LIKE :filtro_usuario_creo ");
-                    if (filtro_fecha_creacion != null && filtro_fecha_creacion.Trim().Length > 0)
-                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(p.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE(:filtro_fecha_creacion,'DD/MM/YY') ");
+
+                    if (filtro_busqueda != null)
+                    {
+                        query_a = String.Join("", query_a, " p.proyecto_programa LIKE '%", filtro_busqueda, "%' ");
+
+                        long codigo_presupuestario;
+                        if (long.TryParse(filtro_busqueda, out codigo_presupuestario))
+                        {
+                            query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.codigo_presupuestario LIKE '%" + codigo_presupuestario + "%' ");
+                        }
+
+                        DateTime fecha_creacion;
+                        if (DateTime.TryParse(filtro_busqueda, out fecha_creacion))
+                        {
+                            query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(p.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE('" + fecha_creacion.ToString("dd/MM/yyyy") + "','DD/MM/YY') ");
+                        }
+
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.numero_prestamo LIKE '%" + filtro_busqueda + "%' ");
+                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " p.usuario_creo LIKE '%" + filtro_busqueda + "%'");
+                    }                    
                     query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND (", query_a, ")") : ""));
                     if (usuario != null)
                         query = String.Join("", query, " AND p.id in (SELECT prestamoid from Prestamo_Usuario u where u.usuario=:usuario )");
 
-                    ret = db.ExecuteScalar<long>(query, new { filtro_codigo_presupuestario = filtro_codigo_presupuestario, filtro_usuario_creo = filtro_usuario_creo, filtro_fecha_creacion = filtro_fecha_creacion, usuario = usuario });
+                    ret = db.ExecuteScalar<long>(query, new { usuario = usuario });
                 }
             }
             catch (Exception e)

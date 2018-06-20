@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
@@ -10,8 +10,14 @@ import { RouteguardService } from './routeguard.service';
 import { MaterialModule } from './material/material.module';
 import { utils } from 'protractor'; 
 import { Ng2SmartTableModule } from 'ng2-smart-table';
-import { MatPaginatorModule, MatTabsModule, MatDatepickerModule, MatNativeDateModule } from '@angular/material';
+import { MatInputModule, MatPaginatorModule, MatTabsModule, MatDatepickerModule, MatNativeDateModule, MAT_DATE_LOCALE, MatPaginatorIntl } from '@angular/material';
 import { MomentModule } from 'angular2-moment/moment.module';
+import { MatDialogModule } from '@angular/material/dialog';
+import { DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario } from './components/prestamo/modals/modal-codigo-presupuestario'
+import { DialogOverviewMoneda, DialogMoneda } from './components/prestamo/modals/modal-moneda'
+import { DialogOverviewTipoPrestamo, DialogTipoPrestamo } from './components/prestamo/modals/modal-tipo-prestamo'
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatPaginatorIntlSpanish } from '../assets/ts/custom-paginator-spanish';
 
 import { AppComponent } from './app.component';
 import { MainComponent } from './components/main/main.component';
@@ -48,7 +54,8 @@ const routes: Routes = [{
   declarations: [
       AppComponent,
       LoginComponent, 
-      AccesodenegadoComponent, MainComponent, PagenotfoundComponent, FooterComponent, MainmenuComponent, PrestamoComponent      
+      AccesodenegadoComponent, MainComponent, PagenotfoundComponent, FooterComponent, MainmenuComponent, PrestamoComponent,
+      DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario, DialogOverviewMoneda, DialogMoneda, DialogOverviewTipoPrestamo, DialogTipoPrestamo
   ],
   imports: [
       BrowserModule,
@@ -59,10 +66,19 @@ const routes: Routes = [{
       MaterialModule,
       Ng2SmartTableModule, 
       MatPaginatorModule, 
-      MatTabsModule, MatDatepickerModule, MatNativeDateModule, MomentModule
+      MatTabsModule, 
+      MatDatepickerModule, 
+      MatNativeDateModule, MomentModule, MatInputModule, MatDialogModule,
+      MatProgressSpinnerModule
   ],
-  providers: [UtilsService, AuthService, RouteguardService],
-  bootstrap: [AppComponent]
+  providers: [UtilsService, AuthService, RouteguardService, 
+    { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },
+    { provide: LOCALE_ID, useValue: "es-ES" },
+    { provide: MatPaginatorIntl, useClass: MatPaginatorIntlSpanish }
+  ],
+  bootstrap: [AppComponent],
+  entryComponents: [DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario, DialogOverviewMoneda, DialogMoneda,
+    DialogOverviewTipoPrestamo, DialogTipoPrestamo]
 })
 export class AppModule { 
   

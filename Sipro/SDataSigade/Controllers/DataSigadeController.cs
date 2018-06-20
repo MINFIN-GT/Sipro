@@ -160,14 +160,32 @@ namespace SDataSigade.Controllers
             }
         }
 
-        // GET api/DataSigade/Codigos
         [HttpGet]
         [Authorize("Data Sigade - Visualizar")]
-        public IActionResult Codigos()
+        public IActionResult TotalCodigos()
         {
             try
             {
-                List<DtmAvanceFisfinanDti> prestamos = DataSigadeDAO.getCodigos();
+                long totalCodigos = DataSigadeDAO.getTotalCodigos();
+                return Ok(new { success = true, totalCodigos = totalCodigos });
+            }
+            catch (Exception e)
+            {
+                CLogger.write("2", "DataSigadeController.class", e);
+                return BadRequest(500);
+            }
+        }
+
+        // POST api/DataSigade/Codigos
+        [HttpPost]
+        [Authorize("Data Sigade - Visualizar")]
+        public IActionResult Codigos([FromBody]dynamic value)
+        {
+            try
+            {
+                int pagina = value.pagina != null ? value.pagina : default(int);
+                int elementosPorPagina = value.elementosPorPagina != null ? value.elementosPorPagina : default(int);
+                List<DtmAvanceFisfinanDti> prestamos = DataSigadeDAO.getCodigos(pagina, elementosPorPagina);
                 List<stcodigopresupuestario> codigos = new List<stcodigopresupuestario>();
                 foreach (DtmAvanceFisfinanDti prestamo in prestamos)
                 {

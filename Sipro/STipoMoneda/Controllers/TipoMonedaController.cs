@@ -54,14 +54,14 @@ namespace STipoMoneda.Controllers
         }
 
         // POST api/TipoMoneda/numeroTipoMonedas
-        [HttpPost]
+        [HttpGet]
         [Authorize("Tipo Moneda - Visualizar")]
-        public IActionResult numeroTipoMonedas([FromBody]dynamic value)
+        public IActionResult numeroTipoMonedas()
         {
             try
             {
                 long total = TipoMonedaDAO.getTotalAuotirzacionTipo();
-                return Ok(new { success = true, totalactividadtipos = total });
+                return Ok(new { success = true, totalTipoMonedas = total });
             }
             catch (Exception e)
             {

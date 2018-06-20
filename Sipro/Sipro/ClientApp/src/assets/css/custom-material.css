@@ -1,3 +1,9 @@
+.middle {
+    width: 90%;
+    Position:relative;
+    margin: 0 auto;
+}
+
 mat-card {
     font-size: 20px;
     font-weight: bold;
@@ -28,6 +34,7 @@ mat-card {
     text-align: left;
     width: 95%;
     margin: 0 auto;
+    overflow: hidden;
 }
 
 .mat-tab-header-pagination.mat-tab-header-pagination-disabled {
@@ -42,20 +49,17 @@ mat-card {
     display: none !important;
 }
 
-.col-sm-12 {
-    width: 100%;
-}
-
-.col-sm-6 {
-    width: 50%;
-}
-
-.col-sm-4 {
-    width: 33.33%;
-}
-
 .mat-form-field.mat-form-field {
     width: 100%;
+}
+
+div.mat-tab-label-content {
+    font-size: 13px;
+}
+
+div.mat-tab-label{
+    min-width: 120px;
+    height: 40px;
 }
 
 .label-id{
@@ -66,4 +70,86 @@ mat-card {
 
 .search-info{
     cursor: pointer;
+}
+
+.col-sm-1, 
+.col-sm-2, 
+.col-sm-3, 
+.col-sm-4, 
+.col-sm-5, 
+.col-sm-6, 
+.col-sm-7, 
+.col-sm-8, 
+.col-sm-9, 
+.col-sm-10, 
+.col-sm-11, 
+.col-sm-12
+{float:left;padding-left:3px;}
+
+.col-sm-12{width:100%}
+.col-sm-11{width:91.66666667%}
+.col-sm-10{width:83.33333333%}
+.col-sm-9{width:75%}
+.col-sm-8{width:66.66666667%}
+.col-sm-7{width:58.33333333%}
+.col-sm-6{width:49.5%}
+.col-sm-5{width:41.66666667%}
+.col-sm-4{width:32.882%}
+.col-sm-3{width:25%}
+.col-sm-2{width:16.66666667%}
+.col-sm-1{width:8.33333333%}
+
+.form-group{
+    padding: 5px;
+}
+
+.align-center{
+    text-align: left;
+}
+
+.panel {
+    margin-bottom: 10px;
+    background-color: #fff;
+    border: 1px solid transparent;
+}
+
+.panel-default {
+    border-color: #ddd;
+}
+
+.label-form {
+    font-size: 13px;
+    opacity: 1;
+    color: rgba(0,0,0,0.38) !important;
+    font-weight: bold;
+}
+
+.panel-heading {
+    padding: 10px 15px;
+    border-bottom: 1px solid transparent;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    background-color: #f5f5f5;
+    border-color: #ddd;
+}
+
+.panel-body {
+    padding: 15px;
+    height: 175px;
+}
+
+.search{
+    width: 100%;
+}
+
+.table-bordered th,.table-bordered td{
+    border:1px solid #ddd !important
+}
+
+.progress-spinner{ 
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
 }

@@ -117,24 +117,43 @@ namespace SiproDAO.Dao
             }
             catch (Exception e)
             {
-                CLogger.write("4", "DataSigadeDAO.class", e);
+                CLogger.write("5", "DataSigadeDAO.class", e);
             }
             return ret;
         }
 
-        public static List<DtmAvanceFisfinanDti> getCodigos()
+        public static long getTotalCodigos() {
+            long ret = 0L;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnectionAnalytic())
+                {
+                    ret = db.ExecuteScalar<long>("SELECT COUNT(*) FROM SIPRO_ANALYTIC.DTM_AVANCE_FISFINAN_DTI");
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("6", "DataSigadeDAO.class", e);
+            }
+            return ret;
+        }
+
+        public static List<DtmAvanceFisfinanDti> getCodigos(int pagina , int elementosPorPagina)
         {
             List<DtmAvanceFisfinanDti> ret = new List<DtmAvanceFisfinanDti>();
             try
             {
                 using (DbConnection db = new OracleContext().getConnectionAnalytic())
                 {
-                    ret = db.Query<DtmAvanceFisfinanDti>("SELECT * FROM SIPRO_ANALYTIC.DTM_AVANCE_FISFINAN_DET_DTI").AsList<DtmAvanceFisfinanDti>();
+                    string query = String.Join(" ", "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT * FROM SIPRO_ANALYTIC.DTM_AVANCE_FISFINAN_DTI");
+                    query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + elementosPorPagina + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + elementosPorPagina + ") + 1)");
+
+                    ret = db.Query<DtmAvanceFisfinanDti>(query).AsList<DtmAvanceFisfinanDti>();
                 }
             }
             catch (Exception e)
             {
-                CLogger.write("4", "DataSigadeDAO.class", e);
+                CLogger.write("7", "DataSigadeDAO.class", e);
             }
             return ret;
         }
@@ -156,7 +175,7 @@ namespace SiproDAO.Dao
             }
             catch (Exception e)
             {
-                CLogger.write("4", "DataSigadeDAO.class", e);
+                CLogger.write("8", "DataSigadeDAO.class", e);
             }
             return ret;
         }
@@ -177,7 +196,7 @@ namespace SiproDAO.Dao
             }
             catch (Exception e)
             {
-                CLogger.write("5", "DataSigadeDAO.class", e);
+                CLogger.write("9", "DataSigadeDAO.class", e);
             }
             return ret;
         }
@@ -198,7 +217,7 @@ namespace SiproDAO.Dao
             }
             catch (Exception e)
             {
-                CLogger.write("6", "DataSigadeDAO.class", e);
+                CLogger.write("10", "DataSigadeDAO.class", e);
             }
             return ret;
         }
@@ -220,7 +239,7 @@ namespace SiproDAO.Dao
             }
             catch (Exception e)
             {
-                CLogger.write("7", "DataSigadeDAO.class", e);
+                CLogger.write("11", "DataSigadeDAO.class", e);
             }
             return ret;
         }
@@ -242,7 +261,7 @@ namespace SiproDAO.Dao
             }
             catch (Exception e)
             {
-                CLogger.write("8", "DataSigadeDAO.class", e);
+                CLogger.write("12", "DataSigadeDAO.class", e);
             }
             return ret;
         }
@@ -266,7 +285,7 @@ namespace SiproDAO.Dao
             }
             catch (Exception e)
             {
-                CLogger.write("9", "DataSigadeDAO.class", e);
+                CLogger.write("13", "DataSigadeDAO.class", e);
             }
             return ret;
         }
@@ -290,7 +309,7 @@ namespace SiproDAO.Dao
             }
             catch (Exception e)
             {
-                CLogger.write("4", "DataSigadeDAO.class", e);
+                CLogger.write("14", "DataSigadeDAO.class", e);
             }
             return ret;
         }

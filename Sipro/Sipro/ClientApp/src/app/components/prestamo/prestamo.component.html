@@ -1,144 +1,436 @@
-<div id="body-pagina" class="row">
-    <div class="column-left left">
-    </div>
-    <div class="column middle">
+<div class="row">
+    <div class="middle">
       <mat-card style="margin-top: 2%; background-color: #f5f5f5; border-color: #ddd;">
           Información General de Préstamos
       </mat-card>
       <br>
-      <div [hidden]="esColapsado">
+      <div class="row" [hidden]="esColapsado">
           <div style="width: 100%; text-align: right;">
             <button mat-raised-button style="background-color: #337ab7; color:#fff" (click)="nuevo()"><mat-icon>add</mat-icon>Nuevo</button>
             <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="editar()"><mat-icon>mode_edit</mat-icon>Editar</button>
             <button mat-raised-button style="background-color: #d9534f; color: #fff;" (click)="borrar()"><mat-icon>delete</mat-icon>Borrar</button>
           </div>
           <br>
-          <div style="width: 100%; text-align: right;">
+          <div class="col-sm-12" style="text-align: right;">
             <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="refresh()"><mat-icon>refresh</mat-icon></button>
           </div>
           <br>
-          <div>
+          <div class="col-sm-6">
+              <div class="form-group">
+                    <input #search class="search" type="text" placeholder="Busqueda..." (keydown.enter)="filtrar(search.value)">
+              </div>
+          </div> 
+          <br>
+          <div class="col-sm-12">                           
               <ng2-smart-table [settings]="settings" [source]="source" (dblClickRow)="onDblClickRow($event)" (userRowSelect)="onSelectRow($event)"></ng2-smart-table>              
           </div>
           <br>
-          <div style="width: 100%; text-align: right; font-weight: bold;">
+          <div class="col-sm-12" style="text-align: right; font-weight: bold;">
             Total de Préstamos: {{totalPrestamos}}
           </div>
-          <div>
+          <div class="col-sm-12">
             <mat-paginator [length]="totalPrestamos" [hidePageSize]="true" [pageSize]="elementosPorPagina" 
             [showFirstLastButtons]="true" (page)="pageEvent = handlePage($event)">
             </mat-paginator>
           </div>
-      </div>
-      
-      <div [hidden]="!esColapsado">
-        <div style="width: 100%; text-align: right;">
-          <div class="nuevo-edicion">
-              <label>{{esnuevo == true ? 'Nuevo Préstamo' : 'Edición de Préstamo'}}</label>
-          </div>
-          <div>
-              <button mat-raised-button style="background-color: #5cb85c; color:#fff; border-color: #4cae4c" (click)="guardar()"><mat-icon>save</mat-icon>Guardar</button>
-              <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="IrATabla()"><mat-icon>list</mat-icon>Ir a Tabla</button>
-          </div>
-          <br>
-          <div>
-            <mat-card>
-                <mat-card-content>
-                    <mat-tab-group class="demo-tab-group">
-                        <mat-tab label="Préstamo">
-                          <div class="demo-tab-content">
-                            <div class="form-group">
-                                <label class="label-id">ID {{prestamo.id}}</label>
-                            </div>
-                            <br><br>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <mat-form-field>                                        
-                                        <input class="search-info" [(ngModel)]="prestamo.codigoPresupuestario" matInput placeholder="* Código presupuestario" [readonly]="true" 
-                                          (click)="buscarCodigoPresupuestario()">
-                                        <mat-icon class="search-info" matSuffix (click)="buscarCodigoPresupuestario()">search</mat-icon>
-                                    </mat-form-field>
-                                </div>                                
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <mat-form-field>
-                                        <input [(ngModel)]="prestamo.numeroPrestamo" matInput placeholder="* Número de @project_tag">
-                                    </mat-form-field>
+      </div>      
+      <div class="row second-main-form" [hidden]="!esColapsado">
+        <form #myForm="ngForm">
+            <div class="col-sm-12" style="text-align: right;">
+                <div class="nuevo-edicion">
+                    <label>{{esnuevo == true ? 'Nuevo Préstamo' : 'Edición de Préstamo'}}</label>
+                </div>
+                <div>
+                    <button mat-raised-button style="background-color: #5cb85c; color:#fff; border-color: #4cae4c" [disabled]="!myForm.valid" (click)="guardar()"><mat-icon>save</mat-icon>Guardar</button>
+                    <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="IrATabla()"><mat-icon>list</mat-icon>Ir a Tabla</button>
+                </div>
+                <br>
+                <div class="row" style="height: 100%;">
+                  <mat-card>
+                      <mat-card-content>
+                          <mat-tab-group class="demo-tab-group">
+                              <mat-tab label="Préstamo" style="overflow: hidden; height: 100%;">
+                                <div class="demo-tab-content">
+                                  <div class="row">
+                                      <br>
+                                      <div class="form-group">
+                                        <label class="label-id">ID {{prestamo.id}}</label>
+                                      </div>
+                                      <br>
+                                      <div class="row">
+                                        <div class="col-sm-12">
+                                          <div class="form-group">
+                                          <mat-form-field>                                        
+                                            <input class="search-info" name="codigoPresupuestario" [(ngModel)]="prestamo.codigoPresupuestario" matInput placeholder="* Código presupuestario" 
+                                            [readonly]="true" (click)="buscarCodigoPresupuestario()" [required]="true">
+                                            <mat-icon class="search-info" matSuffix (click)="buscarCodigoPresupuestario()">search</mat-icon>
+                                          </mat-form-field>
+                                          </div>
+                                        </div>                                
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-sm-12">
+                                          <div class="form-group">
+                                          <mat-form-field>
+                                            <input name="numeroPrestamo" [(ngModel)]="prestamo.numeroPrestamo" matInput placeholder="* Número de @project_tag" [required]="true">
+                                          </mat-form-field>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-sm-12">
+                                          <div class="form-group">
+                                            <mat-form-field>
+                                              <input name="proyectoPrograma" [(ngModel)]="prestamo.proyectoPrograma" matInput placeholder="* Proyecto/Programa" [required]="true">
+                                            </mat-form-field>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-sm-12">
+                                          <div class="form-group">
+                                            <mat-form-field>
+                                              <input name="cooperantenombre" [(ngModel)]="prestamo.cooperantenombre" matInput placeholder="* Organismo Financiero Internacional" [required]="true">
+                                            </mat-form-field>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-sm-12">
+                                          <div class="form-group">
+                                            <mat-form-field>
+                                              <input name="sectorEconomico" [(ngModel)]="prestamo.sectorEconomico" matInput placeholder="Sector Económico">
+                                            </mat-form-field>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-sm-4">
+                                          <div class="form-group">
+                                            <mat-form-field>
+                                              <input matInput [matDatepicker]="fechaElegibilidadUe" placeholder="* Fecha de Elegibilidad"  
+                                                name="fechaElegibilidadUe" [(ngModel)]="prestamo.fechaElegibilidadUe" [required]="true" (change)="setPorcentaje(5)">
+                                              <mat-datepicker-toggle matSuffix [for]="fechaElegibilidadUe"></mat-datepicker-toggle>
+                                              <mat-datepicker #fechaElegibilidadUe></mat-datepicker>
+                                            </mat-form-field>
+                                          </div>                                
+                                        </div>
+                                        <div class="col-sm-4">
+                                          <div class="form-group">
+                                            <mat-form-field>
+                                              <input matInput [matDatepicker]="fechaSuscripcion" placeholder="* Fecha de Suscripción"
+                                                name="fechaSuscripcion" [(ngModel)]="prestamo.fechaSuscripcion" [required]="true">
+                                              <mat-datepicker-toggle matSuffix [for]="fechaSuscripcion"></mat-datepicker-toggle>
+                                              <mat-datepicker #fechaSuscripcion></mat-datepicker>
+                                              </mat-form-field>
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                          <div class="form-group">
+                                            <mat-form-field>
+                                              <input matInput [matDatepicker]="fechaVigencia" placeholder="* Fecha de vigencia"
+                                                name="fechaVigencia" [(ngModel)]="prestamo.fechaVigencia" [required]="true">
+                                              <mat-datepicker-toggle matSuffix [for]="fechaVigencia"></mat-datepicker-toggle>
+                                              <mat-datepicker #fechaVigencia></mat-datepicker>
+                                              </mat-form-field>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-sm-4">
+                                          <div class="form-group">
+                                            <mat-form-field>
+                                              <input matInput [matDatepicker]="fechaCierreOrigianlUe" placeholder="* Fecha de Cierre Original"
+                                              name="fechaCierreOrigianlUe" [(ngModel)]="prestamo.fechaCierreOrigianlUe" [required]="true" (change)="setPorcentaje(5)">
+                                              <mat-datepicker-toggle matSuffix [for]="fechaCierreOrigianlUe"></mat-datepicker-toggle>
+                                              <mat-datepicker #fechaCierreOrigianlUe></mat-datepicker>
+                                            </mat-form-field>
+                                          </div>                                
+                                        </div>
+                                        <div class="col-sm-4">
+                                          <div class="form-group">
+                                            <mat-form-field>
+                                              <input matInput [matDatepicker]="fechaCierreActualUe" placeholder="* Fecha de Cierre Actual"
+                                                name="fechaCierreActualUe" [(ngModel)]="prestamo.fechaCierreActualUe" [required]="true" (change)="setPorcentaje(5)">
+                                              <mat-datepicker-toggle matSuffix [for]="fechaCierreActualUe"></mat-datepicker-toggle>
+                                              <mat-datepicker #fechaCierreActualUe></mat-datepicker>
+                                              </mat-form-field>
+                                          </div>                                
+                                        </div>
+                                        <div class="col-sm-4">
+                                          <div class="form-group">
+                                            <mat-form-field>
+                                              <input name="mesesProrrogaUe" [(ngModel)]="prestamo.mesesProrrogaUe" matInput placeholder="* Meses de Prórroga" [required]="true" [readonly]="true">
+                                            </mat-form-field>
+                                          </div>                              
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-sm-6">
+                                          <div class="form-group">
+                                            <mat-form-field>
+                                              <input name="plazoEjecucionUe" [(ngModel)]="prestamo.plazoEjecucionUe" matInput placeholder="Plazo de Ejecución %" [readonly]="true">
+                                            </mat-form-field>
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                          <div class="form-group">
+                                            <mat-form-field>
+                                              <input name="saldoCuentas" [(ngModel)]="prestamo.saldoCuentas" matInput type="number" placeholder="Saldo de Cuentas">
+                                            </mat-form-field>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-sm-6">
+                                          <div class="form-group">
+                                            <mat-form-field>                                        
+                                              <input class="search-info" name="tipoMonedaNombre" [(ngModel)]="prestamo.tipoMonedaNombre" matInput placeholder="* Tipo de Moneda" 
+                                              [readonly]="true" (click)="buscarTipoMoneda()" [required]="true">
+                                              <mat-icon class="search-info" matSuffix (click)="buscarTipoMoneda()">search</mat-icon>
+                                            </mat-form-field>
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                          <div class="form-group">
+                                            <mat-form-field>
+                                              <input name="montoContratado" [(ngModel)]="prestamo.montoContratado" (change)="setPorcentaje(1)" [required]="true"
+                                              matInput type="number" placeholder="* Monto Contratado">
+                                            </mat-form-field>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-sm-6">
+                                          <div class="form-group">
+                                            <mat-form-field>
+                                              <input name="montoContratadoUsd" [(ngModel)]="prestamo.montoContratadoUsd" (change)="setPorcentaje(2)" [required]="true" 
+                                              matInput type="number" placeholder="* Monto Contratado Equivalente $">
+                                            </mat-form-field>
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                          <div class="form-group">
+                                            <mat-form-field>
+                                              <input name="montoContratadoQtz" [(ngModel)]="prestamo.montoContratadoQtz" matInput type="number" [required]="true"
+                                              placeholder="* Monto Contratado Equivalente Q">
+                                            </mat-form-field>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-sm-6">
+                                          <div class="form-group">
+                                            <mat-form-field>
+                                              <input name="desembolsoAFechaUsd" [(ngModel)]="prestamo.desembolsoAFechaUsd" (change)="setPorcentaje(1)" [required]="true" 
+                                              matInput type="number" placeholder="* Desembolso a la Fecha $">
+                                            </mat-form-field>
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                          <div class="form-group">
+                                            <mat-form-field>
+                                              <input name="desembolsoAFechaUsdP" [(ngModel)]="prestamo.desembolsoAFechaUsdP" matInput placeholder="Desembolso a la Fecha %" [readonly]="true">
+                                            </mat-form-field>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-sm-6">
+                                          <div class="form-group">
+                                            <mat-form-field>
+                                              <input name="montoPorDesembolsarUsd" [(ngModel)]="prestamo.montoPorDesembolsarUsd" (change)="setPorcentaje(2)" [required]="true" 
+                                              matInput type="number" placeholder="* Monto por Desembolsar $">
+                                            </mat-form-field>
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                          <div class="form-group">
+                                            <mat-form-field>
+                                              <input name="montoPorDesembolsarUsdP" [(ngModel)]="prestamo.montoPorDesembolsarUsdP" matInput placeholder="Monto por Desembolsar %" [readonly]="true">
+                                            </mat-form-field>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-sm-6">
+                                          <div class="form-group">
+                                            <mat-form-field>
+                                              <input matInput [matDatepicker]="fechaDecreto" placeholder="* Fecha Decreto"
+                                              name="fechaDecreto" [(ngModel)]="prestamo.fechaDecreto" [required]="true">
+                                              <mat-datepicker-toggle matSuffix [for]="fechaDecreto"></mat-datepicker-toggle>
+                                              <mat-datepicker #fechaDecreto></mat-datepicker>
+                                            </mat-form-field>
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                          <div class="form-group">
+                                            <mat-form-field>
+                                              <input name="numeroAutorizacion" [(ngModel)]="prestamo.numeroAutorizacion" matInput placeholder="Número de Decreto">
+                                            </mat-form-field>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-sm-12">
+                                          <div class="form-group">
+                                          <mat-form-field>
+                                            <input name="porcentajeAvance" [(ngModel)]="prestamo.porcentajeAvance" matInput placeholder="Avance del Préstamo %">
+                                          </mat-form-field>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-sm-12">
+                                          <div class="form-group">
+                                            <mat-form-field>
+                                            <textarea name="objetivo" matInput rows="4" [(ngModel)]="prestamo.objetivo" placeholder="Objetivo del Préstamo"></textarea>
+                                            </mat-form-field>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-sm-12">
+                                          <div class="form-group">
+                                            <mat-form-field>
+                                            <textarea name="objetivoEspecifico" matInput rows="4" [(ngModel)]="prestamo.objetivoEspecifico" placeholder="Objetivos específicos del Préstamo"></textarea>
+                                            </mat-form-field>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <br>
+                                      <div class="row" style="width: 99.5%;" align="center">
+                                        <div class="col-sm-12">
+                                          <h5>Tipo de préstamo</h5>
+                                          <div style="text-align: right;">
+                                            <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="buscarTiposPrestamo()" matTooltip="Asignar un tipo de préstamo"><mat-icon>add</mat-icon></button>
+                                          </div>
+                                          <br>
+                                          <div>
+                                            <ng2-smart-table [settings]="settingsTipoPrestamo" [source]="sourceTipoPrestamo"></ng2-smart-table>              
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row" style="width: 99.5%;" align="center" [hidden]="esNuevoDocumento">
+                                        <div class="col-sm-12">
+                                          <h5>Archivos adjuntos</h5>
+                                          <div style="text-align: right;">
+                                            <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="adjuntarDocumentos()" matTooltip="Adjuntar documento"><mat-icon>add</mat-icon></button>
+                                          </div>
+                                          <br>
+                                          <div>
+                                            <ng2-smart-table [settings]="settingsArchivosAdjuntos" [source]="sourceArchivosAdjuntos"></ng2-smart-table>              
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <br>
+                                      <div class="row" style="width: 99.5%;">
+                                        <div class="col-sm-12">
+                                          <div class="panel panel-default" style="height: 200px;">
+                                            <div class="panel-heading label-form" style="text-align: center;">Datos de auditoría</div>
+                                            <div class="panel-body">
+                                              <div class="row">
+                                                <div class="row">
+                                                  <div class="col-sm-6">
+                                                    <div class="form-group" style="text-align: right">
+                                                      <label class="label-form" for="usuarioCreo">Usuario que creo</label>
+                                                      <p>{{ prestamo.usuarioCreo }}</p>
+                                                    </div>
+                                                  </div>
+                                                  <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                      <label  class="label-form"  for="fechaCreacion">Fecha de creación</label>
+                                                      <p>{{ prestamo.fechaCreacion }}</p>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                                <div class="row">
+                                                  <div class="col-sm-6">
+                                                    <div class="form-group" style="text-align: right">
+                                                      <label  class="label-form" for="usuarioActualizo">Usuario que actualizo</label>
+                                                      <p>{{ prestamo.usuarioActualizo }}</p>
+                                                    </div>
+                                                  </div>
+                                                  <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                      <label for="fechaActualizacion"  class="label-form" >Fecha de actualizacion</label>
+                                                      <p>{{ prestamo.fechaActualizacion }}</p>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>                                              
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                  </div>                                  
                                 </div>
-                            </div>
-                            <div class="row">
-                              <div class="col-sm-12">
-                                  <mat-form-field>
-                                      <input [(ngModel)]="prestamo.proyectoPrograma" matInput placeholder="* Proyecto/Programa">
-                                  </mat-form-field>
-                              </div>
-                            </div> 
-                            <div class="row">
-                              <div class="col-sm-12">
-                                  <mat-form-field>
-                                      <input [(ngModel)]="prestamo.cooperantenombre" matInput placeholder="* Organismo Financiero Internacional">
-                                  </mat-form-field>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col-sm-12">
-                                  <mat-form-field>
-                                      <input [(ngModel)]="prestamo.sectorEconomico" matInput placeholder="Sector Económico">
-                                  </mat-form-field>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col-sm-4">
-                                <mat-form-field>
-                                  <input matInput [matDatepicker]="fechaElegibilidadUe" placeholder="* Fecha de Elegibilidad" [value]="prestamo.fechaElegibilidadUe" [(ngModel)]="prestamo.fechaElegibilidadUe">
-                                  <mat-datepicker-toggle matSuffix [for]="fechaElegibilidadUe"></mat-datepicker-toggle>
-                                  <mat-datepicker #fechaElegibilidadUe></mat-datepicker>
-                                </mat-form-field>
-                              </div>
-                            </div>                
-                            <br>
-                          </div>
-                        </mat-tab>
-                        <mat-tab label="Presupuesto">
-                          <div class="demo-tab-content">
-                          </div>
-                        </mat-tab>
-                        <mat-tab label="Unidades Ejecutoras">
-                          <div class="demo-tab-content">
-                          </div>
-                        </mat-tab>
-                        <mat-tab label="Componentes">
-                          <div class="demo-tab-content">
-                          </div>
-                        </mat-tab>
-                        <mat-tab label="Distribución de Unidad Ejecutora">
-                          <div class="demo-tab-content">
-                          </div>
-                        </mat-tab>
-                        <mat-tab label="Indicadores">
-                          <div class="demo-tab-content">
-                          </div>
-                        </mat-tab>
-                        <mat-tab label="Riesgos">
-                          <div class="demo-tab-content">
-                          </div>
-                        </mat-tab>
-                    </mat-tab-group>
-                </mat-card-content>
-            </mat-card>
-          </div>
-          <br>
-          <div>
-              <button mat-raised-button style="background-color: #5cb85c; color:#fff; border-color: #4cae4c" (click)="guardar()"><mat-icon>save</mat-icon>Guardar</button>
-              <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="IrATabla()"><mat-icon>list</mat-icon>Ir a Tabla</button>
-          </div>
-        </div>
+                              </mat-tab>
+                              <mat-tab label="Presupuesto">
+                                <div class="demo-tab-content">
+                                  <br>
+                                  <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <mat-form-field>
+                                                <input name="montoAsignadoUe" [(ngModel)]="prestamo.montoAsignadoUe" matInput type="number" placeholder="* Monto Asignado" [required]="true">
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                      <div class="col-sm-12">
+                                          <div class="form-group">
+                                              <mat-form-field>
+                                                  <input name="montoAsignadoUeUsd" [(ngModel)]="prestamo.montoAsignadoUeUsd" matInput type="number" placeholder="* Monto Asignado $" [required]="true">
+                                              </mat-form-field>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <mat-form-field>
+                                                <input name="montoAsignadoUeUsd" [(ngModel)]="prestamo.montoAsignadoUeQtz" matInput type="number" placeholder="* Monto Asignado Q" [required]="true">
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </mat-tab>
+                              <mat-tab label="Unidades Ejecutoras">
+                                <div class="demo-tab-content">
+                                </div>
+                              </mat-tab>
+                              <mat-tab label="Componentes">
+                                <div class="demo-tab-content">
+                                </div>
+                              </mat-tab>
+                              <mat-tab label="Distribución de Unidad Ejecutora">
+                                <div class="demo-tab-content">
+                                </div>
+                              </mat-tab>
+                              <mat-tab label="Indicadores">
+                                <div class="demo-tab-content">
+                                </div>
+                              </mat-tab>
+                              <mat-tab label="Riesgos">
+                                <div class="demo-tab-content">
+                                </div>
+                              </mat-tab>
+                          </mat-tab-group>
+                      </mat-card-content>
+                  </mat-card>
+                </div>
+                <div>
+                    <button mat-raised-button style="background-color: #5cb85c; color:#fff; border-color: #4cae4c" [disabled]="!myForm.valid" (click)="guardar()"><mat-icon>save</mat-icon>Guardar</button>
+                    <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="IrATabla()"><mat-icon>list</mat-icon>Ir a Tabla</button>
+                </div>
+            </div>
+        </form>        
       </div>
     </div>
-    <div class="column-right right">
-    </div>
-  </div>
+</div>
 
 
 
