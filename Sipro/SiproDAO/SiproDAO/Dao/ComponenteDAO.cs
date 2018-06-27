@@ -541,9 +541,9 @@ namespace SiproDAO.Dao
                 using (DbConnection db = new OracleContext().getConnection())
                 {
                     string query = String.Join(" ", "SELECT * FROM COMPONENTE c",
-                        "INNER JOIN c.componente_sigade cs",
-                        "INNER JOIN c.proyecto p",
-                        "INNER JOIN p.prestamo pr",
+                        "INNER JOIN COMPONENTE_SIGADE cs ON cs.id = c.componente_sigadeid",
+                        "INNER JOIN PROYECTO p ON p.id = c.proyectoid",
+                        "INNER JOIN PRESTAMO pr ON pr.id = p.prestamoid",
                         "WHERE cs.codigo_presupuestario=:codigo_presupuestario",
                         "AND c.ejercicio=:ejercicio",
                         "AND c.entidad =:entidad",

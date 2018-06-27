@@ -8,6 +8,7 @@ import { UtilsService } from './utils.service';
 import { AuthService } from './auth.service';
 import { RouteguardService } from './routeguard.service';
 import { MaterialModule } from './material/material.module';
+import { FlexLayoutModule } from "@angular/flex-layout";
 import { utils } from 'protractor'; 
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { MatInputModule, MatPaginatorModule, MatTabsModule, MatDatepickerModule, MatNativeDateModule, MAT_DATE_LOCALE, MatPaginatorIntl } from '@angular/material';
@@ -18,6 +19,10 @@ import { DialogOverviewMoneda, DialogMoneda } from './components/prestamo/modals
 import { DialogOverviewTipoPrestamo, DialogTipoPrestamo } from './components/prestamo/modals/modal-tipo-prestamo'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginatorIntlSpanish } from '../assets/ts/custom-paginator-spanish';
+import { ButtonDeleteComponent } from '../assets/ts/ButtonDeleteComponent';
+import { ButtonDownloadComponent } from '../assets/ts/ButtonDownloadComponent';
+import { DialogOverviewDownloadDocument, DialogDownloadDocument } from '../assets/ts/documentosadjuntos/documento-adjunto';
+import { FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo } from '../assets/ts/FormatoMillones';
 
 import { AppComponent } from './app.component';
 import { MainComponent } from './components/main/main.component';
@@ -55,7 +60,9 @@ const routes: Routes = [{
       AppComponent,
       LoginComponent, 
       AccesodenegadoComponent, MainComponent, PagenotfoundComponent, FooterComponent, MainmenuComponent, PrestamoComponent,
-      DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario, DialogOverviewMoneda, DialogMoneda, DialogOverviewTipoPrestamo, DialogTipoPrestamo
+      DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario, DialogOverviewMoneda, DialogMoneda, DialogOverviewTipoPrestamo, 
+      DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, DialogOverviewDownloadDocument, DialogDownloadDocument, 
+      FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo
   ],
   imports: [
       BrowserModule,
@@ -64,6 +71,7 @@ const routes: Routes = [{
       HttpClientModule,
       FlashMessagesModule.forRoot(),
       MaterialModule,
+      FlexLayoutModule,      
       Ng2SmartTableModule, 
       MatPaginatorModule, 
       MatTabsModule, 
@@ -74,11 +82,12 @@ const routes: Routes = [{
   providers: [UtilsService, AuthService, RouteguardService, 
     { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },
     { provide: LOCALE_ID, useValue: "es-ES" },
-    { provide: MatPaginatorIntl, useClass: MatPaginatorIntlSpanish }
+    { provide: MatPaginatorIntl, useClass: MatPaginatorIntlSpanish }    
   ],
   bootstrap: [AppComponent],
   entryComponents: [DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario, DialogOverviewMoneda, DialogMoneda,
-    DialogOverviewTipoPrestamo, DialogTipoPrestamo]
+    DialogOverviewTipoPrestamo, DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent,DialogOverviewDownloadDocument, 
+    DialogDownloadDocument]
 })
 export class AppModule { 
   

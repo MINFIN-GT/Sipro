@@ -99,7 +99,7 @@ div.mat-tab-label{
 .col-sm-2{width:16.66666667%}
 .col-sm-1{width:8.33333333%}
 
-.form-group{
+.padding-field{
     padding: 5px;
 }
 
@@ -152,4 +152,18 @@ div.mat-tab-label{
     left: 0;
     bottom: 0;
     right: 0;
+}
+
+.primary-btn{
+    background-color: #337ab7; 
+    color: #fff;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.container {
+    min-height: 100%;
 }

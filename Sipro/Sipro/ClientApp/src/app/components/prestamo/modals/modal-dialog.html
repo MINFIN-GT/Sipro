@@ -1,31 +1,34 @@
-<h1 mat-dialog-title style="border-bottom: 1px double #ddd !important;">{{data.titulo}}</h1>
-<div style="min-height: 355px; max-height: 355px;">
-  <div class="col-sm-12" [hidden]="esColapsado" style="min-height: 355px; max-height: 355px;">
+<div fxLayout="column" fxFlexFill style="overflow: hidden;">
+  <div class="flex-container" style="height: 360px;">
+    <h1 mat-dialog-title style="border-bottom: 1px double #ddd !important;">{{data.titulo}}</h1>
+    <div [hidden]="esColapsado" fxFlexFill>
       <mat-progress-spinner style="position: fixed;"
-      class="progress-spinner"
-      [color]="color"
-      [mode]="mode"
-      [value]="value"
-      [diameter]="diameter" 
-      [strokeWidth]="strokewidth"
+        class="progress-spinner"
+        [color]="color"
+        [mode]="mode"
+        [value]="value"
+        [diameter]="diameter" 
+        [strokeWidth]="strokewidth"
       >
-    </mat-progress-spinner>
-  </div>  
-  <div mat-dialog-content>
-    <div class="col-sm-12" [hidden]="!esColapsado">                           
-        <ng2-smart-table [settings]="settings" [source]="source" (dblClickRow)="onDblClickRow($event)" (userRowSelect)="onSelectRow($event)"></ng2-smart-table>
+      </mat-progress-spinner>
+    </div>
+    <div fxFlexFill>      
+      <div mat-dialog-content>
+        <div [hidden]="!esColapsado">                           
+            <ng2-smart-table [settings]="settings" [source]="source" (dblClickRow)="onDblClickRow($event)" (userRowSelect)="onSelectRow($event)"></ng2-smart-table>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-<div class="col-sm-12">
-  <mat-paginator [length]="totalCodigos" [hidePageSize]="true" [pageSize]="elementosPorPagina" 
-  [showFirstLastButtons]="true" (page)="pageEvent = handlePage($event)">
-  </mat-paginator>
-</div>
-<br>
-<div class="col-sm-12">
-    <div mat-dialog-actions align="end" style="border-top: 1px double #ddd !important;">
-      <button mat-raised-button style="background-color: #5cb85c; color:#fff; border-color: #4cae4c" [mat-dialog-close]="data.animal" (click)="Ok()">Ok</button>
-      <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="cancelar()">Cancelar</button>
-    </div>
+  <div fxFlex style="max-height: 60px;">
+    <mat-paginator [length]="totalCodigos" [hidePageSize]="true" [pageSize]="elementosPorPagina" 
+    [showFirstLastButtons]="true" (page)="pageEvent = handlePage($event)">
+    </mat-paginator>
+  </div>
+  <div fxFlex style="max-height: 60px;">
+      <div mat-dialog-actions align="end" style="border-top: 1px double #ddd !important;">
+        <button mat-raised-button style="background-color: #5cb85c; color:#fff; border-color: #4cae4c" (click)="Ok()">Ok</button>
+        <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="cancelar()">Cancelar</button>
+      </div>
+  </div>   
 </div>

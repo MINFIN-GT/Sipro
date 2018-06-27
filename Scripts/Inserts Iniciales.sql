@@ -2028,7 +2028,7 @@ INSERT INTO UNIDAD_MEDIDA VALUES (1,'Casas',NULL,'admin',NULL,TO_TIMESTAMP ('201
 INSERT INTO UNIDAD_MEDIDA VALUES (2,'Kilómetros',NULL,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO UNIDAD_MEDIDA VALUES ( 3,'Capacitaciones',NULL,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 
-INSERT INTO USUARIO VALUES ('admin','57kldOQR8YQxSpOwbNOIe7hlV6k2ewpEM++Fvy6YZHc=','J3iGT5W6I0uZtqu2vlfWHg==','admin@minfin.com','admin','admin',TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),1,1);
+INSERT INTO USUARIO VALUES ('admin','PXPTQqLxJsPgMC8yr7yt/mZyYtjeFZTb1Cs1yMR82sI=','J3iGT5W6I0uZtqu2vlfWHg==','admin@minfin.com','admin','admin',TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),1,1);
 
 INSERT INTO USUARIO_PERMISO VALUES ('admin',1010,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO USUARIO_PERMISO VALUES ('admin',1020,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);

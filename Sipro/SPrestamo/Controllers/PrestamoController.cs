@@ -725,7 +725,7 @@ namespace SPrestamo.Controllers
         }
 
         // GET api/Prestamo/ComponentesSigade
-        [HttpGet("{codigo_presupuestario}")]
+        [HttpGet("{codigoPresupuestario}")]
         [Authorize("Préstamos o Proyectos - Visualizar")]
         public IActionResult ComponentesSigade(string codigoPresupuestario)
         {
@@ -734,14 +734,13 @@ namespace SPrestamo.Controllers
                 List<DtmAvanceFisfinanCmp> componentesSigade = DataSigadeDAO.getComponentes(codigoPresupuestario);
                 List<stcomponentessigade> lstcomponentes = new List<stcomponentessigade>();
                 stcomponentessigade temp = null;
-                foreach (Object objComponente in componentesSigade)
+                foreach (DtmAvanceFisfinanCmp objComponente in componentesSigade)
                 {
-                    Object[] componente = (Object[])objComponente;
                     temp = new stcomponentessigade();
-                    temp.id = (int)componente[1];
-                    temp.nombre = (String)componente[2];
-                    temp.tipoMoneda = (String)componente[3];
-                    temp.techo = (decimal)componente[4];
+                    temp.id = objComponente.numeroComponente ?? default(int);
+                    temp.nombre = objComponente.nombreComponente;
+                    temp.tipoMoneda = objComponente.monedaComponente;
+                    temp.techo = objComponente.montoComponente ?? default(decimal);
                     lstcomponentes.Add(temp);
                 }
 
@@ -761,18 +760,16 @@ namespace SPrestamo.Controllers
         {
             try
             {
-                int ejercicio = DateTime.Now.Year;
-                int prestamoId = (int)value.proyectoId;
-
-                List<DtmAvanceFisfinanEnp> unidadesEjecutoras = DataSigadeDAO.getUnidadesEjecutoras((string)value.codigoPresupuestario, (int)value.ejercicio);
+                int ejercicio = 2017;//DateTime.Now.Year;
+                int prestamoId = value.proyectoId != null ? (int)value.proyectoId : default(int);
+                string codigoPresupuestario = value.codigoPresupuestario != null ? value.codigoPresupuestario : null;
+                List <DtmAvanceFisfinanEnp> unidadesEjecutoras = DataSigadeDAO.getUnidadesEjecutoras((string)value.codigoPresupuestario, ejercicio);
                 List<stunidadejecutora> lstunidadesejecutoras = new List<stunidadejecutora>();
                 stunidadejecutora temp = null;
-                foreach (Object unidadEjecutora in unidadesEjecutoras)
+                foreach (DtmAvanceFisfinanEnp unidadEjecutora in unidadesEjecutoras)
                 {
                     temp = new stunidadejecutora();
-                    Object[] objEU = (Object[])unidadEjecutora;
-
-                    UnidadEjecutora EU = UnidadEjecutoraDAO.getUnidadEjecutora((int)objEU[1], (int)objEU[2], (int)objEU[3]);
+                    UnidadEjecutora EU = UnidadEjecutoraDAO.getUnidadEjecutora(unidadEjecutora.ejercicioFiscal ?? default(int), unidadEjecutora.entidadPresupuestaria ?? default(int), unidadEjecutora.unidadEjecutora ?? default(int));
                     if (EU != null)
                     {
                         EU.entidads = EntidadDAO.getEntidad(EU.entidadentidad, EU.ejercicio);
@@ -817,10 +814,10 @@ namespace SPrestamo.Controllers
         {
             try
             {
-                string codigoPresupuestario = (string)value.codigoPresupuestario;
-                int prestamoId = (int)value.prestamoId;
+                string codigoPresupuestario = value.codigoPresupuestario != null ? (string)value.codigoPresupuestario : null;
+                int prestamoId = value.prestamoId != null ? (int)value.prestamoId : default(int);
                 bool existenDatos = false;
-                int anio_actual = DateTime.Now.Year;
+                int anio_actual = 2017;//DateTime.Now.Year;
                 List<DtmAvanceFisfinanEnp> unidadesEjecutorasSigade = DataSigadeDAO.getUnidadesEjecutoras(codigoPresupuestario, anio_actual);
                 List<stunidadejecutora> unidadesEjecutroas = new List<stunidadejecutora>();
 
@@ -985,9 +982,10 @@ namespace SPrestamo.Controllers
         {
             try
             {
-                Prestamo prestamo = PrestamoDAO.getPrestamoById((int)value.prestamoId);
+                int prestamoId = value.prestamoId != null ? (int)value.prestamoId : default(int);
+                Prestamo prestamo = PrestamoDAO.getPrestamoById(prestamoId);
 
-                bool ret = PrestamoDAO.guardarComponentes(prestamo.codigoPresupuestario + "", (int)value.proyectoId, User.Identity.Name, prestamo.fechaSuscripcion);
+                bool ret = PrestamoDAO.guardarComponentes(prestamo.codigoPresupuestario + "", prestamoId, User.Identity.Name, prestamo.fechaSuscripcion);
                 return Ok(new { success = ret });
             }
             catch (Exception e)

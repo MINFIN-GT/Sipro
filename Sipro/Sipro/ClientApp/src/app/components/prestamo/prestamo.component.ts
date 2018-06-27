@@ -8,7 +8,10 @@ import { MatDialog } from '@angular/material';
 import { DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario } from './modals/modal-codigo-presupuestario'
 import { DialogOverviewMoneda, DialogMoneda } from './modals/modal-moneda'
 import { DialogOverviewTipoPrestamo, DialogTipoPrestamo } from './modals/modal-tipo-prestamo'
-
+import { ButtonDeleteComponent } from '../../../assets/ts/ButtonDeleteComponent';
+import { ButtonDownloadComponent } from '../../../assets/ts/ButtonDownloadComponent';
+import { DialogDownloadDocument, DialogOverviewDownloadDocument } from '../../../assets/ts/documentosadjuntos/documento-adjunto'
+import { Prestamo } from './model/model.prestamo'
 
 @Component({
   selector: 'app-prestamo',
@@ -36,7 +39,22 @@ export class PrestamoComponent implements OnInit {
   modalCodigoPresupuestario: DialogOverviewCodigoPresupuestario;
   modalMoneda: DialogOverviewMoneda;
   modalTipoPrestamo: DialogOverviewTipoPrestamo;
-  tablaTipos = [];
+  modalAdjuntarDocumento: DialogOverviewDownloadDocument;
+  cooperanteid : number;
+  matriz_valid : number;
+  diferenciaCambios : number;
+  m_organismosEjecutores = [];
+  m_componentes = [];
+  m_existenDatos: boolean;
+  metasCargadas = false;
+  riesgosCargados = false;
+  activeTab : number;
+  componentes = [];
+  rowCollectionComponentes = [];
+  toggle = {};
+  tabActive : number;
+  unidadesEjecutoras = [];
+  totalIngresado : number;
 
   @ViewChild('search') divSearch: ElementRef;
 
@@ -54,24 +72,30 @@ export class PrestamoComponent implements OnInit {
     this.modalMoneda = new DialogOverviewMoneda(dialog);
     this.modalTipoPrestamo = new DialogOverviewTipoPrestamo(dialog);
     this.sourceTipoPrestamo = new LocalDataSource();
+    this.modalAdjuntarDocumento = new DialogOverviewDownloadDocument(dialog);
+    this.toggle = {};
+    this.matriz_valid = 1;
+    this.diferenciaCambios = 0;
+    this.tabActive = 0;
+    this.totalIngresado  = 0;
   }
 
   ngOnInit() { 
     this.obtenerTotalPrestamos();
   }
 
-  onBusqueda(){
-    alert('hola busqueda global');
-  }
-
   nuevo(){
     this.esColapsado = true;
     this.esnuevo = true;
     this.esNuevoDocumento = true;
+    this.m_organismosEjecutores = [];
+    this.m_componentes = [];
+    this.componentes = [];
+    this.tabActive = 0;
   }
 
   editar(){
-    if(this.prestamo != null){
+    if(this.prestamo.id != null){
       this.esColapsado = true;
       this.esnuevo = false;
       this.esNuevoDocumento = false;
@@ -120,6 +144,7 @@ export class PrestamoComponent implements OnInit {
       elementosPorPagina: this.elementosPorPagina,
       filtro_busqueda: this.busquedaGlobal,
       columna_ordenada: null,
+      t:moment().unix()
     };
 
     this.http.post('http://localhost:60054/api/Prestamo/PrestamosPagina', filtro, { withCredentials: true }).subscribe(response => {
@@ -138,6 +163,9 @@ export class PrestamoComponent implements OnInit {
             data[i].fechaVigencia = data[i].fechaVigencia != null ? moment(data[i].fechaVigencia,'DD/MM/YYYY').toDate() : null;
           }
           this.source = new LocalDataSource(data);
+          this.source.setSort([
+            { field: 'id', direction: 'asc' }  // primary sort
+          ]);
           this.busquedaGlobal = null;
         } else {
           console.log('Error');
@@ -214,20 +242,150 @@ export class PrestamoComponent implements OnInit {
   buscarCodigoPresupuestario(){
     this.modalCodigoPresupuestario.dialog.open(DialogCodigoPresupuestario, {
       width: '600px',
-      height: '550px',
+      height: '520px',
       data: { titulo: 'Código Presupuestario' }
     }).afterClosed().subscribe(result => {
       if(result != null){
         this.prestamo.codigoPresupuestario = result.codigoPresupuestario;
         this.prestamo.numeroPrestamo = result.numeroprestamo;
+        this.cargaSigade();
+        this.cargarMatriz();
+        var codigoPresupuestario = this.prestamo.codigoPresupuestario;
+        this.http.get('http://localhost:60054/api/Prestamo/ComponentesSigade/'+ codigoPresupuestario, { withCredentials: true }).subscribe(response => {
+          if(response['success'] == true){
+            this.componentes = response['componentes'];
+          }
+        })
+
+        this.http.post('http://localhost:60054/api/Prestamo/UnidadesEjecutoras',{
+          codigoPresupuestario : this.prestamo.codigoPresupuestario,
+          proyectoId : null
+        }, { withCredentials: true }).subscribe(response => {
+            if(response['success'] == true){
+              this.unidadesEjecutoras = response['unidadesEjecutoras'];
+              if(this.unidadesEjecutoras.length>0){
+                this.unidadesEjecutoras[0].esCoordinador=true;
+            }
+          }
+        })
       }
     });
+  }
+
+  cargaSigade(){
+    var codigoPresupuestario = this.prestamo.codigoPresupuestario;
+
+    this.http.get('http://localhost:60016/api/DataSigade/Datos/' + codigoPresupuestario, { withCredentials: true }).subscribe(response => {
+      if (response['success'] == true) {   
+        this.prestamo= new Prestamo();  
+        this.prestamo = response['prestamo'];
+        this.prestamo.fechaDecreto = moment(this.prestamo.fechaDecreto,'DD/MM/YYYY').toDate();
+        this.prestamo.fechaSuscripcion = moment(this.prestamo.fechaSuscripcion,'DD/MM/YYYY').toDate();
+        this.prestamo.fechaVigencia = moment(this.prestamo.fechaVigencia,'DD/MM/YYYY').toDate();
+        this.prestamo.nombre = this.prestamo.nombre == null || this.prestamo.nombre == undefined || this.prestamo.nombre == '' ?
+          this.prestamo.proyectoPrograma : this.prestamo.nombre;
+        this.cooperanteid = this.prestamo.cooperanteid;
+        this.getPorcentajes();
+      }else{
+        alert('Warning, No se encontraron datos con los parámetros ingresados');
+      }   
+  });
+  }
+
+  cargarMatriz(){
+    this.matriz_valid = null;
+	  this.diferenciaCambios = 0;
+			var parametros = {
+					prestamoId: this.prestamo.id,
+					codigoPresupuestario: this.prestamo.codigoPresupuestario,
+				    t:moment().unix()
+			};
+
+    this.http.post('http://localhost:60054/api/Prestamo/ObtenerMatriz', parametros, { withCredentials: true }).subscribe(response => {
+      if (response['success'] == true) {
+        this.m_organismosEjecutores = response["unidadesEjecutoras"];
+        
+        this.m_componentes = response["componentes"];
+
+        for(var x in this.m_componentes){
+          this.m_componentes[x].totalIngresado = 0;
+        }
+
+        this.m_existenDatos = response["existenDatos"];
+        this.metasCargadas = false;
+        this.riesgosCargados = false;
+        this.activeTab = 0;
+        this.diferenciaCambios = response["diferencia"];
+        this.actualizarTotalesUE();
+      }else{
+        alert('Warning, No se encontraron datos con los parámetros ingresados')
+      }
+    })
+  }
+
+  actualizarTotalesUE(){
+    var totalPrestamo = 0;
+		var totalDonacion = 0;
+		var totalNacional = 0;
+    
+    for(var x in this.m_organismosEjecutores){
+      this.m_organismosEjecutores[x].totalAsignadoPrestamo = 0;
+      this.m_organismosEjecutores[x].totalAsignadoDonacion = 0;
+      this.m_organismosEjecutores[x].totalAsignadoNacional = 0;
+    }
+
+    for(var c = 0; c < this.m_componentes.length; c++){
+      for(var ue = 0; ue < this.m_componentes[c].unidadesEjecutoras.length; ue++){
+        this.m_organismosEjecutores[ue].totalAsignadoPrestamo += this.m_componentes[c].unidadesEjecutoras[ue].prestamo;
+        this.m_organismosEjecutores[ue].totalAsignadoDonacion += this.m_componentes[c].unidadesEjecutoras[ue].donacion;
+        this.m_organismosEjecutores[ue].totalAsignadoNacional += this.m_componentes[c].unidadesEjecutoras[ue].nacional;
+      }
+    }
+  }
+
+  actualizarComponentes(){
+    this.matriz_valid = 1;
+		this.totalIngresado  = 0;
+		     for (var x in this.m_componentes){
+		    	 this.m_componentes[x].totalAsignadoPrestamo = 0;
+		    	 var  totalUnidades = 0;
+		    	 var totalAsignado = 0;
+		    	 for (var j in this.m_componentes[x].unidadesEjecutoras){
+		    		 totalUnidades = totalUnidades +  this.m_componentes[x].unidadesEjecutoras[j].prestamo;
+		    	 }
+		    	 totalAsignado = totalUnidades;
+		    	 this.totalIngresado = this.totalIngresado + totalUnidades;
+		    	 this.matriz_valid = this.matriz_valid==1 &&  totalUnidades == this.m_componentes[x].techo ? 1 : null;
+		    	 
+		    	 this.m_componentes[x].totalIngresado = totalAsignado;
+		     }
+  }
+
+  cambiarCoordinador(pos){
+    for (var x in this.unidadesEjecutoras){
+      this.unidadesEjecutoras[x].esCoordinador = false;
+    }
+    
+    this.unidadesEjecutoras[pos].esCoordinador = true;
+  }
+
+  componenteSeleccionado(row){
+    var rowAnterior
+    if(rowAnterior){
+      if(row != rowAnterior){
+        rowAnterior.isSelected=false;
+      }else{
+        return;
+      }
+    }
+    row.isSelected = true;
+    rowAnterior = row;
   }
 
   buscarTipoMoneda(){
     this.modalMoneda.dialog.open(DialogMoneda, {
       width: '600px',
-      height: '550px',
+      height: '520px',
       data: { titulo: 'Tipo Moneda' }
     }).afterClosed().subscribe(result => {
       if(result != null){
@@ -237,8 +395,80 @@ export class PrestamoComponent implements OnInit {
     });
   }
 
-  setPorcentaje(val: number){
+  setPorcentaje(tipo: number){
+    var n = 0;
+		if (tipo==1)
+		{
+			if(this.prestamo.desembolsoAFechaUsd !== undefined && this.prestamo.montoContratado !== undefined){
+				n = (this.prestamo.desembolsoAFechaUsd / this.prestamo.montoContratado) * 100;
+				this.prestamo.desembolsoAFechaUsdP = Number(n.toFixed(2));
+				this.prestamo.montoPorDesembolsarUsd= ((1 - (this.prestamo.desembolsoAFechaUsdP/100) ) *  this.prestamo.montoContratado);
+				this.prestamo.montoPorDesembolsarUsd= Number(this.prestamo.montoPorDesembolsarUsd.toFixed(2));
+				this.prestamo.montoPorDesembolsarUsdP= 100 - this.prestamo.desembolsoAFechaUsdP;
+				if(isNaN(this.prestamo.montoPorDesembolsarUsdP))
+					this.prestamo.montoPorDesembolsarUsdP = null;
+			}
+		}else if (tipo==2){
+			if(this.prestamo.montoContratadoUsd !== undefined && this.prestamo.montoPorDesembolsarUsd !== undefined){
+				n = (this.prestamo.montoPorDesembolsarUsd / this.prestamo.montoContratadoUsd) * 100;
+				this.prestamo.montoPorDesembolsarUsdP = Number(n.toFixed(2));
+				if(isNaN(this.prestamo.montoPorDesembolsarUsdP))
+					this.prestamo.montoPorDesembolsarUsdP = null;
+			}
+		}else if (tipo==3){
+			if(this.prestamo.desembolsoAFechaUeUsd !== undefined && this.prestamo.montoAsignadoUe !== undefined){
+				n = (this.prestamo.desembolsoAFechaUeUsd / this.prestamo.montoAsignadoUeUsd) * 100;
+				this.prestamo.desembolsoAFechaUeUsdP = Number(n.toFixed(2));
+				this.prestamo.montoPorDesembolsarUeUsd = ((1.00 - (this.prestamo.desembolsoAFechaUeUsdP/100.00) ) *  (this.prestamo.montoAsignadoUeUsd*1.00));
+				this.prestamo.montoPorDesembolsarUeUsdP= 100.00 - this.prestamo.desembolsoAFechaUeUsdP;
+				if(isNaN(this.prestamo.desembolsoAFechaUeUsdP))
+					this.prestamo.desembolsoAFechaUeUsdP = null;
+				if(isNaN(this.prestamo.montoPorDesembolsarUeUsd))
+					this.prestamo.montoPorDesembolsarUeUsd = null;
+				if(isNaN(this.prestamo.montoPorDesembolsarUeUsdP))
+					this.prestamo.montoPorDesembolsarUeUsdP = null;
+			}
+		}else if(tipo==4){
+			if(this.prestamo.montoAsignadoUeUsd !== undefined && this.prestamo.montoPorDesembolsarUeUsd !== undefined){
+				n = (this.prestamo.montoPorDesembolsarUeUsd / this.prestamo.montoAsignadoUeUsd) * 100;
+				this.prestamo.montoPorDesembolsarUeUsdP = Number(n.toFixed(2));
+				if(isNaN(this.prestamo.montoPorDesembolsarUeUsdP))
+					this.prestamo.montoPorDesembolsarUeUsdP = null;
+			}
+		}else if(tipo==5){
+			if(this.prestamo.fechaCierreActualUe !== undefined && this.prestamo.fechaElegibilidadUe !== undefined){
+				var fechaInicio = moment(this.prestamo.fechaElegibilidadUe).format('DD/MM/YYYY').split('/');
+				var fechaFinal = moment(this.prestamo.fechaCierreActualUe).format('DD/MM/YYYY').split('/');
+				var ffechaInicio = Date.UTC(Number(fechaInicio[2]),Number(fechaInicio[1])-1,Number(fechaInicio[0]));
+				var ffechaFinal = Date.UTC(Number(fechaFinal[2]),Number(fechaFinal[1])-1,Number(fechaFinal[0]));
+				
+				var hoy = new Date();
+				var fechaActual = moment(hoy).format('DD/MM/YYYY').split('/');
+				var ffechaActual = Date.UTC(Number(fechaActual[2]),Number(fechaActual[1])-1,Number(fechaActual[0]));
+				
+				var dif1 = ffechaFinal - ffechaInicio;
+				var dif2 = ffechaActual - ffechaInicio;
+				n = (dif1>0) ? (dif2 / dif1) * 100.00 : 0.00;
+				if (isNaN(n) || n < 0)
+					n = 0.00;
+        this.prestamo.plazoEjecucionUe = Number(n.toFixed(2));
+        var diferencia = moment(this.prestamo.fechaCierreActualUe).diff(this.prestamo.fechaCierreOrigianlUe,'months',true);
+				this.prestamo.mesesProrrogaUe = diferencia < 0 ? Number(0) : Number(diferencia.toFixed(2));
+				if(isNaN(this.prestamo.plazoEjecucionUe))
+					this.prestamo.plazoEjecucionUe = null;
+				if(isNaN(this.prestamo.mesesProrrogaUe))
+					this.prestamo.mesesProrrogaUe = null;
+			}
+			
+		}
+  }
 
+  getPorcentajes(){
+    this.setPorcentaje(1);
+    this.setPorcentaje(2);
+    this.setPorcentaje(3);
+    this.setPorcentaje(4);
+    this.setPorcentaje(5);
   }
 
   settingsTipoPrestamo = {
@@ -259,10 +489,16 @@ export class PrestamoComponent implements OnInit {
         filter: false,
         class: 'align-left'
       },
-      eliminar: {
+      eliminar:{
         title: 'Eliminar',
-        width: '5%',
-        filter: false,
+        sort: false,
+        type: 'custom',
+        renderComponent: ButtonDeleteComponent,
+        onComponentInitFunction: (instance) =>{
+          instance.actionEmitter.subscribe(row => {
+            this.sourceTipoPrestamo.remove(row);
+          });
+        }
       }
     },
     actions: false,
@@ -295,29 +531,27 @@ export class PrestamoComponent implements OnInit {
         filter: false
       },
       descargar: {
-        title: 'Descarga',
+        title: 'Descargar',
+        sort: false,
         type: 'custom',
-        width: '5%',
-        filter: false,
-        renderComponent: PrestamoComponent,
-        onComponentInitFunction(instance) {
-          instance.save.subscribe(row => {
-            alert(`${row.name} saved!`)
+        renderComponent: ButtonDownloadComponent,
+        onComponentInitFunction: (instance) =>{
+          instance.actionEmitter.subscribe(row => {
+            
           });
         }
       },
-      eliminar: {
+      eliminar:{
         title: 'Eliminar',
+        sort: false,
         type: 'custom',
-        width: '5%',
-        filter: false,
-        renderComponent: PrestamoComponent,
-        onComponentInitFunction(instance) {
-          instance.save.subscribe(row => {
-            alert(`${row.name} saved!`)
+        renderComponent: ButtonDeleteComponent,
+        onComponentInitFunction: (instance) =>{
+          instance.actionEmitter.subscribe(row => {
+            this.sourceArchivosAdjuntos.remove(row);
           });
         }
-      },
+      }
     },
     actions: false,
     attr: {
@@ -330,110 +564,53 @@ export class PrestamoComponent implements OnInit {
   buscarTiposPrestamo(){
     this.modalTipoPrestamo.dialog.open(DialogTipoPrestamo, {
       width: '600px',
-      height: '550px',
+      height: '520px',
       data: { titulo: 'Tipo Préstamo' }
-    }).afterClosed().subscribe(result => {
+    }).afterClosed().subscribe(result => {      
       if(result != null){
-        this.source.getElements().then(result=>{
-          this.tablaTipos.push({ id: result.tipoPrestamoId, nombre: result.tipoPrestamoNombre });
-        });
-        this.tablaTipos.push({ id: result.tipoPrestamoId, nombre: result.tipoPrestamoNombre })
-        this.sourceTipoPrestamo = new LocalDataSource(this.tablaTipos);
+        let tablaTipos = [];
+        this.sourceTipoPrestamo.getAll().then(value =>{
+          value.forEach(element =>{
+            tablaTipos.push(element);
+          })
+
+          let existe = false;
+          if(tablaTipos.length==0)
+            tablaTipos.push({ id: result.tipoPrestamoId, nombre: result.tipoPrestamoNombre });
+          else{
+            tablaTipos.forEach(element => {
+              if(element.id==result.tipoPrestamoId)
+                existe = true;              
+            });
+
+            if(!existe)
+              tablaTipos.push({ id: result.tipoPrestamoId, nombre: result.tipoPrestamoNombre });
+          }  
+        })
+              
+        this.sourceTipoPrestamo = new LocalDataSource(tablaTipos);
+        this.sourceTipoPrestamo.setSort([
+          { field: 'id', direction: 'asc' }  // primary sort
+        ]);
       }
     });
   }
 
-  borrarTipoPrestamo(){
-
-  }
-
   adjuntarDocumentos(){
-
+    this.modalAdjuntarDocumento.dialog.open(DialogDownloadDocument, {
+      width: '600px',
+      height: '200px',
+      data: { titulo: 'Documentos Adjuntos' }
+    }).afterClosed().subscribe(result => {
+      if(result != null){
+        
+      }
+    });
   }
-}
 
-export class Prestamo{
-  amortizado: number;
-  aniosGracia: number;
-  aniosPlazo: number;
-  codigoPresupuestario: number;
-  comisionCompromisoAcumulado: number;
-  comisionCompromisoAnio: number;
-  cooperanteid: number;
-  cooperantenombre: string;
-  desembolsadoAFecha: number;
-  desembolsoAFechaUe: number;
-  desembolsoAFechaUeUsd: number;
-  desembolsoAFechaUsd: number;
-  desembolsoReal: number;
-  destino: string;
-  ejecucionEstadoId: number;
-  ejecucionEstadoNombre: string;
-  ejecucionFisicaRealPEP: number;
-  fechaActualizacion: Date;
-  fechaAutorizacion: Date;
-  fechaCierreActualUe: Date;
-  fechaCierreOrigianlUe: Date;
-  fechaCorte: Date;
-  fechaCreacion: Date;
-  fechaDecreto: Date;
-  fechaElegibilidadUe: Date;
-  fechaFinEjecucion: Date;
-  fechaFirma: Date;
-  fechaSuscripcion: Date;
-  fechaVigencia: Date;
-  id : number;
-  interesesAcumulados: number;
-  interesesAnio: number;
-  mesesProrrogaUe: number;
-  montoAsignadoUe: number;
-  montoAsignadoUeQtz: number;
-  montoAsignadoUeUsd: number;
-  montoContratado: number;
-  montoContratadoEntidadUsd: number;
-  montoContratadoQtz: number;
-  montoContratadoUsd: number;
-  montoPorDesembolsarUe: number;
-  montoPorDesembolsarUeUsd: number;
-  montoPorDesembolsarUsd: number;
-  nombreEntidadEjecutora: string;
-  numeroAutorizacion: number;
-  numeroPrestamo: string;
-  objetivo: string;
-  otrosCargosAcumulados: number;
-  otrosGastos: number;
-  periodoEjecucion: number;
-  plazoEjecucionPEP: number;
-  plazoEjecucionUe: number;
-  porAmortizar: number;
-  porcentajeAvance: number;
-  porcentajeComisionCompra: number;
-  porcentajeInteres: number;
-  presupuestoAsignadoFuncionamiento: number;
-  presupuestoAsignadoInversion: number;
-  presupuestoDevengadoFun: number;
-  presupuestoDevengadoInv: number;
-  presupuestoModificadoFun:number;
-  presupuestoModificadoInv: number;
-  presupuestoPagadoFun: number;
-  presupuestoPagadoInv: number;
-  presupuestoVigenteFun: number;
-  presupuestoVigenteInv: number;
-  principalAcumulado: number;
-  principalAnio: number;
-  proyectoPrograma: string;
-  saldoCuentas: number;
-  sectorEconomico: number;
-  tipoAutorizacionId: number;
-  tipoAutorizacionNombre: number;
-  tipoInteresId: number;
-  tipoInteresNombre: string;
-  tipoMonedaId: number;
-  tipoMonedaNombre: string;
-  unidadEjecutora: number;
-  unidadEjecutoraNombre: string;
-  usuarioActualizo: string;
-  usuarioCreo: string;
+  expandRowComponentes(row, index){
+    this.componentes[index].mostrar = !this.componentes[index].mostrar;
+  }
 }
 
 export class Etiqueta{

@@ -52,5 +52,10 @@
   color: #a94442;
 }
 
+.Aligner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 
