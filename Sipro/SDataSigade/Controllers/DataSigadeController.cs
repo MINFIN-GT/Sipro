@@ -94,6 +94,7 @@ namespace SDataSigade.Controllers
             public decimal desembolsoAFechaUeUsd;
             public decimal montoPorDesembolsarUeUsd;
             public int cooperantecodigo;
+            public int cooperanteejercicio;
             public String cooperantenombre;
             public String objetivo;
             public String objetivoEspecifico;
@@ -136,6 +137,7 @@ namespace SDataSigade.Controllers
                     {
                         temp.cooperantecodigo = cooperante.codigo;
                         temp.cooperantenombre = cooperante.nombre;
+                        temp.cooperanteejercicio = cooperante.ejercicio;
                     }
 
                     temp.fechaDecreto = inf.fechaDecreto != null ? inf.fechaDecreto.Value.ToString("dd/MM/yyyy H:mm:ss") : null;

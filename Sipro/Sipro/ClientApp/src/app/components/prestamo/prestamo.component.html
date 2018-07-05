@@ -24,9 +24,22 @@
                     <mat-icon class="search-info" (click)="filtrar(search.value)" matSuffix>search</mat-icon>
                 </mat-form-field>              
             </div> 
-            <br>
-            <div fxLayout="column">                           
-                <ng2-smart-table [settings]="settings" [source]="source" (dblClickRow)="onDblClickRow($event)" (userRowSelect)="onSelectRow($event)"></ng2-smart-table>              
+            <div fxLayout="column">
+              <div [hidden]="!mostrarcargando" fxFlex>
+                  <mat-progress-spinner style="position: fixed;"
+                  class="progress-spinner"
+                  [color]="color"
+                  [mode]="mode"
+                  [value]="value"
+                  [diameter]="diameter" 
+                  [strokeWidth]="strokewidth"
+                  aria-label="Cargando, por favor espere..."
+                >
+                </mat-progress-spinner>
+              </div>
+              <div [hidden]="mostrarcargando">
+                  <ng2-smart-table [settings]="settings" [source]="source" (dblClickRow)="onDblClickRow($event)" (userRowSelect)="onSelectRow($event)"></ng2-smart-table>                                 
+              </div>              
             </div>
             <br>
             <div fxLayout="row" fxLayoutAlign="end" style="font-weight: bold;">
@@ -47,8 +60,8 @@
               <div fxLayout="row">
                 <div [hidden]="esNuevo" fxFlex="50%" fxLayoutAlign="start" fxLayoutGap="2px">
                   <button mat-raised-button matTooltip="Ver PEPs en Vista Árbol" matTooltipPosition="above">Vista de Árbol</button>
-                  <button mat-raised-button matTooltip="Ver PEPs en Vista de Lista" matTooltipPosition="above">Vista de Lista</button>
-                  <button fxFlex="25px" fxLayoutAlign="center" mat-raised-button matTooltip="Congelar o descongelar linea base" matTooltipPosition="above"><mat-icon>bookmark</mat-icon></button>
+                  <button mat-raised-button matTooltip="Ver PEPs en Vista de Lista" matTooltipPosition="above" (click)="irAPeps(prestamo.id)">Vista de Lista</button>
+                  <button fxFlex="25px" fxLayoutAlign="center" mat-raised-button (click)="congelarDescongelar" matTooltip="Congelar o descongelar linea base" matTooltipPosition="above"><mat-icon>bookmark</mat-icon></button>
                 </div>
                 <div fxFlex fxLayoutAlign="end" fxLayoutGap="2px">
                     <button mat-raised-button style="background-color: #5cb85c; color:#fff; border-color: #4cae4c" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
@@ -103,7 +116,7 @@
                                         </div>
                                         <div fxLayout="row" fxLayoutGap="15px">
                                           <mat-form-field fxFlex="33.33%">
-                                            <input matInput [matDatepicker]="fechaElegibilidadUe" placeholder="* Fecha de Elegibilidad"  
+                                            <input matInput [matDatepicker]="fechaElegibilidadUe" placeholder="* Fecha de Elegibilidad"
                                               name="fechaElegibilidadUe" [(ngModel)]="prestamo.fechaElegibilidadUe" [required]="true" (ngModelChange)="setPorcentaje(5)">
                                             <mat-datepicker-toggle matSuffix [for]="fechaElegibilidadUe"></mat-datepicker-toggle>
                                             <mat-datepicker #fechaElegibilidadUe></mat-datepicker>
@@ -406,7 +419,7 @@
                                               </tr>
                                             </thead>
                                             <tbody>
-                                              <tr *ngFor="let row of componentes; let i=index" style="font-weight: normal;">
+                                              <tr *ngFor="let row of componentes; let i=index; trackBy:customTrackBy" style="font-weight: normal;">
                                                 <td colspan="3">
                                                   <table style="width: 100%">
                                                     <tr (click)="toggle[row.id] = !toggle[row.id]; expandRowComponentes(row, i)">
@@ -427,7 +440,7 @@
                                                         <mat-form-field>
                                                           <textarea rows="4"  
                                                             [(ngModel)]="row.descripcion"
-                                                            name="descripcion"
+                                                            name="descripcion-{{i}}"
                                                             matInput
                                                             rows="4"
                                                             ng-maxlength="4000" placeholder="Descripción">
@@ -470,8 +483,7 @@
                                                     </tr>
                                                   </table>
                                                 </th>
-                                              </tr>
-                                              
+                                              </tr>                                              
                                               <tr *ngFor="let row of m_componentes; let i=index " class="filaIngreso" style="font-weight: normal;"
                                                 [ngClass]="row.isSelected ? 'st-selected' : ''">
                                                 <td style="min-width: 200px;" class="label-form"> {{ row.nombre }} </td>
@@ -480,8 +492,8 @@
                                                     <tr>
                                                       <td style="text-align: center;">
                                                         <input type="number" style="width: 100px; margin-right: 5px; text-align: right" name="prestamo-{{i}}-{{in}}" 
-                                                          [(ngModel)]="ue.prestamo"
-                                                          matInput
+                                                          [ngModel]="ue.prestamo"
+                                                          matInput 
                                                           (ngModelChange)="actualizarComponentes(); actualizarTotalesUE(); "
                                                         />															
                                                       </td>

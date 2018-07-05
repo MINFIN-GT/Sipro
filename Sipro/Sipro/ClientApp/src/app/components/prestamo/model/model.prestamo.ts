@@ -6,6 +6,7 @@ export class Prestamo{
     comisionCompromisoAcumulado: number;
     comisionCompromisoAnio: number;
     cooperantecodigo: number;
+    cooperanteejercicio: number;
     cooperantenombre: string;
     desembolsadoAFecha: number;
     desembolsoAFechaUe: number;
@@ -19,6 +20,7 @@ export class Prestamo{
     ejecucionEstadoNombre: string;
     ejecucionFisicaRealPEP: number;
     ejercicio: number;
+    entidad: number;
     fechaActualizacion: Date;
     fechaAutorizacion: Date;
     fechaCierreActualUe: Date;

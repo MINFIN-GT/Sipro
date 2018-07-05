@@ -12,9 +12,10 @@ import { ButtonDeleteComponent } from '../../../assets/ts/ButtonDeleteComponent'
 import { ButtonDownloadComponent } from '../../../assets/ts/ButtonDownloadComponent';
 import { DialogDownloadDocument, DialogOverviewDownloadDocument } from '../../../assets/ts/documentosadjuntos/documento-adjunto'
 import { Prestamo } from './model/model.prestamo'
-import {FormControl} from '@angular/forms';
-import {Observable} from 'rxjs';
-import {map, startWith} from 'rxjs/operators';
+import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
+import { Router } from '@angular/router'
 
 export interface Cooperante {
   codigo: number;
@@ -38,6 +39,14 @@ export class PrestamoComponent implements OnInit {
   isLoggedIn : boolean;
   isMasterPage : boolean;
   esColapsado : boolean;
+  
+  mostrarcargando : boolean;
+  color = 'primary';
+  mode = 'indeterminate';
+  value = 50;
+  diameter = 45;
+  strokewidth = 3;
+
   totalPrestamos : number;
   paginaActual : number;
   data : string;
@@ -74,11 +83,13 @@ export class PrestamoComponent implements OnInit {
   botones: boolean;
   cooperantes = [];
 
+  location: Location;
+
   @ViewChild('search') divSearch: ElementRef;
   myControl = new FormControl();
   filteredCooperantes: Observable<Cooperante[]>;
 
-  constructor(private auth: AuthService, private utils: UtilsService, private http: HttpClient, private dialog: MatDialog) {
+  constructor(private auth: AuthService, private utils: UtilsService, private http: HttpClient, private dialog: MatDialog, private router: Router) {
     this.totalPrestamos = 0;
     this.elementosPorPagina = utils._elementosPorPagina;
     this.numeroMaximoPaginas = utils._numeroMaximoPaginas;
@@ -206,6 +217,8 @@ export class PrestamoComponent implements OnInit {
           }
           else{
             this.prestamo.id=0;
+            this.prestamo.ejercicio = new Date().getFullYear();
+            this.prestamo.entidad = 11110001;
             objetoHttp = this.http.post("http://localhost:60054/api/Prestamo/Prestamo", this.prestamo, { withCredentials: true });
           }
     
@@ -324,6 +337,7 @@ export class PrestamoComponent implements OnInit {
   }
 
   cargarTabla(pagina? : number){
+    this.mostrarcargando = true;
     var filtro = {
       pagina: pagina,
       elementosPorPagina: this.elementosPorPagina,
@@ -355,6 +369,8 @@ export class PrestamoComponent implements OnInit {
         } else {
           console.log('Error');
         }
+
+        this.mostrarcargando = false;
       });
   }
 
@@ -711,9 +727,6 @@ export class PrestamoComponent implements OnInit {
         onComponentInitFunction: (instance) =>{
           instance.actionEmitter.subscribe(row => {
             window.location.href='http://localhost:60021/api/DocumentoAdjunto/Descarga/' + row.id;
-            /*this.http.get('http://localhost:60021/api/DocumentoAdjunto/Descarga/' + row.id, { withCredentials: true }).subscribe(response => this.downloadFile(response)),//console.log(data),
-            error => console.log("Error downloading the file."),
-            () => console.info("OK");*/
           });
         }
       },
@@ -818,6 +831,16 @@ export class PrestamoComponent implements OnInit {
 
   verHistoria(){
 
+  }
+
+  congelarDescongelar(){
+
+  }
+
+  irAPeps(prestamoid){
+    if(this.prestamo!=null){
+      this.router.navigateByUrl('/main/pep/'+ prestamoid);
+    }
   }
 
   customTrackBy(index: number, obj: any): any {

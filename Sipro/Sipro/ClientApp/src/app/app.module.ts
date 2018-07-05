@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, LOCALE_ID } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
@@ -11,7 +11,7 @@ import { MaterialModule } from './material/material.module';
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { utils } from 'protractor'; 
 import { Ng2SmartTableModule } from 'ng2-smart-table';
-import { MatInputModule, MatPaginatorModule, MatTabsModule, MatDatepickerModule, MatNativeDateModule, MAT_DATE_LOCALE, MatPaginatorIntl, MatTooltipModule, MatAutocompleteModule } from '@angular/material';
+import { MatInputModule, MatPaginatorModule, MatTabsModule, MatDatepickerModule, MatNativeDateModule, MAT_DATE_LOCALE, MatPaginatorIntl, MatTooltipModule, MatAutocompleteModule, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS, DateAdapter } from '@angular/material';
 import { MomentModule } from 'angular2-moment/moment.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario } from './components/prestamo/modals/modal-codigo-presupuestario'
@@ -23,6 +23,8 @@ import { ButtonDeleteComponent } from '../assets/ts/ButtonDeleteComponent';
 import { ButtonDownloadComponent } from '../assets/ts/ButtonDownloadComponent';
 import { DialogOverviewDownloadDocument, DialogDownloadDocument } from '../assets/ts/documentosadjuntos/documento-adjunto';
 import { FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo } from '../assets/ts/FormatoMillones';
+import { MatMomentDateModule, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { CUSTOM_DATE_FORMAT } from '../assets/ts/formatdate/CUSTOM_DATE_FORMAT';
 
 import { AppComponent } from './app.component';
 import { MainComponent } from './components/main/main.component';
@@ -32,6 +34,7 @@ import { PagenotfoundComponent } from './components/pagenotfound/pagenotfound.co
 import { FooterComponent } from './components/footer/footer.component';
 import { MainmenuComponent } from './components/mainmenu/mainmenu.component';
 import { PrestamoComponent } from './components/prestamo/prestamo.component';
+import { ProyectoComponent } from './components/proyecto/proyecto.component';
 
 const routes: Routes = [{
           path: '',    // Va a Main
@@ -44,6 +47,9 @@ const routes: Routes = [{
         },{
           path: 'main/prestamo',
           component: PrestamoComponent
+        },{
+          path: 'main/pep/:id',
+          component: ProyectoComponent
         },{
           path: 'accesodenegado',
           component: AccesodenegadoComponent
@@ -62,7 +68,7 @@ const routes: Routes = [{
       AccesodenegadoComponent, MainComponent, PagenotfoundComponent, FooterComponent, MainmenuComponent, PrestamoComponent,
       DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario, DialogOverviewMoneda, DialogMoneda, DialogOverviewTipoPrestamo, 
       DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, DialogOverviewDownloadDocument, DialogDownloadDocument, 
-      FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo
+      FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo, ProyectoComponent
   ],
   imports: [
       BrowserModule,
@@ -74,12 +80,12 @@ const routes: Routes = [{
       FlexLayoutModule,      
       Ng2SmartTableModule, 
       MatPaginatorModule, MatTabsModule, MatDatepickerModule, MatNativeDateModule, MomentModule, 
-      MatInputModule, MatDialogModule, MatProgressSpinnerModule, MatTooltipModule, MatAutocompleteModule
+      MatInputModule, MatDialogModule, MatProgressSpinnerModule, MatTooltipModule, MatAutocompleteModule, MatMomentDateModule
   ],
   providers: [UtilsService, AuthService, RouteguardService, 
-    { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },
-    { provide: LOCALE_ID, useValue: "es-ES" },
-    { provide: MatPaginatorIntl, useClass: MatPaginatorIntlSpanish }    
+    { provide: MatPaginatorIntl, useClass: MatPaginatorIntlSpanish },
+    { provide: DateAdapter, useClass: MomentDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMAT },
   ],
   bootstrap: [AppComponent],
   entryComponents: [DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario, DialogOverviewMoneda, DialogMoneda,
@@ -87,5 +93,5 @@ const routes: Routes = [{
     DialogDownloadDocument]
 })
 export class AppModule { 
-  
+
 }

@@ -123,7 +123,7 @@ namespace SiproModelCore.Models
 	    [Column("MESES_PRORROGA_UE")]
 	    public virtual decimal mesesProrrogaUe { get; set; }
 	    [Column("PLAZO_EJECUCION_UE")]
-	    public virtual Int32? plazoEjecucionUe { get; set; }
+	    public virtual decimal? plazoEjecucionUe { get; set; }
 	    [Column("MONTO_ASIGNADO_UE")]
 	    public virtual decimal? montoAsignadoUe { get; set; }
 	    [Column("DESEMBOLSO_A_FECHA_UE")]

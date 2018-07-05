@@ -91,6 +91,7 @@ namespace SPrestamo.Controllers
             public decimal montoPorDesembolsarUeUsd;
             public String nombreEntidadEjecutora;
             public int cooperantecodigo;
+            public int cooperanteejercicio;
             public String cooperantenombre;
             public String usuarioCreo;
             public String usuarioActualizo;
@@ -253,6 +254,7 @@ namespace SPrestamo.Controllers
                         prestamo.cooperantes = CooperanteDAO.getCooperantePorCodigo(prestamo.cooperantecodigo ?? default(int));
                         temp.cooperantecodigo = prestamo.cooperantes.codigo;
                         temp.cooperantenombre = prestamo.cooperantes.siglas != null ? prestamo.cooperantes.siglas + " - " + prestamo.cooperantes.nombre : prestamo.cooperantes.nombre;
+                        temp.cooperanteejercicio = prestamo.cooperantes.ejercicio;
 
                         prestamo.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(prestamo.ejercicio, prestamo.entidad, prestamo.ueunidadEjecutora);
 
@@ -655,6 +657,7 @@ namespace SPrestamo.Controllers
                         temp.cooperantecodigo = prestamo.cooperantes.codigo;
                         temp.cooperantenombre = (prestamo.cooperantes.siglas != null ?
                                 prestamo.cooperantes.siglas + " - " : default(string)) + prestamo.cooperantes.nombre;
+                        temp.cooperanteejercicio = prestamo.cooperantes.ejercicio;
                     }
 
                     prestamo.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(prestamo.ejercicio, prestamo.entidad, prestamo.ueunidadEjecutora);
@@ -1145,6 +1148,7 @@ namespace SPrestamo.Controllers
 
                     temp.cooperantecodigo = prestamo.cooperantes.codigo;
                     temp.cooperantenombre = (prestamo.cooperantes.siglas != null ? prestamo.cooperantes.siglas + " - " : default(string)) + prestamo.cooperantes.nombre;
+                    temp.cooperanteejercicio = prestamo.cooperantes.ejercicio;
 
                     prestamo.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(prestamo.ejercicio, prestamo.entidad, prestamo.ueunidadEjecutora);
 
@@ -1272,6 +1276,7 @@ namespace SPrestamo.Controllers
 
                         temp.cooperantecodigo = prestamo.cooperantes.codigo;
                         temp.cooperantenombre = (prestamo.cooperantes.siglas != null ? prestamo.cooperantes.siglas + " - " : default(string)) + prestamo.cooperantes.nombre;
+                        temp.cooperanteejercicio = prestamo.cooperantes.ejercicio;
 
                         prestamo.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(prestamo.ejercicio, prestamo.entidad, prestamo.ueunidadEjecutora);
 
@@ -1421,6 +1426,7 @@ namespace SPrestamo.Controllers
 
                     temp.cooperantecodigo = prestamo.cooperantes.codigo;
                     temp.cooperantenombre = (prestamo.cooperantes.siglas != null ? prestamo.cooperantes.siglas + " - " : default(string)) + prestamo.cooperantes.nombre;
+                    temp.cooperanteejercicio = prestamo.cooperantes.ejercicio;
 
                     prestamo.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(prestamo.ejercicio, prestamo.entidad, prestamo.ueunidadEjecutora);
 
