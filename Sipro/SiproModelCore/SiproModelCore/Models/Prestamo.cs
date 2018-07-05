@@ -121,7 +121,7 @@ namespace SiproModelCore.Models
 	    [Column("FECHA_CIERRE_ACTUAL_UE")]
 	    public virtual DateTime fechaCierreActualUe { get; set; }
 	    [Column("MESES_PRORROGA_UE")]
-	    public virtual Int32 mesesProrrogaUe { get; set; }
+	    public virtual decimal mesesProrrogaUe { get; set; }
 	    [Column("PLAZO_EJECUCION_UE")]
 	    public virtual Int32? plazoEjecucionUe { get; set; }
 	    [Column("MONTO_ASIGNADO_UE")]

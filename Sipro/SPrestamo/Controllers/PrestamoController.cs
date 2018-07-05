@@ -27,22 +27,22 @@ namespace SPrestamo.Controllers
             public String numeroPrestamo;
             public String destino;
             public String sectorEconomico;
-            public int unidadEjecutora;
+            public int ueunidadEjecutora;
             public String unidadEjecutoraNombre;
             public String fechaFirma;
-            public int tipoAutorizacionId;
+            public int autorizacionTipoid;
             public String tipoAutorizacionNombre;
             public String numeroAutorizacion;
             public String fechaAutorizacion;
             public int aniosPlazo;
             public int aniosGracia;
             public String fechaFinEjecucion;
-            public int periodoEjecucion;
-            public int tipoInteresId;
+            public int peridoEjecucion;
+            public int interesTipoid;
             public String tipoInteresNombre;
             public decimal porcentajeInteres;
             public decimal porcentajeComisionCompra;
-            public int tipoMonedaId;
+            public int tipoMonedaid;
             public String tipoMonedaNombre;
             public decimal montoContratado;
             public decimal amortizado;
@@ -55,19 +55,19 @@ namespace SPrestamo.Controllers
             public decimal interesesAcumulados;
             public decimal comisionCompromisoAcumulado;
             public decimal otrosCargosAcumulados;
-            public decimal presupuestoAsignadoFuncionamiento;
-            public decimal presupuestoAsignadoInversion;
-            public decimal presupuestoModificadoFun;
+            public decimal presupuestoAsignadoFunc;
+            public decimal presupuestoAsignadoInv;
+            public decimal presupuestoModificadoFunc;
             public decimal presupuestoModificadoInv;
-            public decimal presupuestoVigenteFun;
+            public decimal presupuestoVigenteFunc;
             public decimal presupuestoVigenteInv;
-            public decimal presupuestoDevengadoFun;
+            public decimal presupuestoDevengadoFunc;
             public decimal presupuestoDevengadoInv;
-            public decimal presupuestoPagadoFun;
+            public decimal presupuestoPagadoFunc;
             public decimal presupuestoPagadoInv;
             public decimal saldoCuentas;
-            public decimal desembolsoReal;
-            public int ejecucionEstadoId;
+            public decimal desembolsadoReal;
+            public int ejecucionEstadoid;
             public String ejecucionEstadoNombre;
             public String proyectoPrograma;
             public String fechaDecreto;
@@ -75,7 +75,7 @@ namespace SPrestamo.Controllers
             public String fechaElegibilidadUe;
             public String fechaCierreOrigianlUe;
             public String fechaCierreActualUe;
-            public int mesesProrrogaUe;
+            public decimal mesesProrrogaUe;
             public int plazoEjecucionUe;
             public decimal montoAsignadoUe;
             public decimal desembolsoAFechaUe;
@@ -90,7 +90,7 @@ namespace SPrestamo.Controllers
             public decimal desembolsoAFechaUeUsd;
             public decimal montoPorDesembolsarUeUsd;
             public String nombreEntidadEjecutora;
-            public int cooperanteid;
+            public int cooperantecodigo;
             public String cooperantenombre;
             public String usuarioCreo;
             public String usuarioActualizo;
@@ -103,6 +103,8 @@ namespace SPrestamo.Controllers
             public Double plazoEjecucionPEP;
             public int ejecucionFisicaRealPEP;
             public int porcentajeAvance;
+            public int ejercicio;
+            public int entidad;
         }
 
         private class sttiposprestamo
@@ -115,7 +117,7 @@ namespace SPrestamo.Controllers
             public String fechaActualizacion;
         }
 
-        private class stunidadejecutora
+        public class stunidadejecutora
         {
             public int id;
             public String nombre;
@@ -168,7 +170,7 @@ namespace SPrestamo.Controllers
                         temp.destino = prestamo.destino;
                         temp.sectorEconomico = prestamo.sectorEconomico;
                         temp.fechaFirma = prestamo.fechaFirma != null ? prestamo.fechaFirma.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
-                        temp.tipoAutorizacionId = prestamo.autorizacionTipoid ?? default(int);
+                        temp.autorizacionTipoid = prestamo.autorizacionTipoid ?? default(int);
 
                         if (prestamo.autorizacionTipoid != null)
                         {
@@ -181,12 +183,12 @@ namespace SPrestamo.Controllers
                         temp.aniosPlazo = prestamo.aniosPlazo ?? default(int);
                         temp.aniosGracia = prestamo.aniosGracia ?? default(int);
                         temp.fechaFinEjecucion = prestamo.fechaFinEjecucion != null ? prestamo.fechaFinEjecucion.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
-                        temp.periodoEjecucion = prestamo.peridoEjecucion ?? default(int);
+                        temp.peridoEjecucion = prestamo.peridoEjecucion ?? default(int);
 
                         InteresTipo interesTipo = InteresTipoDAO.getInteresTipoById(prestamo.interesTipoid ?? default(int));
                         if (interesTipo != null)
                         {
-                            temp.tipoInteresId = interesTipo.id;
+                            temp.interesTipoid = interesTipo.id;
                             temp.tipoInteresNombre = interesTipo.nombre;
                         }
 
@@ -196,7 +198,7 @@ namespace SPrestamo.Controllers
                         prestamo.tipoMonedas = TipoMonedaDAO.getTipoMonedaPorId(prestamo.tipoMonedaid);
                         if (prestamo.tipoMonedas != null)
                         {
-                            temp.tipoMonedaId = prestamo.tipoMonedas.id;
+                            temp.tipoMonedaid = prestamo.tipoMonedas.id;
                             temp.tipoMonedaNombre = prestamo.tipoMonedas.nombre;
                         }
 
@@ -211,22 +213,22 @@ namespace SPrestamo.Controllers
                         temp.interesesAcumulados = prestamo.interesesAcumulados ?? default(decimal);
                         temp.comisionCompromisoAcumulado = prestamo.comisionCompromisoAcumulado ?? default(decimal);
                         temp.otrosCargosAcumulados = prestamo.otrosCargosAcumulados ?? default(decimal);
-                        temp.presupuestoAsignadoFuncionamiento = prestamo.presupuestoAsignadoFunc ?? default(decimal);
-                        temp.presupuestoAsignadoInversion = prestamo.presupuestoAsignadoInv ?? default(decimal);
-                        temp.presupuestoModificadoFun = prestamo.presupuestoModificadoFunc ?? default(decimal);
+                        temp.presupuestoAsignadoFunc = prestamo.presupuestoAsignadoFunc ?? default(decimal);
+                        temp.presupuestoAsignadoInv = prestamo.presupuestoAsignadoInv ?? default(decimal);
+                        temp.presupuestoModificadoFunc = prestamo.presupuestoModificadoFunc ?? default(decimal);
                         temp.presupuestoModificadoInv = prestamo.presupuestoModificadoInv ?? default(decimal);
-                        temp.presupuestoVigenteFun = prestamo.presupuestoVigenteFunc ?? default(decimal);
+                        temp.presupuestoVigenteFunc = prestamo.presupuestoVigenteFunc ?? default(decimal);
                         temp.presupuestoVigenteInv = prestamo.presupuestoVigenteInv ?? default(decimal);
-                        temp.presupuestoDevengadoFun = prestamo.presupuestoDevengadoFunc ?? default(decimal);
+                        temp.presupuestoDevengadoFunc = prestamo.presupuestoDevengadoFunc ?? default(decimal);
                         temp.presupuestoDevengadoInv = prestamo.presupuestoDevengadoInv ?? default(decimal);
-                        temp.presupuestoPagadoFun = prestamo.presupuestoPagadoFunc ?? default(decimal);
+                        temp.presupuestoPagadoFunc = prestamo.presupuestoPagadoFunc ?? default(decimal);
                         temp.presupuestoPagadoInv = prestamo.presupuestoPagadoInv ?? default(decimal);
                         temp.saldoCuentas = prestamo.saldoCuentas ?? default(decimal);
-                        temp.desembolsoReal = prestamo.desembolsadoReal ?? default(decimal);
+                        temp.desembolsadoReal = prestamo.desembolsadoReal ?? default(decimal);
 
                         EjecucionEstado ejecucionEstado = EjecucionEstadoDAO.getEjecucionEstadoById(prestamo.ejecucionEstadoid ?? default(int));
 
-                        temp.ejecucionEstadoId = Convert.ToInt32(ejecucionEstado.id);
+                        temp.ejecucionEstadoid = Convert.ToInt32(ejecucionEstado.id);
                         temp.ejecucionEstadoNombre = ejecucionEstado.nombre;
                         temp.proyectoPrograma = prestamo.proyectoPrograma;
                         temp.fechaDecreto = prestamo.fechaDecreto.ToString("dd/MM/yyyy H:mm:ss");
@@ -249,7 +251,7 @@ namespace SPrestamo.Controllers
                         temp.montoPorDesembolsarUeUsd = prestamo.montoPorDesembolsarUeUsd ?? default(decimal);
 
                         prestamo.cooperantes = CooperanteDAO.getCooperantePorCodigo(prestamo.cooperantecodigo ?? default(int));
-                        temp.cooperanteid = prestamo.cooperantes.codigo;
+                        temp.cooperantecodigo = prestamo.cooperantes.codigo;
                         temp.cooperantenombre = prestamo.cooperantes.siglas != null ? prestamo.cooperantes.siglas + " - " + prestamo.cooperantes.nombre : prestamo.cooperantes.nombre;
 
                         prestamo.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(prestamo.ejercicio, prestamo.entidad, prestamo.ueunidadEjecutora);
@@ -257,11 +259,12 @@ namespace SPrestamo.Controllers
                         if (prestamo.unidadEjecutoras != null)
                         {
                             prestamo.unidadEjecutoras.entidads = EntidadDAO.getEntidad(prestamo.entidad, prestamo.ejercicio);
-                            temp.unidadEjecutora = prestamo.unidadEjecutoras.unidadEjecutora;
+                            temp.ueunidadEjecutora = prestamo.unidadEjecutoras.unidadEjecutora;
                             temp.unidadEjecutoraNombre = prestamo.unidadEjecutoras.nombre;
                             temp.nombreEntidadEjecutora = prestamo.unidadEjecutoras.entidads.nombre;
                         }
 
+                        temp.ejercicio = prestamo.ejercicio;
                         temp.usuarioCreo = prestamo.usuarioCreo;
                         temp.usuarioActualizo = prestamo.usuarioActualizo;
                         temp.fechaCreacion = prestamo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss");
@@ -317,22 +320,23 @@ namespace SPrestamo.Controllers
                     prestamo.ejercicio = value.ejercicio;
                     prestamo.entidad = value.entidad;
                     prestamo.estado = 1;
-                    prestamo.fechaAutorizacion = value.fechaAutorizacion;
-                    prestamo.fechaCierreActualUe = value.fechaCierreActual;
-                    prestamo.fechaCierreOrigianlUe = value.fechaCierreOriginal;
-                    prestamo.fechaCorte = value.fechaCorte;
                     prestamo.fechaCreacion = DateTime.Now;
+                    prestamo.fechaAutorizacion = value.fechaAutorizacion;
+                    prestamo.fechaCierreActualUe = value.fechaCierreActualUe;
+                    prestamo.fechaCierreOrigianlUe = value.fechaCierreOrigianlUe;
+                    prestamo.fechaCorte = value.fechaCorte;
+                    prestamo.fechaCreacion = prestamo.fechaCreacion;
                     prestamo.fechaDecreto = value.fechaDecreto;
-                    prestamo.fechaElegibilidadUe = value.fechaElegibilidad;
+                    prestamo.fechaElegibilidadUe = value.fechaElegibilidadUe;
                     prestamo.fechaFinEjecucion = value.fechaFinEjecucion;
                     prestamo.fechaFirma = value.fechaFirma;
                     prestamo.fechaSuscripcion = value.fechaSuscripcion;
                     prestamo.fechaVigencia = value.fechaVigencia;
                     prestamo.interesesAcumulados = value.interesesAcumulados;
                     prestamo.interesesAnio = value.interesesAnio;
-                    prestamo.interesTipoid = value.tipoInteresId;
-                    prestamo.mesesProrrogaUe = value.mesesProrroga;
-                    prestamo.montoAsignadoUe = value.montoAisignadoUe;
+                    prestamo.interesTipoid = value.interesTipoid;
+                    prestamo.mesesProrrogaUe = value.mesesProrrogaUe;
+                    prestamo.montoAsignadoUe = value.montoAsignadoUe;
                     prestamo.montoAsignadoUeQtz = value.montoAsignadoUeQtz;
                     prestamo.montoAsignadoUeUsd = value.montoAsignadoUeUsd;
                     prestamo.montoContratado = value.montoContratado;
@@ -347,30 +351,30 @@ namespace SPrestamo.Controllers
                     prestamo.objetivoEspecifico = value.objetivoEspecifico;
                     prestamo.otrosCargosAcumulados = value.otrosCargosAcumulados;
                     prestamo.otrosGastos = value.otrosGastos;
-                    prestamo.peridoEjecucion = value.periodoEjecucion;
+                    prestamo.peridoEjecucion = value.peridoEjecucion;
                     prestamo.porAmortizar = value.porAmortizar;
                     prestamo.porcentajeAvance = value.porcentajeAvance;
                     prestamo.porcentajeComisionCompra = value.porcentajeComisionCompra;
                     prestamo.porcentajeInteres = value.porcentajeInteres;
-                    prestamo.presupuestoAsignadoFunc = value.presupuestoAsignadoFuncionamiento;
-                    prestamo.presupuestoAsignadoInv = value.presupuestoAsignadoInversion;
-                    prestamo.presupuestoDevengadoFunc = value.presupuestoDevengadoFunconamiento;
-                    prestamo.presupuestoDevengadoInv = value.presupuestoDevengadoInversion;
-                    prestamo.presupuestoModificadoFunc = value.presupuestoModificadoFuncionamiento;
-                    prestamo.presupuestoModificadoInv = value.presupuestoModificadoInversion;
-                    prestamo.presupuestoPagadoFunc = value.presupuestoPagadoFuncionamiento;
-                    prestamo.presupuestoPagadoInv = value.presupuestoPagadoInversion;
-                    prestamo.presupuestoVigenteFunc = value.presupuestoVigenteFuncionamiento;
-                    prestamo.presupuestoVigenteInv = value.presupuestoVigenteInversion;
+                    prestamo.presupuestoAsignadoFunc = value.presupuestoAsignadoFunc;
+                    prestamo.presupuestoAsignadoInv = value.presupuestoAsignadoInv;
+                    prestamo.presupuestoDevengadoFunc = value.presupuestoDevengadoFunc;
+                    prestamo.presupuestoDevengadoInv = value.presupuestoDevengadoInv;
+                    prestamo.presupuestoModificadoFunc = value.presupuestoModificadoFunc;
+                    prestamo.presupuestoModificadoInv = value.presupuestoModificadoInv;
+                    prestamo.presupuestoPagadoFunc = value.presupuestoPagadoFunc;
+                    prestamo.presupuestoPagadoInv = value.presupuestoPagadoInv;
+                    prestamo.presupuestoVigenteFunc = value.presupuestoVigenteFunc;
+                    prestamo.presupuestoVigenteInv = value.presupuestoVigenteInv;
                     prestamo.principalAcumulado = value.principalAcumulado;
                     prestamo.principalAnio = value.principalAnio;
-                    prestamo.proyectoPrograma = value.proyetoPrograma;
+                    prestamo.proyectoPrograma = value.proyectoPrograma;
                     prestamo.saldoCuentas = value.saldoCuentas;
                     prestamo.sectorEconomico = value.sectorEconomico;
-                    prestamo.tipoMonedaid = value.tipoMonedaId;
-                    prestamo.ueunidadEjecutora = value.unidadEjecutora;
+                    prestamo.tipoMonedaid = value.tipoMonedaid;
+                    prestamo.ueunidadEjecutora = value.ueunidadEjecutora;
                     prestamo.usuarioCreo = User.Identity.Name;
-                    
+
                     bool result = PrestamoDAO.guardarPrestamo(prestamo);
 
                     if (result)
@@ -444,21 +448,21 @@ namespace SPrestamo.Controllers
                     prestamo.estado = 1;
                     prestamo.fechaActualizacion = DateTime.Now;
                     prestamo.fechaAutorizacion = value.fechaAutorizacion;
-                    prestamo.fechaCierreActualUe = value.fechaCierreActual;
-                    prestamo.fechaCierreOrigianlUe = value.fechaCierreOriginal;
+                    prestamo.fechaCierreActualUe = value.fechaCierreActualUe;
+                    prestamo.fechaCierreOrigianlUe = value.fechaCierreOrigianlUe;
                     prestamo.fechaCorte = value.fechaCorte;
                     prestamo.fechaCreacion = prestamo.fechaCreacion;
                     prestamo.fechaDecreto = value.fechaDecreto;
-                    prestamo.fechaElegibilidadUe = value.fechaElegibilidad;
+                    prestamo.fechaElegibilidadUe = value.fechaElegibilidadUe;
                     prestamo.fechaFinEjecucion = value.fechaFinEjecucion;
                     prestamo.fechaFirma = value.fechaFirma;
                     prestamo.fechaSuscripcion = value.fechaSuscripcion;
                     prestamo.fechaVigencia = value.fechaVigencia;
                     prestamo.interesesAcumulados = value.interesesAcumulados;
                     prestamo.interesesAnio = value.interesesAnio;
-                    prestamo.interesTipoid = value.tipoInteresId;
-                    prestamo.mesesProrrogaUe = value.mesesProrroga;
-                    prestamo.montoAsignadoUe = value.montoAisignadoUe;
+                    prestamo.interesTipoid = value.interesTipoid;
+                    prestamo.mesesProrrogaUe = value.mesesProrrogaUe;
+                    prestamo.montoAsignadoUe = value.montoAsignadoUe;
                     prestamo.montoAsignadoUeQtz = value.montoAsignadoUeQtz;
                     prestamo.montoAsignadoUeUsd = value.montoAsignadoUeUsd;
                     prestamo.montoContratado = value.montoContratado;
@@ -473,29 +477,28 @@ namespace SPrestamo.Controllers
                     prestamo.objetivoEspecifico = value.objetivoEspecifico;
                     prestamo.otrosCargosAcumulados = value.otrosCargosAcumulados;
                     prestamo.otrosGastos = value.otrosGastos;
-                    prestamo.peridoEjecucion = value.periodoEjecucion;
+                    prestamo.peridoEjecucion = value.peridoEjecucion;
                     prestamo.porAmortizar = value.porAmortizar;
                     prestamo.porcentajeAvance = value.porcentajeAvance;
                     prestamo.porcentajeComisionCompra = value.porcentajeComisionCompra;
                     prestamo.porcentajeInteres = value.porcentajeInteres;
-                    prestamo.presupuestoAsignadoFunc = value.presupuestoAsignadoFuncionamiento;
-                    prestamo.presupuestoAsignadoInv = value.presupuestoAsignadoInversion;
-                    prestamo.presupuestoDevengadoFunc = value.presupuestoDevengadoFunconamiento;
-                    prestamo.presupuestoDevengadoInv = value.presupuestoDevengadoInversion;
-                    prestamo.presupuestoModificadoFunc = value.presupuestoModificadoFuncionamiento;
-                    prestamo.presupuestoModificadoInv = value.presupuestoModificadoInversion;
-                    prestamo.presupuestoPagadoFunc = value.presupuestoPagadoFuncionamiento;
-                    prestamo.presupuestoPagadoInv = value.presupuestoPagadoInversion;
-                    prestamo.presupuestoVigenteFunc = value.presupuestoVigenteFuncionamiento;
-                    prestamo.presupuestoVigenteInv = value.presupuestoVigenteInversion;
+                    prestamo.presupuestoAsignadoFunc = value.presupuestoAsignadoFunc;
+                    prestamo.presupuestoAsignadoInv = value.presupuestoAsignadoInv;
+                    prestamo.presupuestoDevengadoFunc = value.presupuestoDevengadoFunc;
+                    prestamo.presupuestoDevengadoInv = value.presupuestoDevengadoInv;
+                    prestamo.presupuestoModificadoFunc = value.presupuestoModificadoFunc;
+                    prestamo.presupuestoModificadoInv = value.presupuestoModificadoInv;
+                    prestamo.presupuestoPagadoFunc = value.presupuestoPagadoFunc;
+                    prestamo.presupuestoPagadoInv = value.presupuestoPagadoInv;
+                    prestamo.presupuestoVigenteFunc = value.presupuestoVigenteFunc;
+                    prestamo.presupuestoVigenteInv = value.presupuestoVigenteInv;
                     prestamo.principalAcumulado = value.principalAcumulado;
                     prestamo.principalAnio = value.principalAnio;
-                    prestamo.proyectoPrograma = value.proyetoPrograma;
+                    prestamo.proyectoPrograma = value.proyectoPrograma;
                     prestamo.saldoCuentas = value.saldoCuentas;
                     prestamo.sectorEconomico = value.sectorEconomico;
-                    prestamo.tipoMonedaid = value.tipoMonedaId;
-                    prestamo.ueunidadEjecutora = value.unidadEjecutora;
-                    prestamo.usuarioCreo = prestamo.usuarioCreo;
+                    prestamo.tipoMonedaid = value.tipoMonedaid;
+                    prestamo.ueunidadEjecutora = value.ueunidadEjecutora;
                     prestamo.usuarioActualizo = User.Identity.Name;
 
                     bool result = PrestamoDAO.guardarPrestamo(prestamo);
@@ -557,32 +560,32 @@ namespace SPrestamo.Controllers
                 {
                     temp = new stprestamo();
                     temp.id = prestamo.id;
-                    temp.fechaCorte = prestamo.fechaCorte != null ? prestamo.fechaCorte.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
+                    temp.fechaCorte = prestamo.fechaCorte != null ? prestamo.fechaCorte.Value.ToString("dd/MM/yyyy H:mm:ss") : default(string);
                     temp.codigoPresupuestario = prestamo.codigoPresupuestario;
-                    temp.numeroPrestamo = prestamo.numeroPrestamo;
-                    temp.destino = prestamo.destino;
-                    temp.sectorEconomico = prestamo.sectorEconomico;
-                    temp.fechaFirma = prestamo.fechaFirma != null ? prestamo.fechaFirma.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
+                    temp.numeroPrestamo = prestamo.numeroPrestamo != null ? prestamo.numeroPrestamo : default(string);
+                    temp.destino = prestamo.destino != null ? prestamo.destino : default(string);
+                    temp.sectorEconomico = prestamo.sectorEconomico != null ? prestamo.sectorEconomico : default(string);
+                    temp.fechaFirma = prestamo.fechaFirma != null ? prestamo.fechaFirma.Value.ToString("dd/MM/yyyy H:mm:ss") : default(string);
 
                     AutorizacionTipo autorizacionTipo = AutorizacionTipoDAO.getAutorizacionTipoById(prestamo.autorizacionTipoid ?? default(int));
                     if (autorizacionTipo != null)
                     {
-                        temp.tipoAutorizacionId = autorizacionTipo.id;
-                        temp.tipoAutorizacionNombre = autorizacionTipo.nombre;
+                        temp.autorizacionTipoid = autorizacionTipo.id;
+                        temp.tipoAutorizacionNombre = autorizacionTipo.nombre != null ? autorizacionTipo.nombre : default(string);
                     }
 
-                    temp.numeroAutorizacion = prestamo.numeroAutorizacion;
-                    temp.fechaAutorizacion = prestamo.fechaAutorizacion != null ? prestamo.fechaAutorizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
+                    temp.numeroAutorizacion = prestamo.numeroAutorizacion != null ? prestamo.numeroAutorizacion : default(string);
+                    temp.fechaAutorizacion = prestamo.fechaAutorizacion != null ? prestamo.fechaAutorizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : default(string);
                     temp.aniosPlazo = prestamo.aniosPlazo ?? default(int);
                     temp.aniosGracia = prestamo.aniosGracia ?? default(int);
-                    temp.fechaFinEjecucion = prestamo.fechaFinEjecucion != null ? prestamo.fechaFinEjecucion.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
-                    temp.periodoEjecucion = prestamo.peridoEjecucion ?? default(int);
+                    temp.fechaFinEjecucion = prestamo.fechaFinEjecucion != null ? prestamo.fechaFinEjecucion.Value.ToString("dd/MM/yyyy H:mm:ss") : default(string);
+                    temp.peridoEjecucion = prestamo.peridoEjecucion ?? default(int);
 
                     InteresTipo interesTipo = InteresTipoDAO.getInteresTipoById(prestamo.interesTipoid ?? default(int));
                     if (interesTipo != null)
                     {
-                        temp.tipoInteresId = interesTipo.id;
-                        temp.tipoInteresNombre = interesTipo.nombre;
+                        temp.interesTipoid = interesTipo.id;
+                        temp.tipoInteresNombre = interesTipo.nombre != null ? interesTipo.nombre : default(string);
                     }
 
                     temp.porcentajeInteres = prestamo.porcentajeInteres ?? default(decimal);
@@ -592,8 +595,8 @@ namespace SPrestamo.Controllers
 
                     if (prestamo.tipoMonedas != null)
                     {
-                        temp.tipoMonedaId = prestamo.tipoMonedas.id;
-                        temp.tipoMonedaNombre = prestamo.tipoMonedas.nombre;
+                        temp.tipoMonedaid = prestamo.tipoMonedas.id;
+                        temp.tipoMonedaNombre = prestamo.tipoMonedas.nombre != null ? prestamo.tipoMonedas.nombre : default(string);
                     }
 
                     temp.montoContratado = prestamo.montoContratado;
@@ -607,26 +610,26 @@ namespace SPrestamo.Controllers
                     temp.interesesAcumulados = prestamo.interesesAcumulados ?? default(decimal);
                     temp.comisionCompromisoAcumulado = prestamo.comisionCompromisoAcumulado ?? default(decimal);
                     temp.otrosCargosAcumulados = prestamo.otrosCargosAcumulados ?? default(decimal);
-                    temp.presupuestoAsignadoFuncionamiento = prestamo.presupuestoAsignadoFunc ?? default(decimal);
-                    temp.presupuestoAsignadoInversion = prestamo.presupuestoAsignadoInv ?? default(decimal);
-                    temp.presupuestoModificadoFun = prestamo.presupuestoModificadoFunc ?? default(decimal);
+                    temp.presupuestoAsignadoFunc = prestamo.presupuestoAsignadoFunc ?? default(decimal);
+                    temp.presupuestoAsignadoInv = prestamo.presupuestoAsignadoInv ?? default(decimal);
+                    temp.presupuestoModificadoFunc = prestamo.presupuestoModificadoFunc ?? default(decimal);
                     temp.presupuestoModificadoInv = prestamo.presupuestoModificadoInv ?? default(decimal);
-                    temp.presupuestoVigenteFun = prestamo.presupuestoVigenteFunc ?? default(decimal);
+                    temp.presupuestoVigenteFunc = prestamo.presupuestoVigenteFunc ?? default(decimal);
                     temp.presupuestoVigenteInv = prestamo.presupuestoVigenteInv ?? default(decimal);
-                    temp.presupuestoDevengadoFun = prestamo.presupuestoDevengadoFunc ?? default(decimal);
+                    temp.presupuestoDevengadoFunc = prestamo.presupuestoDevengadoFunc ?? default(decimal);
                     temp.presupuestoDevengadoInv = prestamo.presupuestoDevengadoInv ?? default(decimal);
-                    temp.presupuestoPagadoFun = prestamo.presupuestoPagadoFunc ?? default(decimal);
+                    temp.presupuestoPagadoFunc = prestamo.presupuestoPagadoFunc ?? default(decimal);
                     temp.presupuestoPagadoInv = prestamo.presupuestoPagadoInv ?? default(decimal);
                     temp.saldoCuentas = prestamo.saldoCuentas ?? default(decimal); ;
-                    temp.desembolsoReal = prestamo.desembolsadoReal ?? default(decimal);
+                    temp.desembolsadoReal = prestamo.desembolsadoReal ?? default(decimal);
 
                     EjecucionEstado ejecucionEstado = EjecucionEstadoDAO.getEjecucionEstadoById(prestamo.ejecucionEstadoid ?? default(int));
                     if (ejecucionEstado != null)
                     {
-                        temp.ejecucionEstadoId = Convert.ToInt32(ejecucionEstado.id);
-                        temp.ejecucionEstadoNombre = ejecucionEstado.nombre;
+                        temp.ejecucionEstadoid = Convert.ToInt32(ejecucionEstado.id);
+                        temp.ejecucionEstadoNombre = ejecucionEstado.nombre != null ? ejecucionEstado.nombre : default(string);
                     }
-                    temp.proyectoPrograma = prestamo.proyectoPrograma;
+                    temp.proyectoPrograma = prestamo.proyectoPrograma != null ? prestamo.proyectoPrograma : default(string);
                     temp.fechaDecreto = prestamo.fechaDecreto.ToString("dd/MM/yyyy H:mm:ss");
                     temp.fechaSuscripcion = prestamo.fechaSuscripcion.ToString("dd/MM/yyyy H:mm:ss");
                     temp.fechaElegibilidadUe = prestamo.fechaElegibilidadUe.ToString("dd/MM/yyyy");
@@ -649,20 +652,22 @@ namespace SPrestamo.Controllers
                     prestamo.cooperantes = CooperanteDAO.getCooperantePorCodigo(prestamo.cooperantecodigo ?? default(int));
                     if (prestamo.cooperantes != null)
                     {
-                        temp.cooperanteid = prestamo.cooperantes.codigo;
+                        temp.cooperantecodigo = prestamo.cooperantes.codigo;
                         temp.cooperantenombre = (prestamo.cooperantes.siglas != null ?
-                                prestamo.cooperantes.siglas + " - " : "") + prestamo.cooperantes.nombre;
+                                prestamo.cooperantes.siglas + " - " : default(string)) + prestamo.cooperantes.nombre;
                     }
 
                     prestamo.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(prestamo.ejercicio, prestamo.entidad, prestamo.ueunidadEjecutora);
                     if (prestamo.unidadEjecutoras != null)
                     {
                         prestamo.unidadEjecutoras.entidads = EntidadDAO.getEntidad(prestamo.entidad, prestamo.ejercicio);
-                        temp.unidadEjecutora = prestamo.unidadEjecutoras.unidadEjecutora;
-                        temp.unidadEjecutoraNombre = prestamo.unidadEjecutoras.nombre;
-                        temp.nombreEntidadEjecutora = prestamo.unidadEjecutoras.entidads.nombre;
+                        temp.ueunidadEjecutora = prestamo.unidadEjecutoras.unidadEjecutora;
+                        temp.unidadEjecutoraNombre = prestamo.unidadEjecutoras.nombre != null ? prestamo.unidadEjecutoras.nombre : default(string);
+                        temp.nombreEntidadEjecutora = prestamo.unidadEjecutoras.entidads.nombre;                        
                     }
 
+                    temp.entidad = prestamo.entidad;
+                    temp.ejercicio = prestamo.ejercicio;
                     temp.usuarioCreo = prestamo.usuarioCreo;
                     temp.usuarioActualizo = prestamo.usuarioActualizo;
                     temp.fechaCreacion = prestamo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss");
@@ -761,7 +766,7 @@ namespace SPrestamo.Controllers
             try
             {
                 int ejercicio = 2017;//DateTime.Now.Year;
-                int prestamoId = value.proyectoId != null ? (int)value.proyectoId : default(int);
+                int prestamoId = value.prestamoId != null ? (int)value.prestamoId : default(int);
                 string codigoPresupuestario = value.codigoPresupuestario != null ? value.codigoPresupuestario : null;
                 List <DtmAvanceFisfinanEnp> unidadesEjecutoras = DataSigadeDAO.getUnidadesEjecutoras((string)value.codigoPresupuestario, ejercicio);
                 List<stunidadejecutora> lstunidadesejecutoras = new List<stunidadejecutora>();
@@ -872,7 +877,7 @@ namespace SPrestamo.Controllers
                     }
                 }
 
-                int diferencia = DataSigadeDAO.getDiferenciaMontos(codigoPresupuestario);
+                decimal diferencia = DataSigadeDAO.getDiferenciaMontos(codigoPresupuestario);
 
                 return Ok(new { success = true, unidadesEjecutoras = unidadesEjecutroas, componentes = stcomponentes, diferencia = diferencia, existenDatos = existenDatos });
             }
@@ -890,7 +895,6 @@ namespace SPrestamo.Controllers
         {
             try
             {
-
                 int prestamoId = (int)value.prestamoId;
                 Prestamo prestamo = PrestamoDAO.getPrestamoById(prestamoId);
                 String data = (string)value.estructura;
@@ -901,20 +905,13 @@ namespace SPrestamo.Controllers
                 PrestamoDAO.guardarComponentesSigade(prestamo.codigoPresupuestario + "", User.Identity.Name, existenDatos);
 
                 dynamic jsonData = JsonConvert.DeserializeObject<dynamic>(data);
-
-                JObject parser = new JObject();
-                JArray estructuras_ = JArray.Parse(data);
                 JArray est_unidadesEjecutoras_ = JArray.Parse(unidadesEjecutoras);
 
                 List<Proyecto> proyectos = new List<Proyecto>();
-                List<stunidadejecutora> unidadesEjecutorasMatriz = new List<stunidadejecutora>();
-                int k = 0;
+                List<PrestamoDAO.stunidadejecutora> unidadesEjecutorasMatriz = new List<PrestamoDAO.stunidadejecutora>();
                 foreach (JObject estructura in jsonData)
                 {
-                    JObject estructura_ = (JObject)estructuras_[k];
-                    k++;
-                    parser = new JObject();
-                    JObject unidades = (JObject)estructura_["unidadesEjecutoras"];
+                    JArray unidades = JArray.Parse(estructura["unidadesEjecutoras"].ToString());
 
                     for (int j = 0; j < unidades.Count; j++)
                     {
@@ -950,7 +947,7 @@ namespace SPrestamo.Controllers
                             }
                         }
                         ComponenteSigade componenteSigade = ComponenteSigadeDAO.getComponenteSigadePorCodigoNumero(prestamo.codigoPresupuestario + "", Convert.ToInt32((Double)estructura["orden"]));
-                        stunidadejecutora unidadMatriz = new stunidadejecutora();
+                        PrestamoDAO.stunidadejecutora unidadMatriz = new PrestamoDAO.stunidadejecutora();
                         unidadMatriz.componenteSigadeId = componenteSigade.id;
                         unidadMatriz.id = Convert.ToInt32(unidad["id"].ToString());
                         unidadMatriz.prestamoId = prestamo.id;
@@ -959,14 +956,14 @@ namespace SPrestamo.Controllers
                         unidadMatriz.prestamo = fuentePrestamo;
                         unidadMatriz.donacion = fuenteDonacion;
                         unidadMatriz.nacional = fuenteNacional;
-                        unidadMatriz.techo = Convert.ToInt32((decimal)estructura_["techo"]);
+                        unidadMatriz.techo = Convert.ToInt32((decimal)estructura["techo"]);
                         unidadesEjecutorasMatriz.Add(unidadMatriz);
-                    }
+                    }                  
                 }
                 PrestamoDAO.actualizarMatriz(prestamo.id, unidadesEjecutorasMatriz);
-                int diferencia = DataSigadeDAO.getDiferenciaMontos(prestamo.codigoPresupuestario + "");
+                decimal diferencia = DataSigadeDAO.getDiferenciaMontos(prestamo.codigoPresupuestario + "");
 
-                return Ok(new { success = ret ? "true" : "false", diferencia = diferencia });
+                return Ok(new { success = ret ? true : false, diferencia = diferencia });
             }
             catch (Exception e)
             {
@@ -1035,6 +1032,7 @@ namespace SPrestamo.Controllers
                     foreach (PrestamoTipoPrestamo tipo in tipos)
                     {
                         sttiposprestamo temp = new sttiposprestamo();
+                        tipo.prestamoTipos = PrestamoTipoDAO.getPrestamoTipoPorId(Convert.ToInt32(tipo.tipoprestamoid));
                         temp.id = Convert.ToInt32(tipo.prestamoTipos.id);
                         temp.nombre = tipo.prestamoTipos.nombre;
                         temp.usuarioCreo = tipo.usuarioCreo;
@@ -1076,24 +1074,24 @@ namespace SPrestamo.Controllers
 
                     AutorizacionTipo autorizacionTipo = AutorizacionTipoDAO.getAutorizacionTipoById(prestamo.autorizacionTipoid ?? default(int));
 
-                    temp.tipoAutorizacionId = autorizacionTipo.id;
+                    temp.autorizacionTipoid = autorizacionTipo.id;
                     temp.tipoAutorizacionNombre = autorizacionTipo.nombre;
                     temp.numeroAutorizacion = prestamo.numeroAutorizacion;
                     temp.fechaAutorizacion = prestamo.fechaAutorizacion == null ? null : prestamo.fechaAutorizacion.Value.ToString("dd/MM/yyyy H:mm:ss");
                     temp.aniosPlazo = prestamo.aniosPlazo ?? default(int);
                     temp.aniosGracia = prestamo.aniosGracia ?? default(int);
                     temp.fechaFinEjecucion = prestamo.fechaFinEjecucion == null ? null : prestamo.fechaFinEjecucion.Value.ToString("dd/MM/yyyy H:mm:ss");
-                    temp.periodoEjecucion = prestamo.peridoEjecucion ?? default(int);
+                    temp.peridoEjecucion = prestamo.peridoEjecucion ?? default(int);
 
                     InteresTipo interesTipo = InteresTipoDAO.getInteresTipoById(prestamo.interesTipoid ?? default(int));
 
-                    temp.tipoInteresId = interesTipo.id;
+                    temp.interesTipoid = interesTipo.id;
                     temp.tipoInteresNombre = interesTipo.nombre;
                     temp.porcentajeInteres = prestamo.porcentajeInteres ?? default(decimal);
                     temp.porcentajeComisionCompra = prestamo.porcentajeComisionCompra ?? default(decimal);
 
                     prestamo.tipoMonedas = TipoMonedaDAO.getTipoMonedaPorId(prestamo.tipoMonedaid);
-                    temp.tipoMonedaId = prestamo.tipoMonedas.id;
+                    temp.tipoMonedaid = prestamo.tipoMonedas.id;
                     temp.tipoMonedaNombre = prestamo.tipoMonedas.nombre;
                     temp.montoContratado = prestamo.montoContratado;
                     temp.amortizado = prestamo.amortizado ?? default(decimal);
@@ -1106,22 +1104,22 @@ namespace SPrestamo.Controllers
                     temp.interesesAcumulados = prestamo.interesesAcumulados ?? default(decimal);
                     temp.comisionCompromisoAcumulado = prestamo.comisionCompromisoAcumulado ?? default(decimal);
                     temp.otrosCargosAcumulados = prestamo.otrosCargosAcumulados ?? default(decimal);
-                    temp.presupuestoAsignadoFuncionamiento = prestamo.presupuestoAsignadoFunc ?? default(decimal);
-                    temp.presupuestoAsignadoInversion = prestamo.presupuestoAsignadoInv ?? default(decimal);
-                    temp.presupuestoModificadoFun = prestamo.presupuestoModificadoFunc ?? default(decimal);
+                    temp.presupuestoAsignadoFunc = prestamo.presupuestoAsignadoFunc ?? default(decimal);
+                    temp.presupuestoAsignadoInv = prestamo.presupuestoAsignadoInv ?? default(decimal);
+                    temp.presupuestoModificadoFunc = prestamo.presupuestoModificadoFunc ?? default(decimal);
                     temp.presupuestoModificadoInv = prestamo.presupuestoModificadoInv ?? default(decimal);
-                    temp.presupuestoVigenteFun = prestamo.presupuestoVigenteFunc ?? default(decimal);
+                    temp.presupuestoVigenteFunc = prestamo.presupuestoVigenteFunc ?? default(decimal);
                     temp.presupuestoVigenteInv = prestamo.presupuestoVigenteInv ?? default(decimal);
-                    temp.presupuestoDevengadoFun = prestamo.presupuestoDevengadoFunc ?? default(decimal);
+                    temp.presupuestoDevengadoFunc = prestamo.presupuestoDevengadoFunc ?? default(decimal);
                     temp.presupuestoDevengadoInv = prestamo.presupuestoDevengadoInv ?? default(decimal);
-                    temp.presupuestoPagadoFun = prestamo.presupuestoPagadoFunc ?? default(decimal);
+                    temp.presupuestoPagadoFunc = prestamo.presupuestoPagadoFunc ?? default(decimal);
                     temp.presupuestoPagadoInv = prestamo.presupuestoPagadoInv ?? default(decimal);
                     temp.saldoCuentas = prestamo.saldoCuentas ?? default(decimal);
-                    temp.desembolsoReal = prestamo.desembolsadoReal ?? default(decimal);
+                    temp.desembolsadoReal = prestamo.desembolsadoReal ?? default(decimal);
 
                     EjecucionEstado ejecucionEstado = EjecucionEstadoDAO.getEjecucionEstadoById(prestamo.ejecucionEstadoid ?? default(int));
 
-                    temp.ejecucionEstadoId = Convert.ToInt32(ejecucionEstado.id);
+                    temp.ejecucionEstadoid = Convert.ToInt32(ejecucionEstado.id);
                     temp.ejecucionEstadoNombre = ejecucionEstado.nombre;
                     temp.proyectoPrograma = prestamo.proyectoPrograma;
                     temp.fechaDecreto = prestamo.fechaDecreto.ToString("dd/MM/yyyy H:mm:ss");
@@ -1145,26 +1143,28 @@ namespace SPrestamo.Controllers
 
                     prestamo.cooperantes = CooperanteDAO.getCooperantePorCodigo(prestamo.cooperantecodigo ?? default(int));
 
-                    temp.cooperanteid = prestamo.cooperantes.codigo;
-                    temp.cooperantenombre = (prestamo.cooperantes.siglas != null ? prestamo.cooperantes.siglas + " - " : "") + prestamo.cooperantes.nombre;
+                    temp.cooperantecodigo = prestamo.cooperantes.codigo;
+                    temp.cooperantenombre = (prestamo.cooperantes.siglas != null ? prestamo.cooperantes.siglas + " - " : default(string)) + prestamo.cooperantes.nombre;
 
                     prestamo.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(prestamo.ejercicio, prestamo.entidad, prestamo.ueunidadEjecutora);
 
                     if (prestamo.unidadEjecutoras != null)
                     {
                         prestamo.unidadEjecutoras.entidads = EntidadDAO.getEntidad(prestamo.entidad, prestamo.ejercicio);
-                        temp.unidadEjecutora = prestamo.unidadEjecutoras.unidadEjecutora;
-                        temp.unidadEjecutoraNombre = prestamo.unidadEjecutoras.nombre;
-                        temp.nombreEntidadEjecutora = prestamo.unidadEjecutoras.entidads.nombre;
+                        temp.ueunidadEjecutora = prestamo.unidadEjecutoras.unidadEjecutora;
+                        temp.unidadEjecutoraNombre = prestamo.unidadEjecutoras.nombre != null ? prestamo.unidadEjecutoras.nombre : default(string);
+                        temp.nombreEntidadEjecutora = prestamo.unidadEjecutoras.entidads.nombre != null ? prestamo.unidadEjecutoras.entidads.nombre : default(string);
                     }
 
+                    temp.ejercicio = prestamo.ejercicio;
                     temp.usuarioCreo = prestamo.usuarioCreo;
                     temp.usuarioActualizo = prestamo.usuarioActualizo;
                     temp.fechaCreacion = prestamo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss");
-                    temp.fechaActualizacion = prestamo.fechaActualizacion != null ? prestamo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
-                    temp.objetivo = prestamo.objetivo;
-                    temp.objetivoEspecifico = prestamo.objetivoEspecifico;
+                    temp.fechaActualizacion = prestamo.fechaActualizacion != null ? prestamo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : default(string);
+                    temp.objetivo = prestamo.objetivo != null ? prestamo.objetivo : default(string);
+                    temp.objetivoEspecifico = prestamo.objetivoEspecifico != null ? prestamo.objetivoEspecifico : default(string);
                     temp.porcentajeAvance = prestamo.porcentajeAvance;
+                    temp.entidad = prestamo.entidad;
                 }
 
                 return Ok(new { success = true, prestamo = temp });
@@ -1201,24 +1201,24 @@ namespace SPrestamo.Controllers
 
                         AutorizacionTipo autorizacionTipo = AutorizacionTipoDAO.getAutorizacionTipoById(prestamo.autorizacionTipoid ?? default(int));
 
-                        temp.tipoAutorizacionId = autorizacionTipo.id;
+                        temp.autorizacionTipoid = autorizacionTipo.id;
                         temp.tipoAutorizacionNombre = autorizacionTipo.nombre;
                         temp.numeroAutorizacion = prestamo.numeroAutorizacion;
                         temp.fechaAutorizacion = prestamo.fechaAutorizacion == null ? null : prestamo.fechaAutorizacion.Value.ToString("dd/MM/yyyy H:mm:ss");
                         temp.aniosPlazo = prestamo.aniosPlazo ?? default(int);
                         temp.aniosGracia = prestamo.aniosGracia ?? default(int);
                         temp.fechaFinEjecucion = prestamo.fechaFinEjecucion == null ? null : prestamo.fechaFinEjecucion.Value.ToString("dd/MM/yyyy H:mm:ss");
-                        temp.periodoEjecucion = prestamo.peridoEjecucion ?? default(int);
+                        temp.peridoEjecucion = prestamo.peridoEjecucion ?? default(int);
 
                         InteresTipo interesTipo = InteresTipoDAO.getInteresTipoById(prestamo.interesTipoid ?? default(int));
 
-                        temp.tipoInteresId = interesTipo.id;
+                        temp.interesTipoid = interesTipo.id;
                         temp.tipoInteresNombre = interesTipo.nombre;
                         temp.porcentajeInteres = prestamo.porcentajeInteres ?? default(decimal);
                         temp.porcentajeComisionCompra = prestamo.porcentajeComisionCompra ?? default(decimal);
 
                         prestamo.tipoMonedas = TipoMonedaDAO.getTipoMonedaPorId(prestamo.tipoMonedaid);
-                        temp.tipoMonedaId = prestamo.tipoMonedas.id;
+                        temp.tipoMonedaid = prestamo.tipoMonedas.id;
                         temp.tipoMonedaNombre = prestamo.tipoMonedas.nombre;
                         temp.montoContratado = prestamo.montoContratado;
                         temp.amortizado = prestamo.amortizado ?? default(decimal);
@@ -1231,22 +1231,22 @@ namespace SPrestamo.Controllers
                         temp.interesesAcumulados = prestamo.interesesAcumulados ?? default(decimal);
                         temp.comisionCompromisoAcumulado = prestamo.comisionCompromisoAcumulado ?? default(decimal);
                         temp.otrosCargosAcumulados = prestamo.otrosCargosAcumulados ?? default(decimal);
-                        temp.presupuestoAsignadoFuncionamiento = prestamo.presupuestoAsignadoFunc ?? default(decimal);
-                        temp.presupuestoAsignadoInversion = prestamo.presupuestoAsignadoInv ?? default(decimal);
-                        temp.presupuestoModificadoFun = prestamo.presupuestoModificadoFunc ?? default(decimal);
+                        temp.presupuestoAsignadoFunc = prestamo.presupuestoAsignadoFunc ?? default(decimal);
+                        temp.presupuestoAsignadoInv = prestamo.presupuestoAsignadoInv ?? default(decimal);
+                        temp.presupuestoModificadoFunc = prestamo.presupuestoModificadoFunc ?? default(decimal);
                         temp.presupuestoModificadoInv = prestamo.presupuestoModificadoInv ?? default(decimal);
-                        temp.presupuestoVigenteFun = prestamo.presupuestoVigenteFunc ?? default(decimal);
+                        temp.presupuestoVigenteFunc = prestamo.presupuestoVigenteFunc ?? default(decimal);
                         temp.presupuestoVigenteInv = prestamo.presupuestoVigenteInv ?? default(decimal);
-                        temp.presupuestoDevengadoFun = prestamo.presupuestoDevengadoFunc ?? default(decimal);
+                        temp.presupuestoDevengadoFunc = prestamo.presupuestoDevengadoFunc ?? default(decimal);
                         temp.presupuestoDevengadoInv = prestamo.presupuestoDevengadoInv ?? default(decimal);
-                        temp.presupuestoPagadoFun = prestamo.presupuestoPagadoFunc ?? default(decimal);
+                        temp.presupuestoPagadoFunc = prestamo.presupuestoPagadoFunc ?? default(decimal);
                         temp.presupuestoPagadoInv = prestamo.presupuestoPagadoInv ?? default(decimal);
                         temp.saldoCuentas = prestamo.saldoCuentas ?? default(decimal);
-                        temp.desembolsoReal = prestamo.desembolsadoReal ?? default(decimal);
+                        temp.desembolsadoReal = prestamo.desembolsadoReal ?? default(decimal);
 
                         EjecucionEstado ejecucionEstado = EjecucionEstadoDAO.getEjecucionEstadoById(prestamo.ejecucionEstadoid ?? default(int));
 
-                        temp.ejecucionEstadoId = Convert.ToInt32(ejecucionEstado.id);
+                        temp.ejecucionEstadoid = Convert.ToInt32(ejecucionEstado.id);
                         temp.ejecucionEstadoNombre = ejecucionEstado.nombre;
                         temp.proyectoPrograma = prestamo.proyectoPrograma;
                         temp.fechaDecreto = prestamo.fechaDecreto.ToString("dd/MM/yyyy H:mm:ss");
@@ -1270,15 +1270,15 @@ namespace SPrestamo.Controllers
 
                         prestamo.cooperantes = CooperanteDAO.getCooperantePorCodigo(prestamo.cooperantecodigo ?? default(int));
 
-                        temp.cooperanteid = prestamo.cooperantes.codigo;
-                        temp.cooperantenombre = (prestamo.cooperantes.siglas != null ? prestamo.cooperantes.siglas + " - " : "") + prestamo.cooperantes.nombre;
+                        temp.cooperantecodigo = prestamo.cooperantes.codigo;
+                        temp.cooperantenombre = (prestamo.cooperantes.siglas != null ? prestamo.cooperantes.siglas + " - " : default(string)) + prestamo.cooperantes.nombre;
 
                         prestamo.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(prestamo.ejercicio, prestamo.entidad, prestamo.ueunidadEjecutora);
 
                         if (prestamo.unidadEjecutoras != null)
                         {
                             prestamo.unidadEjecutoras.entidads = EntidadDAO.getEntidad(prestamo.entidad, prestamo.ejercicio);
-                            temp.unidadEjecutora = prestamo.unidadEjecutoras.unidadEjecutora;
+                            temp.ueunidadEjecutora = prestamo.unidadEjecutoras.unidadEjecutora;
                             temp.unidadEjecutoraNombre = prestamo.unidadEjecutoras.nombre;
                             temp.nombreEntidadEjecutora = prestamo.unidadEjecutoras.entidads.nombre;
                         }
@@ -1304,6 +1304,8 @@ namespace SPrestamo.Controllers
                         temp.fechaActualizacion = prestamo.fechaActualizacion != null ? prestamo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                         temp.objetivo = prestamo.objetivo;
                         temp.objetivoEspecifico = prestamo.objetivoEspecifico;
+                        temp.ejercicio = prestamo.ejercicio;
+                        temp.entidad = prestamo.entidad;
 
                         long tiempo1 = DateTime.Now.Ticks;
                         Double f1 = (((DateTime.Now.Ticks * 1.0) - tiempo1) - proyecto.fechaInicio.Value.Ticks) / 86400000;
@@ -1348,24 +1350,24 @@ namespace SPrestamo.Controllers
 
                     AutorizacionTipo autorizacionTipo = AutorizacionTipoDAO.getAutorizacionTipoById(prestamo.autorizacionTipoid ?? default(int));
 
-                    temp.tipoAutorizacionId = autorizacionTipo.id;
+                    temp.autorizacionTipoid = autorizacionTipo.id;
                     temp.tipoAutorizacionNombre = autorizacionTipo.nombre;
                     temp.numeroAutorizacion = prestamo.numeroAutorizacion;
                     temp.fechaAutorizacion = prestamo.fechaAutorizacion == null ? null : prestamo.fechaAutorizacion.Value.ToString("dd/MM/yyyy H:mm:ss");
                     temp.aniosPlazo = prestamo.aniosPlazo ?? default(int);
                     temp.aniosGracia = prestamo.aniosGracia ?? default(int);
                     temp.fechaFinEjecucion = prestamo.fechaFinEjecucion == null ? null : prestamo.fechaFinEjecucion.Value.ToString("dd/MM/yyyy H:mm:ss");
-                    temp.periodoEjecucion = prestamo.peridoEjecucion ?? default(int);
+                    temp.peridoEjecucion = prestamo.peridoEjecucion ?? default(int);
 
                     InteresTipo interesTipo = InteresTipoDAO.getInteresTipoById(prestamo.interesTipoid ?? default(int));
 
-                    temp.tipoInteresId = interesTipo.id;
+                    temp.interesTipoid = interesTipo.id;
                     temp.tipoInteresNombre = interesTipo.nombre;
                     temp.porcentajeInteres = prestamo.porcentajeInteres ?? default(decimal);
                     temp.porcentajeComisionCompra = prestamo.porcentajeComisionCompra ?? default(decimal);
 
                     prestamo.tipoMonedas = TipoMonedaDAO.getTipoMonedaPorId(prestamo.tipoMonedaid);
-                    temp.tipoMonedaId = prestamo.tipoMonedas.id;
+                    temp.tipoMonedaid = prestamo.tipoMonedas.id;
                     temp.tipoMonedaNombre = prestamo.tipoMonedas.nombre;
                     temp.montoContratado = prestamo.montoContratado;
                     temp.amortizado = prestamo.amortizado ?? default(decimal);
@@ -1378,22 +1380,22 @@ namespace SPrestamo.Controllers
                     temp.interesesAcumulados = prestamo.interesesAcumulados ?? default(decimal);
                     temp.comisionCompromisoAcumulado = prestamo.comisionCompromisoAcumulado ?? default(decimal);
                     temp.otrosCargosAcumulados = prestamo.otrosCargosAcumulados ?? default(decimal);
-                    temp.presupuestoAsignadoFuncionamiento = prestamo.presupuestoAsignadoFunc ?? default(decimal);
-                    temp.presupuestoAsignadoInversion = prestamo.presupuestoAsignadoInv ?? default(decimal);
-                    temp.presupuestoModificadoFun = prestamo.presupuestoModificadoFunc ?? default(decimal);
+                    temp.presupuestoAsignadoFunc = prestamo.presupuestoAsignadoFunc ?? default(decimal);
+                    temp.presupuestoAsignadoInv = prestamo.presupuestoAsignadoInv ?? default(decimal);
+                    temp.presupuestoModificadoFunc = prestamo.presupuestoModificadoFunc ?? default(decimal);
                     temp.presupuestoModificadoInv = prestamo.presupuestoModificadoInv ?? default(decimal);
-                    temp.presupuestoVigenteFun = prestamo.presupuestoVigenteFunc ?? default(decimal);
+                    temp.presupuestoVigenteFunc = prestamo.presupuestoVigenteFunc ?? default(decimal);
                     temp.presupuestoVigenteInv = prestamo.presupuestoVigenteInv ?? default(decimal);
-                    temp.presupuestoDevengadoFun = prestamo.presupuestoDevengadoFunc ?? default(decimal);
+                    temp.presupuestoDevengadoFunc = prestamo.presupuestoDevengadoFunc ?? default(decimal);
                     temp.presupuestoDevengadoInv = prestamo.presupuestoDevengadoInv ?? default(decimal);
-                    temp.presupuestoPagadoFun = prestamo.presupuestoPagadoFunc ?? default(decimal);
+                    temp.presupuestoPagadoFunc = prestamo.presupuestoPagadoFunc ?? default(decimal);
                     temp.presupuestoPagadoInv = prestamo.presupuestoPagadoInv ?? default(decimal);
                     temp.saldoCuentas = prestamo.saldoCuentas ?? default(decimal);
-                    temp.desembolsoReal = prestamo.desembolsadoReal ?? default(decimal);
+                    temp.desembolsadoReal = prestamo.desembolsadoReal ?? default(decimal);
 
                     EjecucionEstado ejecucionEstado = EjecucionEstadoDAO.getEjecucionEstadoById(prestamo.ejecucionEstadoid ?? default(int));
 
-                    temp.ejecucionEstadoId = Convert.ToInt32(ejecucionEstado.id);
+                    temp.ejecucionEstadoid = Convert.ToInt32(ejecucionEstado.id);
                     temp.ejecucionEstadoNombre = ejecucionEstado.nombre;
                     temp.proyectoPrograma = prestamo.proyectoPrograma;
                     temp.fechaDecreto = prestamo.fechaDecreto.ToString("dd/MM/yyyy H:mm:ss");
@@ -1417,15 +1419,15 @@ namespace SPrestamo.Controllers
 
                     prestamo.cooperantes = CooperanteDAO.getCooperantePorCodigo(prestamo.cooperantecodigo ?? default(int));
 
-                    temp.cooperanteid = prestamo.cooperantes.codigo;
-                    temp.cooperantenombre = (prestamo.cooperantes.siglas != null ? prestamo.cooperantes.siglas + " - " : "") + prestamo.cooperantes.nombre;
+                    temp.cooperantecodigo = prestamo.cooperantes.codigo;
+                    temp.cooperantenombre = (prestamo.cooperantes.siglas != null ? prestamo.cooperantes.siglas + " - " : default(string)) + prestamo.cooperantes.nombre;
 
                     prestamo.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(prestamo.ejercicio, prestamo.entidad, prestamo.ueunidadEjecutora);
 
                     if (prestamo.unidadEjecutoras != null)
                     {
                         prestamo.unidadEjecutoras.entidads = EntidadDAO.getEntidad(prestamo.entidad, prestamo.ejercicio);
-                        temp.unidadEjecutora = prestamo.unidadEjecutoras.unidadEjecutora;
+                        temp.ueunidadEjecutora = prestamo.unidadEjecutoras.unidadEjecutora;
                         temp.unidadEjecutoraNombre = prestamo.unidadEjecutoras.nombre;
                         temp.nombreEntidadEjecutora = prestamo.unidadEjecutoras.entidads.nombre;
                     }
@@ -1437,6 +1439,8 @@ namespace SPrestamo.Controllers
                     temp.objetivo = prestamo.objetivo;
                     temp.objetivoEspecifico = prestamo.objetivoEspecifico;
                     temp.porcentajeAvance = prestamo.porcentajeAvance;
+                    temp.ejercicio = prestamo.ejercicio;
+                    temp.entidad = prestamo.entidad;
                 }
 
                 return Ok(new { success = true, prestamo = temp });

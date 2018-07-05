@@ -187,8 +187,8 @@ namespace SiproDAO.Dao
                 {
                     for (int i = 0; i < tipos.Count; i++)
                     {
-                        db.Execute("INSERT INTO PRESTAMO_TIPO_PRESTAMO VALUES (:prestamoId, :tipoPrestamoId, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion, :estado)",
-                            new { prestamoId = prestamo.id, tipoPrestamoId = tipos[i], usuarioCreo = usuario, fechaCreacion = DateTime.Now, estado = 1, usuarioActualizo = DBNull.Value });
+                        db.Execute("INSERT INTO PRESTAMO_TIPO_PRESTAMO (PRESTAMOID, TIPOPRESTAMOID, USUARIO_CREO, FECHA_CREACION, ESTADO) VALUES (:prestamoId, :tipoPrestamoId, :usuarioCreo, :fechaCreacion, :estado)",
+                            new { prestamoId = prestamo.id, tipoPrestamoId = tipos[i], usuarioCreo = usuario, fechaCreacion = DateTime.Now, estado = 1 });
                     }
 
                     ret = true;
@@ -210,22 +210,9 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    string query = String.Join(" ", "SELECT ptp.*, p.id, ue.unidad_ejecutora, e.entidad, pt.id FROM PRESTAMO_TIPO_PRESTAMO ptp",
-                        "INNER JOIN PRESTAMO p ON p.id=ptp.prestamoid",
-                        "INNER JOIN UNIDAD_EJECUTORA ue ON ue.unidad_ejecutora=p.ueunidad_ejecutora",
-                        "INNER JOIN ENTIDAD e ON e.entidad=ue.entidadentidad",
-                        "INNER JOIN PRESTAMO_TIPO pt ON pt.id=ptp.tipoprestamoid",
-                        "WHERE ptp.prestamoId=:prestamoId");
-                    ret = db.Query<PrestamoTipoPrestamo,Prestamo, UnidadEjecutora, Entidad, PrestamoTipo,PrestamoTipoPrestamo>(query, 
-                        (ptp, p, ue,e, pt) => 
-                        {
-                            ptp.prestamos = p;
-                            p.unidadEjecutoras = ue;
-                            ue.entidads = e;
-                            ptp.prestamoTipos = pt;
-                            return ptp;
-                        },
-                        new { prestamoId = prestamoId }, splitOn : "id,unidad_ejecutora, entidad, id").AsList<PrestamoTipoPrestamo>();
+                    string query = String.Join(" ", "SELECT ptp.* FROM PRESTAMO_TIPO_PRESTAMO ptp",                        
+                        "WHERE ptp.prestamoId=:prestamoId and ptp.estado=1");
+                    ret = db.Query<PrestamoTipoPrestamo>(query, new { prestamoId = prestamoId }).AsList<PrestamoTipoPrestamo>();
                 }
             }
             catch (Exception e)

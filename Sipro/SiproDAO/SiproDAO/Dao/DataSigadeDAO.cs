@@ -4,6 +4,7 @@ using Dapper;
 using System.Data.Common;
 using Utilities;
 using SiproModelAnalyticCore.Models;
+using SiproModelCore.Models;
 using System.Data.SqlClient;
 
 namespace SiproDAO.Dao
@@ -266,28 +267,43 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        public static int getDiferenciaMontos(String codigo_presupuestario)
+        public static decimal getDiferenciaMontos(String codigo_presupuestario)
         {
-            int ret = default(int);
+            decimal diferencia = 0;
             try
             {
+                List<ComponenteSigade> componenteSigades;
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    componenteSigades = db.Query<ComponenteSigade>("SELECT * FROM COMPONENTE_SIGADE WHERE codigo_presupuestario=:codigoPresupuestario AND estado=1 ORDER BY numero_componente", 
+                        new { codigoPresupuestario = codigo_presupuestario }).AsList<ComponenteSigade>();
+                }
+
+                List<DtmAvanceFisfinanCmp> componentesAnalytic;
                 using (DbConnection db = new OracleContext().getConnectionAnalytic())
                 {
-                    string query = String.Join(" ", "SELECT SUM(cmp.monto_componente-cs.monto_componente) diferencia ",
-                    "FROM SIPRO_ANALYTIC.DTM_AVANCE_FISFINAN_CMP cmp, SIPRO.componente_sigade cs ",
-                    "WHERE cmp.codigo_presupuestario=cs.codigo_presupuestario ",
-                    "AND cmp.numero_componente = cs.numero_componente ",
-                    "AND cmp.codigo_presupuestario=:codigo_presupuestario ",
-                    "AND cs.estado = 1");
-
-                    ret = Convert.ToInt32(db.ExecuteScalar<decimal>(query, new { codigo_presupuestario = codigo_presupuestario }));
+                    componentesAnalytic = db.Query<DtmAvanceFisfinanCmp>("SELECT * FROM DTM_AVANCE_FISFINAN_CMP cmp WHERE cmp.codigo_presupuestario=:codigoPresupuestario ORDER BY numero_componente",
+                        new { codigoPresupuestario = codigo_presupuestario }).AsList<DtmAvanceFisfinanCmp>();
                 }
+
+                
+                foreach (ComponenteSigade siprocmp in componenteSigades)
+                {
+                    foreach (DtmAvanceFisfinanCmp analyticcmp in componentesAnalytic)
+                    {
+                        if (siprocmp.numeroComponente == analyticcmp.numeroComponente)
+                        {
+                            diferencia += (analyticcmp.montoComponente - siprocmp.montoComponente) ?? default(decimal);
+                        }
+                    }
+                }
+
             }
             catch (Exception e)
             {
                 CLogger.write("13", "DataSigadeDAO.class", e);
             }
-            return ret;
+            return diferencia;
         }
 
         public static decimal totalDesembolsadoAFechaRealDolaresPorEntidad(String codigo_presupuestario, long anio, int mes, int entidadSicoin)

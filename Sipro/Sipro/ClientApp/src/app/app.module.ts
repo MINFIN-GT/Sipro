@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, LOCALE_ID } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { FlashMessagesModule } from 'angular2-flash-messages';
@@ -11,7 +11,7 @@ import { MaterialModule } from './material/material.module';
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { utils } from 'protractor'; 
 import { Ng2SmartTableModule } from 'ng2-smart-table';
-import { MatInputModule, MatPaginatorModule, MatTabsModule, MatDatepickerModule, MatNativeDateModule, MAT_DATE_LOCALE, MatPaginatorIntl } from '@angular/material';
+import { MatInputModule, MatPaginatorModule, MatTabsModule, MatDatepickerModule, MatNativeDateModule, MAT_DATE_LOCALE, MatPaginatorIntl, MatTooltipModule, MatAutocompleteModule } from '@angular/material';
 import { MomentModule } from 'angular2-moment/moment.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario } from './components/prestamo/modals/modal-codigo-presupuestario'
@@ -66,18 +66,15 @@ const routes: Routes = [{
   ],
   imports: [
       BrowserModule,
-      FormsModule,
+      FormsModule, ReactiveFormsModule, 
       RouterModule.forRoot(routes),
       HttpClientModule,
       FlashMessagesModule.forRoot(),
       MaterialModule,
       FlexLayoutModule,      
       Ng2SmartTableModule, 
-      MatPaginatorModule, 
-      MatTabsModule, 
-      MatDatepickerModule, 
-      MatNativeDateModule, MomentModule, MatInputModule, MatDialogModule,
-      MatProgressSpinnerModule
+      MatPaginatorModule, MatTabsModule, MatDatepickerModule, MatNativeDateModule, MomentModule, 
+      MatInputModule, MatDialogModule, MatProgressSpinnerModule, MatTooltipModule, MatAutocompleteModule
   ],
   providers: [UtilsService, AuthService, RouteguardService, 
     { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },

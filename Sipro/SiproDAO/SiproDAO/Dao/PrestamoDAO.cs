@@ -19,9 +19,9 @@ namespace SiproDAO.Dao
             public String entidad;
             public int entidadId;
             public int ejercicio;
-            public Double prestamo;
-            public Double donacion;
-            public Double nacional;
+            public decimal prestamo;
+            public decimal donacion;
+            public decimal nacional;
             public int esCoordinador;
             public String fechaElegibilidad;
             public String fechaCierre;
@@ -59,7 +59,7 @@ namespace SiproDAO.Dao
                             "plazo_ejecucion_ue=:plazoEjecucionUe, monto_asignado_ue=:montoAsignadoUe, desembolso_a_fecha_ue=:desembolsoAFechaUe, monto_por_desembolsar_ue=:montoPorDesembolsarUe, " +
                             "fecha_vigencia=:fechaVigencia, monto_contratado_usd=:montoContratadoUsd, monto_contratado_qtz=:montoContratadoQtz, desembolso_a_fecha_usd=:desembolsoAFechaUsd, " +
                             "monto_por_desembolsar_usd=:montoPorDesembolsarUsd, monto_asignado_ue_usd=:montoAsignadoUeUsd, monto_asignado_ue_qtz=:montoAsignadoUeQtz, desembolso_a_fecha_ue_usd=:desembolsoAFechaUeUsd, " +
-                            "monto_por_desembolsar_ue_usd=:montoPorDesembolsarUeUsd, entidad=:entidad, ejercicio=:ejercicio, objetivo=objetivo, objetivo_Especifico=:objetivoEspecifico, " +
+                            "monto_por_desembolsar_ue_usd=:montoPorDesembolsarUeUsd, entidad=:entidad, ejercicio=:ejercicio, objetivo=:objetivo, objetivo_Especifico=:objetivoEspecifico, " +
                             "porcentaje_Avance=:porcentajeAvance, cooperantecodigo=:cooperantecodigo, cooperanteejercicio=:cooperanteejercicio WHERE id=:id", prestamo);
                         ret = result > 0 ? true : false;
                     }
@@ -282,22 +282,21 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        public static bool actualizarMatriz(int prestamoId, Object lstunidadesEjecutoras)//Se debe crear otro schema de sipro_history
+        public static bool actualizarMatriz(int prestamoId, dynamic lstunidadesEjecutoras)//Se debe crear otro schema de sipro_history
         {
             bool actualizada = false;
 
             try
             {
-                List<stunidadejecutora> unidadesEjecutoras = (List<stunidadejecutora>)lstunidadesEjecutoras;
-                if (unidadesEjecutoras != null)
+                if (lstunidadesEjecutoras != null)
                 {
                     int version = getVersionHistoriaMatriz(prestamoId);
                     version++;
                     using (DbConnection db = new OracleContext().getConnectionHistory())
                     {
-                        for (int u = 0; u < unidadesEjecutoras.Count; u++)
+                        foreach (var obj in lstunidadesEjecutoras)
                         {
-                            stunidadejecutora unidadEjecutora = unidadesEjecutoras[u];
+                            stunidadejecutora unidadEjecutora = (stunidadejecutora)obj;
                             String query = "INSERT INTO componente_matriz "
                                     + "(unidad_ejecutoraid, componente_sigadeid, prestamoid, entidadid, ejercicio, "
                                     + " fuente_prestamo, fuente_donacion, fuente_nacional, techo, version, fecha_actualizacion) "
@@ -479,8 +478,8 @@ namespace SiproDAO.Dao
                         (unidad["id"].ToString().Equals(unidad_["id"].ToString()) || Convert.ToInt32(unidad_["id"].ToString()) == 205))
                 {
                     esCoordinador = (bool)unidad_["esCoordinador"] == true ? 1 : 0;
-                    fechaElegibilidad = (DateTime)unidad_["fechaElegibilidad"];
-                    fechaCierre = (DateTime)unidad_["fechaCierre"];
+                    fechaElegibilidad = unidad_["fechaElegibilidad"].ToString() != "" ? (DateTime)unidad_["fechaElegibilidad"] : default(DateTime);
+                    fechaCierre = unidad_["fechaCierre"].ToString() != "" ? (DateTime)unidad_["fechaCierre"] : default(DateTime);
                     break;
                 }
             }
@@ -522,6 +521,9 @@ namespace SiproDAO.Dao
                     proyecto.coordinador = esCoordinador;
                     proyecto.fechaElegibilidad = fechaElegibilidad;
                     proyecto.fechaCierre = fechaCierre;
+                    proyecto.unidadEjecutoras = unidadEjecutora;
+                    proyecto.ejercicio = unidadEjecutora.ejercicio;
+                    proyecto.entidad = unidadEjecutora.entidadentidad;
                 }
                 else
                 {
@@ -531,6 +533,7 @@ namespace SiproDAO.Dao
                     proyecto.fechaCierre = fechaCierre;
                     proyecto.fechaActualizacion = DateTime.Now;
                     proyecto.usuarioActualizo = usuario;
+                    proyecto.unidadEjecutoras = unidadEjecutora;
                 }
 
                 return ProyectoDAO.guardarProyecto(proyecto, false) ? proyecto : null;
@@ -577,6 +580,9 @@ namespace SiproDAO.Dao
                 componente.fuenteDonacion = donacion;
                 componente.fuenteNacional = nacional;
                 componente.inversionNueva = 0;
+                componente.entidad = proyecto.entidad;
+                componente.ejercicio = proyecto.ejercicio;
+                componente.ueunidadEjecutora = componente.unidadEjecutoras.unidadEjecutora;
             }
             else
             {

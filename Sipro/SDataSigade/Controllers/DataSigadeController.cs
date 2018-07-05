@@ -31,22 +31,22 @@ namespace SDataSigade.Controllers
             public String numeroPrestamo;
             public String destino;
             public String sectorEconomico;
-            public int unidadEjecutora;
+            public int ueunidadEjecutora;
             public String unidadEjecutoraNombre;
             public String fechaFirma;
-            public int tipoAutorizacionId;
+            public int autorizacionTipoid;
             public String tipoAutorizacionNombre;
             public String numeroAutorizacion;
             public String fechaAutorizacion;
             public int aniosPlazo;
             public int aniosGracia;
             public String fechaFinEjecucion;
-            public int periodoEjecucion;
-            public int tipoInteresId;
+            public int peridoEjecucion;
+            public int interesTipoid;
             public String tipoInteresNombre;
             public decimal porcentajeInteres;
             public decimal porcentajeComisionCompra;
-            public int tipoMonedaId;
+            public int tipoMonedaid;
             public String tipoMonedaNombre;
             public decimal montoContratado;
             public decimal amortizado;
@@ -59,19 +59,19 @@ namespace SDataSigade.Controllers
             public decimal interesesAcumulados;
             public decimal comisionCompromisoAcumulado;
             public decimal otrosCargosAcumulados;
-            public decimal presupuestoAsignadoFuncionamiento;
-            public decimal presupuestoAsignadoInversion;
-            public decimal presupuestoModificadoFun;
+            public decimal presupuestoAsignadoFunc;
+            public decimal presupuestoAsignadoInv;
+            public decimal presupuestoModificadoFunc;
             public decimal presupuestoModificadoInv;
-            public decimal presupuestoVigenteFun;
+            public decimal presupuestoVigenteFunc;
             public decimal presupuestoVigenteInv;
-            public decimal presupuestoDevengadoFun;
+            public decimal presupuestoDevengadoFunc;
             public decimal presupuestoDevengadoInv;
-            public decimal presupuestoPagadoFun;
+            public decimal presupuestoPagadoFunc;
             public decimal presupuestoPagadoInv;
             public decimal saldoCuentas;
-            public decimal desembolsoReal;
-            public int ejecucionEstadoId;
+            public decimal desembolsadoReal;
+            public int ejecucionEstadoid;
             public String ejecucionEstadoNombre;
             public String proyectoPrograma;
             public String fechaDecreto;
@@ -79,7 +79,7 @@ namespace SDataSigade.Controllers
             public String fechaElegibilidadUe;
             public String fechaCierreOrigianlUe;
             public String fechaCierreActualUe;
-            public int mesesProrrogaUe;
+            public decimal mesesProrrogaUe;
             public int plazoEjecucionUe;
             public decimal montoAsignadoUe;
             public decimal desembolsoAFechaUe;
@@ -93,9 +93,12 @@ namespace SDataSigade.Controllers
             public decimal montoAsignadoUeQtz;
             public decimal desembolsoAFechaUeUsd;
             public decimal montoPorDesembolsarUeUsd;
-            public int cooperanteid;
+            public int cooperantecodigo;
             public String cooperantenombre;
             public String objetivo;
+            public String objetivoEspecifico;
+            public int porcentajeAvance;
+            public int ejercicio;
         }
 
         private class stdesembolsos
@@ -131,7 +134,7 @@ namespace SDataSigade.Controllers
                     Cooperante cooperante = CooperanteDAO.getCooperantePorCodigo(inf.codigoOrganismoFinan ?? default(int));
                     if (cooperante != null)
                     {
-                        temp.cooperanteid = cooperante.codigo;
+                        temp.cooperantecodigo = cooperante.codigo;
                         temp.cooperantenombre = cooperante.nombre;
                     }
 
@@ -140,7 +143,7 @@ namespace SDataSigade.Controllers
                     temp.fechaVigencia = inf.fechaVigencia != null ? inf.fechaVigencia.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     TipoMoneda moneda = TipoMonedaDAO.getTipoMonedaPorSimbolo(inf.monedaPrestamo);
                     temp.tipoMonedaNombre = String.Join("", moneda.nombre, " (" + moneda.simbolo + ")");
-                    temp.tipoMonedaId = moneda.id;
+                    temp.tipoMonedaid = moneda.id;
                     temp.montoContratado = inf.montoContratado ?? default(decimal);
                     temp.montoContratadoUsd = inf.montoContratadoUsd ?? default(decimal);
                     temp.montoContratadoQtz = inf.montoContratadoGtq ?? default(decimal);

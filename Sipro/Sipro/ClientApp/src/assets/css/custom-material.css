@@ -167,3 +167,11 @@ html, body {
 .container {
     min-height: 100%;
 }
+
+.input-money{
+	text-align: right;
+}
+
+[hidden] {
+    display: none !important;
+  }

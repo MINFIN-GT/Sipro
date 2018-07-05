@@ -9,13 +9,13 @@
         <div fxLayout="column" fxLayoutAlign="center" fxFlexFill>
           <div [hidden]="esColapsado">
             <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2px">
-              <button mat-raised-button style="background-color: #337ab7; color:#fff" (click)="nuevo()"><mat-icon>add</mat-icon>Nuevo</button>
-              <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="editar()"><mat-icon>mode_edit</mat-icon>Editar</button>
-              <button mat-raised-button style="background-color: #d9534f; color: #fff;" (click)="borrar()"><mat-icon>delete</mat-icon>Borrar</button>
+              <button mat-raised-button style="background-color: #337ab7; color:#fff" (click)="nuevo()" matTooltip="Nuevo" matTooltipPosition="above"><mat-icon>add</mat-icon>Nuevo</button>
+              <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="editar()" matTooltip="Editar" matTooltipPosition="above"><mat-icon>mode_edit</mat-icon>Editar</button>
+              <button mat-raised-button style="background-color: #d9534f; color: #fff;" (click)="borrar()" matTooltip="Borrar" matTooltipPosition="above"><mat-icon>delete</mat-icon>Borrar</button>
             </div>
             <br>
             <div fxLayout="row" fxLayoutAlign="end">
-              <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="refresh()"><mat-icon>refresh</mat-icon></button>
+              <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="refresh()" matTooltip="Reiniciar la vista de la tabla" matTooltipPosition="above"><mat-icon>refresh</mat-icon></button>
             </div>
             <br>
             <div fxLayout="row">
@@ -41,12 +41,20 @@
           <div [hidden]="!esColapsado">
             <form #myForm="ngForm">
               <div fxLayout="row" fxLayoutAlign="start" class="nuevo-edicion">
-                  <label>{{esnuevo == true ? 'Nuevo Préstamo' : 'Edición de Préstamo'}}</label>
+                  <label>{{esNuevo == true ? 'Nuevo Préstamo' : 'Edición de Préstamo'}}</label>
               </div>
-              <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2px">
-                  <button mat-raised-button style="background-color: #5cb85c; color:#fff; border-color: #4cae4c" [disabled]="!myForm.valid" (click)="guardar()"><mat-icon>save</mat-icon>Guardar</button>
-                  <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="IrATabla()"><mat-icon>list</mat-icon>Ir a Tabla</button>
-              </div>
+              <br>
+              <div fxLayout="row">
+                <div [hidden]="esNuevo" fxFlex="50%" fxLayoutAlign="start" fxLayoutGap="2px">
+                  <button mat-raised-button matTooltip="Ver PEPs en Vista Árbol" matTooltipPosition="above">Vista de Árbol</button>
+                  <button mat-raised-button matTooltip="Ver PEPs en Vista de Lista" matTooltipPosition="above">Vista de Lista</button>
+                  <button fxFlex="25px" fxLayoutAlign="center" mat-raised-button matTooltip="Congelar o descongelar linea base" matTooltipPosition="above"><mat-icon>bookmark</mat-icon></button>
+                </div>
+                <div fxFlex fxLayoutAlign="end" fxLayoutGap="2px">
+                    <button mat-raised-button style="background-color: #5cb85c; color:#fff; border-color: #4cae4c" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
+                    <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
+                </div>
+              </div>              
               <br>
               <div fxLayout="column">
                   <div [@.disabled]="true">
@@ -79,7 +87,13 @@
                                         </div>
                                         <div fxLayout="column">
                                           <mat-form-field>
-                                            <input name="cooperantenombre" [(ngModel)]="prestamo.cooperantenombre" matInput placeholder="* Organismo Financiero Internacional" [required]="true">
+                                            <input name="cooperantenombre" [formControl]="myControl" [(ngModel)]="prestamo.cooperantenombre" matInput placeholder="* Organismo Financiero Internacional" 
+                                              [required]="true" [matAutocomplete]="auto">
+                                            <mat-autocomplete #auto="matAutocomplete">
+                                              <mat-option *ngFor="let cooperante of filteredCooperantes | async" [value]="cooperante.nombre" (onSelectionChange)="cooperanteSeleccionado(cooperante)">                                                
+                                                <span>{{cooperante.nombre}}</span>
+                                              </mat-option>
+                                            </mat-autocomplete>
                                           </mat-form-field>
                                         </div>
                                         <div fxLayout="column">
@@ -211,17 +225,17 @@
                                         <div fxLayout="column">
                                           <h5 fxLayoutAlign="center">Tipo de préstamo</h5>
                                           <div style="text-align: right;">
-                                            <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="buscarTiposPrestamo()" matTooltip="Asignar un tipo de préstamo"><mat-icon>add</mat-icon></button>
+                                            <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="buscarTiposPrestamo()" matTooltip="Asignar un tipo de préstamo" matTooltipPosition="above"><mat-icon>add</mat-icon></button>
                                           </div>
                                           <br>
                                           <div>
                                             <ng2-smart-table [settings]="settingsTipoPrestamo" [source]="sourceTipoPrestamo"></ng2-smart-table>              
                                           </div>
                                         </div>
-                                        <div fxLayout="column">
+                                        <div fxLayout="column" [hidden]="esNuevo">
                                           <h5 fxLayoutAlign="center">Archivos adjuntos</h5>
                                           <div style="text-align: right;">
-                                            <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="adjuntarDocumentos()" matTooltip="Adjuntar documento"><mat-icon>add</mat-icon></button>
+                                            <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="adjuntarDocumentos()" matTooltip="Adjuntar documento" matTooltipPosition="above"><mat-icon>add</mat-icon></button>
                                           </div>
                                           <br>
                                           <div>
@@ -307,17 +321,17 @@
                                         <br>
                                         <div fxLayout="column">
                                           <mat-form-field>
-                                            <input type="number" name="presupuestoAsignadoFuncionamiento" [(ngModel)]="prestamo.presupuestoAsignadoFuncionamiento" matInput placeholder="P. Asignado Funcionamiento" [required]="true">
+                                            <input type="number" name="presupuestoAsignadoFunc" [(ngModel)]="prestamo.presupuestoAsignadoFunc" matInput placeholder="P. Asignado Funcionamiento" [required]="true">
                                           </mat-form-field>
                                         </div>
                                         <div fxLayout="column">
                                           <mat-form-field>
-                                            <input type="number" name="presupuestoVigenteFun" [(ngModel)]="prestamo.presupuestoVigenteFun" matInput placeholder="P. Vigente Funcionamiento" [required]="true">
+                                            <input type="number" name="presupuestoVigenteFunc" [(ngModel)]="prestamo.presupuestoVigenteFunc" matInput placeholder="P. Vigente Funcionamiento" [required]="true">
                                           </mat-form-field>
                                         </div>
                                         <div fxLayout="column">
                                           <mat-form-field>
-                                            <input type="number" name="presupuestoDevengadoFun" [(ngModel)]="prestamo.presupuestoDevengadoFun" matInput placeholder="P. Devengado Funcionamiento" [required]="true">
+                                            <input type="number" name="presupuestoDevengadoFunc" [(ngModel)]="prestamo.presupuestoDevengadoFunc" matInput placeholder="P. Devengado Funcionamiento" [required]="true">
                                           </mat-form-field>
                                         </div>
                                         <div *ngIf="false">
@@ -327,6 +341,7 @@
                                   </mat-tab>
                                   <mat-tab label="Unidades Ejecutoras">
                                       <div class="demo-tab-content">
+                                        <br>
                                         <table class="table table-striped" style="margin-top: 15px;" fxFlexFill>
                                           <thead>
                                             <tr>
@@ -344,12 +359,12 @@
                                                 (ngModelChange) = "cambiarCoordinador(i)" 
                                                 [readonly]="m_existenDatos"/>
                                               </td>
-                                              <td class="divisionColumna truncate" style="">
+                                              <td class="divisionColumna truncate">
                                                 <div style="height: 25px;">
                                                   <div style="text-align: left">{{row.nombre}}</div>
                                                 </div>
                                               </td>
-                                              <td class="divisionColumna truncate" style="">
+                                              <td class="divisionColumna truncate">
                                                 <div style="height: 25px;">
                                                   <div style="text-align: left">{{row.entidad}}</div>
                                                 </div>
@@ -360,7 +375,7 @@
                                                     <input matInput [matDatepicker]="UEfechaElegibilidad" placeholder="Fecha de Elegibilidad"
                                                       name="UEfechaElegibilidad" [(ngModel)]="row.fechaElegibilidad" [readonly]="m_existenDatos">
                                                     <mat-datepicker-toggle matSuffix [for]="UEfechaElegibilidad"></mat-datepicker-toggle>
-                                                    <mat-datepicker #UEfechaElegibilidad></mat-datepicker>
+                                                    <mat-datepicker [disabled]="m_existenDatos" #UEfechaElegibilidad></mat-datepicker>
                                                   </mat-form-field>
                                                 </div>			
                                               </td>
@@ -370,7 +385,7 @@
                                                     <input matInput [matDatepicker]="UEfechaCierre" placeholder="Fecha de Cierre"
                                                       name="UEfechaCierre" [(ngModel)]="row.fechaCierre" [readonly]="m_existenDatos">
                                                     <mat-datepicker-toggle matSuffix [for]="UEfechaCierre"></mat-datepicker-toggle>
-                                                    <mat-datepicker #UEfechaCierre></mat-datepicker>
+                                                    <mat-datepicker [disabled]="m_existenDatos" #UEfechaCierre></mat-datepicker>
                                                   </mat-form-field>
                                                 </div>
                                               </td>
@@ -431,12 +446,11 @@
                                       <div class="demo-tab-content">
                                         <br>
                                         <div fxLayout="row" fxLayoutAlign="start">
-                                          <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="verHistoria()"><mat-icon>history</mat-icon></button>
+                                          <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="verHistoria()" matTooltip="Ver historia" matTooltipPosition="above"><mat-icon>history</mat-icon></button>
                                         </div>
-                                        <br>
                                         <div fxLayout="row">
                                           <div class="divTabla">
-                                            <table class="table">
+                                            <table class="table" fxFlexFill>
                                               <tr>
                                                 <th rowspan="2" class="label-form" style="vertical-align: middle;"> COMPONENTES</th>
                                                 <th colspan="3"  class="label-form" *ngFor= "let organismo of m_organismosEjecutores;"
@@ -459,29 +473,30 @@
                                               </tr>
                                               
                                               <tr *ngFor="let row of m_componentes; let i=index " class="filaIngreso" style="font-weight: normal;"
-                                                (click)="componenteSeleccionado(row)" [ngClass]="row.isSelected ? 'st-selected' : ''">
+                                                [ngClass]="row.isSelected ? 'st-selected' : ''">
                                                 <td style="min-width: 200px;" class="label-form"> {{ row.nombre }} </td>
-                                                <td  colspan="3" *ngFor = "let ue of row.unidadesEjecutoras; let k=index">
+                                                <td  colspan="3" *ngFor = "let ue of row.unidadesEjecutoras; let in = index; trackBy:customTrackBy ">
                                                   <table style="width: 100%;">
                                                     <tr>
                                                       <td style="text-align: center;">
-                                                        <input style="width: 100px; margin-right: 5px;" name="prestamo" 
-                                                          [(ngModel)]="ue.prestamo" matInput 
-                                                          (ngModelChange)="actualizarTotalesUE(); actualizarComponentes()"
+                                                        <input type="number" style="width: 100px; margin-right: 5px; text-align: right" name="prestamo-{{i}}-{{in}}" 
+                                                          [(ngModel)]="ue.prestamo"
+                                                          matInput
+                                                          (ngModelChange)="actualizarComponentes(); actualizarTotalesUE(); "
                                                         />															
                                                       </td>
                                                       <td style="text-align: center;">
-                                                        <input type="number" style="width: 100px; margin-right: 5px;" name="donacion" 
+                                                        <input type="number" style="width: 100px; margin-right: 5px; text-align: right" name="donacion-{{i}}-{{in}}" 
                                                           [(ngModel)]="ue.donacion" matInput
-                                                          [readonly]="m_existenDatos" 
-                                                          (ngModelChange)="actualizarTotalesUE(); actualizarComponentes()"
+                                                          [readonly]="m_existenDatos"
+                                                          (ngModelChange)="actualizarComponentes(); actualizarTotalesUE(); "
                                                         />							
                                                       </td>
                                                       <td style="text-align: center; border-right: 1px solid #ddd;">
-                                                        <input type="number" style="width: 100px; margin-right: 5px;" name="nacional" 
+                                                        <input type="number" style="width: 100px; margin-right: 5px; text-align: right" name="nacional-{{i}}-{{in}}" 
                                                           [(ngModel)]="ue.nacional" matInput
-                                                          [readonly]="m_existenDatos" 
-                                                          (ngModelChange)="actualizarTotalesUE(); actualizarComponentes()"
+                                                          [readonly]="m_existenDatos"
+                                                          (ngModelChange)="actualizarComponentes(); actualizarTotalesUE(); "
                                                         />
                                                       </td>
                                                     <tr>
@@ -536,9 +551,11 @@
                       </mat-card>
                   </div>                  
                   <br>
+                  <div fxLayout="row" fxLayoutAlign="center" class="label-form">Los campos marcados con * son obligatorios y las fechas deben tener formato de dd/mm/aaaa</div>
+			            <br/>
                   <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2px">
-                    <button mat-raised-button style="background-color: #5cb85c; color:#fff; border-color: #4cae4c" [disabled]="!myForm.valid" (click)="guardar()"><mat-icon>save</mat-icon>Guardar</button>
-                    <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="IrATabla()"><mat-icon>list</mat-icon>Ir a Tabla</button>
+                    <button mat-raised-button style="background-color: #5cb85c; color:#fff; border-color: #4cae4c" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
+                    <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
                   </div>
               </div>
             </form>

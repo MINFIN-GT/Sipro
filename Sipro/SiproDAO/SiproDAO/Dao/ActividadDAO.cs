@@ -102,6 +102,8 @@ namespace SiproDAO.Dao
                 {
                     if (Actividad.id < 1)
                     {
+                        int sequenceId = db.ExecuteScalar<int>("SELECT seq_actividad.nextval FROM DUAL");
+                        Actividad.id = sequenceId;
                         guardado = db.Execute("INSERT INTO ACTIVIDAD VALUES (:id, :nombre, :descripcion, :fechaInicio, :fechaFin, :porcentajeAvance, :usuarioCreo, " +
                             ":usuarioActualizo, :fechaCreacion, :fechaActualizacion, :estado, :actividadTipoid, :snip, :programa, :subprograma, :proyecto, :actividad, " +
                             ":obra, :objetoId, :objetoTipo, :duracion, :duracionDimension, :predObjetoId, :predObjetoTipo, :latitud, :longitud, :costo, :acumulacionCosto, " +

@@ -12,6 +12,21 @@ import { ButtonDeleteComponent } from '../../../assets/ts/ButtonDeleteComponent'
 import { ButtonDownloadComponent } from '../../../assets/ts/ButtonDownloadComponent';
 import { DialogDownloadDocument, DialogOverviewDownloadDocument } from '../../../assets/ts/documentosadjuntos/documento-adjunto'
 import { Prestamo } from './model/model.prestamo'
+import {FormControl} from '@angular/forms';
+import {Observable} from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
+
+export interface Cooperante {
+  codigo: number;
+  descripcion: string;
+  estado: number;
+  fechaActualizacion : Date;
+  fechaCreacion: Date;
+  nombre: string;
+  siglas: string;
+  usuarioActualizo: string;
+  usuarioCreo: string;
+}
 
 @Component({
   selector: 'app-prestamo',
@@ -32,7 +47,7 @@ export class PrestamoComponent implements OnInit {
   source: LocalDataSource;
   sourceTipoPrestamo: LocalDataSource;
   sourceArchivosAdjuntos: LocalDataSource;
-  esnuevo : boolean;
+  esNuevo : boolean;
   etiqueta : Etiqueta;
   esNuevoDocumento: boolean;
   busquedaGlobal: string;
@@ -50,13 +65,18 @@ export class PrestamoComponent implements OnInit {
   riesgosCargados = false;
   activeTab : number;
   componentes = [];
-  rowCollectionComponentes = [];
   toggle = {};
   tabActive : number;
   unidadesEjecutoras = [];
-  totalIngresado : number;
+  totalIngresado: number;
+  prestamotipos = [];
+  esTreeview: boolean;
+  botones: boolean;
+  cooperantes = [];
 
   @ViewChild('search') divSearch: ElementRef;
+  myControl = new FormControl();
+  filteredCooperantes: Observable<Cooperante[]>;
 
   constructor(private auth: AuthService, private utils: UtilsService, private http: HttpClient, private dialog: MatDialog) {
     this.totalPrestamos = 0;
@@ -78,27 +98,80 @@ export class PrestamoComponent implements OnInit {
     this.diferenciaCambios = 0;
     this.tabActive = 0;
     this.totalIngresado  = 0;
+    this.esNuevo = true;
+
+    this.filteredCooperantes = this.myControl.valueChanges
+      .pipe(
+        startWith(''),
+        map(value => value ? this._filterCooperante(value) : this.cooperantes.slice())
+      );
+  }
+
+  private _filterCooperante(value: string): Cooperante[] {
+    const filterValue = value.toLowerCase();
+    return this.cooperantes.filter(c => c.nombre.toLowerCase().indexOf(filterValue) === 0);
+  }
+
+  cooperanteSeleccionado(value){
+    this.prestamo.cooperantecodigo = value.codigo;
   }
 
   ngOnInit() { 
     this.obtenerTotalPrestamos();
-  }
+    this.obtenerCooperantes();
+  }  
 
   nuevo(){
     this.esColapsado = true;
-    this.esnuevo = true;
+    this.esNuevo = true;
     this.esNuevoDocumento = true;
     this.m_organismosEjecutores = [];
+    this.unidadesEjecutoras = [];
     this.m_componentes = [];
     this.componentes = [];
     this.tabActive = 0;
+    this.prestamo = new Prestamo();
+    this.sourceTipoPrestamo = new LocalDataSource();
+    this.sourceArchivosAdjuntos = new LocalDataSource();
+    this.matriz_valid = 1;
   }
 
   editar(){
     if(this.prestamo.id != null){
       this.esColapsado = true;
-      this.esnuevo = false;
+      this.esNuevo = false;
       this.esNuevoDocumento = false;
+      this.tabActive = 0;
+
+      this.http.get('http://localhost:60054/api/Prestamo/Tipos/'+ this.prestamo.id, { withCredentials: true }).subscribe(response => {
+        if (response['success'] == true) {
+          this.prestamotipos = response['prestamoTipos'];
+          this.sourceTipoPrestamo = new LocalDataSource(this.prestamotipos);
+        }
+      })
+
+      var codigoPresupuestario = this.prestamo.codigoPresupuestario;
+      this.http.get("http://localhost:60054/api/Prestamo/ComponentesSigade/" + codigoPresupuestario, { withCredentials: true }).subscribe(response => {
+        this.componentes = response['componentes'];
+      })
+
+      this.http.post('http://localhost:60054/api/Prestamo/UnidadesEjecutoras',{
+        codigoPresupuestario : this.prestamo.codigoPresupuestario,
+        prestamoId : this.prestamo.id
+      }, { withCredentials: true }).subscribe(response => {
+        if(response['success'] == true){
+          this.unidadesEjecutoras = response['unidadesEjecutoras'];
+          for(var ue=0; ue < this.unidadesEjecutoras.length; ue++){
+            this.unidadesEjecutoras[ue].fechaElegibilidad = this.unidadesEjecutoras[ue].fechaElegibilidad != null ? moment(this.unidadesEjecutoras[ue].fechaElegibilidad,'DD/MM/YYYY').toDate() : null;
+            this.unidadesEjecutoras[ue].fechaCierre = this.unidadesEjecutoras[ue].fechaCierre != null ? moment(this.unidadesEjecutoras[ue].fechaCierre,'DD/MM/YYYY').toDate() : null;
+            this.unidadesEjecutoras[0].esCoordinador=true;
+          }      
+        }
+      })
+
+      this.cargarMatriz();			
+			this.getPorcentajes();			
+			this.getDocumentosAdjuntos(this.prestamo.id, -1);
     }
     else
       alert('seleccione un item');
@@ -114,7 +187,111 @@ export class PrestamoComponent implements OnInit {
   }
 
   guardar(){
+    if (this.prestamo!=null && this.prestamo.codigoPresupuestario !=null){
+      this.prestamo.idPrestamoTipos = "";
+      this.prestamotipos = [];
+      this.sourceTipoPrestamo.getAll().then(value => { 
+          value.forEach(element => {
+            this.prestamotipos.push(element); 
+          });
 
+          for(var x=0; x < this.prestamotipos.length; x++){
+            this.prestamo.idPrestamoTipos = this.prestamo.idPrestamoTipos + (x > 0 ? "," : "") + this.prestamotipos[x].id;
+          }
+
+          var objetoHttp;
+
+          if(this.prestamo.id > 0){
+            objetoHttp = this.http.put("http://localhost:60054/api/Prestamo/Prestamo/" + this.prestamo.id, this.prestamo, { withCredentials: true });
+          }
+          else{
+            this.prestamo.id=0;
+            objetoHttp = this.http.post("http://localhost:60054/api/Prestamo/Prestamo", this.prestamo, { withCredentials: true });
+          }
+    
+          objetoHttp.subscribe(response => {
+            if(response['success'] == true){
+              this.diferenciaCambios = 0;
+              this.prestamo.usuarioCreo = response['usuarioCreo'];
+              this.prestamo.fechaCreacion = response['fechaCreacion'];
+              this.prestamo.fechaActualizacion = response['fechaActualizacion'];
+              this.prestamo.usuarioActualizo = response['usuarioActualizo'];
+              this.prestamo.id = response['id'];
+    
+              if(this.esTreeview){
+    
+              }else{
+                this.obtenerTotalPrestamos();
+              }
+    
+              if (this.matriz_valid == 1 && this.totalIngresado  > 0 && this.m_componentes.length > 0 ){
+                for(var c=0; c<this.m_componentes.length; c++){
+                  this.m_componentes[c].descripcion = this.componentes[c]!=null ? this.componentes[c].descripcion : null;              
+                }
+    
+                var parametros = {
+                  estructura: JSON.stringify(this.m_componentes),
+                  componentes: JSON.stringify(this.componentes),
+                  unidadesEjecutoras: JSON.stringify(this.unidadesEjecutoras),
+                  prestamoId: this.prestamo.id,
+                  existenDatos: this.m_existenDatos ? true : false,
+                  t:moment().unix()
+                }
+    
+                this.http.post('http://localhost:60054/api/Prestamo/GuardarMatriz', parametros, { withCredentials: true }).subscribe(response => {
+                  if(response['success'] == true){
+                    this.m_existenDatos = true;
+    
+                    /*
+                    if(mi.child_metas!=null || mi.child_riesgos!=null){
+                      if(mi.child_metas)
+                        mi.child_metas.guardar(null, (mi.child_riesgos!=null) ?  mi.child_riesgos.guardar : null,'Préstamo '+(mi.esNuevo ? 'creado' : 'guardado')+' con éxito',
+                            'Error al '+(mi.esNuevo ? 'creado' : 'guardado')+' el Préstamo');
+                      else if(mi.child_riesgos)
+                        mi.child_riesgos.guardar('Préstamo '+(mi.esNuevo ? 'creado' : 'guardado')+' con Éxito',
+                            'Error al '+(mi.esNuevo ? 'creado' : 'guardado')+' el Préstamo');
+                    }else{
+                      $utilidades.mensaje('success','Préstamo '+(mi.esNuevo ? 'creado' : 'guardado')+' con éxito');
+                      
+                      mi.esNuevoDocumento = false;
+                    }
+                    */
+                   alert('Guardado con éxito');
+                   this.botones=true;
+                   this.esNuevo=false;
+                  }else{
+                    alert('danger, Error al '+(this.esNuevo ? 'crear' : 'guardar')+' la matriz del préstamo');
+                    this.botones=true;
+                  }
+                })
+              }else{
+                /*
+                if(mi.child_metas!=null)
+                  mi.child_metas.guardar(null, null,'Préstamo '+(mi.esNuevo ? 'creado' : 'guardado')+' con éxito',
+                      'Error al '+(mi.esNuevo ? 'crear' : 'guardar')+' el préstamo');
+                else{
+                  $utilidades.mensaje('success','Préstamo '+(mi.esNuevo ? 'creado' : 'guardado')+' con éxito');
+                }
+                */
+               this.botones=true;
+               alert('Guardado con éxito');
+              }
+              this.esNuevo = false;
+            }else{
+              alert('danger, Error al '+(this.esNuevo ? 'crear' : 'guardar')+' el préstamo');
+              this.botones=true;
+            }
+          });
+      });
+
+
+
+      
+
+      
+    }
+    else
+			alert('warning, Debe de llenar todos los campos obligatorios');    
   }
 
   IrATabla(){
@@ -136,6 +313,14 @@ export class PrestamoComponent implements OnInit {
           console.log('Error');
         }
       });
+  }
+
+  obtenerCooperantes(){
+    this.http.get('http://localhost:60015/api/Cooperante/Cooperantes', { withCredentials: true}).subscribe(response => {
+      if (response['success'] == true) {
+        this.cooperantes = response["cooperantes"];        
+      }
+    })
   }
 
   cargarTabla(pagina? : number){
@@ -284,7 +469,7 @@ export class PrestamoComponent implements OnInit {
         this.prestamo.fechaVigencia = moment(this.prestamo.fechaVigencia,'DD/MM/YYYY').toDate();
         this.prestamo.nombre = this.prestamo.nombre == null || this.prestamo.nombre == undefined || this.prestamo.nombre == '' ?
           this.prestamo.proyectoPrograma : this.prestamo.nombre;
-        this.cooperanteid = this.prestamo.cooperanteid;
+        this.cooperanteid = this.prestamo.cooperantecodigo;
         this.getPorcentajes();
       }else{
         alert('Warning, No se encontraron datos con los parámetros ingresados');
@@ -293,7 +478,7 @@ export class PrestamoComponent implements OnInit {
   }
 
   cargarMatriz(){
-    this.matriz_valid = null;
+    this.matriz_valid = 0;
 	  this.diferenciaCambios = 0;
 			var parametros = {
 					prestamoId: this.prestamo.id,
@@ -317,6 +502,7 @@ export class PrestamoComponent implements OnInit {
         this.activeTab = 0;
         this.diferenciaCambios = response["diferencia"];
         this.actualizarTotalesUE();
+        this.actualizarComponentes();
       }else{
         alert('Warning, No se encontraron datos con los parámetros ingresados')
       }
@@ -346,19 +532,19 @@ export class PrestamoComponent implements OnInit {
   actualizarComponentes(){
     this.matriz_valid = 1;
 		this.totalIngresado  = 0;
-		     for (var x in this.m_componentes){
-		    	 this.m_componentes[x].totalAsignadoPrestamo = 0;
-		    	 var  totalUnidades = 0;
-		    	 var totalAsignado = 0;
-		    	 for (var j in this.m_componentes[x].unidadesEjecutoras){
-		    		 totalUnidades = totalUnidades +  this.m_componentes[x].unidadesEjecutoras[j].prestamo;
-		    	 }
-		    	 totalAsignado = totalUnidades;
-		    	 this.totalIngresado = this.totalIngresado + totalUnidades;
-		    	 this.matriz_valid = this.matriz_valid==1 &&  totalUnidades == this.m_componentes[x].techo ? 1 : null;
-		    	 
-		    	 this.m_componentes[x].totalIngresado = totalAsignado;
-		     }
+    for (var x in this.m_componentes){
+      this.m_componentes[x].totalAsignadoPrestamo = 0;
+      var  totalUnidades = 0;
+      var totalAsignado = 0;
+      for (var j in this.m_componentes[x].unidadesEjecutoras){
+        totalUnidades = totalUnidades +  this.m_componentes[x].unidadesEjecutoras[j].prestamo;
+      }
+      totalAsignado = totalUnidades;
+      this.totalIngresado = this.totalIngresado + totalUnidades;
+      this.matriz_valid = this.matriz_valid==1 &&  totalUnidades == this.m_componentes[x].techo ? 1 : null;
+      
+      this.m_componentes[x].totalIngresado = totalAsignado;
+    }
   }
 
   cambiarCoordinador(pos){
@@ -369,19 +555,6 @@ export class PrestamoComponent implements OnInit {
     this.unidadesEjecutoras[pos].esCoordinador = true;
   }
 
-  componenteSeleccionado(row){
-    var rowAnterior
-    if(rowAnterior){
-      if(row != rowAnterior){
-        rowAnterior.isSelected=false;
-      }else{
-        return;
-      }
-    }
-    row.isSelected = true;
-    rowAnterior = row;
-  }
-
   buscarTipoMoneda(){
     this.modalMoneda.dialog.open(DialogMoneda, {
       width: '600px',
@@ -390,7 +563,7 @@ export class PrestamoComponent implements OnInit {
     }).afterClosed().subscribe(result => {
       if(result != null){
         this.prestamo.tipoMonedaNombre = result.tipoMonedaNombre;
-        this.prestamo.tipoMonedaId = result.tipoMonedaId;
+        this.prestamo.tipoMonedaid = result.tipoMonedaId;
       }
     });
   }
@@ -537,7 +710,10 @@ export class PrestamoComponent implements OnInit {
         renderComponent: ButtonDownloadComponent,
         onComponentInitFunction: (instance) =>{
           instance.actionEmitter.subscribe(row => {
-            
+            window.location.href='http://localhost:60021/api/DocumentoAdjunto/Descarga/' + row.id;
+            /*this.http.get('http://localhost:60021/api/DocumentoAdjunto/Descarga/' + row.id, { withCredentials: true }).subscribe(response => this.downloadFile(response)),//console.log(data),
+            error => console.log("Error downloading the file."),
+            () => console.info("OK");*/
           });
         }
       },
@@ -548,7 +724,15 @@ export class PrestamoComponent implements OnInit {
         renderComponent: ButtonDeleteComponent,
         onComponentInitFunction: (instance) =>{
           instance.actionEmitter.subscribe(row => {
-            this.sourceArchivosAdjuntos.remove(row);
+            this.http.delete('http://localhost:60021/api/DocumentoAdjunto/Documento/' + row.id, { withCredentials: true }).subscribe(response => {
+              if (response['success'] == true){
+                this.sourceArchivosAdjuntos.remove(row);
+              }
+              else{
+                alert("Error al borrar documento");
+              } 
+            })
+            
           });
         }
       }
@@ -560,6 +744,12 @@ export class PrestamoComponent implements OnInit {
     hideSubHeader: true,
     noDataMessage: ''
   };
+
+  downloadFile(data: Response){
+    var blob = new Blob([data], { type: 'text/csv' });
+    var url= window.URL.createObjectURL(blob);
+    window.open(url);
+  }
 
   buscarTiposPrestamo(){
     this.modalTipoPrestamo.dialog.open(DialogTipoPrestamo, {
@@ -600,16 +790,38 @@ export class PrestamoComponent implements OnInit {
     this.modalAdjuntarDocumento.dialog.open(DialogDownloadDocument, {
       width: '600px',
       height: '200px',
-      data: { titulo: 'Documentos Adjuntos' }
+      data: { titulo: 'Documentos Adjuntos', idObjeto: this.prestamo.id, idTipoObjeto: -1 }
     }).afterClosed().subscribe(result => {
       if(result != null){
-        
+        this.sourceArchivosAdjuntos = new LocalDataSource(result);
       }
     });
   }
 
+  getDocumentosAdjuntos = function(objetoId, tipoObjetoId){
+    var formatData = {
+      idObjeto: objetoId,
+      idTipoObjeto: tipoObjetoId,
+      t: new Date().getTime()
+    }
+    
+    this.http.post('http://localhost:60021/api/DocumentoAdjunto/Documentos', formatData, { withCredentials: true }).subscribe(response => {
+      if (response['success'] == true) {
+        this.sourceArchivosAdjuntos = new LocalDataSource(response['documentos']);
+      }
+    })
+  }
+
   expandRowComponentes(row, index){
     this.componentes[index].mostrar = !this.componentes[index].mostrar;
+  }
+
+  verHistoria(){
+
+  }
+
+  customTrackBy(index: number, obj: any): any {
+    return index;
   }
 }
 

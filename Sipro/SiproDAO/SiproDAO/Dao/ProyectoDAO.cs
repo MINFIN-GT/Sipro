@@ -70,38 +70,53 @@ namespace SiproDAO.Dao
                 int result = 0;
                 using (DbConnection db = new OracleContext().getConnection())
                 {
+                    string query = "";
                     if (proyecto.id < 1)
                     {
-                        string query = String.Join(" ", "INSERT INTO PROYECTO VALUES (:id, :nombre, :descripcion, :usuarioCreo, :usuarioActualizo, :fechaCreacion, " +
-                            ":fechaActualizacion, :estado, :proyectoTipoid, :ueunidadEjecutora, :snip, :programa, :subprograma, :proyecto, :actividad, :obra, :latitud, " +
-                            ":longitud, :objetivo, :directorProyecto, :enunciadoAlcance, :costo, :acumulacionCostoid, :objetivoEspecifico, :visionGeneral, :renglon, " +
-                            ":ubicacion_geografica, :fechaInicio, :fechaFin, :duracion, :duracionDimension, :orden, :treePath, :nivel, :ejercicio, :entidad, :ejecucionFisicaReal, " +
-                            ":proyectoClase, :projectCargado, :prestamoid, :observaciones, :coordinador, :fechaElegibilidad, :fechaInicioReal, :fechaFinReal, :congelado, :fechaCierre)");
-
                         int sequenceId = db.ExecuteScalar<int>("SELECT seq_proyecto.nextval FROM DUAL");
                         proyecto.id = sequenceId;
+                        query = String.Join(" ", "INSERT INTO PROYECTO VALUES (:id, :nombre, :descripcion, :usuarioCreo, :usuarioActualizo, :fechaCreacion, " +
+                            ":fechaActualizacion, :estado, :proyectoTipoid, :ueunidadEjecutora, :snip, :programa, :subprograma, :proyecto, :actividad, :obra, :latitud, " +
+                            ":longitud, :objetivo, :directorProyecto, :enunciadoAlcance, :costo, :acumulacionCostoid, :objetivoEspecifico, :visionGeneral, :renglon, " +
+                            ":ubicacionGeografica, :fechaInicio, :fechaFin, :duracion, :duracionDimension, :orden, :treePath, :nivel, :ejercicio, :entidad, :ejecucionFisicaReal, " +
+                            ":proyectoClase, :projectCargado, :prestamoid, :observaciones, :coordinador, :fechaElegibilidad, :fechaInicioReal, :fechaFinReal, :congelado, :fechaCierre)");
+
                         result = db.Execute(query, proyecto);
                         if (result > 0)
                             proyecto.treepath = 10000000 + proyecto.id + "";
+
+                        Usuario usu = UsuarioDAO.getUsuario(proyecto.usuarioCreo);
+                        ProyectoUsuario pu = new ProyectoUsuario();
+                        pu.proyectoid = proyecto.id;
+                        pu.usuario = proyecto.usuarioCreo;
+                        pu.usuarioCreo = proyecto.usuarioCreo;
+                        pu.fechaActualizacion = proyecto.fechaActualizacion;
+                        pu.usuarioActualizo = proyecto.usuarioActualizo;
+
+                        result = db.Execute("INSERT INTO PROYECTO_USUARIO VALUES (:proyectoid, :usuario, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion)", pu);
+
+                        if (!proyecto.usuarioCreo.Equals("admin"))
+                        {
+                            ProyectoUsuario pu_admin = new ProyectoUsuario();
+                            pu_admin.proyectoid = proyecto.id;
+                            pu_admin.usuario = "admin";
+                            pu_admin.usuarioCreo = proyecto.usuarioCreo;
+
+                            result = db.Execute("INSERT INTO PROYECTO_USUARIO VALUES (:proyectoid, :usuario, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion)", pu_admin);
+                        }
                     }
 
-                    Usuario usu = UsuarioDAO.getUsuario(proyecto.usuarioCreo);
-                    ProyectoUsuario pu = new ProyectoUsuario();
-                    pu.proyectoid = proyecto.id;
-                    pu.usuario = proyecto.usuarioCreo;
-                    pu.usuarioCreo = proyecto.usuarioCreo;
+                    query = String.Join(" ", "UPDATE proyecto SET nombre=:nombre, descripcion=:descripcion, usuario_creo=:usuarioCreo, usuario_actualizo=:usuarioActualizo, " +
+                        "fecha_creacion=:fechaCreacion, fecha_actualizacion=:fechaActualizacion, estado=:estado, proyecto_tipoid=:proyectoTipoid, ueunidad_ejecutora=:ueunidadEjecutora, " +
+                        "snip=:snip, programa=:programa, subprograma=:subprograma, proyecto=:proyecto, actividad=:actividad, obra=:obra, latitud=:latitud, longitud=:longitud, " +
+                        "objetivo=:objetivo, director_proyecto=:directorProyecto, enunciado_alcance=:enunciadoAlcance, costo=:costo, acumulacion_costoid=:acumulacionCostoid, " +
+                        "objetivo_especifico=:objetivoEspecifico, vision_general=:visionGeneral, renglon=:renglon, ubicacion_geografica=:ubicacionGeografica, fecha_inicio=:fechaInicio, " +
+                        "fecha_fin=:fechaFin, duracion=:duracion, duracion_dimension=:duracionDimension, orden=:orden, treePath=:treePath, nivel=:nivel, ejercicio=:ejercicio, entidad=:entidad, " +
+                        "ejecucion_fisica_real=:ejecucionFisicaReal, proyecto_clase=:proyectoClase, project_cargado=:projectCargado, prestamoid=:prestamoid, observaciones=:observaciones, " +
+                        "coordinador=:coordinador, fecha_elegibilidad=:fechaElegibilidad, fecha_inicio_real=:fechaInicioReal, fecha_fin_real=:fechaFinReal, congelado=:congelado, fecha_cierre=:fechaCierre " +
+                        "WHERE id=:id");
 
-                    result = db.Execute("INSERT INTO PROYECTO_USUARIO VALUES (:proyectoid, :usuario, :usuarioCreo, :usuarioActualizo, fechaCreacion, fechaActualizacion)", pu);
-
-                    if (!proyecto.usuarioCreo.Equals("admin"))
-                    {
-                        ProyectoUsuario pu_admin = new ProyectoUsuario();
-                        pu_admin.proyectoid = proyecto.id;
-                        pu_admin.usuario = "admin";
-                        pu_admin.usuarioCreo = proyecto.usuarioCreo;
-
-                        result = db.Execute("INSERT INTO PROYECTO_USUARIO VALUES (:proyectoid, :usuario, :usuarioCreo, :usuarioActualizo, fechaCreacion, fechaActualizacion)", pu_admin);
-                    }
+                    result = db.Execute(query, proyecto);                                     
 
                     if (result > 0 && calcular_valores_agregados)
                         calcularCostoyFechas(proyecto.id);
@@ -327,13 +342,13 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    string query = String.Join(" ", "SELECT p FROM PROYECTO p ",
-                        "INNER JOIN UNIDAD_EJECUTORA pp",
+                    string query = String.Join(" ", "SELECT p.* FROM PROYECTO p ",
+                        "INNER JOIN UNIDAD_EJECUTORA pp on p.ueunidad_ejecutora=pp.unidad_ejecutora",
                         "WHERE p.estado=1",
-                        "AND p.prestamo.id=:prestamoId",
-                        "AND pp.unidadEjecutora=:unidadEjecutora");
+                        "AND p.prestamoid=:prestamoId",
+                        "AND pp.unidad_ejecutora=:unidadEjecutora");
 
-                    query = String.Join(" ", entidad > 0 ? "AND pp.entidad.id.entidad=:entidad " : " ");
+                    query = String.Join(" ", query, entidad > 0 ? "AND pp.entidadentidad=:entidad " : " ");
                     ret = db.QueryFirstOrDefault<Proyecto>(query, new { prestamoId = prestamoId, unidadEjecutora = unidadEjecutoraId, entidad = entidad });
                 }
             }

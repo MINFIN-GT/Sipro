@@ -84,7 +84,7 @@ namespace SiproDAO.Dao
                     guardado = db.Execute("UPDATE COMPONENTE SET nombre=:nombre, descripcion=:descripcion, proyectoid=:proyectoid, componente_tipoid=:componenteTipoid, " +
                         "usuario_creo=:usuarioCreo, usuario_actualizo=:usuarioActualizo, fecha_creacion=:fechaCreacion, fecha_actualizacion=:fechaActualizacion, estado=:estado, " +
                         "ueunidad_ejecutora=:ueunidadEjecutora, snip=:snip, programa=:programa, subprograma=:subprograma, proyecto=:proyecto, actividad=:actividad, obra=:obra, " +
-                        "latitud=:latitud, longitud=:longitud, costo=:costo, acumulacion_costoid=:acumulacion_costoid, renglon=:renglon, ubicacion_geografica=:ubicacionGeografica, " +
+                        "latitud=:latitud, longitud=:longitud, costo=:costo, acumulacion_costoid=:acumulacionCostoid, renglon=:renglon, ubicacion_geografica=:ubicacionGeografica, " +
                         "fecha_inicio=:fechaInicio, fecha_fin=:fechaFin, duracion=:duracion, duracion_dimension=:duracionDimension, orden=:orden, treepath=:treepath, nivel=:nivel, " +
                         "ejercicio=:ejercicio, entidad=:entidad, es_de_sigade=:esDeSigade, fuente_prestamo=:fuentePrestamo, fuente_donacion=:fuenteDonacion, fuente_nacional=:fuenteNacional, " +
                         "componente_sigadeid=:componenteSigadeid, fecha_inicio_real=:fechaInicioReal, fecha_fin_real=:fechaFinReal, inversion_nueva=:inversionNueva WHERE id=:id", Componente);
@@ -104,10 +104,12 @@ namespace SiproDAO.Dao
                         {
                             guardado = db.Execute("UPDATE COMPONENTE_USUARIO SET usuario_creo=:usuarioCreo, usuario_actualizo=:usuarioActualizo, fecha_creacion=:fechaCreacion, " +
                                 "fecha_actualizacion=:fechaActualizacion WHERE componenteid=:componenteid AND usuario=:usuario", cu);
+                            ret = guardado > 0 ? true : false;
                         }
                         else
                         {
-                            guardado = db.Execute("INSERT INTO COMPONENTE_USUARIO(:componenteid, :usuario, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion)", cu);
+                            guardado = db.Execute("INSERT INTO COMPONENTE_USUARIO VALUES (:componenteid, :usuario, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion)", cu);
+                            ret = guardado > 0 ? true : false;
                         }
 
                         if (guardado > 0 && !Componente.usuarioCreo.Equals("admin"))
@@ -124,10 +126,12 @@ namespace SiproDAO.Dao
                             {
                                 guardado = db.Execute("UPDATE COMPONENTE_USUARIO SET usuario_creo=:usuarioCreo, usuario_actualizo=:usuarioActualizo, fecha_creacion=:fechaCreacion, " +
                                     "fecha_actualizacion=:fechaActualizacion WHERE componenteid=:componenteid AND usuario=:usuario", cu_admin);
+                                ret = guardado > 0 ? true : false;
                             }
                             else
                             {
                                 guardado = db.Execute("INSERT INTO COMPONENTE_USUARIO VALUES (:componenteid, :usuario, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion)", cu_admin);
+                                ret = guardado > 0 ? true : false;
                             }
 
                             if (guardado > 0 && calcular_valores_agregados)
@@ -571,8 +575,8 @@ namespace SiproDAO.Dao
                 using (DbConnection db = new OracleContext().getConnection())
                 {
                     ret = db.QueryFirstOrDefault<Componente>("SELECT * "
-                    + "FROM COMPONENTE c WHERE c.proyecto.id = :proyId "
-                    + "AND c.componenteSigade.id = :compSigId "
+                    + "FROM COMPONENTE c WHERE c.proyectoid = :proyId "
+                    + "AND c.componente_sigadeid = :compSigId "
                     + "AND c.estado = 1 ", new { proyId = proyectoId, compSigId = componenteSigadeId });
                 }
             }

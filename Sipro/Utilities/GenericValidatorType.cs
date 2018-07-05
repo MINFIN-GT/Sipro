@@ -12,9 +12,13 @@ namespace Utilities
 
             if (type == typeof(Int32))
             {
-                Int32 value;
-                if (!Int32.TryParse(val, out value))
-                    return false;
+                if (!val.Equals(""))
+                {
+                    Int32 value;
+                    if (!Int32.TryParse(val, out value))
+                        return false;
+                }
+                
                 ret = true;
             }
             else if (type == typeof(Int64))
@@ -28,9 +32,24 @@ namespace Utilities
                 ret = true;
             else if (type == typeof(DateTime))
             {
-                DateTime fecha;
-                if (!DateTime.TryParse(val, out fecha))
-                    return false;
+                if (!val.Equals(""))
+                {
+                    DateTime fecha;
+                    if (!DateTime.TryParse(val, out fecha))
+                        return false;
+                }
+
+                ret = true;
+            }
+            else if (type == typeof(decimal))
+            {
+                decimal value;
+                if (!val.Equals(""))
+                {
+                    if (!decimal.TryParse(val, out value))
+                        return false;
+                }
+
                 ret = true;
             }
             return ret;

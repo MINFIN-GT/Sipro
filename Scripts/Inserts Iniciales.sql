@@ -923,6 +923,10 @@ INSERT INTO PERMISO VALUES (48350,'Plan Adquisición Pago - Visualizar','Visuali
 INSERT INTO PERMISO VALUES (48360,'Plan Adquisición Pago - Crear','Creación de nuevos pagos para los planes de adquisiciones','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO PERMISO VALUES (48370,'Plan Adquisición Pago - Editar','Edición de los pagos planes de adquisiciones','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO PERMISO VALUES (48380,'Plan Adquisición Pago - Eliminar','Eliminación de pagos de planes de adquisiciones','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO PERMISO VALUES (48390,'Documentos Adjuntos - Visualizar','Visulización de los documentos adjuntados por el usuario','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO PERMISO VALUES (48400,'Documentos Adjuntos - Crear','Carga de documentos por el usuario','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO PERMISO VALUES (48410,'Documentos Adjuntos - Editar','Edición de información de documentos cargados por el usuario','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO PERMISO VALUES (48420,'Documentos Adjuntos - Eliminar','Eliminación de documentos cargados por el usuario','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO PERMISO VALUES (99999,'prueba treeview','prueba treeview','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 	
 INSERT INTO PRESTAMO_TIPO VALUES (1,'Inversión','Inversión','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
@@ -2190,6 +2194,10 @@ INSERT INTO USUARIO_PERMISO VALUES ('admin',48350,'admin',null,TO_TIMESTAMP ('20
 INSERT INTO USUARIO_PERMISO VALUES ('admin',48360,'admin',null,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO USUARIO_PERMISO VALUES ('admin',48370,'admin',null,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO USUARIO_PERMISO VALUES ('admin',48380,'admin',null,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO USUARIO_PERMISO VALUES ('admin',48390,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO USUARIO_PERMISO VALUES ('admin',48400,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO USUARIO_PERMISO VALUES ('admin',48410,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO USUARIO_PERMISO VALUES ('admin',48420,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO USUARIO_PERMISO VALUES ('admin',99999,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 
 COMMIT;

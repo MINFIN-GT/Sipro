@@ -55,6 +55,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SiproFluentValidatorCore", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiproFluentValidator", "SiproFluentValidator\SiproFluentValidator.csproj", "{7B86822D-8B74-4159-A985-1DA0BAF027D7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDocumentoAdjunto", "SDocumentoAdjunto\SDocumentoAdjunto.csproj", "{64378689-581B-4C27-9773-987D1B558705}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -161,6 +163,10 @@ Global
 		{7B86822D-8B74-4159-A985-1DA0BAF027D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B86822D-8B74-4159-A985-1DA0BAF027D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B86822D-8B74-4159-A985-1DA0BAF027D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64378689-581B-4C27-9773-987D1B558705}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64378689-581B-4C27-9773-987D1B558705}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64378689-581B-4C27-9773-987D1B558705}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64378689-581B-4C27-9773-987D1B558705}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -181,6 +187,7 @@ Global
 		{43278957-3541-4446-917C-B6048433EFB1} = {0DA1BD0E-A90E-4608-ACE8-5971B84A1019}
 		{A77DEB72-6538-4EAB-AFDA-F036B54BF5D0} = {0DA1BD0E-A90E-4608-ACE8-5971B84A1019}
 		{EEDC3FD6-F0FB-438C-9154-AC2EE5ECCEF4} = {0DA1BD0E-A90E-4608-ACE8-5971B84A1019}
+		{64378689-581B-4C27-9773-987D1B558705} = {0DA1BD0E-A90E-4608-ACE8-5971B84A1019}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6BB888BE-6FA0-400D-B0C9-9F121D0B435A}
