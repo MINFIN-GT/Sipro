@@ -18,13 +18,14 @@ import { DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario } from '
 import { DialogOverviewMoneda, DialogMoneda } from './components/prestamo/modals/modal-moneda'
 import { DialogOverviewTipoPrestamo, DialogTipoPrestamo } from './components/prestamo/modals/modal-tipo-prestamo'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatPaginatorIntlSpanish } from '../assets/ts/custom-paginator-spanish';
-import { ButtonDeleteComponent } from '../assets/ts/ButtonDeleteComponent';
-import { ButtonDownloadComponent } from '../assets/ts/ButtonDownloadComponent';
-import { DialogOverviewDownloadDocument, DialogDownloadDocument } from '../assets/ts/documentosadjuntos/documento-adjunto';
-import { FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo } from '../assets/ts/FormatoMillones';
+import { MatPaginatorIntlSpanish } from '../assets/customs/custom-paginator-spanish';
+import { ButtonDeleteComponent } from '../assets/customs/ButtonDeleteComponent';
+import { ButtonDownloadComponent } from '../assets/customs/ButtonDownloadComponent';
+import { DialogOverviewDownloadDocument, DialogDownloadDocument } from '../assets/modals/documentosadjuntos/documento-adjunto';
+import { DialogDelete, DialogOverviewDelete } from './components/prestamo/modals/confirmation-delete';
+import { FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo } from '../assets/pipes/FormatoMillones.pipe';
 import { MatMomentDateModule, MomentDateAdapter } from '@angular/material-moment-adapter';
-import { CUSTOM_DATE_FORMAT } from '../assets/ts/formatdate/CUSTOM_DATE_FORMAT';
+import { CUSTOM_DATE_FORMAT } from '../assets/customs/formatdate/CUSTOM_DATE_FORMAT';
 
 import { AppComponent } from './app.component';
 import { MainComponent } from './components/main/main.component';
@@ -68,7 +69,7 @@ const routes: Routes = [{
       AccesodenegadoComponent, MainComponent, PagenotfoundComponent, FooterComponent, MainmenuComponent, PrestamoComponent,
       DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario, DialogOverviewMoneda, DialogMoneda, DialogOverviewTipoPrestamo, 
       DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, DialogOverviewDownloadDocument, DialogDownloadDocument, 
-      FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo, ProyectoComponent
+      FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo, ProyectoComponent, DialogDelete, DialogOverviewDelete
   ],
   imports: [
       BrowserModule,
@@ -90,7 +91,7 @@ const routes: Routes = [{
   bootstrap: [AppComponent],
   entryComponents: [DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario, DialogOverviewMoneda, DialogMoneda,
     DialogOverviewTipoPrestamo, DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent,DialogOverviewDownloadDocument, 
-    DialogDownloadDocument]
+    DialogDownloadDocument, DialogDelete, DialogOverviewDelete]
 })
 export class AppModule { 
 

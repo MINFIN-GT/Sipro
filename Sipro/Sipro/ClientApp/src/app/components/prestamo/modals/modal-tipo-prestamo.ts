@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { LocalDataSource } from 'ng2-smart-table';
 
 @Component({
-  templateUrl: 'modal-dialog.html'
+  templateUrl: '../../../../assets/modals/dialogsearch/modal-dialog.html'
 })
 export class DialogOverviewTipoPrestamo {
   constructor(public dialog: MatDialog) {}
@@ -12,7 +12,7 @@ export class DialogOverviewTipoPrestamo {
 
 @Component({
   selector: 'modal-tipo-prestamo.ts',
-  templateUrl: 'modal-dialog.html'
+  templateUrl: '../../../../assets/modals/dialogsearch/modal-dialog.html'
 })
 export class DialogTipoPrestamo {
   totalCodigos : number;
@@ -27,11 +27,13 @@ export class DialogTipoPrestamo {
   diameter = 45;
   strokewidth = 3;
   esColapsado: boolean;
+  busquedaGlobal: string;
 
   constructor(public dialog: MatDialog,
     public dialogRef: MatDialogRef<DialogTipoPrestamo>,
     @Inject(MAT_DIALOG_DATA) public data: any, private http: HttpClient) {
-      this.elementosPorPagina = 8;
+      this.elementosPorPagina = 7;
+      this.busquedaGlobal = null;
     }
 
   ngOnInit() { 
@@ -45,7 +47,9 @@ export class DialogTipoPrestamo {
 
   obtenerTotalTiposPrestamos(){
     this.esColapsado = false;
-    var filtro = {};
+    var filtro = {
+      filtro_busqueda: this.busquedaGlobal
+    };
     this.http.post('http://localhost:60057/api/PrestamoTipo/numeroPrestamoTipos',filtro, {withCredentials: true}).subscribe(response => {
       if (response['success'] == true) {   
         this.totalCodigos = response["totalprestamotipos"];
@@ -60,7 +64,8 @@ export class DialogTipoPrestamo {
   cargarTabla(pagina? : number){
     var filtro = {
       pagina: pagina,
-      numeroproyectotipos: this.elementosPorPagina
+      numeroproyectotipos: this.elementosPorPagina,
+      filtro_busqueda: this.busquedaGlobal
     }
     this.http.post('http://localhost:60057/api/PrestamoTipo/PrestamoTipoPagina', filtro, { withCredentials: true }).subscribe(response => {
       if (response['success'] == true) {
@@ -100,7 +105,8 @@ export class DialogTipoPrestamo {
       },
       nombre: {
         title: 'Nombre',
-        filter: false,       
+        filter: false, 
+        class: 'align-left'      
       }
     },
     actions: false,
@@ -114,5 +120,10 @@ export class DialogTipoPrestamo {
   handlePage(event){
     this.esColapsado = false;
     this.cargarTabla(event.pageIndex+1);
+  }
+
+  filtrar(campo){  
+    this.busquedaGlobal = campo;
+    this.obtenerTotalTiposPrestamos();
   }
 }

@@ -4,10 +4,49 @@
             <mat-card style="margin-top: 2%; background-color: #f5f5f5; border-color: #ddd;">
                 @project_tags
             </mat-card>
-          </div>
-          <br>
-          <div fxLayout="column" fxLayoutAlign="center" fxFlexFill>
-              
-          </div>
+        </div>
+        <div fxLayout="column" class="subtitulo">
+            {{objetoTipoNombre}} {{prestamoNombre}}
+        </div>
+        <br>        
+        <div fxLayout="column" fxLayoutAlign="center" fxFlexFill>
+            <div [hidden]="esColapsado">
+                <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2px">
+                    <button mat-raised-button style="background-color: #337ab7; color:#fff" (click)="nuevo()" matTooltip="Nuevo" matTooltipPosition="above"><mat-icon>add</mat-icon>Nuevo</button>
+                    <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="editar()" matTooltip="Editar" matTooltipPosition="above"><mat-icon>mode_edit</mat-icon>Editar</button>
+                    <button mat-raised-button style="background-color: #d9534f; color: #fff;" (click)="borrar()" matTooltip="Borrar" matTooltipPosition="above"><mat-icon>delete</mat-icon>Borrar</button>
+                </div>
+                <br>
+                <div fxLayout="row" fxLayoutAlign="end">
+                    <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="refresh()" matTooltip="Reiniciar la vista de la tabla" matTooltipPosition="above"><mat-icon>refresh</mat-icon></button>
+                </div>
+                <br>
+                <div fxLayout="row">
+                    <mat-form-field fxFlex="50%">
+                        <input matInput #search class="search" type="text" placeholder="Busqueda..." (keydown.enter)="filtrar(search.value)">
+                        <mat-icon class="search-info" (click)="filtrar(search.value)" matSuffix>search</mat-icon>
+                    </mat-form-field>              
+                </div> 
+                <div fxLayout="column">
+                    <div>
+                        <ng2-smart-table [settings]="settings" [source]="source" (dblClickRow)="onDblClickRow($event)" (userRowSelect)="onSelectRow($event)"></ng2-smart-table>
+                    </div>              
+                </div>
+                <br>
+                <div fxLayout="row" fxLayoutAlign="end" style="font-weight: bold;">
+                    Total de @project_tags: {{totalProyectos}}
+                </div>
+                <div fxLayout="column" fxLayoutAlign="center">
+                    <mat-paginator [length]="totalProyectos" [hidePageSize]="true" [pageSize]="elementosPorPagina" 
+                    [showFirstLastButtons]="true" (page)="pageEvent = handlePage($event)">
+                    </mat-paginator>
+                </div>
+            </div>
+            <div [hidden]="!esColapsado">
+                <form #myForm="ngForm">
+                    
+                </form>
+            </div>
+        </div>
     </div>
 </div>

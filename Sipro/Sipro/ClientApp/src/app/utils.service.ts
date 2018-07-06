@@ -32,5 +32,4 @@ export class UtilsService {
     public cleanStorage(){
         localStorage.clear();
     }
-
 }

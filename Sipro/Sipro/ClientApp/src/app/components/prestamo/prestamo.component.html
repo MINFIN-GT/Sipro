@@ -25,20 +25,8 @@
                 </mat-form-field>              
             </div> 
             <div fxLayout="column">
-              <div [hidden]="!mostrarcargando" fxFlex>
-                  <mat-progress-spinner style="position: fixed;"
-                  class="progress-spinner"
-                  [color]="color"
-                  [mode]="mode"
-                  [value]="value"
-                  [diameter]="diameter" 
-                  [strokeWidth]="strokewidth"
-                  aria-label="Cargando, por favor espere..."
-                >
-                </mat-progress-spinner>
-              </div>
-              <div [hidden]="mostrarcargando">
-                  <ng2-smart-table [settings]="settings" [source]="source" (dblClickRow)="onDblClickRow($event)" (userRowSelect)="onSelectRow($event)"></ng2-smart-table>                                 
+              <div>
+                  <ng2-smart-table [settings]="settings" [source]="source" (dblClickRow)="onDblClickRow($event)" (userRowSelect)="onSelectRow($event)"></ng2-smart-table>
               </div>              
             </div>
             <br>

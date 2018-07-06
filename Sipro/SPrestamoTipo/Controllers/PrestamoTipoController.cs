@@ -37,15 +37,13 @@ namespace SPrestamoTipo.Controllers
             {
                 int pagina = value.pagina != null ? (int)value.pagina : default(int);
                 int numeroproyectotipos = value.numeroproyectotipos != null ? (int)value.numeroproyectotipos : default(int);
-                string filtroNombre = value.filtroNombre != null ? (string)value.filtroNombre : default(string);
-                string filtroUsuarioCreo = value.filtroUsuarioCreo != null ? (string)value.filtroUsuarioCreo : default(string);
-                string filtroFechaCreacion = value.filtroFechaCreacion != null ? (string)value.filtroFechaCreacion : default(string);
+                string filtro_busqueda = value.filtro_busqueda != null ? value.filtro_busqueda : default(string);
                 string columnaOrdenada = value.columnaOrdenada != null ? (string)value.columnaOrdenada : default(string);
                 string ordenDireccion = value.ordenDireccion != null ? (string)value.ordenDireccion : default(string);
                 string excluir = value.excluir != null ? (string)value.excluir : default(string);
 
-                List <PrestamoTipo> lstprestamotipo = PrestamoTipoDAO.getPrestamosTipoPagina(pagina, numeroproyectotipos, filtroNombre,
-                    filtroUsuarioCreo, filtroFechaCreacion, columnaOrdenada, ordenDireccion, excluir);
+                List <PrestamoTipo> lstprestamotipo = PrestamoTipoDAO.getPrestamosTipoPagina(pagina, numeroproyectotipos, filtro_busqueda, 
+                    columnaOrdenada, ordenDireccion, excluir);
 
                 List<stprestamotipo> stcooperantes = new List<stprestamotipo>();
 
@@ -79,11 +77,9 @@ namespace SPrestamoTipo.Controllers
         {
             try
             {
-                string filtroNombre = value.filtroNombre != null ? (string)value.filtroNombre : default(string);
-                string filtroUsuarioCreo = value.filtroUsuarioCreo != null ? (string)value.filtroUsuarioCreo : default(string);
-                string filtroFechaCreacion = value.filtroFechaCreacion != null ? (string)value.filtroFechaCreacion : default(string);
+                string filtro_busqueda = value.filtro_busqueda != null ? value.filtro_busqueda : default(string);
 
-                long total = PrestamoTipoDAO.getTotalPrestamosTipos(filtroNombre, filtroUsuarioCreo, filtroFechaCreacion);
+                long total = PrestamoTipoDAO.getTotalPrestamosTipos(filtro_busqueda);
                 return Ok(new { success = true, totalprestamotipos = total });
             }
             catch (Exception e)

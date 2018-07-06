@@ -175,3 +175,17 @@ html, body {
 [hidden] {
     display: none !important;
   }
+
+.align-left{
+    text-align: left;
+}
+
+.subtitulo{
+	margin-top: 15px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1;
+    color: #777;
+    padding-left: 10px;
+}

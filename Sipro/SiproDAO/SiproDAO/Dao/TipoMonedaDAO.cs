@@ -9,7 +9,7 @@ namespace SiproDAO.Dao
 {
     public class TipoMonedaDAO
     {
-        public static long getTotalAuotirzacionTipo()
+        public static long getTotalAuotirzacionTipo(String filtro_busqueda)
         {
             long ret = 0L;
 
@@ -17,7 +17,10 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    ret = db.ExecuteScalar<long>("SELECT COUNT(*) FROM TIPO_MONEDA");
+                    String query = String.Join(" ", "SELECT COUNT(*) FROM TIPO_MONEDA",
+                        "WHERE id LIKE '%" + filtro_busqueda + "%'",
+                        "OR nombre like '%" + filtro_busqueda + "%'");
+                    ret = db.ExecuteScalar<long>(query);
                 }
             }
             catch (Exception e)
@@ -27,7 +30,7 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        public static List<TipoMoneda> getAutorizacionTiposPagina(int pagina, int numeroTipoMoneda)
+        public static List<TipoMoneda> getAutorizacionTiposPagina(int pagina, int numeroTipoMoneda, String filtro_busqueda)
         {
             List<TipoMoneda> ret = new List<TipoMoneda>();
 
@@ -35,7 +38,9 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    String query = "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT a.* FROM TIPO_MONEDA a ";
+                    String query = String.Join(" ", "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT a.* FROM TIPO_MONEDA a ",
+                        "WHERE a.id LIKE '%" + filtro_busqueda + "%'",
+                        "OR a.nombre like '%" + filtro_busqueda + "%'");
                     query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + numeroTipoMoneda + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + numeroTipoMoneda + ") + 1)");
                     ret = db.Query<TipoMoneda>(query).AsList<TipoMoneda>();
                 }

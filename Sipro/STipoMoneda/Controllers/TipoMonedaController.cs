@@ -29,10 +29,11 @@ namespace STipoMoneda.Controllers
         {
             try
             {
+                string filtro_busqueda = value.filtro_busqueda != null ? value.filtro_busqueda : default(string);
                 int pagina = value.pagina != null ? (int)value.pagina : default(int);
                 int numeroTipoMoneda = value.numeroTipoMoneda != null ? (int)value.numeroTipoMoneda : default(int);
 
-                List <TipoMoneda> lsttipomoneda = TipoMonedaDAO.getAutorizacionTiposPagina(pagina, numeroTipoMoneda);
+                List <TipoMoneda> lsttipomoneda = TipoMonedaDAO.getAutorizacionTiposPagina(pagina, numeroTipoMoneda, filtro_busqueda);
 
                 List<stTipoMoneda> sttipomoneda = new List<stTipoMoneda>();
                 foreach (TipoMoneda tipoMoneda in lsttipomoneda)
@@ -54,13 +55,14 @@ namespace STipoMoneda.Controllers
         }
 
         // POST api/TipoMoneda/numeroTipoMonedas
-        [HttpGet]
+        [HttpPost]
         [Authorize("Tipo Moneda - Visualizar")]
-        public IActionResult numeroTipoMonedas()
+        public IActionResult numeroTipoMonedas([FromBody]dynamic value)
         {
             try
             {
-                long total = TipoMonedaDAO.getTotalAuotirzacionTipo();
+                string filtro_busqueda = value.filtro_busqueda != null ? value.filtro_busqueda : default(string);
+                long total = TipoMonedaDAO.getTotalAuotirzacionTipo(filtro_busqueda);
                 return Ok(new { success = true, totalTipoMonedas = total });
             }
             catch (Exception e)

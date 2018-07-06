@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { LocalDataSource } from 'ng2-smart-table';
 
 @Component({
-  templateUrl: 'modal-dialog.html'
+  templateUrl: '../../../../assets/modals/dialogsearch/modal-dialog.html'
 })
 export class DialogOverviewCodigoPresupuestario {
   constructor(public dialog: MatDialog) {}
@@ -12,7 +12,7 @@ export class DialogOverviewCodigoPresupuestario {
 
 @Component({
   selector: 'modal-codigo-presupuestario.ts',
-  templateUrl: 'modal-dialog.html'
+  templateUrl: '../../../../assets/modals/dialogsearch/modal-dialog.html'
 })
 export class DialogCodigoPresupuestario {
   totalCodigos : number;
@@ -27,11 +27,13 @@ export class DialogCodigoPresupuestario {
   diameter = 45;
   strokewidth = 3;
   esColapsado: boolean;
+  busquedaGlobal: string;
 
   constructor(public dialog: MatDialog,
     public dialogRef: MatDialogRef<DialogCodigoPresupuestario>,
     @Inject(MAT_DIALOG_DATA) public data: any, private http: HttpClient) {
-      this.elementosPorPagina = 8;
+      this.elementosPorPagina = 7;
+      this.busquedaGlobal = null;
     }
 
   ngOnInit() { 
@@ -44,8 +46,11 @@ export class DialogCodigoPresupuestario {
   }
 
   obtenerTotalCodigos(){
+    var data = {  
+      filtro_busqueda: this.busquedaGlobal
+    };
     this.esColapsado = false;
-    this.http.get('http://localhost:60016/api/DataSigade/TotalCodigos',{withCredentials: true}).subscribe(response => {
+    this.http.post('http://localhost:60016/api/DataSigade/TotalCodigos',data,{withCredentials: true}).subscribe(response => {
       if (response['success'] == true) {   
         this.totalCodigos = response["totalCodigos"];
         this.paginaActual = 1;
@@ -59,7 +64,8 @@ export class DialogCodigoPresupuestario {
   cargarTabla(pagina? : number){
     var filtro = {
       pagina: pagina,
-      elementosPorPagina: this.elementosPorPagina
+      elementosPorPagina: this.elementosPorPagina,
+      filtro_busqueda: this.busquedaGlobal,
     }
     this.http.post('http://localhost:60016/api/DataSigade/Codigos', filtro, { withCredentials: true }).subscribe(response => {
       if (response['success'] == true) {
@@ -99,7 +105,8 @@ export class DialogCodigoPresupuestario {
       },
       numeroprestamo: {
         title: 'Nombre',
-        filter: false,       
+        filter: false,    
+        class: 'align-left'   
       }
     },
     actions: false,
@@ -113,5 +120,10 @@ export class DialogCodigoPresupuestario {
   handlePage(event){
     this.esColapsado = false;
     this.cargarTabla(event.pageIndex+1);
+  }
+
+  filtrar(campo){  
+    this.busquedaGlobal = campo;
+    this.obtenerTotalCodigos();
   }
 }

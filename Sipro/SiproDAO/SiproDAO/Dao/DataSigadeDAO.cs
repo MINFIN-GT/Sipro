@@ -123,13 +123,16 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        public static long getTotalCodigos() {
+        public static long getTotalCodigos(String filtro_busqueda) {
             long ret = 0L;
             try
             {
                 using (DbConnection db = new OracleContext().getConnectionAnalytic())
                 {
-                    ret = db.ExecuteScalar<long>("SELECT COUNT(*) FROM SIPRO_ANALYTIC.DTM_AVANCE_FISFINAN_DTI");
+                    string query = String.Join(" ", "SELECT COUNT(*) FROM SIPRO_ANALYTIC.DTM_AVANCE_FISFINAN_DTI",
+                        "WHERE no_prestamo LIKE '%" + filtro_busqueda + "%'",
+                        "OR codigo_presupuestario LIKE '%" + filtro_busqueda + "%'");
+                    ret = db.ExecuteScalar<long>(query);
                 }
             }
             catch (Exception e)
@@ -139,14 +142,16 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        public static List<DtmAvanceFisfinanDti> getCodigos(int pagina , int elementosPorPagina)
+        public static List<DtmAvanceFisfinanDti> getCodigos(int pagina , int elementosPorPagina, String filtro_busqueda)
         {
             List<DtmAvanceFisfinanDti> ret = new List<DtmAvanceFisfinanDti>();
             try
             {
                 using (DbConnection db = new OracleContext().getConnectionAnalytic())
                 {
-                    string query = String.Join(" ", "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT * FROM SIPRO_ANALYTIC.DTM_AVANCE_FISFINAN_DTI");
+                    string query = String.Join(" ", "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT * FROM SIPRO_ANALYTIC.DTM_AVANCE_FISFINAN_DTI",
+                        "WHERE no_prestamo LIKE '%" + filtro_busqueda + "%'",
+                        "OR codigo_presupuestario LIKE '%" + filtro_busqueda + "%'");
                     query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + elementosPorPagina + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + elementosPorPagina + ") + 1)");
 
                     ret = db.Query<DtmAvanceFisfinanDti>(query).AsList<DtmAvanceFisfinanDti>();

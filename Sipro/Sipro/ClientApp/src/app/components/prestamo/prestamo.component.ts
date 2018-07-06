@@ -8,9 +8,10 @@ import { MatDialog } from '@angular/material';
 import { DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario } from './modals/modal-codigo-presupuestario'
 import { DialogOverviewMoneda, DialogMoneda } from './modals/modal-moneda'
 import { DialogOverviewTipoPrestamo, DialogTipoPrestamo } from './modals/modal-tipo-prestamo'
-import { ButtonDeleteComponent } from '../../../assets/ts/ButtonDeleteComponent';
-import { ButtonDownloadComponent } from '../../../assets/ts/ButtonDownloadComponent';
-import { DialogDownloadDocument, DialogOverviewDownloadDocument } from '../../../assets/ts/documentosadjuntos/documento-adjunto'
+import { ButtonDeleteComponent } from '../../../assets/customs/ButtonDeleteComponent';
+import { ButtonDownloadComponent } from '../../../assets/customs/ButtonDownloadComponent';
+import { DialogDownloadDocument, DialogOverviewDownloadDocument } from '../../../assets/modals/documentosadjuntos/documento-adjunto'
+import { DialogDelete, DialogOverviewDelete } from './modals/confirmation-delete';
 import { Prestamo } from './model/model.prestamo'
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
@@ -64,6 +65,7 @@ export class PrestamoComponent implements OnInit {
   modalMoneda: DialogOverviewMoneda;
   modalTipoPrestamo: DialogOverviewTipoPrestamo;
   modalAdjuntarDocumento: DialogOverviewDownloadDocument;
+  modalDelete: DialogOverviewDelete;
   cooperanteid : number;
   matriz_valid : number;
   diferenciaCambios : number;
@@ -90,11 +92,11 @@ export class PrestamoComponent implements OnInit {
   filteredCooperantes: Observable<Cooperante[]>;
 
   constructor(private auth: AuthService, private utils: UtilsService, private http: HttpClient, private dialog: MatDialog, private router: Router) {
-    this.totalPrestamos = 0;
-    this.elementosPorPagina = utils._elementosPorPagina;
-    this.numeroMaximoPaginas = utils._numeroMaximoPaginas;
     this.isMasterPage = this.auth.isLoggedIn();
     this.utils.setIsMasterPage(this.isMasterPage);
+    this.elementosPorPagina = utils._elementosPorPagina;
+    this.numeroMaximoPaginas = utils._numeroMaximoPaginas;    
+    this.totalPrestamos = 0;
     this.prestamo = new Prestamo();
     this.etiqueta = new Etiqueta();
     this.esNuevoDocumento = true;
@@ -104,6 +106,7 @@ export class PrestamoComponent implements OnInit {
     this.modalTipoPrestamo = new DialogOverviewTipoPrestamo(dialog);
     this.sourceTipoPrestamo = new LocalDataSource();
     this.modalAdjuntarDocumento = new DialogOverviewDownloadDocument(dialog);
+    this.modalDelete = new DialogOverviewDelete(dialog);
     this.toggle = {};
     this.matriz_valid = 1;
     this.diferenciaCambios = 0;
@@ -189,7 +192,26 @@ export class PrestamoComponent implements OnInit {
   }
 
   borrar(){
-
+    if(this.prestamo.id > 0){
+      this.modalDelete.dialog.open(DialogDelete, {
+        width: '600px',
+        height: '200px',
+        data: { 
+          titulo: 'Confirmación de Borrado', 
+          textoCuerpo: '¿Desea borrar el préstamo ' + this.prestamo.proyectoPrograma + "?",
+          textoBotonOk: 'Borrar',
+          textoBotonCancelar: 'Cancelar'
+        }
+      }).afterClosed().subscribe(result => {
+        if(result != null){
+          this.prestamo.tipoMonedaNombre = result.tipoMonedaNombre;
+          this.prestamo.tipoMonedaid = result.tipoMonedaId;
+        }
+      });
+    }
+    else{
+      alert('Seleccione un préstamo');
+    }
   }
 
   refresh(){
@@ -296,12 +318,6 @@ export class PrestamoComponent implements OnInit {
             }
           });
       });
-
-
-
-      
-
-      
     }
     else
 			alert('warning, Debe de llenar todos los campos obligatorios');    
@@ -324,6 +340,7 @@ export class PrestamoComponent implements OnInit {
           this.cargarTabla(this.paginaActual);
         } else {
           console.log('Error');
+          this.mostrarcargando = false;
         }
       });
   }
@@ -370,7 +387,7 @@ export class PrestamoComponent implements OnInit {
           console.log('Error');
         }
 
-        this.mostrarcargando = false;
+        //this.mostrarcargando = false;
       });
   }
 
@@ -424,7 +441,7 @@ export class PrestamoComponent implements OnInit {
       }
     },
     actions: false,
-    noDataMessage: 'No se encontró información.',
+    noDataMessage: 'Cargando, por favor espere...',
     attr: {
       class: 'table table-bordered'
     },
@@ -443,7 +460,7 @@ export class PrestamoComponent implements OnInit {
   buscarCodigoPresupuestario(){
     this.modalCodigoPresupuestario.dialog.open(DialogCodigoPresupuestario, {
       width: '600px',
-      height: '520px',
+      height: '585px',
       data: { titulo: 'Código Presupuestario' }
     }).afterClosed().subscribe(result => {
       if(result != null){
@@ -574,7 +591,7 @@ export class PrestamoComponent implements OnInit {
   buscarTipoMoneda(){
     this.modalMoneda.dialog.open(DialogMoneda, {
       width: '600px',
-      height: '520px',
+      height: '585px',
       data: { titulo: 'Tipo Moneda' }
     }).afterClosed().subscribe(result => {
       if(result != null){
@@ -767,7 +784,7 @@ export class PrestamoComponent implements OnInit {
   buscarTiposPrestamo(){
     this.modalTipoPrestamo.dialog.open(DialogTipoPrestamo, {
       width: '600px',
-      height: '520px',
+      height: '585px',
       data: { titulo: 'Tipo Préstamo' }
     }).afterClosed().subscribe(result => {      
       if(result != null){

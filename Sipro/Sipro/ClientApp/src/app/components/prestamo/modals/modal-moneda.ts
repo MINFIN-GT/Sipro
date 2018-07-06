@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { LocalDataSource } from 'ng2-smart-table';
 
 @Component({
-  templateUrl: 'modal-dialog.html'
+  templateUrl: '../../../../assets/modals/dialogsearch/modal-dialog.html'
 })
 export class DialogOverviewMoneda {
   constructor(public dialog: MatDialog) {}
@@ -12,7 +12,7 @@ export class DialogOverviewMoneda {
 
 @Component({
   selector: 'modal-moneda.ts',
-  templateUrl: 'modal-dialog.html'
+  templateUrl: '../../../../assets/modals/dialogsearch/modal-dialog.html'
 })
 export class DialogMoneda {
   totalCodigos : number;
@@ -27,11 +27,13 @@ export class DialogMoneda {
   diameter = 45;
   strokewidth = 3;
   esColapsado: boolean;
+  busquedaGlobal: string;
 
   constructor(public dialog: MatDialog,
     public dialogRef: MatDialogRef<DialogMoneda>,
     @Inject(MAT_DIALOG_DATA) public data: any, private http: HttpClient) {
-      this.elementosPorPagina = 8;
+      this.elementosPorPagina = 7;
+      this.busquedaGlobal = null;
     }
 
   ngOnInit() { 
@@ -44,8 +46,11 @@ export class DialogMoneda {
   }
 
   obtenerTotalMonedas(){
+    var data = {  
+      filtro_busqueda: this.busquedaGlobal
+    };
     this.esColapsado = false;
-    this.http.get('http://localhost:60088/api/TipoMoneda/numeroTipoMonedas',{withCredentials: true}).subscribe(response => {
+    this.http.post('http://localhost:60088/api/TipoMoneda/numeroTipoMonedas',data, {withCredentials: true}).subscribe(response => {
       if (response['success'] == true) {   
         this.totalCodigos = response["totalTipoMonedas"];
         this.paginaActual = 1;
@@ -59,7 +64,8 @@ export class DialogMoneda {
   cargarTabla(pagina? : number){
     var filtro = {
       pagina: pagina,
-      numeroTipoMoneda: this.elementosPorPagina
+      numeroTipoMoneda: this.elementosPorPagina,
+      filtro_busqueda: this.busquedaGlobal
     }
     this.http.post('http://localhost:60088/api/TipoMoneda/TipoMonedaPagina', filtro, { withCredentials: true }).subscribe(response => {
       if (response['success'] == true) {
@@ -99,7 +105,8 @@ export class DialogMoneda {
       },
       nombre: {
         title: 'Nombre',
-        filter: false,       
+        filter: false,
+        class: 'align-left'   
       }
     },
     actions: false,
@@ -113,5 +120,10 @@ export class DialogMoneda {
   handlePage(event){
     this.esColapsado = false;
     this.cargarTabla(event.pageIndex+1);
+  }
+
+  filtrar(campo){  
+    this.busquedaGlobal = campo;
+    this.obtenerTotalMonedas();
   }
 }

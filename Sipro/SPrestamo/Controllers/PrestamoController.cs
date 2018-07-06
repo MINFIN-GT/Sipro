@@ -1006,6 +1006,7 @@ namespace SPrestamo.Controllers
                 return Ok(new
                 {
                     success = prestamo != null ? true : false,
+                    id = prestamo != null ? prestamo.id : default(int),
                     codigoPresupuestario = prestamo != null ? prestamo.codigoPresupuestario : default(long),
                     montoPorDesembolsar = prestamo != null ? prestamo.montoPorDesembolsarUsd : default(decimal),
                     desembolsoAFechaUsd = prestamo != null ? prestamo.desembolsoAFechaUsd : default(decimal),

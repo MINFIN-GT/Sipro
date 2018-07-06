@@ -1,5 +1,5 @@
 <div fxLayout="column" fxFlexFill style="overflow: hidden;">
-  <div class="flex-container" style="height: 360px;">
+  <div class="flex-container" style="height: 425px;">
     <h1 mat-dialog-title style="border-bottom: 1px double #ddd !important;">{{data.titulo}}</h1>
     <div [hidden]="esColapsado" fxFlexFill>
       <mat-progress-spinner style="position: fixed;"
@@ -12,6 +12,12 @@
       >
       </mat-progress-spinner>
     </div>
+    <div fxLayout="row">
+        <mat-form-field fxFlex [hidden]="!esColapsado">
+            <input matInput #search class="search" type="text" placeholder="Busqueda..." (keydown.enter)="filtrar(search.value)">
+            <mat-icon class="search-info" (click)="filtrar(search.value)" matSuffix>search</mat-icon>
+        </mat-form-field>              
+    </div> 
     <div fxFlexFill>      
       <div mat-dialog-content>
         <div [hidden]="!esColapsado">                           

@@ -165,13 +165,15 @@ namespace SDataSigade.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Authorize("Data Sigade - Visualizar")]
-        public IActionResult TotalCodigos()
+        public IActionResult TotalCodigos([FromBody]dynamic value)
         {
             try
             {
-                long totalCodigos = DataSigadeDAO.getTotalCodigos();
+                string filtro_busqueda = value.filtro_busqueda != null ? value.filtro_busqueda : default(string);
+
+                long totalCodigos = DataSigadeDAO.getTotalCodigos(filtro_busqueda);
                 return Ok(new { success = true, totalCodigos = totalCodigos });
             }
             catch (Exception e)
@@ -190,7 +192,8 @@ namespace SDataSigade.Controllers
             {
                 int pagina = value.pagina != null ? value.pagina : default(int);
                 int elementosPorPagina = value.elementosPorPagina != null ? value.elementosPorPagina : default(int);
-                List<DtmAvanceFisfinanDti> prestamos = DataSigadeDAO.getCodigos(pagina, elementosPorPagina);
+                string filtro_busqueda = value.filtro_busqueda != null ? value.filtro_busqueda : default(string);
+                List<DtmAvanceFisfinanDti> prestamos = DataSigadeDAO.getCodigos(pagina, elementosPorPagina, filtro_busqueda);
                 List<stcodigopresupuestario> codigos = new List<stcodigopresupuestario>();
                 foreach (DtmAvanceFisfinanDti prestamo in prestamos)
                 {
