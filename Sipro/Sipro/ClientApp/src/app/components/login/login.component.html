@@ -1,27 +1,25 @@
-<div class="flex-container" fxFlex fxFlexFill>
-    <div>
-      <form #loginForm="ngForm" class="login-form">
-        <mat-card>
-          <mat-card-header>
-            <mat-card-title>{{ sistemaNombre }}</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <br/>
-            <mat-form-field>
-              <input matInput placeholder="Usuario" (change)="showerror=false" type="text" [(ngModel)]="username"
-                id="username" name="username" required autofocus>
-            </mat-form-field>
-            <mat-form-field>
+<div class="container container-fluid">
+  <div class="row-fluid">
+    <form #loginForm="ngForm" class="login-form">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>{{ sistemaNombre }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <br/>
+          <mat-form-field>
+            <input matInput placeholder="Usuario" (change)="showerror=false" type="text" [(ngModel)]="username"
+                 id="username" name="username" required autofocus>
+          </mat-form-field>
+          <mat-form-field>
             <input matInput placeholder="Contraseña" (change)="showerror=false" type="password" [(ngModel)]="password"
-              id="password" name="password" required>
-            </mat-form-field>
-            <br />
-            <div fxLayoutAlign="center">
-                <div class="alert alert-danger text-center" [hidden]="!showerror">Usuario y/o Contraseña incorrectos</div>
-                <button mat-button color="primary" (click)="login()">Ingresar</button>
-            </div>
-          </mat-card-content>
-        </mat-card>
-      </form>
-    </div>
+                 id="password" name="password" required>
+          </mat-form-field>
+          <br />
+          <div class="alert alert-danger text-center" [hidden]="!showerror">Usuario y/o Contraseña incorrectos</div>
+          <button mat-button color="primary" (click)="login()">Ingresar</button>
+        </mat-card-content>
+      </mat-card>
+    </form>
+  </div>
 </div>

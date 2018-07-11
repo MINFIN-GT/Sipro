@@ -15,7 +15,7 @@ export class DialogOverviewTipoPrestamo {
   templateUrl: '../../../../assets/modals/dialogsearch/modal-dialog.html'
 })
 export class DialogTipoPrestamo {
-  totalCodigos : number;
+  totalElementos : number;
   source: LocalDataSource;
   paginaActual : number;
   elementosPorPagina : number;
@@ -52,7 +52,7 @@ export class DialogTipoPrestamo {
     };
     this.http.post('http://localhost:60057/api/PrestamoTipo/numeroPrestamoTipos',filtro, {withCredentials: true}).subscribe(response => {
       if (response['success'] == true) {   
-        this.totalCodigos = response["totalprestamotipos"];
+        this.totalElementos = response["totalprestamotipos"];
         this.paginaActual = 1;
         this.cargarTabla(this.paginaActual);
       } else {

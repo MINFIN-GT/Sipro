@@ -182,7 +182,7 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        public static long getTotalProyectos(String filtro_nombre, String filtro_usuario_creo, String filtro_fecha_creacion, String usuario, int? prestamoId)
+        public static long getTotalProyectos(String filtro_busqueda, String usuario, int? prestamoId)
         {
             long ret = 0L;
             try
@@ -195,17 +195,24 @@ namespace SiproDAO.Dao
                         query_a = String.Join("", " p.prestamoid=", prestamoId + "");
                     if (prestamoId == null)
                         query_a = String.Join("", " p.prestamoid=null");
-                    if (filtro_nombre != null && filtro_nombre.Trim().Length > 0)
-                        query_a = String.Join("", query_a, " p.nombre LIKE '%", filtro_nombre, "%' ");
-                    if (filtro_usuario_creo != null && filtro_usuario_creo.Trim().Length > 0)
-                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.usuario_creo LIKE '%", filtro_usuario_creo, "%' ");
-                    if (filtro_fecha_creacion != null && filtro_fecha_creacion.Trim().Length > 0)
-                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(p.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE(:filtro_fecha_creacion,'DD/MM/YY') ");
+                    if (filtro_busqueda != null && filtro_busqueda.Length > 0)
+                    {
+                        query_a = String.Join("", query_a, " p.nombre LIKE '%" + filtro_busqueda + "%' ");
+
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.usuario_creo LIKE '%" + filtro_busqueda + "%' ");
+
+                        DateTime fecha_creacion;
+                        if (DateTime.TryParse(filtro_busqueda, out fecha_creacion))
+                        {
+                            query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(p.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE('" + fecha_creacion.ToString("dd/MM/yyyy") + "','DD/MM/YY') ");
+                        }                                                        
+                    }
+                    
                     query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND (", query_a, ")") : ""));
                     if (usuario != null)
                         query = String.Join("", query, " AND p.id in (SELECT u.proyectoid FROM PROYECTO_USUARIO u WHERE u.usuario=:usuario )");
 
-                    ret = db.ExecuteScalar<long>(query, new { filtro_fecha_creacion = filtro_fecha_creacion, usuario = usuario });
+                    ret = db.ExecuteScalar<long>(query, new { usuario = usuario });
                 }
             }
             catch (Exception e)
@@ -215,8 +222,8 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        public static List<Proyecto> getProyectosPagina(int pagina, int numeroproyecto, String filtro_nombre, String filtro_usuario_creo,
-                String filtro_fecha_creacion, String columna_ordenada, String orden_direccion, String usuario, int? prestamoId)
+        public static List<Proyecto> getProyectosPagina(int pagina, int numeroproyecto, String filtro_busqueda, String columna_ordenada, String orden_direccion, 
+            String usuario, int? prestamoId)
         {
             List<Proyecto> ret = new List<Proyecto>();
             try
@@ -226,15 +233,23 @@ namespace SiproDAO.Dao
                     String query = "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT * FROM PROYECTO p WHERE p.estado = 1";
                     String query_a = "";
                     if (prestamoId != null && prestamoId > 0)
-                        query_a = String.Join("", " p.prestamo.id=", prestamoId + "");
+                        query_a = String.Join("", " p.prestamoid=", prestamoId + "");
                     if (prestamoId == null)
-                        query_a = String.Join("", " p.prestamo.id=null");
-                    if (filtro_nombre != null && filtro_nombre.Trim().Length > 0)
-                        query_a = String.Join("", query_a, " p.nombre LIKE '%", filtro_nombre, "%' ");
-                    if (filtro_usuario_creo != null && filtro_usuario_creo.Trim().Length > 0)
-                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.usuario_creo LIKE '%", filtro_usuario_creo, "%' ");
-                    if (filtro_fecha_creacion != null && filtro_fecha_creacion.Trim().Length > 0)
-                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(p.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE(:filtro_fecha_creacion,'DD/MM/YY') ");
+                        query_a = String.Join("", " p.prestamoid=null");
+
+                    if (filtro_busqueda != null && filtro_busqueda.Length > 0)
+                    {
+                        query_a = String.Join("", query_a, " p.nombre LIKE '%" + filtro_busqueda + "%' ");
+
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.usuario_creo LIKE '%" + filtro_busqueda + "%' ");
+
+                        DateTime fecha_creacion;
+                        if (DateTime.TryParse(filtro_busqueda, out fecha_creacion))
+                        {
+                            query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(p.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE('" + fecha_creacion.ToString("dd/MM/yyyy") + "','DD/MM/YY') ");
+                        }                      
+                    }
+
                     query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND (", query_a, ")") : ""));
                     if (usuario != null)
                         query = String.Join("", query, " AND p.id in (SELECT u.proyectoid FROM PROYECTO_USUARIO u where u.usuario=:usuario )");
@@ -242,7 +257,7 @@ namespace SiproDAO.Dao
                                 String.Join(" ", query, "ORDER BY fecha_creacion ASC");
                     query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + numeroproyecto + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + numeroproyecto + ") + 1)");
 
-                    ret = db.Query<Proyecto>(query, new { filtro_fecha_creacion = filtro_fecha_creacion, usuario = usuario }).AsList<Proyecto>();
+                    ret = db.Query<Proyecto>(query, new { usuario = usuario }).AsList<Proyecto>();
                 }
             }
             catch (Exception e)

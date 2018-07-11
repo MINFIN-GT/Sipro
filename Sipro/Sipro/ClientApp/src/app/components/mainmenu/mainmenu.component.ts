@@ -4,6 +4,7 @@ import { AuthService } from '../../auth.service';
 import { MatToolbar } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+import { Etiqueta } from '../../../assets/models/Etiqueta';
 
 @Component({
   selector: 'main-menu',
@@ -13,9 +14,11 @@ import { RouterModule } from '@angular/router';
 export class MainmenuComponent implements OnInit {
 
     isMasterPage : boolean;
+    etiqueta : Etiqueta;
 
     constructor(private utils : UtilsService, private auth : AuthService, private http: HttpClient) { 
         this.isMasterPage = utils.isMasterPage();
+        this.etiqueta = JSON.parse(localStorage.getItem("_etiqueta"));
     } 
 
     ngOnInit() {

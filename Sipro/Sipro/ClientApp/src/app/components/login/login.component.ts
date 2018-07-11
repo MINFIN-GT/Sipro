@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
         if(this.username!='' && this.password!=''){
           var data = { username: this.username, password: this.password};
           this._http.post(this._loginUrl, data, { withCredentials: true}).subscribe((response)=>{
-                if(response['success']==true){
+                if(response['success']==true){                    
                     this.isLoggedIn = true;
                     this.isMasterPage = true;
                     this.auth.setJWT(response['jwt']);

@@ -1,24 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SiproDAO.Dao;
 using SiproModelCore.Models;
+using Utilities;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Sipro.Controllers
 {
-    [Route("[controller]/[action]")]
+    [Authorize]
+    [Produces("application/json")]
+    [Route("/api/[controller]/[action]")]
+    [EnableCors("AllowAllHeaders")]
     public class UsuarioController : Controller
     {
-
-        [HttpPost]
-        public IActionResult getUsuario([FromBody]dynamic data)
+        private class stetiqueta
         {
-            Usuario usuario = UsuarioDAO.getUsuario((string)data.usuario);
-            return Ok(JsonConvert.SerializeObject(usuario));
+            public int id;
+            public String claseNombre;
+            public String proyecto;
+            public String colorPrincipal;
+        }
+
+        [HttpGet]
+        [Authorize("Usuarios - Visualizar")]
+        public IActionResult Usuario()
+        {
+            try
+            {
+                Usuario user = UsuarioDAO.getUsuario(User.Identity.Name);
+                return Ok(new { success = true, usuario = user });
+            }
+            catch (Exception e)
+            {
+                CLogger.write("1", "UsuarioController.class", e);
+                return BadRequest(500);
+            }
         }
 
         [HttpPost]
@@ -129,6 +151,54 @@ namespace Sipro.Controllers
             Usuario usuario = UsuarioDAO.getUsuario((string)data.usuario);
             Usuario usuarioP = UsuarioDAO.setNuevoPassword(usuario, (string)data.password);
             return Ok(JsonConvert.SerializeObject(usuarioP));
+        }
+
+        [HttpGet]
+        [Authorize("Usuarios - Visualizar")]
+        public IActionResult SistemasUsuario()
+        {
+            try
+            {
+                List<Etiqueta> etiquetasUsuario = EtiquetaDAO.getEtiquetas();
+                List<stetiqueta> etiquetas = new List<stetiqueta>();
+                foreach (Etiqueta etiqueta in etiquetasUsuario)
+                {
+                    stetiqueta temp = new stetiqueta();
+                    temp.id = etiqueta.id;
+                    temp.claseNombre = etiqueta.nombre;
+                    temp.proyecto = etiqueta.proyecto;
+                    temp.colorPrincipal = etiqueta.colorPrincipal;
+                    etiquetas.Add(temp);
+                }
+                return Ok(new { success = true, etiquetas = etiquetas });
+            }
+            catch (Exception e)
+            {
+                CLogger.write("17", "UsuarioController.class", e);
+                return BadRequest(500);
+            }
+            
+        }
+
+        [HttpGet("{id}")]
+        [Authorize("Usuarios - Visualizar")]
+        public IActionResult EtiquetasSistemaUsuario(int id)
+        {
+            try
+            {
+                Etiqueta etiqueta = EtiquetaDAO.getEtiquetaPorId(id);
+                stetiqueta temp = new stetiqueta();
+                temp.claseNombre = etiqueta.nombre;
+                temp.id = etiqueta.id;
+                temp.proyecto = etiqueta.proyecto;
+                temp.colorPrincipal = etiqueta.colorPrincipal;
+                return Ok(new { success = true, etiquetas = temp });
+            }
+            catch (Exception e)
+            {
+                CLogger.write("18", "UsuarioController.class", e);
+                return BadRequest(500);
+            }
         }
     }
 }

@@ -189,3 +189,7 @@ html, body {
     color: #777;
     padding-left: 10px;
 }
+
+.flex-main{
+    overflow: auto;
+}

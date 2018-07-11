@@ -105,7 +105,7 @@ namespace SiproDAO.Dao
                         "FROM PRESTAMO p " +
                         "WHERE p.estado=1 ";
                     String query_a = "";
-                    if (filtro_busqueda != null)
+                    if (filtro_busqueda != null && filtro_busqueda.Length > 0)
                     {
                         query_a = String.Join("", query_a, " p.proyecto_programa LIKE '%", filtro_busqueda, "%' ");
 
@@ -155,7 +155,7 @@ namespace SiproDAO.Dao
                     String query = "SELECT COUNT(*) FROM PRESTAMO p WHERE p.estado=1 ";
                     String query_a = "";
 
-                    if (filtro_busqueda != null)
+                    if (filtro_busqueda != null && filtro_busqueda.Length > 0)
                     {
                         query_a = String.Join("", query_a, " p.proyecto_programa LIKE '%", filtro_busqueda, "%' ");
 

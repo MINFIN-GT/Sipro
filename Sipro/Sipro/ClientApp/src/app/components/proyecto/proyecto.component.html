@@ -2,7 +2,7 @@
     <div class="middle">
         <div fxLayout="column">
             <mat-card style="margin-top: 2%; background-color: #f5f5f5; border-color: #ddd;">
-                @project_tags
+                {{etiqueta.proyecto}}s
             </mat-card>
         </div>
         <div fxLayout="column" class="subtitulo">
@@ -34,7 +34,7 @@
                 </div>
                 <br>
                 <div fxLayout="row" fxLayoutAlign="end" style="font-weight: bold;">
-                    Total de @project_tags: {{totalProyectos}}
+                    Total de {{etiqueta.proyecto}}s: {{totalProyectos}}
                 </div>
                 <div fxLayout="column" fxLayoutAlign="center">
                     <mat-paginator [length]="totalProyectos" [hidePageSize]="true" [pageSize]="elementosPorPagina" 
@@ -44,7 +44,166 @@
             </div>
             <div [hidden]="!esColapsado">
                 <form #myForm="ngForm">
-                    
+                    <div fxLayout="row" fxLayoutAlign="start" class="nuevo-edicion">
+                        <label>{{esNuevo == true ? 'Nuevo ' + etiqueta.proyecto : 'Edición de ' + etiqueta.proyecto }}</label>
+                    </div>
+                    <br>
+                    <div fxLayout="row">
+                        <div [hidden]="esNuevo" fxFlex="50%" fxLayoutAlign="start" fxLayoutGap="2px">
+                          
+                        </div>
+                        <div fxFlex fxLayoutAlign="end" fxLayoutGap="2px">
+                            <button mat-raised-button style="background-color: #5cb85c; color:#fff; border-color: #4cae4c" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
+                            <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
+                        </div>
+                    </div>
+                    <br>
+                    <div fxLayout="column">
+                        <div [@.disabled]="true">
+                            <mat-card>
+                                <mat-card-content>
+                                    <mat-tab-group class="demo-tab-group" [(selectedIndex)]="tabActive">
+                                        <mat-tab label="Generales" style="overflow: hidden;">
+                                            <div class="demo-tab-content">
+                                                <br>
+                                                <div fxLayout="row" fxLayoutAlign="start">
+                                                    <label class="label-id">ID {{proyecto.id}}</label>
+                                                </div>
+                                                <br>
+                                                <div fxLayout="column">
+                                                    <mat-form-field>
+                                                      <input name="nombre" [(ngModel)]="proyecto.nombre" matInput placeholder="* Nombre" [required]="true" [readonly]="congelado > 0">
+                                                    </mat-form-field>
+                                                </div>
+                                                <div fxLayout="column">
+                                                    <mat-form-field>
+                                                      <input name="snip" [(ngModel)]="proyecto.snip" matInput placeholder="SNIP" [readonly]="congelado > 0">
+                                                    </mat-form-field>
+                                                </div>
+                                                <div [hidden]="true" fxLayout="row" fxLayoutAlign="center" fxLayoutGap="15px">
+                                                    <div fxLayout="row" fxFlex="15.5%">
+                                                        <mat-form-field>
+                                                            <input style="text-align: center" type="text"  pattern="[0-9]{1,4}" minlength="0" maxlength="4" name="programa" maxlength="4"  [(ngModel)]="proyecto.programa" matInput placeholder="Programa" [readonly]="congelado > 0">
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div fxLayout="row" fxFlex="15.5%">
+                                                        <mat-form-field>
+                                                            <input style="text-align: center" type="text"  pattern="[0-9]{1,4}" minlength="0" maxlength="4" name="subprograma" [(ngModel)]="proyecto.subprograma" matInput placeholder="Subprograma" [readonly]="congelado > 0">
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div fxLayout="row" fxFlex="15.5%">
+                                                        <mat-form-field>
+                                                            <input style="text-align: center" type="text"  pattern="[0-9]{1,4}" minlength="0" maxlength="4" name="proyecto" [(ngModel)]="proyecto.proyecto" matInput placeholder="Proyecto" [readonly]="congelado > 0">
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div fxLayout="row" fxFlex="15.5%">
+                                                        <mat-form-field>
+                                                            <input style="text-align: center" type="text"  pattern="[0-9]{1,4}" minlength="0" maxlength="4" name="actividad" [(ngModel)]="proyecto.actividad" matInput placeholder="Actividad" [readonly]="congelado > 0">
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div fxLayout="row" fxFlex="15.5%">
+                                                        <mat-form-field>
+                                                            <input style="text-align: center" type="text"  pattern="[0-9]{1,4}" minlength="0" maxlength="4" name="obra" [(ngModel)]="proyecto.obra" matInput placeholder="Obra" [readonly]="congelado > 0">
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div fxLayout="row" fxFlex="15.5%">
+                                                        <mat-form-field>
+                                                            <input style="text-align: center" type="text"  pattern="[0-9]{1,4}" minlength="0" maxlength="4" name="fuente" [(ngModel)]="proyecto.fuente" matInput placeholder="Fuente" [readonly]="congelado">
+                                                        </mat-form-field>
+                                                    </div>                                                
+                                                </div>
+                                                <div fxLayout="column">
+                                                    <mat-form-field>                                        
+                                                        <input class="search-info" name="proyectotiponombre" [(ngModel)]="proyectotiponombre" matInput placeholder="Caracterización {{etiqueta.proyecto}}" 
+                                                        [readonly]="true" (click)="congelado > 0 ? '' : buscarProyectoTipo()" [required]="true">
+                                                        <mat-icon class="search-info" matSuffix (click)="congelado > 0 ? '' : buscarProyectoTipo()">search</mat-icon>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div fxLayout="column" [hidden]="unidadejecutoranombre.length>0">
+                                                    <mat-form-field>
+                                                      <input name="entidadnombre" [(ngModel)]="entidadnombre" matInput placeholder="Organismo Ejecutor" [readonly]="true">
+                                                    </mat-form-field>
+                                                </div>
+                                                <div fxLayout="column">
+                                                    <mat-form-field>                                        
+                                                        <input class="search-info" name="unidadejecutoranombre" [(ngModel)]="unidadejecutoranombre" matInput placeholder="Unidad Ejecutora" 
+                                                        [readonly]="true" (click)="prestamoid != null ? '' : buscarUnidadEjecutora()" [required]="true">
+                                                        <mat-icon class="search-info" matSuffix (click)="prestamoid != null ? '' : buscarUnidadEjecutora()">search</mat-icon>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div fxLayout="column">
+                                                    <mat-form-field>                                        
+                                                        <input class="search-info" name="cooperantenombre" [(ngModel)]="cooperantenombre" matInput placeholder="* Organismo financiero internacional" 
+                                                        [readonly]="true" (click)="buscarCooperante()" [required]="true">
+                                                        <mat-icon class="search-info" matSuffix (click)="buscarCooperante()">search</mat-icon>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div fxLayout="column">
+                                                    <mat-form-field>                                        
+                                                        <input class="search-info" name="coordenadas" [(ngModel)]="coordenadas" matInput placeholder="Coordenadas" 
+                                                        [readonly]="true" (click)="open()" [required]="true">
+                                                        <mat-icon class="search-info" matSuffix (click)="open()">place</mat-icon>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div fxLayout="column">
+                                                    <mat-form-field>
+                                                      <textarea name="objetivo" matInput rows="4" [(ngModel)]="proyecto.objetivo" placeholder="Objetivo"></textarea>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div fxLayout="column">
+                                                    <mat-form-field>
+                                                      <textarea name="objetivoEspecifico" matInput rows="4" [(ngModel)]="proyecto.objetivoEspecifico" placeholder="Objetivos específicos del {{etiqueta.proyecto}}"></textarea>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div fxLayout="column">
+                                                    <mat-form-field>
+                                                      <textarea name="visionGeneral" matInput rows="4" [(ngModel)]="proyecto.visionGeneral" placeholder="Visión general del PEP"></textarea>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </mat-tab>
+                                        <mat-tab label="Adicionales" style="overflow: hidden;">
+                                            <div class="demo-tab-content">
+                                                <br>
+                                                
+                                            </div>
+                                        </mat-tab>
+                                        <mat-tab label="Acta de constitución" style="overflow: hidden;">
+                                            <div class="demo-tab-content">
+                                                <br>
+                                                
+                                            </div>
+                                        </mat-tab>
+                                        <mat-tab label="Desembolsos" style="overflow: hidden;">
+                                            <div class="demo-tab-content">
+                                                <br>
+                                                
+                                            </div>
+                                        </mat-tab>
+                                        <mat-tab label="Riesgos" style="overflow: hidden;">
+                                            <div class="demo-tab-content">
+                                                <br>
+                                                
+                                            </div>
+                                        </mat-tab>
+                                        <mat-tab label="Componentes" style="overflow: hidden;">
+                                            <div class="demo-tab-content">
+                                                <br>
+                                                
+                                            </div>
+                                        </mat-tab>                                        
+                                    </mat-tab-group>
+                                </mat-card-content>
+                            </mat-card>
+                        </div>
+                        <br>
+                        <div fxLayout="row" fxLayoutAlign="center" class="label-form">Los campos marcados con * son obligatorios y las fechas deben tener formato de dd/mm/aaaa</div>
+                        <br>
+                        <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2px">
+                            <button mat-raised-button style="background-color: #5cb85c; color:#fff; border-color: #4cae4c" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
+                            <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>

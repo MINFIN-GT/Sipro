@@ -29,8 +29,7 @@ namespace Sipro.Controllers
 		private readonly SignInManager<User> _signInManager;
 		private readonly RoleManager<Rol> _roleManager;
 
-
-		public LoginController(
+        public LoginController(
 					RoleManager<Rol> roleManager,
 					UserManager<User> userManager,
 					SignInManager<User> signInManager)
@@ -133,5 +132,5 @@ namespace Sipro.Controllers
 				return Ok(new { sucess = false });
 			}
 		}
-	}
+    }
 }

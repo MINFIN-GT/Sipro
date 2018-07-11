@@ -1,4 +1,5 @@
 import { Injectable, EventEmitter, Output } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class UtilsService {
@@ -11,7 +12,7 @@ export class UtilsService {
 
     @Output() changeMasterPage : EventEmitter<boolean> = new EventEmitter();
 
-    constructor() { 
+    constructor(private http: HttpClient) { 
 
     }
 

@@ -17,6 +17,7 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { Router } from '@angular/router'
+import { Etiqueta } from '../../../assets/models/Etiqueta';
 
 export interface Cooperante {
   codigo: number;
@@ -92,13 +93,13 @@ export class PrestamoComponent implements OnInit {
   filteredCooperantes: Observable<Cooperante[]>;
 
   constructor(private auth: AuthService, private utils: UtilsService, private http: HttpClient, private dialog: MatDialog, private router: Router) {
+    this.etiqueta = JSON.parse(localStorage.getItem("_etiqueta"));
     this.isMasterPage = this.auth.isLoggedIn();
     this.utils.setIsMasterPage(this.isMasterPage);
     this.elementosPorPagina = utils._elementosPorPagina;
     this.numeroMaximoPaginas = utils._numeroMaximoPaginas;    
     this.totalPrestamos = 0;
     this.prestamo = new Prestamo();
-    this.etiqueta = new Etiqueta();
     this.esNuevoDocumento = true;
     this.busquedaGlobal = null;
     this.modalCodigoPresupuestario = new DialogOverviewCodigoPresupuestario(dialog);
@@ -215,8 +216,9 @@ export class PrestamoComponent implements OnInit {
   }
 
   refresh(){
-    this.obtenerTotalPrestamos();
+    this.busquedaGlobal = null;
     this.divSearch.nativeElement.value = null;
+    this.obtenerTotalPrestamos();
   }
 
   guardar(){
@@ -337,7 +339,12 @@ export class PrestamoComponent implements OnInit {
         if (response['success'] == true) {
           this.totalPrestamos = response["totalprestamos"];
           this.paginaActual = 1;
-          this.cargarTabla(this.paginaActual);
+          if(this.totalPrestamos > 0){
+            this.cargarTabla(this.paginaActual);
+          }
+          else{
+            this.source = new LocalDataSource();
+          }
         } else {
           console.log('Error');
           this.mostrarcargando = false;
@@ -863,9 +870,4 @@ export class PrestamoComponent implements OnInit {
   customTrackBy(index: number, obj: any): any {
     return index;
   }
-}
-
-export class Etiqueta{
-  proyecto : string;
-  colorPrincipal: string;
 }

@@ -15,7 +15,7 @@ export class DialogOverviewMoneda {
   templateUrl: '../../../../assets/modals/dialogsearch/modal-dialog.html'
 })
 export class DialogMoneda {
-  totalCodigos : number;
+  totalElementos : number;
   source: LocalDataSource;
   paginaActual : number;
   elementosPorPagina : number;
@@ -52,7 +52,7 @@ export class DialogMoneda {
     this.esColapsado = false;
     this.http.post('http://localhost:60088/api/TipoMoneda/numeroTipoMonedas',data, {withCredentials: true}).subscribe(response => {
       if (response['success'] == true) {   
-        this.totalCodigos = response["totalTipoMonedas"];
+        this.totalElementos = response["totalTipoMonedas"];
         this.paginaActual = 1;
         this.cargarTabla(this.paginaActual);
       } else {

@@ -15,7 +15,7 @@ export class DialogOverviewCodigoPresupuestario {
   templateUrl: '../../../../assets/modals/dialogsearch/modal-dialog.html'
 })
 export class DialogCodigoPresupuestario {
-  totalCodigos : number;
+  totalElementos : number;
   source: LocalDataSource;
   paginaActual : number;
   elementosPorPagina : number;
@@ -52,7 +52,7 @@ export class DialogCodigoPresupuestario {
     this.esColapsado = false;
     this.http.post('http://localhost:60016/api/DataSigade/TotalCodigos',data,{withCredentials: true}).subscribe(response => {
       if (response['success'] == true) {   
-        this.totalCodigos = response["totalCodigos"];
+        this.totalElementos = response["totalCodigos"];
         this.paginaActual = 1;
         this.cargarTabla(this.paginaActual);
       } else {

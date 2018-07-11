@@ -1,11 +1,7 @@
-<div class="container" fxLayoutAlign="center" fxLayout="column">
-  <header>
-    <main-menu></main-menu>
-  </header>
-  <div class="flex-container" fxFlex fxFlexFill>
+<div fxLayout="column" fxLayoutAlign="center" fxFlexFill>
+  <main-menu></main-menu>
+  <div class="flex-container flex-main" fxFlex fxFlexFill>
     <router-outlet></router-outlet>
   </div>
-  <footer>
-    <main-footer></main-footer>
-  </footer>
+  <main-footer></main-footer>
 </div>

@@ -2,7 +2,7 @@
 	height: calc(100% - 30px);
 	width: 95%;
 	margin: 0 auto;
-	display: block;
+    display: block;
 }
 
 .all_page{
@@ -625,5 +625,3 @@ input.riesgos[type='range']::-webkit-slider-thumb {
 input.riesgos[type='range']::-webkit-slider-thumb {
 		background-color: #607d8b;
 	}
-
-

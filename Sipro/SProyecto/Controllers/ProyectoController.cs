@@ -307,14 +307,13 @@ namespace SProyecto.Controllers
                 int prestamoId = value.prestamoId != null ? (int)value.prestamoId : 0;
                 int pagina = value.pagina != null ? (int)value.pagina : 0;
                 int numeroProyecto = value.numeroproyecto != null ? (int)value.numeroproyecto : 0;
-                String filtro_nombre = value.filtro_nombre;
-                String filtro_usuario_creo = value.filtro_usuario_creo;
-                String filtro_fecha_creacion = value.filtro_fecha_creacion;
+                string filtro_busqueda = value.filtro_busqueda != null ? value.filtro_busqueda : default(string);
                 String columna_ordenada = value.columna_ordenada;
                 String orden_direccion = value.orden_direccion;
 
-                List<Proyecto> proyectos = ProyectoDAO.getProyectosPagina(pagina, numeroProyecto,
-                        filtro_nombre, filtro_usuario_creo, filtro_fecha_creacion, columna_ordenada, orden_direccion, User.Identity.Name, prestamoId);
+                List<Proyecto> proyectos = ProyectoDAO.getProyectosPagina(pagina, numeroProyecto, filtro_busqueda, columna_ordenada, orden_direccion, 
+                    User.Identity.Name, prestamoId);
+
                 List<datos> datos_ = new List<datos>();
                 foreach (Proyecto proyecto in proyectos)
                 {
@@ -1126,8 +1125,9 @@ namespace SProyecto.Controllers
         {
             try
             {
-                long total = ProyectoDAO.getTotalProyectos(value.filtro_nombre, value.filtro_usuario_creo, value.filtro_fecha_creacion,
-                    User.Identity.Name, value.prestamoId);
+                string filtro_busqueda = value.filtro_busqueda != null ? value.filtro_busqueda : default(string);
+                int prestamoId = value.prestamoId != null ? (int)value.prestamoId : default(int);
+                long total = ProyectoDAO.getTotalProyectos(filtro_busqueda, User.Identity.Name, prestamoId);
 
                 return Ok(new { success = true, totalproyectos = total });
             }

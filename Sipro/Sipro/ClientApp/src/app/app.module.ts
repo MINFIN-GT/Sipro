@@ -17,6 +17,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario } from './components/prestamo/modals/modal-codigo-presupuestario'
 import { DialogOverviewMoneda, DialogMoneda } from './components/prestamo/modals/modal-moneda'
 import { DialogOverviewTipoPrestamo, DialogTipoPrestamo } from './components/prestamo/modals/modal-tipo-prestamo'
+import { DialogOverviewProyectoTipo, DialogProyectoTipo } from './components/proyecto/modals/proyecto-tipo'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginatorIntlSpanish } from '../assets/customs/custom-paginator-spanish';
 import { ButtonDeleteComponent } from '../assets/customs/ButtonDeleteComponent';
@@ -36,6 +37,7 @@ import { FooterComponent } from './components/footer/footer.component';
 import { MainmenuComponent } from './components/mainmenu/mainmenu.component';
 import { PrestamoComponent } from './components/prestamo/prestamo.component';
 import { ProyectoComponent } from './components/proyecto/proyecto.component';
+import { PrestamotipoComponent } from './components/prestamotipo/prestamotipo.component';
 
 const routes: Routes = [{
           path: '',    // Va a Main
@@ -48,6 +50,9 @@ const routes: Routes = [{
         },{
           path: 'main/prestamo',
           component: PrestamoComponent
+        },{
+          path: 'main/prestamotipo',
+          component: PrestamotipoComponent
         },{
           path: 'main/pep/:id',
           component: ProyectoComponent
@@ -69,7 +74,8 @@ const routes: Routes = [{
       AccesodenegadoComponent, MainComponent, PagenotfoundComponent, FooterComponent, MainmenuComponent, PrestamoComponent,
       DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario, DialogOverviewMoneda, DialogMoneda, DialogOverviewTipoPrestamo, 
       DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, DialogOverviewDownloadDocument, DialogDownloadDocument, 
-      FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo, ProyectoComponent, DialogDelete, DialogOverviewDelete
+      FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo, ProyectoComponent, DialogDelete, DialogOverviewDelete,
+      DialogOverviewProyectoTipo, DialogProyectoTipo, PrestamotipoComponent
   ],
   imports: [
       BrowserModule,
@@ -91,7 +97,7 @@ const routes: Routes = [{
   bootstrap: [AppComponent],
   entryComponents: [DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario, DialogOverviewMoneda, DialogMoneda,
     DialogOverviewTipoPrestamo, DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent,DialogOverviewDownloadDocument, 
-    DialogDownloadDocument, DialogDelete, DialogOverviewDelete]
+    DialogDownloadDocument, DialogDelete, DialogOverviewDelete, DialogOverviewProyectoTipo, DialogProyectoTipo]
 })
 export class AppModule { 
 
