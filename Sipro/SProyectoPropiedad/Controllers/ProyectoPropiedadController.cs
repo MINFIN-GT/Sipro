@@ -21,8 +21,8 @@ namespace SProyectoPropiedad.Controllers
             public int id;
             public String nombre;
             public String descripcion;
-            public int datotipoid;
-            public String datotiponombre;
+            public int datoTipoid;
+            public String datoTiponombre;
             public String usuarioCreo;
             public String usuarioActualizo;
             public String fechaCreacion;
@@ -38,7 +38,7 @@ namespace SProyectoPropiedad.Controllers
             try
             {
                 int pagina = value.pagina != null ? (int)value.pagina : default(int);
-                int numeroProyectoPropiedad = value.numeroproyectopropiedad != null ? (int)value.numeroproyectopropiedad : default(int);
+                int numeroProyectoPropiedad = value.numeroProyectoPropiedad != null ? (int)value.numeroProyectoPropiedad : default(int);
                 string filtro_busqueda = value.filtro_busqueda != null ? value.filtro_busqueda : default(string);
                 string columnaOrdenada = value.columnaOrdenada != null ? (string)value.columnaOrdenada : default(string);
                 string ordenDireccion = value.ordenDireccion != null ? (string)value.ordenDireccion : default(string);
@@ -54,8 +54,8 @@ namespace SProyectoPropiedad.Controllers
                     temp.nombre = proyectopropiedad.nombre;
                     temp.descripcion = proyectopropiedad.descripcion;
                     proyectopropiedad.datoTipos = DatoTipoDAO.getDatoTipo(proyectopropiedad.datoTipoid);
-                    temp.datotipoid = proyectopropiedad.datoTipos.id;
-                    temp.datotiponombre = proyectopropiedad.datoTipos.nombre;
+                    temp.datoTipoid = proyectopropiedad.datoTipos.id;
+                    temp.datoTiponombre = proyectopropiedad.datoTipos.nombre;
                     temp.estado = proyectopropiedad.estado;
                     temp.fechaActualizacion = proyectopropiedad.fechaActualizacion != null ? proyectopropiedad.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     temp.fechaCreacion = proyectopropiedad.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss");
@@ -92,8 +92,8 @@ namespace SProyectoPropiedad.Controllers
                     temp.nombre = proyectopropiedad.nombre;
                     temp.descripcion = proyectopropiedad.descripcion;
                     proyectopropiedad.datoTipos = DatoTipoDAO.getDatoTipo(proyectopropiedad.datoTipoid);
-                    temp.datotipoid = proyectopropiedad.datoTipos.id;
-                    temp.datotiponombre = proyectopropiedad.datoTipos.nombre;
+                    temp.datoTipoid = proyectopropiedad.datoTipos.id;
+                    temp.datoTiponombre = proyectopropiedad.datoTipos.nombre;
                     temp.estado = proyectopropiedad.estado;
                     temp.fechaActualizacion = proyectopropiedad.fechaActualizacion != null ? proyectopropiedad.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     temp.fechaCreacion = proyectopropiedad.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss");
@@ -131,8 +131,8 @@ namespace SProyectoPropiedad.Controllers
                     temp.nombre = proyectopropiedad.nombre;
                     temp.descripcion = proyectopropiedad.descripcion;
                     proyectopropiedad.datoTipos = DatoTipoDAO.getDatoTipo(proyectopropiedad.datoTipoid);
-                    temp.datotipoid = proyectopropiedad.datoTipos.id;
-                    temp.datotiponombre = proyectopropiedad.datoTipos.nombre;
+                    temp.datoTipoid = proyectopropiedad.datoTipos.id;
+                    temp.datoTiponombre = proyectopropiedad.datoTipos.nombre;
                     temp.estado = proyectopropiedad.estado;
                     temp.fechaActualizacion = proyectopropiedad.fechaActualizacion != null ? proyectopropiedad.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     temp.fechaCreacion = proyectopropiedad.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss");
@@ -220,7 +220,6 @@ namespace SProyectoPropiedad.Controllers
 
                 if (results.IsValid)
                 {
-                    int id = value.id;
                     String nombre = value.nombre;
                     String descripcion = value.descripcion;
                     int datoTipoId = value.datoTipoid;
@@ -244,8 +243,8 @@ namespace SProyectoPropiedad.Controllers
                         id = proyectoPropiedad.id,
                         usuarioCreo = proyectoPropiedad.usuarioCreo,
                         fechaCreacion = proyectoPropiedad.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
-                        usuarioactualizo = proyectoPropiedad.usuarioActualizo,
-                        fechaactualizacion = proyectoPropiedad.fechaActualizacion != null ? proyectoPropiedad.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
+                        usuarioActualizo = proyectoPropiedad.usuarioActualizo,
+                        fechaActualizacion = proyectoPropiedad.fechaActualizacion != null ? proyectoPropiedad.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
                     });
                 }
                 else
@@ -292,8 +291,8 @@ namespace SProyectoPropiedad.Controllers
                         id = proyectoPropiedad.id,
                         usuarioCreo = proyectoPropiedad.usuarioCreo,
                         fechaCreacion = proyectoPropiedad.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
-                        usuarioactualizo = proyectoPropiedad.usuarioActualizo,
-                        fechaactualizacion = proyectoPropiedad.fechaActualizacion != null ? proyectoPropiedad.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
+                        usuarioActualizo = proyectoPropiedad.usuarioActualizo,
+                        fechaActualizacion = proyectoPropiedad.fechaActualizacion != null ? proyectoPropiedad.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
                     });
                 }
                 else

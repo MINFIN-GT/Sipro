@@ -1,0 +1,116 @@
+<div fxLayout="column" fxLayoutAlign="center" fxFlexFill fxFlex>
+  <div class="middle">
+    <div fxLayout="column">
+      <mat-card style="margin-top: 2%; background-color: #f5f5f5; border-color: #ddd;">
+        Propiedades de {{etiqueta.proyecto}}
+      </mat-card>
+    </div>
+    <br>
+    <div fxLayout="column" fxLayoutAlign="center" fxFlexFill>
+      <div [hidden]="esColapsado">
+        <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2px">
+          <button mat-raised-button style="background-color: #337ab7; color:#fff" (click)="nuevo()" matTooltip="Nuevo" matTooltipPosition="above"><mat-icon>add</mat-icon>Nuevo</button>
+          <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="editar()" matTooltip="Editar" matTooltipPosition="above"><mat-icon>mode_edit</mat-icon>Editar</button>
+          <button mat-raised-button style="background-color: #d9534f; color: #fff;" (click)="borrar()" matTooltip="Borrar" matTooltipPosition="above"><mat-icon>delete</mat-icon>Borrar</button>
+        </div>
+        <br>
+        <div fxLayout="row" fxLayoutAlign="end">
+          <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="refresh()" matTooltip="Reiniciar la vista de la tabla" matTooltipPosition="above"><mat-icon>refresh</mat-icon></button>
+        </div>
+        <br>
+        <div fxLayout="row">
+            <mat-form-field fxFlex="50%">
+                <input matInput #search class="search" type="text" placeholder="Busqueda..." (keydown.enter)="filtrar(search.value)">
+                <mat-icon class="search-info" (click)="filtrar(search.value)" matSuffix>search</mat-icon>
+            </mat-form-field>              
+        </div> 
+        <div fxLayout="column">
+          <div>
+              <ng2-smart-table [settings]="settings" [source]="source" (dblClickRow)="onDblClickRow($event)" (userRowSelect)="onSelectRow($event)"></ng2-smart-table>
+          </div>              
+        </div>
+        <br>
+        <div fxLayout="row" fxLayoutAlign="end" style="font-weight: bold;">
+          Total de propiedades de {{etiqueta.proyecto}}: {{totalProyectoPropiedades}}
+        </div>
+        <div fxLayout="column" fxLayoutAlign="center">
+          <mat-paginator [length]="totalProyectoPropiedades" [hidePageSize]="true" [pageSize]="elementosPorPagina" 
+          [showFirstLastButtons]="true" (page)="pageEvent = handlePage($event)">
+          </mat-paginator>
+        </div>
+      </div>
+      <div [hidden]="!esColapsado">
+        <form #myForm="ngForm">
+          <div fxLayout="row" fxLayoutAlign="start" class="nuevo-edicion">
+            <label>{{esNuevo == true ? 'Nuevo Propiedad' : 'Edición de Propiedad'}}</label>
+          </div>
+          <br>
+          <div fxLayout="row">
+            <div fxFlex fxLayoutAlign="end" fxLayoutGap="2px">
+                <button mat-raised-button style="background-color: #5cb85c; color:#fff; border-color: #4cae4c" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
+                <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
+            </div>
+          </div>
+          <br>
+          <div fxLayout="row" fxLayoutAlign="start">
+              <label class="label-id">ID {{proyectopropiedad.id}}</label>
+          </div>
+          <br>
+          <div fxLayout="column">
+            <mat-form-field>
+              <input name="nombre" [(ngModel)]="proyectopropiedad.nombre" matInput placeholder="* Nombre" [required]="true">
+            </mat-form-field>
+          </div>
+          <div fxLayout="column">
+            <mat-form-field>
+              <mat-select placeholder="* Tipo dato" disableRipple [required]="true" [(value)]="datoTipoSelected" [disabled]="!esNuevo">
+                <mat-option value="0">Seleccione Tipo</mat-option>
+                <mat-option *ngFor="let opcion of tipodatos" [value]="opcion.id" (click)="cambioOpcionDatoTipo(opcion.id)">{{opcion.nombre}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <br>
+          <div fxLayout="column">
+              <div class="panel panel-default" style="height: 180px;">
+                  <div class="panel-heading label-form" fxLayoutAlign="center">Datos de auditoría</div>
+                  <div class="panel-body">
+                    <div>
+                      <div fxLayout="row" fxLayoutGap="20px">
+                        <div fxFlex="50%">
+                          <label fxLayoutAlign="end" class="label-form" for="usuarioCreo">Usuario que creo</label>
+                          <p fxLayoutAlign="end">{{ proyectopropiedad.usuarioCreo }}</p>
+                        </div>
+
+                        <div fxFlex="50%">
+                            <label fxLayoutAlign="start" class="label-form"  for="fechaCreacion">Fecha de creación</label>
+                            <p fxLayoutAlign="start">{{ proyectopropiedad.fechaCreacion }}</p>
+                        </div>
+                      </div>
+                      <div fxLayout="row" fxLayoutGap="20px">
+                          <div fxFlex="50%">
+                            <label fxLayoutAlign="end" class="label-form" for="usuarioActualizo">Usuario que actualizo</label>
+                            <p fxLayoutAlign="end">{{ proyectopropiedad.usuarioActualizo }}</p>
+                          </div>
+
+                          <div fxFlex="50%">
+                            <label fxLayoutAlign="start" for="fechaActualizacion"  class="label-form" >Fecha de actualizacion</label>
+                            <p fxLayoutAlign="start">{{ proyectopropiedad.fechaActualizacion }}</p>
+                          </div>
+                      </div>
+                    </div>                                  
+                  </div>
+              </div>
+          </div>
+          <br>
+          <div fxLayout="row" fxLayoutAlign="center" class="label-form">Los campos marcados con * son obligatorios y las fechas deben tener formato de dd/mm/aaaa</div>
+          <br/>
+          <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2px">
+            <button mat-raised-button style="background-color: #5cb85c; color:#fff; border-color: #4cae4c" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
+            <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
+          </div>
+          <br>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

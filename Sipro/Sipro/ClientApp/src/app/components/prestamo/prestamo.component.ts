@@ -12,7 +12,7 @@ import { ButtonDeleteComponent } from '../../../assets/customs/ButtonDeleteCompo
 import { ButtonDownloadComponent } from '../../../assets/customs/ButtonDownloadComponent';
 import { DialogDownloadDocument, DialogOverviewDownloadDocument } from '../../../assets/modals/documentosadjuntos/documento-adjunto'
 import { DialogDelete, DialogOverviewDelete } from './modals/confirmation-delete';
-import { Prestamo } from './model/model.prestamo'
+import { Prestamo } from './model/Prestamo'
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';

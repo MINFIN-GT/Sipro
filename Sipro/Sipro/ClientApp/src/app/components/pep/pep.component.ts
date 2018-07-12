@@ -7,16 +7,16 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { MatDialog } from '@angular/material';
 import * as moment from 'moment';
 import { Etiqueta } from '../../../assets/models/Etiqueta';
-import { Proyecto } from './model/model.proyecto'
+import { Proyecto } from './model/Proyecto'
 import { DialogOverviewProyectoTipo, DialogProyectoTipo } from './modals/proyecto-tipo'
 
 
 @Component({
-  selector: 'app-proyecto',
-  templateUrl: './proyecto.component.html',
-  styleUrls: ['./proyecto.component.css']
+  selector: 'app-pep',
+  templateUrl: './pep.component.html',
+  styleUrls: ['./pep.component.css']
 })
-export class ProyectoComponent implements OnInit {
+export class PepComponent implements OnInit {
   isLoggedIn : boolean;
   isMasterPage : boolean;
   esColapsado : boolean;

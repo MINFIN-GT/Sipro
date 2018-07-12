@@ -11,13 +11,13 @@ import { MaterialModule } from './material/material.module';
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { utils } from 'protractor'; 
 import { Ng2SmartTableModule } from 'ng2-smart-table';
-import { MatInputModule, MatPaginatorModule, MatTabsModule, MatDatepickerModule, MatNativeDateModule, MAT_DATE_LOCALE, MatPaginatorIntl, MatTooltipModule, MatAutocompleteModule, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS, DateAdapter } from '@angular/material';
+import { MatInputModule, MatPaginatorModule, MatTabsModule, MatDatepickerModule, MatNativeDateModule, MAT_DATE_LOCALE, MatPaginatorIntl, MatTooltipModule, MatAutocompleteModule, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS, DateAdapter, MatSelectModule } from '@angular/material';
 import { MomentModule } from 'angular2-moment/moment.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DialogCodigoPresupuestario } from './components/prestamo/modals/modal-codigo-presupuestario'
 import { DialogMoneda } from './components/prestamo/modals/modal-moneda'
 import { DialogTipoPrestamo } from './components/prestamo/modals/modal-tipo-prestamo'
-import { DialogProyectoTipo } from './components/proyecto/modals/proyecto-tipo'
+import { DialogProyectoTipo } from './components/pep/modals/proyecto-tipo'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginatorIntlSpanish } from '../assets/customs/custom-paginator-spanish';
 import { ButtonDeleteComponent } from '../assets/customs/ButtonDeleteComponent';
@@ -28,6 +28,7 @@ import { FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo } from 
 import { MatMomentDateModule, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { CUSTOM_DATE_FORMAT } from '../assets/customs/formatdate/CUSTOM_DATE_FORMAT';
 import { DialogDeleteTipoPrestamo } from './components/prestamotipo/modals/confirmation-delete';
+import { DialogDeleteProyectoPropiedad } from './components/peppropiedad/modals/confirmation-delete';
 
 import { AppComponent } from './app.component';
 import { MainComponent } from './components/main/main.component';
@@ -37,8 +38,9 @@ import { PagenotfoundComponent } from './components/pagenotfound/pagenotfound.co
 import { FooterComponent } from './components/footer/footer.component';
 import { MainmenuComponent } from './components/mainmenu/mainmenu.component';
 import { PrestamoComponent } from './components/prestamo/prestamo.component';
-import { ProyectoComponent } from './components/proyecto/proyecto.component';
+import { PepComponent } from './components/pep/pep.component';
 import { PrestamotipoComponent } from './components/prestamotipo/prestamotipo.component';
+import { PeppropiedadComponent } from './components/peppropiedad/peppropiedad.component';
 
 const routes: Routes = [{
           path: '',    // Va a Main
@@ -56,7 +58,10 @@ const routes: Routes = [{
           component: PrestamotipoComponent
         },{
           path: 'main/pep/:id',
-          component: ProyectoComponent
+          component: PepComponent
+        },{
+          path: 'main/peppropiedad',
+          component: PeppropiedadComponent
         },{
           path: 'accesodenegado',
           component: AccesodenegadoComponent
@@ -74,8 +79,8 @@ const routes: Routes = [{
       LoginComponent, 
       AccesodenegadoComponent, MainComponent, PagenotfoundComponent, FooterComponent, MainmenuComponent, PrestamoComponent,
       DialogCodigoPresupuestario, DialogMoneda, DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, DialogDownloadDocument, 
-      FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo, ProyectoComponent, DialogDelete, 
-      DialogProyectoTipo, PrestamotipoComponent, DialogDeleteTipoPrestamo
+      FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo, PepComponent, DialogDelete, 
+      DialogProyectoTipo, PrestamotipoComponent, DialogDeleteTipoPrestamo, PeppropiedadComponent, DialogDeleteProyectoPropiedad
   ],
   imports: [
       BrowserModule,
@@ -87,7 +92,8 @@ const routes: Routes = [{
       FlexLayoutModule,      
       Ng2SmartTableModule, 
       MatPaginatorModule, MatTabsModule, MatDatepickerModule, MatNativeDateModule, MomentModule, 
-      MatInputModule, MatDialogModule, MatProgressSpinnerModule, MatTooltipModule, MatAutocompleteModule, MatMomentDateModule
+      MatInputModule, MatDialogModule, MatProgressSpinnerModule, MatTooltipModule, MatAutocompleteModule, 
+      MatMomentDateModule, MatSelectModule
   ],
   providers: [UtilsService, AuthService, RouteguardService, 
     { provide: MatPaginatorIntl, useClass: MatPaginatorIntlSpanish },
@@ -96,7 +102,7 @@ const routes: Routes = [{
   ],
   bootstrap: [AppComponent],
   entryComponents: [DialogCodigoPresupuestario, DialogMoneda, DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, 
-    DialogDownloadDocument, DialogDelete, DialogProyectoTipo, DialogDeleteTipoPrestamo]
+    DialogDownloadDocument, DialogDelete, DialogProyectoTipo, DialogDeleteTipoPrestamo, DialogDeleteProyectoPropiedad]
 })
 export class AppModule { 
 

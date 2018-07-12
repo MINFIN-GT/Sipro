@@ -54,6 +54,8 @@ export class PrestamotipoComponent implements OnInit {
         this.paginaActual = 1;
         if(this.totalPrestamosTipos > 0)
           this.cargarTabla(this.paginaActual);
+        else
+          this.source = new LocalDataSource();
       }
     })
   }
@@ -113,7 +115,7 @@ export class PrestamotipoComponent implements OnInit {
       });
     }
     else{
-      alert('Seleccione un préstamo');
+      alert('warning, Seleccione un préstamo');
     }
   }
 

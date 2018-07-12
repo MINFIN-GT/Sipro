@@ -37,7 +37,7 @@
         <button mat-menu-item *ngIf="hasClaim('Componente Propiedades - Visualizar')" [routerLink]="main/subcomponentepropiedad"> Subcomponente</button>
         <button mat-menu-item *ngIf="hasClaim('Producto Propiedades - Visualizar')" [routerLink]="main/productopropiedad"> Producto</button>
         <button mat-menu-item *ngIf="hasClaim('Subproducto Propiedades - Visualizar')" [routerLink]="main/subproductopropiedad"> Subproducto</button>
-        <button mat-menu-item *ngIf="hasClaim('Préstamo o Proyecto Propiedades - Visualizar')" [routerLink]="main/peptipo"> {{etiqueta.proyecto}}</button>
+        <button mat-menu-item *ngIf="hasClaim('Préstamo o Proyecto Propiedades - Visualizar')" [routerLink]="['main/peppropiedad']"> {{etiqueta.proyecto}}</button>
         <button mat-menu-item *ngIf="hasClaim('Riesgo Propiedades - Visualizar')" [routerLink]="main/riesgopropiedad"> Riesgo</button>
       </mat-menu>
       <mat-menu #mReportes="matMenu" [overlapTrigger]="false">

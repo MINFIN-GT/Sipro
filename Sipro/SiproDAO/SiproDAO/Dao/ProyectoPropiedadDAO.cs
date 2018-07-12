@@ -38,7 +38,7 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    String query = "SELECT count(p.*) FROM proyecto_propiedad p WHERE p.estado=1 ";
+                    String query = "SELECT COUNT(*) FROM proyecto_propiedad p WHERE p.estado=1 ";
                     String query_a = "";
                     if (filtro_busqueda != null && filtro_busqueda.Length > 0)
                     {
@@ -205,7 +205,7 @@ namespace SiproDAO.Dao
                         proyectoPropiedad.id = sequenceId;
 
                         int guardado = db.Execute("INSERT INTO proyecto_propiedad VALUES (:id, :nombre, :descripcion, :datoTipoid, :usuarioCreo, :usuarioActualizo, " +
-                            ":fechaCreacion, :fechaActualizacion, :estado)");
+                            ":fechaCreacion, :fechaActualizacion, :estado)", proyectoPropiedad);
 
                         ret = guardado > 0 ? true : false;
                     }

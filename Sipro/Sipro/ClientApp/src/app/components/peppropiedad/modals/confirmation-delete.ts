@@ -14,7 +14,7 @@ export class DialogOverviewDelete {
     selector: 'confirmation-delete.ts',
     templateUrl: '../../../../assets/modals/dialogconfirmation/confirmation-dialog.html'
 })
-export class DialogDelete {
+export class DialogDeleteProyectoPropiedad {
     id : number;
     titulo : string;
     textoCuerpo : string;
@@ -22,7 +22,7 @@ export class DialogDelete {
     textoBotonCancelar: string;
 
     constructor(public dialog: MatDialog,
-        public dialogRef: MatDialogRef<DialogDelete>,
+        public dialogRef: MatDialogRef<DialogDeleteProyectoPropiedad>,
         @Inject(MAT_DIALOG_DATA) public data: any, private http: HttpClient,) {
             this.id = data.id;
             this.titulo = data.titulo;
@@ -36,7 +36,11 @@ export class DialogDelete {
     }
 
     aceptar(){
-        
+        this.http.delete('http://localhost:60067/api/ProyectoPropiedad/ProyectoPropiedad/'+ this.id, { withCredentials : true }).subscribe(response =>{
+            if(response['success'] == true){
+                this.dialogRef.close(true);
+            }
+        })
     }
 
     cancelar(){
