@@ -64,12 +64,12 @@ export class DialogTipoPrestamo {
   cargarTabla(pagina? : number){
     var filtro = {
       pagina: pagina,
-      numeroproyectotipos: this.elementosPorPagina,
+      numeroprestamostipos: this.elementosPorPagina,
       filtro_busqueda: this.busquedaGlobal
     }
     this.http.post('http://localhost:60057/api/PrestamoTipo/PrestamoTipoPagina', filtro, { withCredentials: true }).subscribe(response => {
       if (response['success'] == true) {
-        var data = response["proyectotipos"];        
+        var data = response["prestamostipos"];        
         this.source = data;
         this.esColapsado = true;
       } else {

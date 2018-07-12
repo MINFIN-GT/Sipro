@@ -36,16 +36,16 @@ namespace SPrestamoTipo.Controllers
             try
             {
                 int pagina = value.pagina != null ? (int)value.pagina : default(int);
-                int numeroproyectotipos = value.numeroproyectotipos != null ? (int)value.numeroproyectotipos : default(int);
+                int numeroprestamostipos = value.numeroprestamostipos != null ? (int)value.numeroprestamostipos : default(int);
                 string filtro_busqueda = value.filtro_busqueda != null ? value.filtro_busqueda : default(string);
                 string columnaOrdenada = value.columnaOrdenada != null ? (string)value.columnaOrdenada : default(string);
                 string ordenDireccion = value.ordenDireccion != null ? (string)value.ordenDireccion : default(string);
                 string excluir = value.excluir != null ? (string)value.excluir : default(string);
 
-                List <PrestamoTipo> lstprestamotipo = PrestamoTipoDAO.getPrestamosTipoPagina(pagina, numeroproyectotipos, filtro_busqueda, 
+                List <PrestamoTipo> lstprestamotipo = PrestamoTipoDAO.getPrestamosTipoPagina(pagina, numeroprestamostipos, filtro_busqueda, 
                     columnaOrdenada, ordenDireccion, excluir);
 
-                List<stprestamotipo> stcooperantes = new List<stprestamotipo>();
+                List<stprestamotipo> stprestamostipo = new List<stprestamotipo>();
 
                 foreach (PrestamoTipo prestamotipo in lstprestamotipo)
                 {
@@ -58,10 +58,10 @@ namespace SPrestamoTipo.Controllers
                     temp.fechaCreacion = prestamotipo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss");
                     temp.usuarioActualizo = prestamotipo.usuarioActualizo;
                     temp.usuarioCreo = prestamotipo.usuarioCreo;
-                    stcooperantes.Add(temp);
+                    stprestamostipo.Add(temp);
                 }
 
-                return Ok(new { success = true, proyectotipos = stcooperantes });
+                return Ok(new { success = true, prestamostipos = stprestamostipo });
             }
             catch (Exception e)
             {
@@ -116,8 +116,8 @@ namespace SPrestamoTipo.Controllers
                         id = prestamoTipo.id,
                         usuarioCreo = prestamoTipo.usuarioCreo,
                         fechaCreacion = prestamoTipo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
-                        usuarioactualizo = prestamoTipo.usuarioActualizo,
-                        fechaactualizacion = prestamoTipo.fechaActualizacion != null ? prestamoTipo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
+                        usuarioActualizo = prestamoTipo.usuarioActualizo,
+                        fechaActualizacion = prestamoTipo.fechaActualizacion != null ? prestamoTipo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
                     });
                 }
                 else
@@ -133,7 +133,7 @@ namespace SPrestamoTipo.Controllers
         // PUT api/PrestamoTipo/PrestamoTipo/id
         [HttpPut("{id}")]
         [Authorize("Préstamo o Proyecto Tipos - Editar")]
-        public IActionResult PrestamoTipoA(int id, [FromBody]dynamic value)
+        public IActionResult PrestamoTipo(int id, [FromBody]dynamic value)
         {
             try
             {
@@ -156,8 +156,8 @@ namespace SPrestamoTipo.Controllers
                         id = prestamoTipo.id,
                         usuarioCreo = prestamoTipo.usuarioCreo,
                         fechaCreacion = prestamoTipo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
-                        usuarioactualizo = prestamoTipo.usuarioActualizo,
-                        fechaactualizacion = prestamoTipo.fechaActualizacion != null ? prestamoTipo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
+                        usuarioActualizo = prestamoTipo.usuarioActualizo,
+                        fechaActualizacion = prestamoTipo.fechaActualizacion != null ? prestamoTipo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
                     });
                 }
                 else
@@ -173,7 +173,7 @@ namespace SPrestamoTipo.Controllers
         // DELETE api/PrestamoTipo/PrestamoTipo/id
         [HttpDelete("{id}")]
         [Authorize("Préstamo o Proyecto Tipos - Eliminar")]
-        public IActionResult borrarPrestamoTipo(int id)
+        public IActionResult PrestamoTipo(int id)
         {
             try
             {

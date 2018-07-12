@@ -14,19 +14,20 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { MatInputModule, MatPaginatorModule, MatTabsModule, MatDatepickerModule, MatNativeDateModule, MAT_DATE_LOCALE, MatPaginatorIntl, MatTooltipModule, MatAutocompleteModule, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS, DateAdapter } from '@angular/material';
 import { MomentModule } from 'angular2-moment/moment.module';
 import { MatDialogModule } from '@angular/material/dialog';
-import { DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario } from './components/prestamo/modals/modal-codigo-presupuestario'
-import { DialogOverviewMoneda, DialogMoneda } from './components/prestamo/modals/modal-moneda'
-import { DialogOverviewTipoPrestamo, DialogTipoPrestamo } from './components/prestamo/modals/modal-tipo-prestamo'
-import { DialogOverviewProyectoTipo, DialogProyectoTipo } from './components/proyecto/modals/proyecto-tipo'
+import { DialogCodigoPresupuestario } from './components/prestamo/modals/modal-codigo-presupuestario'
+import { DialogMoneda } from './components/prestamo/modals/modal-moneda'
+import { DialogTipoPrestamo } from './components/prestamo/modals/modal-tipo-prestamo'
+import { DialogProyectoTipo } from './components/proyecto/modals/proyecto-tipo'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginatorIntlSpanish } from '../assets/customs/custom-paginator-spanish';
 import { ButtonDeleteComponent } from '../assets/customs/ButtonDeleteComponent';
 import { ButtonDownloadComponent } from '../assets/customs/ButtonDownloadComponent';
-import { DialogOverviewDownloadDocument, DialogDownloadDocument } from '../assets/modals/documentosadjuntos/documento-adjunto';
-import { DialogDelete, DialogOverviewDelete } from './components/prestamo/modals/confirmation-delete';
+import { DialogDownloadDocument } from '../assets/modals/documentosadjuntos/documento-adjunto';
+import { DialogDelete } from './components/prestamo/modals/confirmation-delete';
 import { FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo } from '../assets/pipes/FormatoMillones.pipe';
 import { MatMomentDateModule, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { CUSTOM_DATE_FORMAT } from '../assets/customs/formatdate/CUSTOM_DATE_FORMAT';
+import { DialogDeleteTipoPrestamo } from './components/prestamotipo/modals/confirmation-delete';
 
 import { AppComponent } from './app.component';
 import { MainComponent } from './components/main/main.component';
@@ -72,10 +73,9 @@ const routes: Routes = [{
       AppComponent,
       LoginComponent, 
       AccesodenegadoComponent, MainComponent, PagenotfoundComponent, FooterComponent, MainmenuComponent, PrestamoComponent,
-      DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario, DialogOverviewMoneda, DialogMoneda, DialogOverviewTipoPrestamo, 
-      DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, DialogOverviewDownloadDocument, DialogDownloadDocument, 
-      FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo, ProyectoComponent, DialogDelete, DialogOverviewDelete,
-      DialogOverviewProyectoTipo, DialogProyectoTipo, PrestamotipoComponent
+      DialogCodigoPresupuestario, DialogMoneda, DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, DialogDownloadDocument, 
+      FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo, ProyectoComponent, DialogDelete, 
+      DialogProyectoTipo, PrestamotipoComponent, DialogDeleteTipoPrestamo
   ],
   imports: [
       BrowserModule,
@@ -95,9 +95,8 @@ const routes: Routes = [{
     { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMAT },
   ],
   bootstrap: [AppComponent],
-  entryComponents: [DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario, DialogOverviewMoneda, DialogMoneda,
-    DialogOverviewTipoPrestamo, DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent,DialogOverviewDownloadDocument, 
-    DialogDownloadDocument, DialogDelete, DialogOverviewDelete, DialogOverviewProyectoTipo, DialogProyectoTipo]
+  entryComponents: [DialogCodigoPresupuestario, DialogMoneda, DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, 
+    DialogDownloadDocument, DialogDelete, DialogProyectoTipo, DialogDeleteTipoPrestamo]
 })
 export class AppModule { 
 

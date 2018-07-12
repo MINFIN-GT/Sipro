@@ -296,6 +296,7 @@ export class PrestamoComponent implements OnInit {
                    alert('Guardado con éxito');
                    this.botones=true;
                    this.esNuevo=false;
+                   this.obtenerTotalPrestamos();
                   }else{
                     alert('danger, Error al '+(this.esNuevo ? 'crear' : 'guardar')+' la matriz del préstamo');
                     this.botones=true;
@@ -332,7 +333,8 @@ export class PrestamoComponent implements OnInit {
 
   obtenerTotalPrestamos(){
     var data = {  
-      filtro_busqueda: this.busquedaGlobal
+      filtro_busqueda: this.busquedaGlobal,
+      t:moment().unix()
     };
 
     this.http.post('http://localhost:60054/api/Prestamo/NumeroPrestamos', data, { withCredentials: true }).subscribe(response => {

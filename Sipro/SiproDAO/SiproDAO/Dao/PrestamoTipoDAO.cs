@@ -77,7 +77,7 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        public static List<PrestamoTipo> getPrestamosTipoPagina(int pagina, int numeroproyectotipos, String filtro_busqueda, String columna_ordenada, String orden_direccion, String excluir)
+        public static List<PrestamoTipo> getPrestamosTipoPagina(int pagina, int numeroprestamostipos, String filtro_busqueda, String columna_ordenada, String orden_direccion, String excluir)
         {
             List<PrestamoTipo> ret = new List<PrestamoTipo>();
 
@@ -103,7 +103,7 @@ namespace SiproDAO.Dao
                     query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND (", query_a, ")") : ""));
                     query = String.Join(" ", query, (excluir != null && excluir.Length > 0 ? "and p.id not in (" + excluir + ")" : ""));
                     query = columna_ordenada != null && columna_ordenada.Trim().Length > 0 ? String.Join(" ", query, "ORDER BY", columna_ordenada, orden_direccion) : query;
-                    query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + numeroproyectotipos + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + numeroproyectotipos + ") + 1)");
+                    query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + numeroprestamostipos + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + numeroprestamostipos + ") + 1)");
 
                     ret = db.Query<PrestamoTipo>(query).AsList<PrestamoTipo>();
                 }
