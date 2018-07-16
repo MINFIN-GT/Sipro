@@ -11,7 +11,7 @@ import { MaterialModule } from './material/material.module';
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { utils } from 'protractor'; 
 import { Ng2SmartTableModule } from 'ng2-smart-table';
-import { MatInputModule, MatPaginatorModule, MatTabsModule, MatDatepickerModule, MatNativeDateModule, MAT_DATE_LOCALE, MatPaginatorIntl, MatTooltipModule, MatAutocompleteModule, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS, DateAdapter, MatSelectModule } from '@angular/material';
+import { MatInputModule, MatPaginatorModule, MatTabsModule, MatDatepickerModule, MatNativeDateModule, MAT_DATE_LOCALE, MatPaginatorIntl, MatTooltipModule, MatAutocompleteModule, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS, DateAdapter, MatSelectModule, MatCheckboxModule } from '@angular/material';
 import { MomentModule } from 'angular2-moment/moment.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DialogCodigoPresupuestario } from './components/prestamo/modals/modal-codigo-presupuestario'
@@ -29,6 +29,9 @@ import { MatMomentDateModule, MomentDateAdapter } from '@angular/material-moment
 import { CUSTOM_DATE_FORMAT } from '../assets/customs/formatdate/CUSTOM_DATE_FORMAT';
 import { DialogDeleteTipoPrestamo } from './components/prestamotipo/modals/confirmation-delete';
 import { DialogDeleteProyectoPropiedad } from './components/peppropiedad/modals/confirmation-delete';
+import { DialogProyectoPropiedad } from './components/peptipo/modals/modal-proyecto-propiedad';
+import { DialogDeleteProyectoTipo } from './components/peptipo/modals/confirmation-delete';
+import { CurrencyMaskModule } from "ng2-currency-mask";
 
 import { AppComponent } from './app.component';
 import { MainComponent } from './components/main/main.component';
@@ -41,6 +44,7 @@ import { PrestamoComponent } from './components/prestamo/prestamo.component';
 import { PepComponent } from './components/pep/pep.component';
 import { PrestamotipoComponent } from './components/prestamotipo/prestamotipo.component';
 import { PeppropiedadComponent } from './components/peppropiedad/peppropiedad.component';
+import { PeptipoComponent } from './components/peptipo/peptipo.component';
 
 const routes: Routes = [{
           path: '',    // Va a Main
@@ -63,6 +67,9 @@ const routes: Routes = [{
           path: 'main/peppropiedad',
           component: PeppropiedadComponent
         },{
+          path: 'main/peptipo',
+          component: PeptipoComponent
+        },{
           path: 'accesodenegado',
           component: AccesodenegadoComponent
         },{
@@ -80,7 +87,8 @@ const routes: Routes = [{
       AccesodenegadoComponent, MainComponent, PagenotfoundComponent, FooterComponent, MainmenuComponent, PrestamoComponent,
       DialogCodigoPresupuestario, DialogMoneda, DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, DialogDownloadDocument, 
       FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo, PepComponent, DialogDelete, 
-      DialogProyectoTipo, PrestamotipoComponent, DialogDeleteTipoPrestamo, PeppropiedadComponent, DialogDeleteProyectoPropiedad
+      DialogProyectoTipo, PrestamotipoComponent, DialogDeleteTipoPrestamo, PeppropiedadComponent, DialogDeleteProyectoPropiedad, PeptipoComponent,
+      DialogProyectoPropiedad, DialogDeleteProyectoTipo
   ],
   imports: [
       BrowserModule,
@@ -93,16 +101,17 @@ const routes: Routes = [{
       Ng2SmartTableModule, 
       MatPaginatorModule, MatTabsModule, MatDatepickerModule, MatNativeDateModule, MomentModule, 
       MatInputModule, MatDialogModule, MatProgressSpinnerModule, MatTooltipModule, MatAutocompleteModule, 
-      MatMomentDateModule, MatSelectModule
+      MatMomentDateModule, MatSelectModule, MatCheckboxModule, CurrencyMaskModule
   ],
   providers: [UtilsService, AuthService, RouteguardService, 
     { provide: MatPaginatorIntl, useClass: MatPaginatorIntlSpanish },
     { provide: DateAdapter, useClass: MomentDateAdapter },
-    { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMAT },
+    { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMAT }
   ],
   bootstrap: [AppComponent],
   entryComponents: [DialogCodigoPresupuestario, DialogMoneda, DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, 
-    DialogDownloadDocument, DialogDelete, DialogProyectoTipo, DialogDeleteTipoPrestamo, DialogDeleteProyectoPropiedad]
+    DialogDownloadDocument, DialogDelete, DialogProyectoTipo, DialogDeleteTipoPrestamo, DialogDeleteProyectoPropiedad, 
+    DialogProyectoPropiedad, DialogDeleteProyectoTipo]
 })
 export class AppModule { 
 

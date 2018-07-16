@@ -55,7 +55,7 @@ namespace SiproDAO.Dao
 
                     if (existe > 0)
                     {
-                        int guardado = db.Execute("UPDATE PROYECTO_TIPO SET nombre=:nombre, descripcion=:descripcion, usario_creo=:usuarioCreo, " +
+                        int guardado = db.Execute("UPDATE PROYECTO_TIPO SET nombre=:nombre, descripcion=:descripcion, usario_creo=:usarioCreo, " +
                             "usuario_actualizo=:usuarioActualizo, fecha_creacion=:fechaCreacion, fecha_actualizacion=:fechaActualizacion, " +
                             "estado=:estado WHERE id=:id", proyectotipo);
 

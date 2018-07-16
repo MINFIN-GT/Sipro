@@ -174,6 +174,10 @@ export class PrestamotipoComponent implements OnInit {
     this.prestamotipo = new PrestamoTipo();
   }
 
+  handlePage(event){
+    this.cargarTabla(event.pageIndex+1);
+  }
+
   settings = {
     columns: {
       id: {

@@ -193,3 +193,7 @@ html, body {
 .flex-main{
     overflow: auto;
 }
+
+.mat-form-field-label-wrapper {
+    font-weight: bold;
+}

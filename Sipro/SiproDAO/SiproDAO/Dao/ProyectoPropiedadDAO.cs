@@ -16,11 +16,11 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    string query = String.Join(" ", "SELECT * FROM proyecto_propiedad p",
+                    string query = String.Join(" ", "SELECT p.* FROM proyecto_propiedad p",
                         "INNER JOIN ptipo_propiedad ptp ON ptp.proyecto_propiedadid=p.id",
                         "INNER JOIN proyecto_tipo pt ON pt.id=ptp.proyecto_tipoid",
-                        "WHERE pt.id=:idTipoProyecto AND p.estado=1", new { idTipoProyecto = idTipoProyecto });
-                    ret = db.Query<ProyectoPropiedad>(query).AsList<ProyectoPropiedad>();
+                        "WHERE pt.id=:idTipoProyecto AND p.estado=1");
+                    ret = db.Query<ProyectoPropiedad>(query, new { idTipoProyecto = idTipoProyecto }).AsList<ProyectoPropiedad>();
                 }
             }
             catch (Exception e)

@@ -197,6 +197,10 @@ export class PeppropiedadComponent implements OnInit {
     this.proyectopropiedad.datoTipoid = opcion;
   }
 
+  handlePage(event){
+    this.cargarTabla(event.pageIndex+1);
+  }
+
   settings = {
     columns: {
       id: {

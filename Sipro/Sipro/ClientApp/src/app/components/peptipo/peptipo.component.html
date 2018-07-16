@@ -2,7 +2,7 @@
   <div class="middle">
     <div fxLayout="column">
       <mat-card style="margin-top: 2%; background-color: #f5f5f5; border-color: #ddd;">
-        Propiedades de {{etiqueta.proyecto}}
+        Tipo de {{etiqueta.proyecto}}
       </mat-card>
     </div>
     <br>
@@ -31,10 +31,10 @@
         </div>
         <br>
         <div fxLayout="row" fxLayoutAlign="end" style="font-weight: bold;">
-          Total de propiedades de {{etiqueta.proyecto}}: {{totalProyectoPropiedades}}
+          Total de tipos de {{etiqueta.proyecto}}: {{totalProyectotipos}}
         </div>
         <div fxLayout="column" fxLayoutAlign="center">
-          <mat-paginator [length]="totalProyectoPropiedades" [hidePageSize]="true" [pageSize]="elementosPorPagina" 
+          <mat-paginator [length]="totalProyectotipos" [hidePageSize]="true" [pageSize]="elementosPorPagina" 
           [showFirstLastButtons]="true" (page)="pageEvent = handlePage($event)">
           </mat-paginator>
         </div>
@@ -42,7 +42,7 @@
       <div [hidden]="!esColapsado">
         <form #myForm="ngForm">
           <div fxLayout="row" fxLayoutAlign="start" class="nuevo-edicion">
-            <label>{{esNuevo == true ? 'Nueva Propiedad' : 'Edición de Propiedad'}}</label>
+            <label>{{esNuevo == true ? 'Nuevo tipo de ' + etiqueta.proyecto : 'Edición de tipo de ' + etiqueta.proyecto}}</label>
           </div>
           <br>
           <div fxLayout="row">
@@ -53,22 +53,30 @@
           </div>
           <br>
           <div fxLayout="row" fxLayoutAlign="start">
-              <label class="label-id">ID {{proyectopropiedad.id}}</label>
+              <label class="label-id">ID {{proyectotipo.id}}</label>
           </div>
           <br>
           <div fxLayout="column">
             <mat-form-field>
-              <input name="nombre" [(ngModel)]="proyectopropiedad.nombre" matInput placeholder="* Nombre" [required]="true">
+              <input name="nombre" [(ngModel)]="proyectotipo.nombre" matInput placeholder="* Nombre" [required]="true">
             </mat-form-field>
           </div>
           <div fxLayout="column">
             <mat-form-field>
-              <mat-select placeholder="* Tipo dato" disableRipple [required]="true" [(value)]="datoTipoSelected" [disabled]="!esNuevo">
-                <mat-option [value]="0">Seleccione Tipo</mat-option>
-                <mat-option *ngFor="let opcion of tipodatos" [value]="opcion.id" (click)="cambioOpcionDatoTipo(opcion.id)">{{opcion.nombre}}</mat-option>
-              </mat-select>
+              <textarea name="descripcion" matInput rows="4" [(ngModel)]="proyectotipo.descripcion" placeholder="Descripción"></textarea>
             </mat-form-field>
           </div>
+          <div fxLayout="column">
+            <h5 fxLayoutAlign="center">Propiedades</h5>
+            <div style="text-align: right;">
+              <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="buscarPropiedades()" matTooltip="Asignar nueva propiedad" matTooltipPosition="above"><mat-icon>add</mat-icon></button>
+            </div>
+            <br>
+            <div>
+              <ng2-smart-table [settings]="settingsPropiedades" [source]="sourcePropiedades"></ng2-smart-table>              
+            </div>
+          </div>
+
           <br>
           <div fxLayout="column">
               <div class="panel panel-default" style="height: 180px;">
@@ -78,23 +86,23 @@
                       <div fxLayout="row" fxLayoutGap="20px">
                         <div fxFlex="50%">
                           <label fxLayoutAlign="end" class="label-form" for="usuarioCreo">Usuario que creo</label>
-                          <p fxLayoutAlign="end">{{ proyectopropiedad.usuarioCreo }}</p>
+                          <p fxLayoutAlign="end">{{ proyectotipo.usuarioCreo }}</p>
                         </div>
 
                         <div fxFlex="50%">
                             <label fxLayoutAlign="start" class="label-form"  for="fechaCreacion">Fecha de creación</label>
-                            <p fxLayoutAlign="start">{{ proyectopropiedad.fechaCreacion }}</p>
+                            <p fxLayoutAlign="start">{{ proyectotipo.fechaCreacion }}</p>
                         </div>
                       </div>
                       <div fxLayout="row" fxLayoutGap="20px">
                           <div fxFlex="50%">
                             <label fxLayoutAlign="end" class="label-form" for="usuarioActualizo">Usuario que actualizo</label>
-                            <p fxLayoutAlign="end">{{ proyectopropiedad.usuarioActualizo }}</p>
+                            <p fxLayoutAlign="end">{{ proyectotipo.usuarioActualizo }}</p>
                           </div>
 
                           <div fxFlex="50%">
                             <label fxLayoutAlign="start" for="fechaActualizacion"  class="label-form" >Fecha de actualizacion</label>
-                            <p fxLayoutAlign="start">{{ proyectopropiedad.fechaActualizacion }}</p>
+                            <p fxLayoutAlign="start">{{ proyectotipo.fechaActualizacion }}</p>
                           </div>
                       </div>
                     </div>                                  

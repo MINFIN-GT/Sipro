@@ -479,22 +479,24 @@
                                                   <table style="width: 100%;">
                                                     <tr>
                                                       <td style="text-align: center;">
-                                                        <input type="number" style="width: 100px; margin-right: 5px; text-align: right" name="prestamo-{{i}}-{{in}}" 
-                                                          [ngModel]="ue.prestamo"
-                                                          matInput 
-                                                          (ngModelChange)="actualizarComponentes(); actualizarTotalesUE(); "
+                                                        <input type="text" style="width: 100px; margin-right: 5px; text-align: right" name="prestamo-{{i}}-{{in}}" 
+                                                          [(ngModel)]="ue.prestamo" min="0"
+                                                          matInput currencyMask [options]="{ prefix: 'Q ', thousands: ',', decimal: '.', precision: 2 }"
+                                                          (ngModelChange)="actualizarComponentes($event); actualizarTotalesUE($event); "
                                                         />															
                                                       </td>
                                                       <td style="text-align: center;">
-                                                        <input type="number" style="width: 100px; margin-right: 5px; text-align: right" name="donacion-{{i}}-{{in}}" 
-                                                          [(ngModel)]="ue.donacion" matInput
+                                                        <input type="text" style="width: 100px; margin-right: 5px; text-align: right" name="donacion-{{i}}-{{in}}" 
+                                                          [(ngModel)]="ue.donacion" min="0"
+                                                          matInput currencyMask [options]="{ prefix: 'Q ', thousands: ',', decimal: '.', precision: 2 }"
                                                           [readonly]="m_existenDatos"
                                                           (ngModelChange)="actualizarComponentes(); actualizarTotalesUE(); "
                                                         />							
                                                       </td>
                                                       <td style="text-align: center; border-right: 1px solid #ddd;">
-                                                        <input type="number" style="width: 100px; margin-right: 5px; text-align: right" name="nacional-{{i}}-{{in}}" 
-                                                          [(ngModel)]="ue.nacional" matInput
+                                                        <input type="text" style="width: 100px; margin-right: 5px; text-align: right" name="nacional-{{i}}-{{in}}" 
+                                                          [(ngModel)]="ue.nacional" min="0"
+                                                          matInput currencyMask [options]="{ prefix: 'Q ', thousands: ',', decimal: '.', precision: 2 }"
                                                           [readonly]="m_existenDatos"
                                                           (ngModelChange)="actualizarComponentes(); actualizarTotalesUE(); "
                                                         />

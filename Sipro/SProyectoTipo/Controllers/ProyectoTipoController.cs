@@ -59,7 +59,7 @@ namespace SProyectoTipo.Controllers
                     stcooperantes.Add(temp);
                 }
 
-                return Ok(new { success = true, poryectotipos = stcooperantes });
+                return Ok(new { success = true, proyectotipos = stcooperantes });
             }
             catch (Exception e)
             {
@@ -70,7 +70,7 @@ namespace SProyectoTipo.Controllers
 
         [HttpPost]
         [Authorize("Préstamo o Proyecto Tipos - Visualizar")]
-        public IActionResult numeroProyectoTipos([FromBody]dynamic value)
+        public IActionResult NumeroProyectoTipos([FromBody]dynamic value)
         {
             try
             {
@@ -109,7 +109,7 @@ namespace SProyectoTipo.Controllers
                     if (guardado)
                     {
                         string propiedades = value.propiedades != null ? (string)value.propiedades : default(string);
-                        String[] idsPropiedades = propiedades.Length > 0 ? propiedades.Split(",") : null;
+                        String[] idsPropiedades = propiedades != null && propiedades.Length > 0 ? propiedades.Split(",") : null;
                         if (idsPropiedades != null && idsPropiedades.Length > 0)
                         {
                             foreach (String idPropiedad in idsPropiedades)
@@ -126,7 +126,15 @@ namespace SProyectoTipo.Controllers
                         }
                     }
 
-                    return Ok(new { success = guardado, id = proyectoTipo.id });
+                    return Ok(new
+                    {
+                        success = guardado,
+                        id = proyectoTipo.id,
+                        usuarioCreo = proyectoTipo.usarioCreo,
+                        fechaCreacion = proyectoTipo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
+                        usuarioActualizo = proyectoTipo.usuarioActualizo,
+                        fechaActualizacion = proyectoTipo.fechaActualizacion != null ? proyectoTipo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
+                    });
                 }
                 else
                     return Ok(new { success = false });
@@ -170,7 +178,7 @@ namespace SProyectoTipo.Controllers
                     if (guardado)
                     {
                         string propiedades = value.propiedades != null ? (string)value.propiedades : default(string);
-                        String[] idsPropiedades = propiedades.Length > 0 ? propiedades.Split(",") : null;
+                        String[] idsPropiedades = propiedades != null && propiedades.Length > 0 ? propiedades.Split(",") : null;
                         if (idsPropiedades != null && idsPropiedades.Length > 0)
                         {
                             foreach (String idPropiedad in idsPropiedades)
@@ -187,7 +195,15 @@ namespace SProyectoTipo.Controllers
                         }
                     }
 
-                    return Ok(new { success = guardado, id = proyectoTipo.id });
+                    return Ok(new
+                    {
+                        success = guardado,
+                        id = proyectoTipo.id,
+                        usuarioCreo = proyectoTipo.usarioCreo,
+                        fechaCreacion = proyectoTipo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
+                        usuarioActualizo = proyectoTipo.usuarioActualizo,
+                        fechaActualizacion = proyectoTipo.fechaActualizacion != null ? proyectoTipo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
+                    });
                 }
                 else
                     return Ok(new { success = false });
