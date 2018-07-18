@@ -14,7 +14,7 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { MatInputModule, MatPaginatorModule, MatTabsModule, MatDatepickerModule, MatNativeDateModule, MAT_DATE_LOCALE, MatPaginatorIntl, MatTooltipModule, MatAutocompleteModule, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS, DateAdapter, MatSelectModule, MatCheckboxModule } from '@angular/material';
 import { MomentModule } from 'angular2-moment/moment.module';
 import { MatDialogModule } from '@angular/material/dialog';
-import { DialogCodigoPresupuestario } from './components/prestamo/modals/modal-codigo-presupuestario'
+import { DialogCodigoPresupuestario } from '../assets/modals/codigopresupuestario/modal-codigo-presupuestario';
 import { DialogMoneda } from './components/prestamo/modals/modal-moneda'
 import { DialogTipoPrestamo } from './components/prestamo/modals/modal-tipo-prestamo'
 import { DialogProyectoTipo } from './components/pep/modals/proyecto-tipo'
@@ -32,6 +32,7 @@ import { DialogDeleteProyectoPropiedad } from './components/peppropiedad/modals/
 import { DialogProyectoPropiedad } from './components/peptipo/modals/modal-proyecto-propiedad';
 import { DialogDeleteProyectoTipo } from './components/peptipo/modals/confirmation-delete';
 import { CurrencyMaskModule } from "ng2-currency-mask";
+import { DialogUnidadEjecutora } from './components/pep/modals/unidad-ejecutora';
 
 import { AppComponent } from './app.component';
 import { MainComponent } from './components/main/main.component';
@@ -88,7 +89,7 @@ const routes: Routes = [{
       DialogCodigoPresupuestario, DialogMoneda, DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, DialogDownloadDocument, 
       FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo, PepComponent, DialogDelete, 
       DialogProyectoTipo, PrestamotipoComponent, DialogDeleteTipoPrestamo, PeppropiedadComponent, DialogDeleteProyectoPropiedad, PeptipoComponent,
-      DialogProyectoPropiedad, DialogDeleteProyectoTipo
+      DialogProyectoPropiedad, DialogDeleteProyectoTipo, DialogUnidadEjecutora
   ],
   imports: [
       BrowserModule,
@@ -111,7 +112,7 @@ const routes: Routes = [{
   bootstrap: [AppComponent],
   entryComponents: [DialogCodigoPresupuestario, DialogMoneda, DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, 
     DialogDownloadDocument, DialogDelete, DialogProyectoTipo, DialogDeleteTipoPrestamo, DialogDeleteProyectoPropiedad, 
-    DialogProyectoPropiedad, DialogDeleteProyectoTipo]
+    DialogProyectoPropiedad, DialogDeleteProyectoTipo, DialogUnidadEjecutora]
 })
 export class AppModule { 
 

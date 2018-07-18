@@ -1,7 +1,7 @@
 <div fxLayout="column" fxLayoutAlign="center" fxFlexFill fxFlex>
     <div class="middle">
         <div fxLayout="column">
-          <mat-card style="margin-top: 2%; background-color: #f5f5f5; border-color: #ddd;">
+          <mat-card class="titulo">
             Información General de Préstamos
           </mat-card>
         </div>
@@ -9,23 +9,33 @@
         <div fxLayout="column" fxLayoutAlign="center" fxFlexFill>
           <div [hidden]="esColapsado">
             <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2px">
-              <button mat-raised-button style="background-color: #337ab7; color:#fff" (click)="nuevo()" matTooltip="Nuevo" matTooltipPosition="above"><mat-icon>add</mat-icon>Nuevo</button>
-              <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="editar()" matTooltip="Editar" matTooltipPosition="above"><mat-icon>mode_edit</mat-icon>Editar</button>
-              <button mat-raised-button style="background-color: #d9534f; color: #fff;" (click)="borrar()" matTooltip="Borrar" matTooltipPosition="above"><mat-icon>delete</mat-icon>Borrar</button>
+              <button mat-raised-button class="primary-btn" (click)="nuevo()" matTooltip="Nuevo" matTooltipPosition="above"><mat-icon>add</mat-icon>Nuevo</button>
+              <button mat-raised-button class="primary-btn" (click)="editar()" matTooltip="Editar" matTooltipPosition="above"><mat-icon>mode_edit</mat-icon>Editar</button>
+              <button mat-raised-button class="danger-btn" (click)="borrar()" matTooltip="Borrar" matTooltipPosition="above"><mat-icon>delete</mat-icon>Borrar</button>
             </div>
             <br>
-            <div fxLayout="row" fxLayoutAlign="end">
-              <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="refresh()" matTooltip="Reiniciar la vista de la tabla" matTooltipPosition="above"><mat-icon>refresh</mat-icon></button>
-            </div>
-            <br>
-            <div fxLayout="row">
+            <div fxLayout="row" fxLayoutAlign="center">
                 <mat-form-field fxFlex="50%">
                     <input matInput #search class="search" type="text" placeholder="Busqueda..." (keydown.enter)="filtrar(search.value)">
                     <mat-icon class="search-info" (click)="filtrar(search.value)" matSuffix>search</mat-icon>
                 </mat-form-field>              
             </div> 
-            <div fxLayout="column">
-              <div>
+            <div fxLayout="column" style="padding-top: 20px;">
+              <div style="position: relative; top: 0; bottom: 0; width:100%; height: 100%;" [hidden]="!mostrarcargando" fxFlex fxFlexFill>
+                  <mat-progress-spinner
+                  class="progress-spinner"
+                  [color]="color"
+                  [mode]="mode"
+                  [value]="value"
+                  [diameter]="diameter" 
+                  [strokeWidth]="strokewidth"
+                  >
+                  </mat-progress-spinner>
+                  <div style="text-align: center; padding-top: 20px;">
+                      <b>Cargando, por favor espere...</b>
+                  </div>
+              </div>
+              <div style="position: relative; top: 0; bottom: 0; width:100%; height: 100%;" [hidden]="mostrarcargando">
                   <ng2-smart-table [settings]="settings" [source]="source" (dblClickRow)="onDblClickRow($event)" (userRowSelect)="onSelectRow($event)"></ng2-smart-table>
               </div>              
             </div>
@@ -47,13 +57,13 @@
               <br>
               <div fxLayout="row">
                 <div [hidden]="esNuevo" fxFlex="50%" fxLayoutAlign="start" fxLayoutGap="2px">
-                  <button mat-raised-button matTooltip="Ver PEPs en Vista Árbol" matTooltipPosition="above">Vista de Árbol</button>
-                  <button mat-raised-button matTooltip="Ver PEPs en Vista de Lista" matTooltipPosition="above" (click)="irAPeps(prestamo.id)">Vista de Lista</button>
+                  <button mat-raised-button matTooltip="Ver PEPs en Vista Árbol" matTooltipPosition="above">Árbol</button>
+                  <button mat-raised-button matTooltip="Ver PEPs en Vista de Lista" matTooltipPosition="above" (click)="irAPeps(prestamo.id)">Lista</button>
                   <button fxFlex="25px" fxLayoutAlign="center" mat-raised-button (click)="congelarDescongelar" matTooltip="Congelar o descongelar linea base" matTooltipPosition="above"><mat-icon>bookmark</mat-icon></button>
                 </div>
                 <div fxFlex fxLayoutAlign="end" fxLayoutGap="2px">
-                    <button mat-raised-button style="background-color: #5cb85c; color:#fff; border-color: #4cae4c" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
-                    <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
+                    <button mat-raised-button class="applying-btn" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
+                    <button mat-raised-button class="primary-btn" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
                 </div>
               </div>              
               <br>
@@ -71,24 +81,24 @@
                                         <br>
                                         <div fxLayout="column">
                                           <mat-form-field>                                        
-                                            <input class="search-info" name="codigoPresupuestario" [(ngModel)]="prestamo.codigoPresupuestario" matInput placeholder="* Código presupuestario" 
+                                            <input class="search-info" name="codigoPresupuestario" [(ngModel)]="prestamo.codigoPresupuestario" matInput placeholder="Código presupuestario" 
                                             [readonly]="true" (click)="buscarCodigoPresupuestario()" [required]="true">
                                             <mat-icon class="search-info" matSuffix (click)="buscarCodigoPresupuestario()">search</mat-icon>
                                           </mat-form-field>
                                         </div>
                                         <div fxLayout="column">
                                           <mat-form-field>
-                                            <input name="numeroPrestamo" [(ngModel)]="prestamo.numeroPrestamo" matInput placeholder="* Número de {{etiqueta.proyecto}}" [required]="true">
+                                            <input name="numeroPrestamo" [(ngModel)]="prestamo.numeroPrestamo" matInput placeholder="Número de {{etiqueta.proyecto}}" [required]="true">
                                           </mat-form-field>
                                         </div>
                                         <div fxLayout="column">
                                           <mat-form-field>
-                                            <input name="proyectoPrograma" [(ngModel)]="prestamo.proyectoPrograma" matInput placeholder="* Proyecto/Programa" [required]="true">
+                                            <input name="proyectoPrograma" [(ngModel)]="prestamo.proyectoPrograma" matInput placeholder="Proyecto/Programa" [required]="true">
                                           </mat-form-field>
                                         </div>
                                         <div fxLayout="column">
                                           <mat-form-field>
-                                            <input name="cooperantenombre" [formControl]="myControl" [(ngModel)]="prestamo.cooperantenombre" matInput placeholder="* Organismo Financiero Internacional" 
+                                            <input name="cooperantenombre" [formControl]="myControl" [(ngModel)]="prestamo.cooperantenombre" matInput placeholder="Organismo Financiero Internacional" 
                                               [required]="true" [matAutocomplete]="auto">
                                             <mat-autocomplete #auto="matAutocomplete">
                                               <mat-option *ngFor="let cooperante of filteredCooperantes | async" [value]="cooperante.nombre" (onSelectionChange)="cooperanteSeleccionado(cooperante)">                                                
@@ -104,21 +114,21 @@
                                         </div>
                                         <div fxLayout="row" fxLayoutGap="15px">
                                           <mat-form-field fxFlex="33.33%">
-                                            <input matInput [matDatepicker]="fechaElegibilidadUe" placeholder="* Fecha de Elegibilidad"
+                                            <input matInput [matDatepicker]="fechaElegibilidadUe" placeholder="Fecha de Elegibilidad"
                                               name="fechaElegibilidadUe" [(ngModel)]="prestamo.fechaElegibilidadUe" [required]="true" (ngModelChange)="setPorcentaje(5)">
                                             <mat-datepicker-toggle matSuffix [for]="fechaElegibilidadUe"></mat-datepicker-toggle>
                                             <mat-datepicker #fechaElegibilidadUe></mat-datepicker>
                                           </mat-form-field>
           
                                           <mat-form-field fxFlex="33.33%">
-                                            <input matInput [matDatepicker]="fechaSuscripcion" placeholder="* Fecha de Suscripción"
+                                            <input matInput [matDatepicker]="fechaSuscripcion" placeholder="Fecha de Suscripción"
                                               name="fechaSuscripcion" [(ngModel)]="prestamo.fechaSuscripcion" [required]="true">
                                             <mat-datepicker-toggle matSuffix [for]="fechaSuscripcion"></mat-datepicker-toggle>
                                             <mat-datepicker #fechaSuscripcion></mat-datepicker>
                                           </mat-form-field>
           
                                           <mat-form-field fxFlex="33.33%">
-                                            <input matInput [matDatepicker]="fechaVigencia" placeholder="* Fecha de vigencia"
+                                            <input matInput [matDatepicker]="fechaVigencia" placeholder="Fecha de vigencia"
                                               name="fechaVigencia" [(ngModel)]="prestamo.fechaVigencia" [required]="true">
                                             <mat-datepicker-toggle matSuffix [for]="fechaVigencia"></mat-datepicker-toggle>
                                             <mat-datepicker #fechaVigencia></mat-datepicker>
@@ -126,21 +136,21 @@
                                         </div>
                                         <div fxLayout="row" fxLayoutGap="15px">
                                           <mat-form-field fxFlex="33.33%">
-                                            <input matInput [matDatepicker]="fechaCierreOrigianlUe" placeholder="* Fecha de Cierre Original"
+                                            <input matInput [matDatepicker]="fechaCierreOrigianlUe" placeholder="Fecha de Cierre Original"
                                               name="fechaCierreOrigianlUe" [(ngModel)]="prestamo.fechaCierreOrigianlUe" [required]="true" (ngModelChange)="setPorcentaje(5)">
                                             <mat-datepicker-toggle matSuffix [for]="fechaCierreOrigianlUe"></mat-datepicker-toggle>
                                             <mat-datepicker #fechaCierreOrigianlUe></mat-datepicker>
                                           </mat-form-field>
           
                                           <mat-form-field fxFlex="33.33%">
-                                            <input matInput [matDatepicker]="fechaCierreActualUe" placeholder="* Fecha de Cierre Actual"
+                                            <input matInput [matDatepicker]="fechaCierreActualUe" placeholder="Fecha de Cierre Actual"
                                               name="fechaCierreActualUe" [(ngModel)]="prestamo.fechaCierreActualUe" [required]="true" (ngModelChange)="setPorcentaje(5)">
                                             <mat-datepicker-toggle matSuffix [for]="fechaCierreActualUe"></mat-datepicker-toggle>
                                             <mat-datepicker #fechaCierreActualUe></mat-datepicker>
                                           </mat-form-field>
           
                                           <mat-form-field fxFlex="33.33%">
-                                            <input name="mesesProrrogaUe" [(ngModel)]="prestamo.mesesProrrogaUe" matInput placeholder="* Meses de Prórroga" [required]="true" [readonly]="true">
+                                            <input name="mesesProrrogaUe" [(ngModel)]="prestamo.mesesProrrogaUe" matInput placeholder="Meses de Prórroga" [required]="true" [readonly]="true">
                                           </mat-form-field>
                                         </div>
                                         <div fxLayout="row" fxLayoutGap="15px">
@@ -154,31 +164,31 @@
                                         </div>
                                         <div fxLayout="row" fxLayoutGap="15px">
                                           <mat-form-field fxFlex="50%">                                        
-                                            <input class="search-info" name="tipoMonedaNombre" [(ngModel)]="prestamo.tipoMonedaNombre" matInput placeholder="* Tipo de Moneda" 
+                                            <input class="search-info" name="tipoMonedaNombre" [(ngModel)]="prestamo.tipoMonedaNombre" matInput placeholder="Tipo de Moneda" 
                                               [readonly]="true" (click)="buscarTipoMoneda()" [required]="true">
                                             <mat-icon class="search-info" matSuffix (click)="buscarTipoMoneda()">search</mat-icon>
                                           </mat-form-field>
           
                                           <mat-form-field fxFlex="50%">
                                             <input name="montoContratado" [(ngModel)]="prestamo.montoContratado" (ngModelChange)="setPorcentaje(1)" [required]="true"
-                                              matInput type="number" placeholder="* Monto Contratado">
+                                              matInput type="number" placeholder="Monto Contratado">
                                           </mat-form-field>
                                         </div>
                                         <div fxLayout="row" fxLayoutGap="15px">
                                           <mat-form-field fxFlex="50%">
                                             <input name="montoContratadoUsd" [(ngModel)]="prestamo.montoContratadoUsd" (ngModelChange)="setPorcentaje(2)" [required]="true" 
-                                              matInput type="number" placeholder="* Monto Contratado Equivalente $">
+                                              matInput type="number" placeholder="Monto Contratado Equivalente $">
                                           </mat-form-field>
           
                                           <mat-form-field fxFlex="50%">
                                             <input name="montoContratadoQtz" [(ngModel)]="prestamo.montoContratadoQtz" matInput type="number" [required]="true"
-                                              placeholder="* Monto Contratado Equivalente Q">
+                                              placeholder="Monto Contratado Equivalente Q">
                                           </mat-form-field>
                                         </div>
                                         <div fxLayout="row" fxLayoutGap="15px">
                                           <mat-form-field fxFlex="50%">
                                             <input name="desembolsoAFechaUsd" [(ngModel)]="prestamo.desembolsoAFechaUsd" (ngModelChange)="setPorcentaje(1)" [required]="true" 
-                                              matInput type="number" placeholder="* Desembolso a la Fecha $">
+                                              matInput type="number" placeholder="Desembolso a la Fecha $">
                                           </mat-form-field>
           
                                           <mat-form-field fxFlex="50%">
@@ -188,7 +198,7 @@
                                         <div fxLayout="row" fxLayoutGap="15px">
                                           <mat-form-field fxFlex="50%">
                                             <input name="montoPorDesembolsarUsd" [(ngModel)]="prestamo.montoPorDesembolsarUsd" (ngModelChange)="setPorcentaje(2)" [required]="true" 
-                                              matInput type="number" placeholder="* Monto por Desembolsar $">
+                                              matInput type="number" placeholder="Monto por Desembolsar $">
                                           </mat-form-field>
           
                                           <mat-form-field fxFlex="50%">
@@ -197,7 +207,7 @@
                                         </div>
                                         <div fxLayout="row" fxLayoutGap="15px">
                                           <mat-form-field fxFlex="50%">
-                                            <input matInput [matDatepicker]="fechaDecreto" placeholder="* Fecha Decreto"
+                                            <input matInput [matDatepicker]="fechaDecreto" placeholder="Fecha Decreto"
                                               name="fechaDecreto" [(ngModel)]="prestamo.fechaDecreto" [required]="true">
                                             <mat-datepicker-toggle matSuffix [for]="fechaDecreto"></mat-datepicker-toggle>
                                             <mat-datepicker #fechaDecreto></mat-datepicker>
@@ -282,32 +292,32 @@
                                         <br>
                                         <div fxLayout="column">
                                           <mat-form-field fxFlex="50%">
-                                              <input name="montoAsignadoUe" [(ngModel)]="prestamo.montoAsignadoUe" matInput type="number" placeholder="* Monto Asignado" [required]="true">
+                                              <input name="montoAsignadoUe" [(ngModel)]="prestamo.montoAsignadoUe" matInput type="number" placeholder="Monto Asignado" [required]="true">
                                           </mat-form-field>
                                         </div>
                                         <div fxLayout="row" fxLayoutGap="15px">
                                           <mat-form-field fxFlex="50%">
-                                              <input name="montoAsignadoUeUsd" [(ngModel)]="prestamo.montoAsignadoUeUsd" matInput type="number" placeholder="* Monto Asignado $" 
+                                              <input name="montoAsignadoUeUsd" [(ngModel)]="prestamo.montoAsignadoUeUsd" matInput type="number" placeholder="Monto Asignado $" 
                                                 [required]="true" (ngModelChange)="setPorcentaje(3)">
                                           </mat-form-field>
     
                                           <mat-form-field fxFlex="50%">
-                                              <input name="montoAsignadoUeQtz" [(ngModel)]="prestamo.montoAsignadoUeQtz" matInput type="number" placeholder="* Monto Asignado Q" [required]="true">
+                                              <input name="montoAsignadoUeQtz" [(ngModel)]="prestamo.montoAsignadoUeQtz" matInput type="number" placeholder="Monto Asignado Q" [required]="true">
                                           </mat-form-field>
                                         </div>
                                         <div fxLayout="row" fxLayoutGap="15px">
                                             <mat-form-field fxFlex="50%">
-                                                <input name="desembolsoAFechaUeUsd" [(ngModel)]="prestamo.desembolsoAFechaUeUsd" matInput type="number" placeholder="* Desembolso a la Fecha $" 
+                                                <input name="desembolsoAFechaUeUsd" [(ngModel)]="prestamo.desembolsoAFechaUeUsd" matInput type="number" placeholder="Desembolso a la Fecha $" 
                                                   [required]="true" (ngModelChange)="setPorcentaje(3)">
                                             </mat-form-field>
     
                                             <mat-form-field fxFlex="50%">
-                                                <input name="desembolsoAFechaUeUsdP" [(ngModel)]="prestamo.desembolsoAFechaUeUsdP" matInput type="number" placeholder="* Desembolso a la Fecha %" [required]="true">
+                                                <input name="desembolsoAFechaUeUsdP" [(ngModel)]="prestamo.desembolsoAFechaUeUsdP" matInput type="number" placeholder="Desembolso a la Fecha %" [required]="true">
                                             </mat-form-field>
                                         </div>
                                         <div fxLayout="row" fxLayoutGap="15px">
                                             <mat-form-field fxFlex="50%">
-                                                <input name="montoPorDesembolsarUeUsd" [(ngModel)]="prestamo.montoPorDesembolsarUeUsd" matInput type="number" placeholder="* Monto por desembolsar $" 
+                                                <input name="montoPorDesembolsarUeUsd" [(ngModel)]="prestamo.montoPorDesembolsarUeUsd" matInput type="number" placeholder="Monto por desembolsar $" 
                                                   [required]="true" (ngModelChange)="setPorcentaje(4)">
                                             </mat-form-field>
     
@@ -322,17 +332,17 @@
                                         <br>
                                         <div fxLayout="column">
                                           <mat-form-field>
-                                            <input type="number" name="presupuestoAsignadoFunc" [(ngModel)]="prestamo.presupuestoAsignadoFunc" matInput placeholder="P. Asignado Funcionamiento" [required]="true">
+                                            <input type="text" currencyMask [options]="{ prefix: 'Q ', thousands: ',', decimal: '.', precision: 2 }" name="presupuestoAsignadoFunc" [(ngModel)]="prestamo.presupuestoAsignadoFunc" matInput placeholder="P. Asignado Funcionamiento" [required]="true">
                                           </mat-form-field>
                                         </div>
                                         <div fxLayout="column">
                                           <mat-form-field>
-                                            <input type="number" name="presupuestoVigenteFunc" [(ngModel)]="prestamo.presupuestoVigenteFunc" matInput placeholder="P. Vigente Funcionamiento" [required]="true">
+                                            <input type="text" currencyMask [options]="{ prefix: 'Q ', thousands: ',', decimal: '.', precision: 2 }" name="presupuestoVigenteFunc" [(ngModel)]="prestamo.presupuestoVigenteFunc" matInput placeholder="P. Vigente Funcionamiento" [required]="true">
                                           </mat-form-field>
                                         </div>
                                         <div fxLayout="column">
                                           <mat-form-field>
-                                            <input type="number" name="presupuestoDevengadoFunc" [(ngModel)]="prestamo.presupuestoDevengadoFunc" matInput placeholder="P. Devengado Funcionamiento" [required]="true">
+                                            <input type="text" currencyMask [options]="{ prefix: 'Q ', thousands: ',', decimal: '.', precision: 2 }" name="presupuestoDevengadoFunc" [(ngModel)]="prestamo.presupuestoDevengadoFunc" matInput placeholder="P. Devengado Funcionamiento" [required]="true">
                                           </mat-form-field>
                                         </div>
                                         <div *ngIf="false">
@@ -553,11 +563,11 @@
                       </mat-card>
                   </div>                  
                   <br>
-                  <div fxLayout="row" fxLayoutAlign="center" class="label-form">Los campos marcados con * son obligatorios y las fechas deben tener formato de dd/mm/aaaa</div>
+                  <div fxLayout="row" fxLayoutAlign="center" class="label-form">Los campos marcados con son obligatorios y las fechas deben tener formato de dd/mm/aaaa</div>
 			            <br/>
                   <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2px">
-                    <button mat-raised-button style="background-color: #5cb85c; color:#fff; border-color: #4cae4c" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
-                    <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
+                    <button mat-raised-button class="applying-btn" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
+                    <button mat-raised-button class="primary-btn" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
                   </div>
                   <br>
               </div>

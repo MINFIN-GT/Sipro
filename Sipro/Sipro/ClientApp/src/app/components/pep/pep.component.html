@@ -1,7 +1,7 @@
 <div fxLayout="column" fxLayoutAlign="center" fxFlexFill fxFlex>
     <div class="middle">
         <div fxLayout="column">
-            <mat-card style="margin-top: 2%; background-color: #f5f5f5; border-color: #ddd;">
+            <mat-card style="margin-top: 10px; background-color: #f5f5f5; border-color: #ddd;">
                 {{etiqueta.proyecto}}s
             </mat-card>
         </div>
@@ -17,18 +17,29 @@
                     <button mat-raised-button style="background-color: #d9534f; color: #fff;" (click)="borrar()" matTooltip="Borrar" matTooltipPosition="above"><mat-icon>delete</mat-icon>Borrar</button>
                 </div>
                 <br>
-                <div fxLayout="row" fxLayoutAlign="end">
-                    <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="refresh()" matTooltip="Reiniciar la vista de la tabla" matTooltipPosition="above"><mat-icon>refresh</mat-icon></button>
-                </div>
-                <br>
-                <div fxLayout="row">
+                <div fxLayout="row" fxLayoutAlign="center">
                     <mat-form-field fxFlex="50%">
-                        <input matInput #search class="search" type="text" placeholder="Busqueda..." (keydown.enter)="filtrar(search.value)">
+                        <input matInput #search type="text" placeholder="Busqueda..." (keydown.enter)="filtrar(search.value)">
                         <mat-icon class="search-info" (click)="filtrar(search.value)" matSuffix>search</mat-icon>
                     </mat-form-field>              
                 </div> 
+                <br>
                 <div fxLayout="column">
-                    <div>
+                    <div style="position: relative; top: 0; bottom: 0; width:100%; height: 100%;" [hidden]="!mostrarcargando" fxFlex fxFlexFill>
+                        <mat-progress-spinner
+                        class="progress-spinner"
+                        [color]="color"
+                        [mode]="mode"
+                        [value]="value"
+                        [diameter]="diameter" 
+                        [strokeWidth]="strokewidth"
+                        >
+                        </mat-progress-spinner>
+                        <div style="text-align: center; padding-top: 20px;">
+                            <b>Cargando, por favor espere...</b>
+                        </div>
+                    </div>
+                    <div style="position: relative; top: 0; bottom: 0; width:100%; height: 100%;" [hidden]="mostrarcargando">
                         <ng2-smart-table [settings]="settings" [source]="source" (dblClickRow)="onDblClickRow($event)" (userRowSelect)="onSelectRow($event)"></ng2-smart-table>
                     </div>              
                 </div>
@@ -77,7 +88,7 @@
                                                 </div>
                                                 <div fxLayout="column">
                                                     <mat-form-field>
-                                                      <input name="snip" [(ngModel)]="proyecto.snip" matInput placeholder="SNIP" [readonly]="congelado > 0">
+                                                      <input type="number" name="snip" [(ngModel)]="proyecto.snip" matInput placeholder="SNIP" [readonly]="congelado > 0">
                                                     </mat-form-field>
                                                 </div>
                                                 <div [hidden]="true" fxLayout="row" fxLayoutAlign="center" fxLayoutGap="15px">
@@ -119,7 +130,7 @@
                                                         <mat-icon class="search-info" matSuffix (click)="congelado > 0 ? '' : buscarProyectoTipo()">search</mat-icon>
                                                     </mat-form-field>
                                                 </div>
-                                                <div fxLayout="column" [hidden]="unidadejecutoranombre.length>0">
+                                                <div fxLayout="column" [hidden]="!unidadejecutoranombre.length>0">
                                                     <mat-form-field>
                                                       <input name="entidadnombre" [(ngModel)]="entidadnombre" matInput placeholder="Organismo Ejecutor" [readonly]="true">
                                                     </mat-form-field>
@@ -127,45 +138,162 @@
                                                 <div fxLayout="column">
                                                     <mat-form-field>                                        
                                                         <input class="search-info" name="unidadejecutoranombre" [(ngModel)]="unidadejecutoranombre" matInput placeholder="Unidad Ejecutora" 
-                                                        [readonly]="true" (click)="prestamoid != null ? '' : buscarUnidadEjecutora()" [required]="true">
-                                                        <mat-icon class="search-info" matSuffix (click)="prestamoid != null ? '' : buscarUnidadEjecutora()">search</mat-icon>
+                                                        [readonly]="true" (click)="buscarUnidadEjecutora()" [required]="true">
+                                                        <mat-icon class="search-info" matSuffix (click)="buscarUnidadEjecutora()">search</mat-icon>
                                                     </mat-form-field>
                                                 </div>
-                                                <div fxLayout="column">
+                                                <div fxLayout="column" *ngIf="false">
                                                     <mat-form-field>                                        
                                                         <input class="search-info" name="cooperantenombre" [(ngModel)]="cooperantenombre" matInput placeholder="* Organismo financiero internacional" 
                                                         [readonly]="true" (click)="buscarCooperante()" [required]="true">
                                                         <mat-icon class="search-info" matSuffix (click)="buscarCooperante()">search</mat-icon>
                                                     </mat-form-field>
                                                 </div>
-                                                <div fxLayout="column">
+                                                <div fxLayout="column" *ngIf="false">
                                                     <mat-form-field>                                        
                                                         <input class="search-info" name="coordenadas" [(ngModel)]="coordenadas" matInput placeholder="Coordenadas" 
                                                         [readonly]="true" (click)="open()" [required]="true">
                                                         <mat-icon class="search-info" matSuffix (click)="open()">place</mat-icon>
                                                     </mat-form-field>
                                                 </div>
-                                                <div fxLayout="column">
+                                                <div fxLayout="column" *ngIf="false">
                                                     <mat-form-field>
                                                       <textarea name="objetivo" matInput rows="4" [(ngModel)]="proyecto.objetivo" placeholder="Objetivo"></textarea>
                                                     </mat-form-field>
                                                 </div>
-                                                <div fxLayout="column">
+                                                <div fxLayout="column" *ngIf="false">
                                                     <mat-form-field>
                                                       <textarea name="objetivoEspecifico" matInput rows="4" [(ngModel)]="proyecto.objetivoEspecifico" placeholder="Objetivos específicos del {{etiqueta.proyecto}}"></textarea>
                                                     </mat-form-field>
                                                 </div>
-                                                <div fxLayout="column">
+                                                <div fxLayout="column" *ngIf="false">
                                                     <mat-form-field>
                                                       <textarea name="visionGeneral" matInput rows="4" [(ngModel)]="proyecto.visionGeneral" placeholder="Visión general del PEP"></textarea>
                                                     </mat-form-field>
+                                                </div>
+                                                <div fxLayout="column" *ngFor="let campo of camposdinamicos">
+                                                    <div [ngSwitch]="campo.tipo">
+                                                        <mat-form-field *ngSwitchCase="'texto'">
+                                                            <input name="{{'campo_'+campo.id}}" [(ngModel)]="campo.valor" matInput placeholder="{{campo.label}}" id="{{'campo_'+ campo.id}}">
+                                                        </mat-form-field>
+                                                        <mat-form-field *ngSwitchCase="'entero'">
+                                                            <input type="number" name="{{'campo_'+campo.id}}" [(ngModel)]="campo.valor" matInput placeholder="{{campo.label}}" id="{{'campo_'+ campo.id}}">
+                                                        </mat-form-field>
+                                                        <mat-form-field *ngSwitchCase="'decimal'">
+                                                            <input type="number" name="{{'campo_'+campo.id}}" [(ngModel)]="campo.valor" matInput placeholder="{{campo.label}}" id="{{'campo_'+ campo.id}}">
+                                                        </mat-form-field>
+                                                        <div *ngSwitchCase="'booleano'">
+                                                            <mat-checkbox color="primary" name="{{'campo_'+campo.id}}" [(ngModel)]="campo.valor" id="{{'campo_'+ campo.id}}">
+                                                                {{campo.label}}
+                                                            </mat-checkbox>
+                                                            <br>
+                                                            <br>
+                                                        </div>
+                                                        <mat-form-field *ngSwitchCase="'fecha'">
+                                                            <input matInput [matDatepicker]="fecha_dinamica" placeholder="{{campo.label}}"
+                                                            name="{{'campo_'+campo.id}}" [(ngModel)]="campo.valor">
+                                                            <mat-datepicker-toggle matSuffix [for]="fecha_dinamica"></mat-datepicker-toggle>
+                                                            <mat-datepicker #fecha_dinamica></mat-datepicker>
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div>
+                                                <div fxLayout="column">
+                                                    <mat-form-field>
+                                                        <input type="number" min="0" max="100" name="ejecucionFisicaReal" [(ngModel)]="proyecto.ejecucionFisicaReal" matInput placeholder="Ejecucion Física %">
+                                                    </mat-form-field>
+                                                </div>
+                                                <div fxLayout="column">
+                                                    <mat-form-field>
+                                                        <input type="text" min="0" currencyMask name="costo" [(ngModel)]="proyecto.costo" matInput placeholder="Costo" [options]="{ prefix: 'Q ', thousands: ',', decimal: '.', precision: 2 }" [readonly]="true">
+                                                    </mat-form-field>
+                                                </div>
+                                                <div fxLayout="column">
+                                                    <mat-form-field>
+                                                        <input type="text" min="0" currencyMask name="montoTechos" [(ngModel)]="montoTechos" matInput placeholder="Total Asignado" [options]="{ prefix: 'Q ', thousands: ',', decimal: '.', precision: 2 }" [readonly]="true">
+                                                    </mat-form-field>
+                                                </div>
+                                                <div fxLayout="row" fxLayoutGap="15px">
+                                                    <mat-form-field fxFlex="50%">
+                                                        <input matInput placeholder="Fecha Inicio"
+                                                          name="fechaInicio" [(ngModel)]="fechaInicioTemp" [readonly]="true">
+                                                    </mat-form-field>
+                                                    <mat-form-field fxFlex="50%">
+                                                        <input matInput placeholder="Fecha Fin"
+                                                          name="fechaFinal" [(ngModel)]="fechaFinalTemp" [readonly]="true">
+                                                    </mat-form-field>
+                                                </div>
+                                                <div fxLayout="row" fxLayoutGap="15px">
+                                                    <mat-form-field fxFlex="50%">
+                                                        <input matInput placeholder="Fecha Inicio Real"
+                                                          name="fechaInicioReal" [(ngModel)]="fechaInicioRealTemp" [readonly]="true">
+                                                    </mat-form-field>
+                                                    <mat-form-field fxFlex="50%">
+                                                        <input matInput placeholder="Fecha Fin Real"
+                                                          name="fechaFinalReal" [(ngModel)]="fechaFinalRealTemp" [readonly]="true">
+                                                    </mat-form-field>
+                                                </div>
+                                                <div fxLayout="column">
+                                                    <mat-form-field>
+                                                        <input style="text-align: right;" type="number" min="1" name="duracionReal" [(ngModel)]="duracionReal" matInput placeholder="* Duración Real (días)" [readonly]="true">
+                                                    </mat-form-field>
+                                                </div>
+                                                <div fxLayout="column" *ngIf="proyecto.coordinador == 1">
+                                                    <mat-form-field>
+                                                        <input style="text-align: right;" type="number" min="0" max="100" name="porcentajeAvance" [(ngModel)]="proyecto.porcentajeAvance" matInput placeholder="Avance del Préstamo %">
+                                                    </mat-form-field>
+                                                </div>
+                                                <div fxLayout="column" [hidden]="esNuevo">
+                                                    <h5 fxLayoutAlign="center">Archivos adjuntos</h5>
+                                                    <div style="text-align: right;">
+                                                      <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="adjuntarDocumentos()" matTooltip="Adjuntar documento" matTooltipPosition="above"><mat-icon>add</mat-icon></button>
+                                                    </div>
+                                                    <br>
+                                                    <div>
+                                                      <ng2-smart-table [settings]="settingsArchivosAdjuntos" [source]="sourceArchivosAdjuntos"></ng2-smart-table>              
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <div fxLayout="column">
+                                                    <div class="panel panel-default" style="height: 180px;">
+                                                        <div class="panel-heading label-form" fxLayoutAlign="center">Datos de auditoría</div>
+                                                        <div class="panel-body">
+                                                          <div>
+                                                            <div fxLayout="row" fxLayoutGap="20px">
+                                                              <div fxFlex="50%">
+                                                                <label fxLayoutAlign="end" class="label-form" for="usuarioCreo">Usuario que creo</label>
+                                                                <p fxLayoutAlign="end">{{ proyecto.usuarioCreo }}</p>
+                                                              </div>
+                        
+                                                              <div fxFlex="50%">
+                                                                  <label fxLayoutAlign="start" class="label-form"  for="fechaCreacion">Fecha de creación</label>
+                                                                  <p fxLayoutAlign="start">{{ proyecto.fechaCreacion }}</p>
+                                                              </div>
+                                                            </div>
+                                                            <div fxLayout="row" fxLayoutGap="20px">
+                                                                <div fxFlex="50%">
+                                                                  <label fxLayoutAlign="end" class="label-form" for="usuarioActualizo">Usuario que actualizo</label>
+                                                                  <p fxLayoutAlign="end">{{ proyecto.usuarioActualizo }}</p>
+                                                                </div>
+                        
+                                                                <div fxFlex="50%">
+                                                                  <label fxLayoutAlign="start" for="fechaActualizacion"  class="label-form" >Fecha de actualizacion</label>
+                                                                  <p fxLayoutAlign="start">{{ proyecto.fechaActualizacion }}</p>
+                                                                </div>
+                                                            </div>
+                                                          </div>                                  
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </mat-tab>
                                         <mat-tab label="Adicionales" style="overflow: hidden;">
                                             <div class="demo-tab-content">
                                                 <br>
-                                                
+                                                <div fxLayout="column">
+                                                    <mat-form-field>
+                                                      <textarea name="observaciones" matInput rows="4" [(ngModel)]="prestamo.objetivo" placeholder="Objetivo del Préstamo"></textarea>
+                                                    </mat-form-field>
+                                                </div>
                                             </div>
                                         </mat-tab>
                                         <mat-tab label="Acta de constitución" style="overflow: hidden;">
@@ -189,7 +317,69 @@
                                         <mat-tab label="Componentes" style="overflow: hidden;">
                                             <div class="demo-tab-content">
                                                 <br>
-                                                
+                                                <div fxLayout="row">
+                                                    <div class="divTabla" [hidden]="m_componentes.length == 0">
+                                                        <table class="table" fxFlexFill>
+                                                             <tr>
+                                                                 <th rowspan="2" class="label-form" style="vertical-align: middle;"> COMPONENTES</th>
+                                                                 <th colspan="3"  class="label-form" *ngFor= "let organismo of m_organismosEjecutores"
+                                                                     style="text-align: center; vertical-align: middle;">
+                                                                     <div>ASIGNADO A {{ organismo.nombre }}</div>
+                                                                 </th>
+                                                                 <th rowspan="2" class="label-form" style="text-align: center; vertical-align: middle;">TECHO TOTAL</th>
+                                                             </tr>
+                                                             <tr>
+                                                                 <th colspan="3" *ngFor= "let organismo of m_organismosEjecutores">
+                                                                     <table style="width: 100%">
+                                                                         <tr>
+                                                                             <td class="label-form" style="min-width: 100px; text-align: center;">Prestamo</td>
+                                                                             <td class="label-form" style="min-width: 100px; text-align: center;">Donación</td>
+                                                                             <td class="label-form" style="min-width: 100px;text-align: center;">Nacional</td>
+                                                                         </tr>
+                                                                     </table>
+                                                                 </th>
+                                                             </tr>
+                                                             
+                                                             <tr *ngFor="let row of m_componentes; let i = index " class="filaIngreso"
+                                                                 [ngClass]="row.isSelected ? 'st-selected' : ''">
+                                                                 <td style="min-width: 200px;" class="label-form"> {{ row.nombre }} </td>
+                                                                 <td  colspan="3" *ngFor="let ue of row.unidadesEjecutoras; let in = index; trackBy:customTrackBy">
+                                                                     <table style="width: 100%;">
+                                                                         <tr>
+                                                                             <td style="text-align: center;">
+                                                                                 <input  inputText="text" style="width: 100px; margin-right: 5px;"
+                                                                                    class="inputText input-money" name="prestamo-{{i}}-{{in}}"
+                                                                                    [(ngModel)]="ue.prestamo"
+                                                                                    matInput currencyMask [options]="{ prefix: 'Q ', thousands: ',', decimal: '.', precision: 2 }"
+                                                                                    [readonly]="true"
+                                                                                />
+                                                                             </td>
+                                                                             <td style="text-align: center;">
+                                                                                 <input  inputText="text" style="width: 100px; margin-right: 5px;"
+                                                                                    class="inputText input-money" name="donacion-{{i}}-{{in}}"
+                                                                                    [(ngModel)]="ue.donacion"
+                                                                                    matInput currencyMask [options]="{ prefix: 'Q ', thousands: ',', decimal: '.', precision: 2 }"
+                                                                                    [readonly]="true"
+                                                                                />
+                                                                             </td>
+                                                                             <td style="text-align: center; border-right: 1px solid #ddd;">
+                                                                                 <input  inputText="text" style="width: 100px; margin-right: 5px;"
+                                                                                    class="inputText input-money" name="nacional-{{i}}-{{in}}"
+                                                                                    [(ngModel)]="ue.nacional"  
+                                                                                    matInput currencyMask [options]="{ prefix: 'Q ', thousands: ',', decimal: '.', precision: 2 }"                                                                                  
+                                                                                    [readonly]="true"
+                                                                                />
+                                                                             </td>
+                                                                         <tr>
+                                                                     </table>
+                                                                 </td>
+                                                                 <td style="width: 150px; text-align: right;"
+                                                                      class="label-form"> {{ row.techo }} 
+                                                                  </td>
+                                                             </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </mat-tab>                                        
                                     </mat-tab-group>

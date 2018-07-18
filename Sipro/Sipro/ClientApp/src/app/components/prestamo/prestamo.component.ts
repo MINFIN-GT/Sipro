@@ -5,12 +5,12 @@ import { HttpClient } from '@angular/common/http';
 import { LocalDataSource } from 'ng2-smart-table';
 import * as moment from 'moment';
 import { MatDialog } from '@angular/material';
-import { DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario } from './modals/modal-codigo-presupuestario'
+import { DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario } from '../../../assets/modals/codigopresupuestario/modal-codigo-presupuestario';
 import { DialogOverviewMoneda, DialogMoneda } from './modals/modal-moneda'
 import { DialogOverviewTipoPrestamo, DialogTipoPrestamo } from './modals/modal-tipo-prestamo'
 import { ButtonDeleteComponent } from '../../../assets/customs/ButtonDeleteComponent';
 import { ButtonDownloadComponent } from '../../../assets/customs/ButtonDownloadComponent';
-import { DialogDownloadDocument, DialogOverviewDownloadDocument } from '../../../assets/modals/documentosadjuntos/documento-adjunto'
+import { DialogDownloadDocument, DialogOverviewDownloadDocument } from '../../../assets/modals/documentosadjuntos/documento-adjunto';
 import { DialogDelete, DialogOverviewDelete } from './modals/confirmation-delete';
 import { Prestamo } from './model/Prestamo'
 import { FormControl } from '@angular/forms';
@@ -132,6 +132,7 @@ export class PrestamoComponent implements OnInit {
   }
 
   ngOnInit() { 
+    this.mostrarcargando=true;
     this.obtenerTotalPrestamos();
     this.obtenerCooperantes();
   }  
@@ -215,12 +216,6 @@ export class PrestamoComponent implements OnInit {
     }
   }
 
-  refresh(){
-    this.busquedaGlobal = null;
-    this.divSearch.nativeElement.value = null;
-    this.obtenerTotalPrestamos();
-  }
-
   guardar(){
     if (this.prestamo!=null && this.prestamo.codigoPresupuestario !=null){
       this.prestamo.idPrestamoTipos = "";
@@ -297,6 +292,7 @@ export class PrestamoComponent implements OnInit {
                    this.botones=true;
                    this.esNuevo=false;
                    this.obtenerTotalPrestamos();
+                   this.tabActive = 0;
                   }else{
                     alert('danger, Error al '+(this.esNuevo ? 'crear' : 'guardar')+' la matriz del préstamo');
                     this.botones=true;
@@ -346,6 +342,7 @@ export class PrestamoComponent implements OnInit {
           }
           else{
             this.source = new LocalDataSource();
+            this.mostrarcargando = false;
           }
         } else {
           console.log('Error');
@@ -396,7 +393,7 @@ export class PrestamoComponent implements OnInit {
           console.log('Error');
         }
 
-        //this.mostrarcargando = false;
+        this.mostrarcargando = false;
       });
   }
 
@@ -422,7 +419,8 @@ export class PrestamoComponent implements OnInit {
       },
       proyectoPrograma: {
         title: 'Nombre',
-        filter: false,       
+        width: '40%',
+        filter: false  
       },
       codigoPresupuestario: {
         title: 'Código presupuestario',
@@ -450,9 +448,9 @@ export class PrestamoComponent implements OnInit {
       }
     },
     actions: false,
-    noDataMessage: 'Cargando, por favor espere...',
+    noDataMessage: 'No se obtuvo información...',
     attr: {
-      class: 'table table-bordered'
+      class: 'table table-bordered grid'
     },
     hideSubHeader: true
   };
@@ -718,7 +716,7 @@ export class PrestamoComponent implements OnInit {
     },
     actions: false,
     attr: {
-      class: 'table table-bordered'
+      class: 'table table-bordered grid'
     },
     hideSubHeader: true,
     noDataMessage: ''
@@ -778,17 +776,11 @@ export class PrestamoComponent implements OnInit {
     },
     actions: false,
     attr: {
-      class: 'table table-bordered'
+      class: 'table table-bordered grid'
     },
     hideSubHeader: true,
     noDataMessage: ''
   };
-
-  downloadFile(data: Response){
-    var blob = new Blob([data], { type: 'text/csv' });
-    var url= window.URL.createObjectURL(blob);
-    window.open(url);
-  }
 
   buscarTiposPrestamo(){
     this.modalTipoPrestamo.dialog.open(DialogTipoPrestamo, {

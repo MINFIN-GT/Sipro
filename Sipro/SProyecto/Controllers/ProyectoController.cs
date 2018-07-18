@@ -1414,7 +1414,8 @@ namespace SProyecto.Controllers
             {
                 decimal techoTotal = decimal.Zero;
                 Proyecto proyecto = ProyectoDAO.getProyecto(id);
-                if (proyecto.prestamos != null)
+                
+                if (proyecto.prestamoid != null && proyecto.prestamoid > 0)
                 {
                     List<Componente> componentes = ComponenteDAO.getComponentesPorProyecto(proyecto.id);
                     foreach (Componente componente in componentes)

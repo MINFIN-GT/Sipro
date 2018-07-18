@@ -126,7 +126,7 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        public static List<UnidadEjecutora> getPagina(int pagina, int registros, int ejercicio, int entidad)
+        public static List<UnidadEjecutora> getPagina(int pagina, int registros, int ejercicio, int entidad, string filtro_busqueda)
         {
             List<UnidadEjecutora> ret = new List<UnidadEjecutora>();
 
@@ -136,6 +136,18 @@ namespace SiproDAO.Dao
                 {
                     string query = String.Join(" ", "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT ue.* FROM UNIDAD_EJECUTORA ue " +
                         "WHERE ue.entidadentidad=:entidad and ue.ejercicio=:ejercicio");
+                    String query_a = "";
+                    if (filtro_busqueda != null && filtro_busqueda.Length > 0)
+                    {
+                        query_a = String.Join(" ", query_a, "ue.nombre LIKE '%" + filtro_busqueda + "%'");
+
+                        Int32 unidadEjecutora;
+                        if (Int32.TryParse(filtro_busqueda, out unidadEjecutora))
+                        {
+                            query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " ue.unidad_ejecutora LIKE '%" + filtro_busqueda + "%'");
+                        }
+                    }
+                    query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND (", query_a, ")") : ""));
                     query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + registros + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + registros + ") + 1)");
                     ret = db.Query<UnidadEjecutora>(query,
                         new { entidad = entidad, ejercicio = ejercicio }).AsList<UnidadEjecutora>();
@@ -169,11 +181,11 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        public static String getJson(int pagina, int registros, int ejercicio, int entidad)
+        public static String getJson(int pagina, int registros, int ejercicio, int entidad, string filtro_busqueda)
         {
             String jsonEntidades = "";
 
-            List<UnidadEjecutora> pojos = getPagina(pagina, registros, ejercicio, entidad);
+            List<UnidadEjecutora> pojos = getPagina(pagina, registros, ejercicio, entidad, filtro_busqueda);
             List<EstructuraPojo> listaEstructuraPojos = new List<EstructuraPojo>();
 
             try
@@ -228,7 +240,7 @@ namespace SiproDAO.Dao
             return jsonEntidades;
         }
 
-        public static long getTotal(int ejercicio, int entidad)
+        public static long getTotal(int ejercicio, int entidad, string filtro_busqueda)
         {
             long ret = 0L;
 
@@ -236,7 +248,20 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    ret = db.ExecuteScalar<long>("SELECT COUNT(*) FROM UNIDAD_EJECUTORA WHERE entidadentidad=:entidad AND ejercicio=:ejercicio", new { entidad = entidad, ejercicio = ejercicio });
+                    string query = "SELECT COUNT(*) FROM UNIDAD_EJECUTORA WHERE entidadentidad=:entidad AND ejercicio=:ejercicio";
+                    String query_a = "";
+                    if (filtro_busqueda != null && filtro_busqueda.Length > 0)
+                    {
+                        query_a = String.Join(" ", query_a, "nombre LIKE '%" + filtro_busqueda + "%'");
+
+                        Int32 unidadEjecutora;
+                        if (Int32.TryParse(filtro_busqueda, out unidadEjecutora))
+                        {
+                            query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " unidad_ejecutora LIKE '%" + filtro_busqueda + "%'");
+                        }
+                    }
+                    query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND (", query_a, ")") : ""));
+                    ret = db.ExecuteScalar<long>(query, new { entidad = entidad, ejercicio = ejercicio });
                 }
             }
             catch (Exception e)

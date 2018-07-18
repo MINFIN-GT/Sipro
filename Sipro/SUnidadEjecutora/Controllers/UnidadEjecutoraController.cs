@@ -22,6 +22,7 @@ namespace SUnidadEjecutora.Controllers
             public int entidad;
             public String nombre;
             public String abreviatura;
+            public int unidadEjecutora;
         }
 
         // POST api/values
@@ -35,8 +36,9 @@ namespace SUnidadEjecutora.Controllers
                 int registros = value.registros != null ? (int)value.registros : default(int);
                 int ejercicio = value.ejercicio != null ? (int)value.ejercicio : default(int);
                 int ventidad = value.entidad != null ? (int)value.entidad : default(int);
+                string filtro_busqueda = value.filtro_busqueda != null ? (string)value.filtro_busqueda : null;
 
-                List <UnidadEjecutora> lstunidadejecutora = UnidadEjecutoraDAO.getPagina(pagina, registros, ejercicio, ventidad);
+                List <UnidadEjecutora> lstunidadejecutora = UnidadEjecutoraDAO.getPagina(pagina, registros, ejercicio, ventidad, filtro_busqueda);
 
                 if (lstunidadejecutora != null)
                 {
@@ -49,6 +51,7 @@ namespace SUnidadEjecutora.Controllers
                         estructuraEntidad.nombre = unidadEjecutora.nombre;
                         Entidad entidad = EntidadDAO.getEntidad(unidadEjecutora.entidadentidad, unidadEjecutora.ejercicio);
                         estructuraEntidad.abreviatura = entidad.abreviatura;
+                        estructuraEntidad.unidadEjecutora = unidadEjecutora.unidadEjecutora;
                         lstEstructuraEntidad.Add(estructuraEntidad);
                     }
 
@@ -67,7 +70,7 @@ namespace SUnidadEjecutora.Controllers
         // POST api/values
         [HttpPost]
         [Authorize("Unidades Ejecutoras - Crear")]
-        public IActionResult UnidadEjecutoraC([FromBody]dynamic value)
+        public IActionResult UnidadEjecutora([FromBody]dynamic value)
         {
             try
             {
@@ -95,9 +98,9 @@ namespace SUnidadEjecutora.Controllers
         }
 
         // POST api/values
-        [HttpPut]
+        [HttpPut("{unidadEjecutora}")]
         [Authorize("Unidades Ejecutoras - Editar")]
-        public IActionResult UnidadEjecutoraA([FromBody]dynamic value)
+        public IActionResult UnidadEjecutora(int unidadEjecutora, [FromBody]dynamic value)
         {
             try
             {
@@ -108,7 +111,7 @@ namespace SUnidadEjecutora.Controllers
                 {
                     int ejercicio = value.ejercicio;
                     int entidad = value.entidad;
-                    int id = value.unidadEjecutora;
+                    int id = unidadEjecutora;
                     string nombre = value.nombre;
 
                     bool guardado = UnidadEjecutoraDAO.actualizar(entidad, ejercicio, id, nombre);
@@ -127,14 +130,15 @@ namespace SUnidadEjecutora.Controllers
         // POST api/values
         [HttpPost]
         [Authorize("Unidades Ejecutoras - Visualizar")]
-        public IActionResult Total([FromBody]dynamic value)
+        public IActionResult TotalElementos([FromBody]dynamic value)
         {
             try
             {
                 int ejercicio = value.ejercicio != null ? (int)value.ejercicio : default(int);
                 int entidad = value.entidad != null ? (int)value.entidad : default(int);
+                string filtro_busqueda = value.filtro_busqueda != null ? (string)value.filtro_busqueda : null;
 
-                long total = UnidadEjecutoraDAO.getTotal(ejercicio, entidad);
+                long total = UnidadEjecutoraDAO.getTotal(ejercicio, entidad, filtro_busqueda);
                 return Ok(new { success = true, total = total });
             }
             catch (Exception e)

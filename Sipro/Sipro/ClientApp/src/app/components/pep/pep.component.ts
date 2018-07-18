@@ -7,9 +7,12 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { MatDialog } from '@angular/material';
 import * as moment from 'moment';
 import { Etiqueta } from '../../../assets/models/Etiqueta';
-import { Proyecto } from './model/Proyecto'
-import { DialogOverviewProyectoTipo, DialogProyectoTipo } from './modals/proyecto-tipo'
-
+import { Proyecto } from './model/Proyecto';
+import { DialogOverviewProyectoTipo, DialogProyectoTipo } from './modals/proyecto-tipo';
+import { DialogOverviewUnidadEjecutora, DialogUnidadEjecutora } from './modals/unidad-ejecutora';
+import { ButtonDeleteComponent } from '../../../assets/customs/ButtonDeleteComponent';
+import { ButtonDownloadComponent } from '../../../assets/customs/ButtonDownloadComponent';
+import { DialogDownloadDocument, DialogOverviewDownloadDocument } from '../../../assets/modals/documentosadjuntos/documento-adjunto';
 
 @Component({
   selector: 'app-pep',
@@ -17,6 +20,13 @@ import { DialogOverviewProyectoTipo, DialogProyectoTipo } from './modals/proyect
   styleUrls: ['./pep.component.css']
 })
 export class PepComponent implements OnInit {
+  mostrarcargando : boolean;
+  color = 'primary';
+  mode = 'indeterminate';
+  value = 50;
+  diameter = 45;
+  strokewidth = 3;
+  
   isLoggedIn : boolean;
   isMasterPage : boolean;
   esColapsado : boolean;
@@ -32,19 +42,33 @@ export class PepComponent implements OnInit {
   etiquetaProyecto : string;
   totalProyectos : number;
   busquedaGlobal : string;
-  paginaActual : number;
-  mostrarcargando : boolean;
+  paginaActual : number;  
   source : LocalDataSource;
   proyecto : Proyecto;
   esNuevo : boolean;
   esNuevoDocumento: boolean;
   tabActive : number;
-  unidadejecutoranombre: string;
+  unidadejecutoranombre : string;
+  unidadejecutoraid : number;
   congelado : number;
   modalProyectoTipo: DialogOverviewProyectoTipo;
   proyectotipoid : number;
   proyectotiponombre : string;
   camposdinamicos = [];
+  amount:number = 0.0;
+  formattedAmount: string = '';
+  modalUnidadEjecutora: DialogOverviewUnidadEjecutora;
+  montoTechos : number;
+  fechaInicioTemp : string;
+  fechaFinalTemp : string;
+  fechaInicioRealTemp : string;
+  fechaFinalRealTemp : string;
+  duracionReal : number;
+  m_organismosEjecutores = [];
+  m_componentes = [];
+  m_existenDatos: boolean;
+  sourceArchivosAdjuntos: LocalDataSource;
+  modalAdjuntarDocumento: DialogOverviewDownloadDocument;
 
   @ViewChild('search') divSearch: ElementRef;
 
@@ -69,11 +93,14 @@ export class PepComponent implements OnInit {
     this.modalProyectoTipo = new DialogOverviewProyectoTipo(dialog);
     this.proyectotipoid = 0;
     this.proyectotiponombre = "";
+    this.modalUnidadEjecutora = new DialogOverviewUnidadEjecutora(dialog);
+    this.modalAdjuntarDocumento = new DialogOverviewDownloadDocument(dialog);
 
     this.obtenerPrestamo();
   }
 
   ngOnInit() {
+    this.mostrarcargando=true;
     this.obtenerTotalProyectos();
   }
 
@@ -130,6 +157,8 @@ export class PepComponent implements OnInit {
             ]);
             this.busquedaGlobal = null;
       }
+
+      this.mostrarcargando = false;
     })
   }
 
@@ -138,16 +167,13 @@ export class PepComponent implements OnInit {
     this.obtenerTotalProyectos();
   }
 
-  refresh(){
-    this.busquedaGlobal = null;
-    this.divSearch.nativeElement.value = null;
-    this.obtenerTotalProyectos();
-  }
-
   nuevo(){
     this.esColapsado = true;
     this.tabActive = 0;
     this.esNuevo = true;
+    this.unidadejecutoranombre = "";
+    this.unidadejecutoraid = 0;
+    this.sourceArchivosAdjuntos = new LocalDataSource();
   }
 
   editar(){
@@ -156,6 +182,76 @@ export class PepComponent implements OnInit {
       this.esNuevo = false;
       this.esNuevoDocumento = false;
       this.tabActive = 0;
+      this.proyectotipoid = this.proyecto.proyectotipoid;
+      this.proyectotiponombre = this.proyecto.proyectotipo;
+      this.unidadejecutoranombre = this.proyecto.unidadejecutora;
+      this.unidadejecutoraid = this.proyecto.unidadejecutoraid;
+
+      var parametros ={
+        idProyecto : this.proyecto.id,
+        idProyectoTipo : this.proyectotipoid,
+        t: new Date().getTime() 
+      }
+      this.http.post('http://localhost:60067/api/ProyectoPropiedad/ProyectoPropiedadPorTipo', parametros, { withCredentials: true }).subscribe(response => {
+        if (response['success'] == true) {
+          this.camposdinamicos = response['proyectopropiedades'];
+          for(var i=0; i<this.camposdinamicos.length; i++){
+            switch(this.camposdinamicos[i].tipo){
+              case "fecha":
+                this.camposdinamicos[i].valor = this.camposdinamicos[i].valor != null ? moment(this.camposdinamicos[i].valor, 'DD/MM/YYYY').toDate() : null;
+              break;
+              case "entero":
+                this.camposdinamicos[i].valor = this.camposdinamicos[i].valor != null ? Number(this.camposdinamicos[i].valor) : null;
+              break;
+              case "decimal":
+                this.camposdinamicos[i].valor = this.camposdinamicos[i].valor != null ? Number(this.camposdinamicos[i].valor) : null;
+              break;
+              case "booleano":
+                this.camposdinamicos[i].valor = this.camposdinamicos[i].valor == 'true' ? true : false;
+              break;
+            }
+          }
+        }
+      })
+
+      if(this.prestamoid > 0){
+        this.http.get('http://localhost:60064/api/Proyecto/MontoTechos/' + this.proyecto.id, { withCredentials : true }).subscribe(response =>{
+          if(response['success'] == true){
+            this.montoTechos = response['techoPep'];
+          }
+        })
+      }
+
+      if(this.fechaInicioTemp == null){
+        this.fechaInicioTemp = moment(this.proyecto.fechaInicio,'DD/MM/YYYY').format('DD/MM/YYYY');
+        this.fechaFinalTemp = moment(this.proyecto.fechaFin,'DD/MM/YYYY').format('DD/MM/YYYY');
+      }
+
+      if(this.fechaInicioRealTemp == null){
+        this.fechaInicioRealTemp = this.proyecto.fechaInicioReal != null ? moment(this.proyecto.fechaInicioReal,'DD/MM/YYYY').format('DD/MM/YYYY') : null;
+        this.fechaFinalRealTemp = this.proyecto.fechaFinReal != null ? moment(this.proyecto.fechaFinReal,'DD/MM/YYYY').format('DD/MM/YYYY') : null;
+
+        if(this.fechaInicioRealTemp != null && this.fechaFinalRealTemp != null){
+          this.duracionReal = Number(moment(this.fechaFinalRealTemp,'DD/MM/YYYY').toDate()) - Number(moment(this.fechaInicioRealTemp,'DD/MM/YYYY').toDate());
+          this.duracionReal = Number(this.duracionReal / (1000*60*60*24))+1;
+        }
+      }
+      else{
+        if(this.fechaInicioRealTemp != null && this.fechaFinalRealTemp != null){
+          this.duracionReal = Number(moment(this.fechaFinalRealTemp,'DD/MM/YYYY').toDate()) - Number(moment(this.fechaInicioRealTemp,'DD/MM/YYYY').toDate());
+          this.duracionReal = Number(this.duracionReal / (1000*60*60*24))+1;
+        }
+      }
+
+      this.http.get('http://localhost:60064/api/Proyecto/Matriz/' + this.proyecto.id, { withCredentials : true }).subscribe(response =>{
+        if(response['success'] == true){
+          this.m_organismosEjecutores = response['unidadesEjecutoras'];
+          this.m_componentes = response['componentes'];
+          this.m_existenDatos = response['existenDatos'];
+        }
+      })
+
+      this.getDocumentosAdjuntos(this.proyecto.id, 0);
     }
     else
       alert('seleccione un item');
@@ -172,6 +268,8 @@ export class PepComponent implements OnInit {
   IrATabla(){
     this.esColapsado = false;
     this.proyecto = new Proyecto();
+    this.proyectotipoid = 0;
+    this.proyectotiponombre = "";
   }
 
   onSelectRow(event) {
@@ -223,6 +321,25 @@ export class PepComponent implements OnInit {
     })
   }
 
+  buscarUnidadEjecutora(){
+    //if(this.prestamoid == null){
+      this.modalUnidadEjecutora.dialog.open(DialogUnidadEjecutora, {
+        width: '600px',
+        height: '585px',
+        data: { titulo: 'Unidades Ejecutoras', ejercicio: this.proyecto.ejercicio, entidad: this.proyecto.entidadentidad }
+      }).afterClosed().subscribe(result => {
+        if(result != null){
+          this.unidadejecutoraid = result.id;
+          this.unidadejecutoranombre = result.nombre;
+        }
+      })
+    //}
+  }
+
+  handlePage(event){
+    this.cargarTabla(event.pageIndex+1);
+  }
+
   settings = {
     columns: {
       id: {
@@ -236,6 +353,7 @@ export class PepComponent implements OnInit {
       },
       nombre: {
         title: 'Nombre',
+        width: '35%',
         filter: false,       
       },
       proyectotipo: {
@@ -262,8 +380,98 @@ export class PepComponent implements OnInit {
     actions: false,
     noDataMessage: 'Cargando, por favor espere...',
     attr: {
-      class: 'table table-bordered'
+      class: 'table table-bordered grid'
     },
     hideSubHeader: true
   };
+
+  settingsArchivosAdjuntos = {
+    columns: {
+      id: {
+        title: 'ID',
+        width: '5%',
+        filter: false,
+        type: 'html',
+        valuePrepareFunction : (cell) => {
+          return "<div class=\"datos-numericos\">" + cell + "</div>";
+        }
+      },
+      nombre: {
+        title: 'Nombre',
+        width: '42.5%',
+        filter: false
+      },
+      extension: {
+        title: 'Extensión',
+        width: '42.5%',
+        filter: false
+      },
+      descargar: {
+        title: 'Descargar',
+        sort: false,
+        type: 'custom',
+        renderComponent: ButtonDownloadComponent,
+        onComponentInitFunction: (instance) =>{
+          instance.actionEmitter.subscribe(row => {
+            window.location.href='http://localhost:60021/api/DocumentoAdjunto/Descarga/' + row.id;
+          });
+        }
+      },
+      eliminar:{
+        title: 'Eliminar',
+        sort: false,
+        type: 'custom',
+        renderComponent: ButtonDeleteComponent,
+        onComponentInitFunction: (instance) =>{
+          instance.actionEmitter.subscribe(row => {
+            this.http.delete('http://localhost:60021/api/DocumentoAdjunto/Documento/' + row.id, { withCredentials: true }).subscribe(response => {
+              if (response['success'] == true){
+                this.sourceArchivosAdjuntos.remove(row);
+              }
+              else{
+                alert("Error al borrar documento");
+              } 
+            })
+            
+          });
+        }
+      }
+    },
+    actions: false,
+    attr: {
+      class: 'table table-bordered'
+    },
+    hideSubHeader: true,
+    noDataMessage: ''
+  };
+
+  adjuntarDocumentos(){
+    this.modalAdjuntarDocumento.dialog.open(DialogDownloadDocument, {
+      width: '600px',
+      height: '200px',
+      data: { titulo: 'Documentos Adjuntos', idObjeto: this.proyecto.id, idTipoObjeto: 0 }
+    }).afterClosed().subscribe(result => {
+      if(result != null){
+        this.sourceArchivosAdjuntos = new LocalDataSource(result);
+      }
+    });
+  }
+
+  getDocumentosAdjuntos = function(objetoId, tipoObjetoId){
+    var formatData = {
+      idObjeto: objetoId,
+      idTipoObjeto: tipoObjetoId,
+      t: new Date().getTime()
+    }
+    
+    this.http.post('http://localhost:60021/api/DocumentoAdjunto/Documentos', formatData, { withCredentials: true }).subscribe(response => {
+      if (response['success'] == true) {
+        this.sourceArchivosAdjuntos = new LocalDataSource(response['documentos']);
+      }
+    })
+  }
+
+  customTrackBy(index: number, obj: any): any {
+    return index;
+  }
 }

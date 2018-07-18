@@ -15,6 +15,13 @@ import { DialogDeleteProyectoPropiedad, DialogOverviewDelete } from './modals/co
   styleUrls: ['./peppropiedad.component.css']
 })
 export class PeppropiedadComponent implements OnInit {
+  mostrarcargando : boolean;
+  color = 'primary';
+  mode = 'indeterminate';
+  value = 50;
+  diameter = 45;
+  strokewidth = 3;
+
   isLoggedIn : boolean;
   isMasterPage : boolean;
   esColapsado : boolean;
@@ -46,6 +53,7 @@ export class PeppropiedadComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.mostrarcargando = true;
     this.obtenerTotalProyectoPropiedades();
     this.obtenerDatosTipo();
   }
@@ -62,13 +70,23 @@ export class PeppropiedadComponent implements OnInit {
         this.paginaActual = 1;
         if(this.totalProyectoPropiedades > 0)
           this.cargarTabla(this.paginaActual);
-        else
+        else{
           this.source = new LocalDataSource();
+          this.mostrarcargando = false;
+        }
       }
+      else{
+        this.source = new LocalDataSource();
+      }
+
+      this.mostrarcargando = false;
     })
+
+    this.mostrarcargando = false;
   }
 
   cargarTabla(pagina? : any){
+    this.mostrarcargando = true;
     var filtro = {
       pagina: pagina,
       numeroProyectoPropiedad: this.elementosPorPagina,
@@ -86,6 +104,8 @@ export class PeppropiedadComponent implements OnInit {
         ]);
         this.busquedaGlobal = null;
       }
+
+      this.mostrarcargando = false;
     })
   }
 
@@ -128,12 +148,6 @@ export class PeppropiedadComponent implements OnInit {
     else{
       alert('warning, Seleccione una propiedad de ' + this.etiqueta.proyecto);
     }
-  }
-
-  refresh(){
-    this.busquedaGlobal = null;
-    this.divSearch.nativeElement.value = null;
-    this.obtenerTotalProyectoPropiedades();
   }
 
   filtrar(campo){
@@ -238,7 +252,7 @@ export class PeppropiedadComponent implements OnInit {
       }
     },
     actions: false,
-    noDataMessage: 'Cargando, por favor espere...',
+    noDataMessage: 'No se obtuvo información...',
     attr: {
       class: 'table table-bordered'
     },
