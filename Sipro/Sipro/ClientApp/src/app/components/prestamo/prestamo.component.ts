@@ -6,12 +6,12 @@ import { LocalDataSource } from 'ng2-smart-table';
 import * as moment from 'moment';
 import { MatDialog } from '@angular/material';
 import { DialogOverviewCodigoPresupuestario, DialogCodigoPresupuestario } from '../../../assets/modals/codigopresupuestario/modal-codigo-presupuestario';
-import { DialogOverviewMoneda, DialogMoneda } from './modals/modal-moneda'
-import { DialogOverviewTipoPrestamo, DialogTipoPrestamo } from './modals/modal-tipo-prestamo'
+import { DialogOverviewMoneda, DialogMoneda } from '../../../assets/modals/tipomoneda/modal-moneda';
+import { DialogOverviewTipoPrestamo, DialogTipoPrestamo } from '../../../assets/modals/tipoprestamo/modal-tipo-prestamo';
 import { ButtonDeleteComponent } from '../../../assets/customs/ButtonDeleteComponent';
 import { ButtonDownloadComponent } from '../../../assets/customs/ButtonDownloadComponent';
 import { DialogDownloadDocument, DialogOverviewDownloadDocument } from '../../../assets/modals/documentosadjuntos/documento-adjunto';
-import { DialogDelete, DialogOverviewDelete } from './modals/confirmation-delete';
+import { DialogDeletePrestamo, DialogOverviewDeletePrestamo } from './modals/confirmationdelete/confirmation-delete';
 import { Prestamo } from './model/Prestamo'
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
@@ -66,7 +66,7 @@ export class PrestamoComponent implements OnInit {
   modalMoneda: DialogOverviewMoneda;
   modalTipoPrestamo: DialogOverviewTipoPrestamo;
   modalAdjuntarDocumento: DialogOverviewDownloadDocument;
-  modalDelete: DialogOverviewDelete;
+  modalDelete: DialogOverviewDeletePrestamo;
   cooperanteid : number;
   matriz_valid : number;
   diferenciaCambios : number;
@@ -107,7 +107,7 @@ export class PrestamoComponent implements OnInit {
     this.modalTipoPrestamo = new DialogOverviewTipoPrestamo(dialog);
     this.sourceTipoPrestamo = new LocalDataSource();
     this.modalAdjuntarDocumento = new DialogOverviewDownloadDocument(dialog);
-    this.modalDelete = new DialogOverviewDelete(dialog);
+    this.modalDelete = new DialogOverviewDeletePrestamo(dialog);
     this.toggle = {};
     this.matriz_valid = 1;
     this.diferenciaCambios = 0;
@@ -195,7 +195,7 @@ export class PrestamoComponent implements OnInit {
 
   borrar(){
     if(this.prestamo.id > 0){
-      this.modalDelete.dialog.open(DialogDelete, {
+      this.modalDelete.dialog.open(DialogDeletePrestamo, {
         width: '600px',
         height: '200px',
         data: { 
@@ -716,7 +716,7 @@ export class PrestamoComponent implements OnInit {
     },
     actions: false,
     attr: {
-      class: 'table table-bordered grid'
+      class: 'table table-bordered grid estilo-letra'
     },
     hideSubHeader: true,
     noDataMessage: ''
@@ -776,7 +776,7 @@ export class PrestamoComponent implements OnInit {
     },
     actions: false,
     attr: {
-      class: 'table table-bordered grid'
+      class: 'table table-bordered grid estilo-letra'
     },
     hideSubHeader: true,
     noDataMessage: ''

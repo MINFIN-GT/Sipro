@@ -1375,6 +1375,7 @@ namespace SProyecto.Controllers
                     stcomponentessigade temp = new stcomponentessigade();
                     temp.id = componente.id;
                     temp.nombre = componente.nombre;
+                    componente.componenteSigades = ComponenteSigadeDAO.getComponenteSigadePorId(componente.componenteSigadeid);
                     temp.techo = componente.componenteSigades != null ? componente.componenteSigades.montoComponente : default(decimal);
                     stcomponentes.Add(temp);
 

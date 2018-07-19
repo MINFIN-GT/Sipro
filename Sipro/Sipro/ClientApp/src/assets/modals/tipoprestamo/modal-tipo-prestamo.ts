@@ -4,24 +4,23 @@ import { HttpClient } from '@angular/common/http';
 import { LocalDataSource } from 'ng2-smart-table';
 
 @Component({
-  templateUrl: '../../../../assets/modals/dialogsearch/modal-dialog.html'
+  templateUrl: './modal-dialog.html'
 })
-export class DialogOverviewProyectoPropiedad {
+export class DialogOverviewTipoPrestamo {
   constructor(public dialog: MatDialog) {}
 }
 
 @Component({
   selector: 'modal-tipo-prestamo.ts',
-  templateUrl: '../../../../assets/modals/dialogsearch/modal-dialog.html'
+  templateUrl: './modal-dialog.html'
 })
-export class DialogProyectoPropiedad {
+export class DialogTipoPrestamo {
   totalElementos : number;
   source: LocalDataSource;
   paginaActual : number;
   elementosPorPagina : number;
   id : number;
   nombre: string;
-  tipoDatoNombre : string
   color = 'primary';
   mode = 'indeterminate';
   value = 50;
@@ -31,30 +30,29 @@ export class DialogProyectoPropiedad {
   busquedaGlobal: string;
 
   constructor(public dialog: MatDialog,
-    public dialogRef: MatDialogRef<DialogProyectoPropiedad>,
+    public dialogRef: MatDialogRef<DialogTipoPrestamo>,
     @Inject(MAT_DIALOG_DATA) public data: any, private http: HttpClient) {
       this.elementosPorPagina = 7;
       this.busquedaGlobal = null;
-      this.source = new LocalDataSource();
     }
 
   ngOnInit() { 
-    this.obtenerTotalProyectosPropiedades();
+    this.obtenerTotalTiposPrestamos();
   }
 
   Ok(): void {    
-    this.data = { nombre : this.nombre, id : this.id, datoTiponombre: this.tipoDatoNombre };
+    this.data = { tipoPrestamoNombre : this.nombre, tipoPrestamoId : this.id };
     this.dialogRef.close(this.data);
   }
 
-  obtenerTotalProyectosPropiedades(){
+  obtenerTotalTiposPrestamos(){
     this.esColapsado = false;
     var filtro = {
       filtro_busqueda: this.busquedaGlobal
     };
-    this.http.post('http://localhost:60067/api/ProyectoPropiedad/NumeroProyectoPropiedades',filtro, {withCredentials: true}).subscribe(response => {
+    this.http.post('http://localhost:60057/api/PrestamoTipo/numeroPrestamoTipos',filtro, {withCredentials: true}).subscribe(response => {
       if (response['success'] == true) {   
-        this.totalElementos = response["totalproyectopropiedades"];
+        this.totalElementos = response["totalprestamotipos"];
         this.paginaActual = 1;
         this.cargarTabla(this.paginaActual);
       } else {
@@ -66,18 +64,14 @@ export class DialogProyectoPropiedad {
   cargarTabla(pagina? : number){
     var filtro = {
       pagina: pagina,
-      numeroProyectoPropiedad: this.elementosPorPagina,
+      numeroprestamostipos: this.elementosPorPagina,
       filtro_busqueda: this.busquedaGlobal
     }
-    this.http.post('http://localhost:60067/api/ProyectoPropiedad/ProyectoPropiedadPagina', filtro, { withCredentials: true }).subscribe(response => {
+    this.http.post('http://localhost:60057/api/PrestamoTipo/PrestamoTipoPagina', filtro, { withCredentials: true }).subscribe(response => {
       if (response['success'] == true) {
-        var data = response["proyectopropiedades"];        
-        this.source = new LocalDataSource(data);
+        var data = response["prestamostipos"];        
+        this.source = data;
         this.esColapsado = true;
-
-        this.source.setSort([
-          { field: 'id', direction: 'asc' }  // primary sort
-        ]);
       } else {
         console.log('Error');
       }
@@ -91,11 +85,10 @@ export class DialogProyectoPropiedad {
   onSelectRow(event){
     this.nombre = event.data.nombre;
     this.id = event.data.id;
-    this.tipoDatoNombre = event.data.datoTiponombre;
   }
 
   onDblClickRow(event){
-    this.data = { nombre : this.nombre, id : this.id, datoTiponombre : this.tipoDatoNombre };
+    this.data = { tipoPrestamoNombre : this.nombre, tipoPrestamoId : this.id };
     this.dialogRef.close(this.data);
   }
 
@@ -103,7 +96,7 @@ export class DialogProyectoPropiedad {
    columns: {
       id: {
         title: 'ID',
-        width: '6%',
+        width: '10%',
         filter: false,
         type: 'html',
         valuePrepareFunction : (cell) => {
@@ -119,7 +112,7 @@ export class DialogProyectoPropiedad {
     actions: false,
     noDataMessage: 'No se encontró información.',
     attr: {
-      class: 'table table-bordered'
+      class: 'table table-bordered grid estilo-letra'
     },
     hideSubHeader: true
   };
@@ -131,6 +124,6 @@ export class DialogProyectoPropiedad {
 
   filtrar(campo){  
     this.busquedaGlobal = campo;
-    this.obtenerTotalProyectosPropiedades();
+    this.obtenerTotalTiposPrestamos();
   }
 }

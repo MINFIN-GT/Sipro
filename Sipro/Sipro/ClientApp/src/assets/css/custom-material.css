@@ -71,6 +71,7 @@ div.mat-tab-label{
 
 .search-info{
     cursor: pointer;
+    font-size: 20px !important;
 }
 
 .panel {
@@ -222,7 +223,12 @@ html, body {
 }
 
 .mat-raised-button[disabled][disabled]{
+    background-color: #4cae4c !important;
+    border-color: #4cae4c; 
     opacity: 0.7;
-    background-color: initial !important;
     color: #fff;
+}
+
+.grid-principal{
+    padding-top: 20px;
 }

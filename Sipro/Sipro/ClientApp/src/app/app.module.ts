@@ -15,24 +15,24 @@ import { MatInputModule, MatPaginatorModule, MatTabsModule, MatDatepickerModule,
 import { MomentModule } from 'angular2-moment/moment.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DialogCodigoPresupuestario } from '../assets/modals/codigopresupuestario/modal-codigo-presupuestario';
-import { DialogMoneda } from './components/prestamo/modals/modal-moneda'
-import { DialogTipoPrestamo } from './components/prestamo/modals/modal-tipo-prestamo'
-import { DialogProyectoTipo } from './components/pep/modals/proyecto-tipo'
+import { DialogMoneda } from '../assets/modals/tipomoneda/modal-moneda';
+import { DialogTipoPrestamo } from '../assets/modals/tipoprestamo/modal-tipo-prestamo';
+import { DialogProyectoTipo } from '../assets/modals/peptipo/proyecto-tipo';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginatorIntlSpanish } from '../assets/customs/custom-paginator-spanish';
 import { ButtonDeleteComponent } from '../assets/customs/ButtonDeleteComponent';
 import { ButtonDownloadComponent } from '../assets/customs/ButtonDownloadComponent';
 import { DialogDownloadDocument } from '../assets/modals/documentosadjuntos/documento-adjunto';
-import { DialogDelete } from './components/prestamo/modals/confirmation-delete';
+import { DialogDeletePrestamo } from './components/prestamo/modals/confirmationdelete/confirmation-delete';
 import { FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo } from '../assets/pipes/FormatoMillones.pipe';
 import { MatMomentDateModule, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { CUSTOM_DATE_FORMAT } from '../assets/customs/formatdate/CUSTOM_DATE_FORMAT';
-import { DialogDeleteTipoPrestamo } from './components/prestamotipo/modals/confirmation-delete';
-import { DialogDeleteProyectoPropiedad } from './components/peppropiedad/modals/confirmation-delete';
-import { DialogProyectoPropiedad } from './components/peptipo/modals/modal-proyecto-propiedad';
-import { DialogDeleteProyectoTipo } from './components/peptipo/modals/confirmation-delete';
+import { DialogDeleteTipoPrestamo } from './components/prestamotipo/modals/confirmationdelete/confirmation-delete';
+import { DialogDeleteProyectoPropiedad } from './components/peppropiedad/modals/confirmationdelete/confirmation-delete';
+import { DialogProyectoPropiedad } from '../assets/modals/proyectopropiedad/modal-proyecto-propiedad';
+import { DialogDeleteProyectoTipo } from './components/peptipo/modals/confirmationdelete/confirmation-delete';
 import { CurrencyMaskModule } from "ng2-currency-mask";
-import { DialogUnidadEjecutora } from './components/pep/modals/unidad-ejecutora';
+import { DialogUnidadEjecutora } from '../assets/modals/unidadejecutora/unidad-ejecutora';
 
 import { AppComponent } from './app.component';
 import { MainComponent } from './components/main/main.component';
@@ -87,7 +87,7 @@ const routes: Routes = [{
       LoginComponent, 
       AccesodenegadoComponent, MainComponent, PagenotfoundComponent, FooterComponent, MainmenuComponent, PrestamoComponent,
       DialogCodigoPresupuestario, DialogMoneda, DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, DialogDownloadDocument, 
-      FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo, PepComponent, DialogDelete, 
+      FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo, PepComponent, DialogDeletePrestamo, 
       DialogProyectoTipo, PrestamotipoComponent, DialogDeleteTipoPrestamo, PeppropiedadComponent, DialogDeleteProyectoPropiedad, PeptipoComponent,
       DialogProyectoPropiedad, DialogDeleteProyectoTipo, DialogUnidadEjecutora
   ],
@@ -111,7 +111,7 @@ const routes: Routes = [{
   ],
   bootstrap: [AppComponent],
   entryComponents: [DialogCodigoPresupuestario, DialogMoneda, DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, 
-    DialogDownloadDocument, DialogDelete, DialogProyectoTipo, DialogDeleteTipoPrestamo, DialogDeleteProyectoPropiedad, 
+    DialogDownloadDocument, DialogDeletePrestamo, DialogProyectoTipo, DialogDeleteTipoPrestamo, DialogDeleteProyectoPropiedad, 
     DialogProyectoPropiedad, DialogDeleteProyectoTipo, DialogUnidadEjecutora]
 })
 export class AppModule { 

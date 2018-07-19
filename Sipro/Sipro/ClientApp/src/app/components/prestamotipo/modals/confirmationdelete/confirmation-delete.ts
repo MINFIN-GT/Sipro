@@ -3,7 +3,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-    templateUrl: '../../../../assets/modals/dialogconfirmation/confirmation-dialog.html'
+    templateUrl: './confirmation-dialog.html'
 })
 
 export class DialogOverviewDelete {
@@ -12,17 +12,17 @@ export class DialogOverviewDelete {
 
 @Component({
     selector: 'confirmation-delete.ts',
-    templateUrl: '../../../../assets/modals/dialogconfirmation/confirmation-dialog.html'
+    templateUrl: './confirmation-dialog.html'
 })
-export class DialogDeleteProyectoTipo {
+export class DialogDeleteTipoPrestamo {
     id : number;
     titulo : string;
     textoCuerpo : string;
-    textoBotonOk: string;
-    textoBotonCancelar: string;
+    textoBotonOk : string;
+    textoBotonCancelar : string;
 
     constructor(public dialog: MatDialog,
-        public dialogRef: MatDialogRef<DialogDeleteProyectoTipo>,
+        public dialogRef: MatDialogRef<DialogDeleteTipoPrestamo>,
         @Inject(MAT_DIALOG_DATA) public data: any, private http: HttpClient,) {
             this.id = data.id;
             this.titulo = data.titulo;
@@ -31,15 +31,15 @@ export class DialogDeleteProyectoTipo {
             this.textoBotonCancelar = data.textoBotonCancelar;
         }
 
-    ngOnInit() { 
-
-    }
+    ngOnInit() { }
 
     aceptar(){
-        this.http.delete('http://localhost:60068/api/ProyectoTipo/ProyectoTipo/'+ this.id, { withCredentials : true }).subscribe(response =>{
+        this.http.delete('http://localhost:60057/api/PrestamoTipo/PrestamoTipo/'+ this.id, { withCredentials : true }).subscribe(response =>{
             if(response['success'] == true){
                 this.dialogRef.close(true);
             }
+            else
+                alert('Warning, Error al borrar el tipo de Préstamo');
         })
     }
 

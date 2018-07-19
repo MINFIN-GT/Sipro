@@ -36,6 +36,11 @@ namespace SDataSigade
                 .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
                 .MakeGenericType(typeof(TipoMoneda)));
             SqlMapper.SetTypeMap(typeof(TipoMoneda), mapper3);
+
+            var mapper4 = (SqlMapper.ITypeMap)Activator
+                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+                .MakeGenericType(typeof(DtmAvanceFisfinanDetDti)));
+            SqlMapper.SetTypeMap(typeof(DtmAvanceFisfinanDetDti), mapper4);            
         }
 
         public IConfiguration Configuration { get; }

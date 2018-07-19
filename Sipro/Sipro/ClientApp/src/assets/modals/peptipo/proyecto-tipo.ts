@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { LocalDataSource } from 'ng2-smart-table';
 
 @Component({
-  templateUrl: '../../../../assets/modals/dialogsearch/modal-dialog.html',
+  templateUrl: './modal-dialog.html',
 })
 export class DialogOverviewProyectoTipo {
   constructor(public dialog: MatDialog) {}
@@ -12,7 +12,7 @@ export class DialogOverviewProyectoTipo {
 
 @Component({
   selector: 'modal-codigo-presupuestario.ts',
-  templateUrl: '../../../../assets/modals/dialogsearch/modal-dialog.html'
+  templateUrl: './modal-dialog.html'
 })
 export class DialogProyectoTipo {
     totalElementos : number;
@@ -32,7 +32,7 @@ export class DialogProyectoTipo {
   constructor(public dialog: MatDialog,
     public dialogRef: MatDialogRef<DialogProyectoTipo>,
     @Inject(MAT_DIALOG_DATA) public data: any, private http: HttpClient) {
-      this.elementosPorPagina = 7;
+      this.elementosPorPagina = 9;
       this.busquedaGlobal = null;
     }
 
@@ -100,7 +100,7 @@ export class DialogProyectoTipo {
    columns: {
       id: {
         title: 'ID',
-        width: '6%',
+        width: '10%',
         filter: false,
         type: 'html',
         valuePrepareFunction : (cell) => {
@@ -116,7 +116,7 @@ export class DialogProyectoTipo {
     actions: false,
     noDataMessage: 'No se encontró información.',
     attr: {
-      class: 'table table-bordered'
+      class: 'table table-bordered grid estilo-letra'
     },
     hideSubHeader: true
   };

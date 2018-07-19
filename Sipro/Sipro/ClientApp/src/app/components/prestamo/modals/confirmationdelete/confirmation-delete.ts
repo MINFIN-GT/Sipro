@@ -3,18 +3,18 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-    templateUrl: '../../../../assets/modals/dialogconfirmation/confirmation-dialog.html'
+    templateUrl: './confirmation-dialog.html'
 })
 
-export class DialogOverviewDelete {
+export class DialogOverviewDeletePrestamo {
     constructor(public dialog: MatDialog) {}
 }
 
 @Component({
     selector: 'confirmation-delete.ts',
-    templateUrl: '../../../../assets/modals/dialogconfirmation/confirmation-dialog.html'
+    templateUrl: './confirmation-dialog.html'
 })
-export class DialogDelete {
+export class DialogDeletePrestamo {
     id : number;
     titulo : string;
     textoCuerpo : string;
@@ -22,7 +22,7 @@ export class DialogDelete {
     textoBotonCancelar: string;
 
     constructor(public dialog: MatDialog,
-        public dialogRef: MatDialogRef<DialogDelete>,
+        public dialogRef: MatDialogRef<DialogDeletePrestamo>,
         @Inject(MAT_DIALOG_DATA) public data: any, private http: HttpClient,) {
             this.id = data.id;
             this.titulo = data.titulo;

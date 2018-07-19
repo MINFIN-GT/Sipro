@@ -20,8 +20,7 @@
                 <mat-icon class="search-info" (click)="filtrar(search.value)" matSuffix>search</mat-icon>
             </mat-form-field>              
         </div> 
-        <br>
-        <div fxLayout="column">
+        <div fxLayout="column" class="grid-principal">
             <div style="position: relative; top: 0; bottom: 0; width:100%; height: 100%;" [hidden]="!mostrarcargando" fxFlex fxFlexFill>
                 <mat-progress-spinner
                 class="progress-spinner"
@@ -69,12 +68,12 @@
           <br>
           <div fxLayout="column">
             <mat-form-field>
-              <input name="nombre" [(ngModel)]="proyectopropiedad.nombre" matInput placeholder="* Nombre" [required]="true">
+              <input name="nombre" [(ngModel)]="proyectopropiedad.nombre" matInput placeholder="Nombre" [required]="true">
             </mat-form-field>
           </div>
           <div fxLayout="column">
             <mat-form-field>
-              <mat-select placeholder="* Tipo dato" disableRipple [required]="true" [(value)]="datoTipoSelected" [disabled]="!esNuevo">
+              <mat-select placeholder="Tipo dato *" disableRipple [required]="true" [(value)]="datoTipoSelected" [disabled]="!esNuevo">
                 <mat-option [value]="0">Seleccione Tipo</mat-option>
                 <mat-option *ngFor="let opcion of tipodatos" [value]="opcion.id" (click)="cambioOpcionDatoTipo(opcion.id)">{{opcion.nombre}}</mat-option>
               </mat-select>

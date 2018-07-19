@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { LocalDataSource } from 'ng2-smart-table';
 
 @Component({
-  templateUrl: '../../../../assets/modals/dialogsearch/modal-dialog.html',
+  templateUrl: './modal-dialog.html',
 })
 export class DialogOverviewUnidadEjecutora {
   constructor(public dialog: MatDialog) {}
@@ -12,7 +12,7 @@ export class DialogOverviewUnidadEjecutora {
 
 @Component({
   selector: 'modal-codigo-presupuestario.ts',
-  templateUrl: '../../../../assets/modals/dialogsearch/modal-dialog.html'
+  templateUrl: './modal-dialog.html'
 })
 export class DialogUnidadEjecutora {
     totalElementos : number;
@@ -34,7 +34,7 @@ export class DialogUnidadEjecutora {
   constructor(public dialog: MatDialog,
     public dialogRef: MatDialogRef<DialogUnidadEjecutora>,
     @Inject(MAT_DIALOG_DATA) public data: any, private http: HttpClient) {
-      this.elementosPorPagina = 7;
+      this.elementosPorPagina = 9;
       this.busquedaGlobal = null;
       this.ejercicio = data.ejercicio;
       this.codigoEntidad = data.entidad;
@@ -75,7 +75,7 @@ export class DialogUnidadEjecutora {
       filtro_busqueda: this.busquedaGlobal,
       ejercicio: this.ejercicio,
       entidad: this.codigoEntidad,
-      registros: 7
+      registros: this.elementosPorPagina
     }
     this.http.post('http://localhost:60089/api/UnidadEjecutora/UnidadEjecutoras', filtro, { withCredentials: true }).subscribe(response => {
       if (response['success'] == true) {
@@ -122,7 +122,7 @@ export class DialogUnidadEjecutora {
     actions: false,
     noDataMessage: 'No se encontró información.',
     attr: {
-      class: 'table table-bordered'
+      class: 'table table-bordered grid estilo-letra'
     },
     hideSubHeader: true
   };

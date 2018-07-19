@@ -23,8 +23,7 @@
                         <mat-icon class="search-info" (click)="filtrar(search.value)" matSuffix>search</mat-icon>
                     </mat-form-field>              
                 </div> 
-                <br>
-                <div fxLayout="column">
+                <div fxLayout="column" class="grid-principal">
                     <div style="position: relative; top: 0; bottom: 0; width:100%; height: 100%;" [hidden]="!mostrarcargando" fxFlex fxFlexFill>
                         <mat-progress-spinner
                         class="progress-spinner"
@@ -83,7 +82,7 @@
                                                 <br>
                                                 <div fxLayout="column">
                                                     <mat-form-field>
-                                                      <input name="nombre" [(ngModel)]="proyecto.nombre" matInput placeholder="* Nombre" [required]="true" [readonly]="congelado > 0">
+                                                      <input name="nombre" [(ngModel)]="proyecto.nombre" matInput placeholder="Nombre" [required]="true" [readonly]="congelado > 0">
                                                     </mat-form-field>
                                                 </div>
                                                 <div fxLayout="column">
@@ -144,7 +143,7 @@
                                                 </div>
                                                 <div fxLayout="column" *ngIf="false">
                                                     <mat-form-field>                                        
-                                                        <input class="search-info" name="cooperantenombre" [(ngModel)]="cooperantenombre" matInput placeholder="* Organismo financiero internacional" 
+                                                        <input class="search-info" name="cooperantenombre" [(ngModel)]="cooperantenombre" matInput placeholder="Organismo financiero internacional" 
                                                         [readonly]="true" (click)="buscarCooperante()" [required]="true">
                                                         <mat-icon class="search-info" matSuffix (click)="buscarCooperante()">search</mat-icon>
                                                     </mat-form-field>
@@ -234,7 +233,7 @@
                                                 </div>
                                                 <div fxLayout="column">
                                                     <mat-form-field>
-                                                        <input style="text-align: right;" type="number" min="1" name="duracionReal" [(ngModel)]="duracionReal" matInput placeholder="* Duración Real (días)" [readonly]="true">
+                                                        <input style="text-align: right;" type="number" min="1" name="duracionReal" [(ngModel)]="duracionReal" matInput placeholder="Duración Real (días)" [readonly]="true">
                                                     </mat-form-field>
                                                 </div>
                                                 <div fxLayout="column" *ngIf="proyecto.coordinador == 1">
@@ -299,7 +298,17 @@
                                         <mat-tab label="Acta de constitución" style="overflow: hidden;">
                                             <div class="demo-tab-content">
                                                 <br>
-                                                
+                                                <div fxLayout="column">
+                                                    <label class="floating-label">Nombre del Proyecto {{ proyecto.nombre }}</label>
+                                                    <br/><br/>
+                                                </div>
+                                                <div fxLayout="column">
+                                                    <mat-form-field>                                        
+                                                        <input class="search-info" name="directorProyectoNombre" [(ngModel)]="directorProyectoNombre" matInput placeholder="Director del Proyecto" 
+                                                        [readonly]="true" (click)="buscarDirecotorProyecto()" [required]="true">
+                                                        <mat-icon class="search-info" matSuffix (click)="buscarDirecotorProyecto()">search</mat-icon>
+                                                    </mat-form-field>
+                                                </div>
                                             </div>
                                         </mat-tab>
                                         <mat-tab label="Desembolsos" style="overflow: hidden;">
@@ -374,7 +383,7 @@
                                                                      </table>
                                                                  </td>
                                                                  <td style="width: 150px; text-align: right;"
-                                                                      class="label-form"> {{ row.techo }} 
+                                                                      class="label-form"> {{ row.techo | FormatoMillones: false }} 
                                                                   </td>
                                                              </tr>
                                                         </table>

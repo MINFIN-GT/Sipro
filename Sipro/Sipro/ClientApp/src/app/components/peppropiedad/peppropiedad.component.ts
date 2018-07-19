@@ -7,7 +7,7 @@ import * as moment from 'moment';
 import { MatDialog } from '@angular/material';
 import { PepPropiedad } from './model/PepPropiedad';
 import { Etiqueta } from '../../../assets/models/Etiqueta';
-import { DialogDeleteProyectoPropiedad, DialogOverviewDelete } from './modals/confirmation-delete';
+import { DialogDeleteProyectoPropiedad, DialogOverviewDelete } from './modals/confirmationdelete/confirmation-delete';
 
 @Component({
   selector: 'app-peppropiedad',
@@ -254,7 +254,7 @@ export class PeppropiedadComponent implements OnInit {
     actions: false,
     noDataMessage: 'No se obtuvo información...',
     attr: {
-      class: 'table table-bordered'
+      class: 'table table-bordered grid'
     },
     hideSubHeader: true
   };

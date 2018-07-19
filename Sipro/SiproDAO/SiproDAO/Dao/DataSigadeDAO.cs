@@ -235,7 +235,7 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnectionAnalytic())
                 {
-                    string query = String.Join("", "SELECT * SIPRO_ANALYTIC.DTM_AVANCE_FISFINAN_DET_DTI d ",
+                    string query = String.Join("", "SELECT * FROM DTM_AVANCE_FISFINAN_DET_DTI d ",
                          "WHERE d.codigo_presupuestario=:codigoPresupuestario ",
                          "AND d.ejercicio_fiscal=:ejercicio ",
                          "AND d.entidad_sicoin=:entidad ",
@@ -257,12 +257,12 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnectionAnalytic())
                 {
-                    string query = String.Join("", "SELECT * FROM SIPRO_ANALYTIC.DTM_AVANCE_FISFINAN_DET_DTI d ",
+                    string query = String.Join("", "SELECT * FROM DTM_AVANCE_FISFINAN_DET_DTI d ",
                          "WHERE d.codigo_presupuestario=:codigoPresupuestario ",
                          "AND d.entidad_sicoin=:entidad ",
                          "ORDER BY d.ejercicio_fiscal, d.mes_desembolso ASC");
 
-                    ret = db.Query<DtmAvanceFisfinanDetDti>(query, new { codigoPresupuestario = codigoPresupuestario }).AsList<DtmAvanceFisfinanDetDti>();
+                    ret = db.Query<DtmAvanceFisfinanDetDti>(query, new { codigoPresupuestario = codigoPresupuestario, entidad = entidad }).AsList<DtmAvanceFisfinanDetDti>();
                 }
             }
             catch (Exception e)

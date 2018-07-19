@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { LocalDataSource } from 'ng2-smart-table';
 
 @Component({
-  templateUrl: '../../../../assets/modals/dialogsearch/modal-dialog.html'
+  templateUrl: './modal-dialog.html'
 })
 export class DialogOverviewMoneda {
   constructor(public dialog: MatDialog) {}
@@ -12,7 +12,7 @@ export class DialogOverviewMoneda {
 
 @Component({
   selector: 'modal-moneda.ts',
-  templateUrl: '../../../../assets/modals/dialogsearch/modal-dialog.html'
+  templateUrl: './modal-dialog.html'
 })
 export class DialogMoneda {
   totalElementos : number;
@@ -32,7 +32,7 @@ export class DialogMoneda {
   constructor(public dialog: MatDialog,
     public dialogRef: MatDialogRef<DialogMoneda>,
     @Inject(MAT_DIALOG_DATA) public data: any, private http: HttpClient) {
-      this.elementosPorPagina = 7;
+      this.elementosPorPagina = 9;
       this.busquedaGlobal = null;
     }
 
@@ -96,7 +96,7 @@ export class DialogMoneda {
    columns: {
       id: {
         title: 'ID',
-        width: '6%',
+        width: '10%',
         filter: false,
         type: 'html',
         valuePrepareFunction : (cell) => {
@@ -112,7 +112,7 @@ export class DialogMoneda {
     actions: false,
     noDataMessage: 'No se encontró información.',
     attr: {
-      class: 'table table-bordered'
+      class: 'table table-bordered grid estilo-letra'
     },
     hideSubHeader: true
   };

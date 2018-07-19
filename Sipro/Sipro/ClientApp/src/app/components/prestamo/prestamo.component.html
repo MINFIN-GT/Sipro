@@ -20,7 +20,7 @@
                     <mat-icon class="search-info" (click)="filtrar(search.value)" matSuffix>search</mat-icon>
                 </mat-form-field>              
             </div> 
-            <div fxLayout="column" style="padding-top: 20px;">
+            <div fxLayout="column" class="grid-principal">
               <div style="position: relative; top: 0; bottom: 0; width:100%; height: 100%;" [hidden]="!mostrarcargando" fxFlex fxFlexFill>
                   <mat-progress-spinner
                   class="progress-spinner"
@@ -59,7 +59,7 @@
                 <div [hidden]="esNuevo" fxFlex="50%" fxLayoutAlign="start" fxLayoutGap="2px">
                   <button mat-raised-button matTooltip="Ver PEPs en Vista Árbol" matTooltipPosition="above">Árbol</button>
                   <button mat-raised-button matTooltip="Ver PEPs en Vista de Lista" matTooltipPosition="above" (click)="irAPeps(prestamo.id)">Lista</button>
-                  <button fxFlex="25px" fxLayoutAlign="center" mat-raised-button (click)="congelarDescongelar" matTooltip="Congelar o descongelar linea base" matTooltipPosition="above"><mat-icon>bookmark</mat-icon></button>
+                  <button fxFlex="25px" fxLayoutAlign="center" mat-raised-button (click)="congelarDescongelar" matTooltip="Congelar o descongelar linea base" matTooltipPosition="above"><mat-icon>ac_unit</mat-icon></button>
                 </div>
                 <div fxFlex fxLayoutAlign="end" fxLayoutGap="2px">
                     <button mat-raised-button class="applying-btn" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
@@ -264,7 +264,7 @@
                                                         <label fxLayoutAlign="end" class="label-form" for="usuarioCreo">Usuario que creo</label>
                                                         <p fxLayoutAlign="end">{{ prestamo.usuarioCreo }}</p>
                                                       </div>
-                
+                              
                                                       <div fxFlex="50%">
                                                           <label fxLayoutAlign="start" class="label-form"  for="fechaCreacion">Fecha de creación</label>
                                                           <p fxLayoutAlign="start">{{ prestamo.fechaCreacion }}</p>
@@ -275,7 +275,7 @@
                                                           <label fxLayoutAlign="end" class="label-form" for="usuarioActualizo">Usuario que actualizo</label>
                                                           <p fxLayoutAlign="end">{{ prestamo.usuarioActualizo }}</p>
                                                         </div>
-                
+                              
                                                         <div fxFlex="50%">
                                                           <label fxLayoutAlign="start" for="fechaActualizacion"  class="label-form" >Fecha de actualizacion</label>
                                                           <p fxLayoutAlign="start">{{ prestamo.fechaActualizacion }}</p>
@@ -456,7 +456,7 @@
                                   <mat-tab label="Distribución de Unidad Ejecutora">
                                       <div class="demo-tab-content">
                                         <br>
-                                        <div fxLayout="row" fxLayoutAlign="start">
+                                        <div fxLayout="row" fxLayoutAlign="end">
                                           <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="verHistoria()" matTooltip="Ver historia" matTooltipPosition="above"><mat-icon>history</mat-icon></button>
                                         </div>
                                         <div fxLayout="row">

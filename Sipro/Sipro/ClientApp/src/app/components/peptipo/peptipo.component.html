@@ -1,7 +1,7 @@
 <div fxLayout="column" fxLayoutAlign="center" fxFlexFill fxFlex>
   <div class="middle">
     <div fxLayout="column">
-      <mat-card style="margin-top: 2%; background-color: #f5f5f5; border-color: #ddd;">
+      <mat-card class="titulo">
         Tipo de {{etiqueta.proyecto}}
       </mat-card>
     </div>
@@ -9,23 +9,33 @@
     <div fxLayout="column" fxLayoutAlign="center" fxFlexFill>
       <div [hidden]="esColapsado">
         <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2px">
-          <button mat-raised-button style="background-color: #337ab7; color:#fff" (click)="nuevo()" matTooltip="Nuevo" matTooltipPosition="above"><mat-icon>add</mat-icon>Nuevo</button>
-          <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="editar()" matTooltip="Editar" matTooltipPosition="above"><mat-icon>mode_edit</mat-icon>Editar</button>
-          <button mat-raised-button style="background-color: #d9534f; color: #fff;" (click)="borrar()" matTooltip="Borrar" matTooltipPosition="above"><mat-icon>delete</mat-icon>Borrar</button>
+          <button mat-raised-button class="primary-btn" (click)="nuevo()" matTooltip="Nuevo" matTooltipPosition="above"><mat-icon>add</mat-icon>Nuevo</button>
+          <button mat-raised-button class="primary-btn" (click)="editar()" matTooltip="Editar" matTooltipPosition="above"><mat-icon>mode_edit</mat-icon>Editar</button>
+          <button mat-raised-button class="danger-btn" (click)="borrar()" matTooltip="Borrar" matTooltipPosition="above"><mat-icon>delete</mat-icon>Borrar</button>
         </div>
         <br>
-        <div fxLayout="row" fxLayoutAlign="end">
-          <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="refresh()" matTooltip="Reiniciar la vista de la tabla" matTooltipPosition="above"><mat-icon>refresh</mat-icon></button>
-        </div>
-        <br>
-        <div fxLayout="row">
+        <div fxLayout="row" fxLayoutAlign="center">
             <mat-form-field fxFlex="50%">
                 <input matInput #search class="search" type="text" placeholder="Busqueda..." (keydown.enter)="filtrar(search.value)">
                 <mat-icon class="search-info" (click)="filtrar(search.value)" matSuffix>search</mat-icon>
             </mat-form-field>              
         </div> 
-        <div fxLayout="column">
-          <div>
+        <div fxLayout="column" class="grid-principal">
+            <div style="position: relative; top: 0; bottom: 0; width:100%; height: 100%;" [hidden]="!mostrarcargando" fxFlex fxFlexFill>
+                <mat-progress-spinner
+                class="progress-spinner"
+                [color]="color"
+                [mode]="mode"
+                [value]="value"
+                [diameter]="diameter" 
+                [strokeWidth]="strokewidth"
+                >
+                </mat-progress-spinner>
+                <div style="text-align: center; padding-top: 20px;">
+                    <b>Cargando, por favor espere...</b>
+                </div>
+            </div>
+            <div style="position: relative; top: 0; bottom: 0; width:100%; height: 100%;" [hidden]="mostrarcargando">
               <ng2-smart-table [settings]="settings" [source]="source" (dblClickRow)="onDblClickRow($event)" (userRowSelect)="onSelectRow($event)"></ng2-smart-table>
           </div>              
         </div>
@@ -47,8 +57,8 @@
           <br>
           <div fxLayout="row">
             <div fxFlex fxLayoutAlign="end" fxLayoutGap="2px">
-                <button mat-raised-button style="background-color: #5cb85c; color:#fff; border-color: #4cae4c" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
-                <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
+                <button mat-raised-button class="applying-btn" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
+                <button mat-raised-button class="primary-btn" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
             </div>
           </div>
           <br>
@@ -58,7 +68,7 @@
           <br>
           <div fxLayout="column">
             <mat-form-field>
-              <input name="nombre" [(ngModel)]="proyectotipo.nombre" matInput placeholder="* Nombre" [required]="true">
+              <input name="nombre" [(ngModel)]="proyectotipo.nombre" matInput placeholder="Nombre" [required]="true">
             </mat-form-field>
           </div>
           <div fxLayout="column">
@@ -76,7 +86,6 @@
               <ng2-smart-table [settings]="settingsPropiedades" [source]="sourcePropiedades"></ng2-smart-table>              
             </div>
           </div>
-
           <br>
           <div fxLayout="column">
               <div class="panel panel-default" style="height: 180px;">
@@ -113,8 +122,8 @@
           <div fxLayout="row" fxLayoutAlign="center" class="label-form">Los campos marcados con * son obligatorios y las fechas deben tener formato de dd/mm/aaaa</div>
           <br/>
           <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2px">
-            <button mat-raised-button style="background-color: #5cb85c; color:#fff; border-color: #4cae4c" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
-            <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
+            <button mat-raised-button class="applying-btn" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
+            <button mat-raised-button class="primary-btn" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
           </div>
           <br>
         </form>

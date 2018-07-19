@@ -77,6 +77,10 @@ namespace SProyecto
                 .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
                 .MakeGenericType(typeof(PepDetalle)));
             SqlMapper.SetTypeMap(typeof(PepDetalle), mapper14);
+            var mapper15 = (SqlMapper.ITypeMap)Activator
+                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+                .MakeGenericType(typeof(ComponenteSigade)));
+            SqlMapper.SetTypeMap(typeof(ComponenteSigade), mapper15);            
         }
 
         public IConfiguration Configuration { get; }

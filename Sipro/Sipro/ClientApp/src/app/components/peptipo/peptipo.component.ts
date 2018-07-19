@@ -9,8 +9,8 @@ import { LocalDataSource } from 'ng2-smart-table';
 import * as moment from 'moment';
 import { Etiqueta } from '../../../assets/models/Etiqueta';
 import { ProyectoTipo } from './model/ProyectoTipo'
-import { DialogProyectoPropiedad, DialogOverviewProyectoPropiedad } from './modals/modal-proyecto-propiedad';
-import { DialogDeleteProyectoTipo, DialogOverviewDelete } from './modals/confirmation-delete';
+import { DialogProyectoPropiedad, DialogOverviewProyectoPropiedad } from '../../../assets/modals/proyectopropiedad/modal-proyecto-propiedad';
+import { DialogDeleteProyectoTipo, DialogOverviewDelete } from './modals/confirmationdelete/confirmation-delete';
 
 @Component({
   selector: 'app-peptipo',
@@ -18,6 +18,13 @@ import { DialogDeleteProyectoTipo, DialogOverviewDelete } from './modals/confirm
   styleUrls: ['./peptipo.component.css']
 })
 export class PeptipoComponent implements OnInit {
+  mostrarcargando : boolean;
+  color = 'primary';
+  mode = 'indeterminate';
+  value = 50;
+  diameter = 45;
+  strokewidth = 3;
+
   isLoggedIn : boolean;
   isMasterPage : boolean;
   esColapsado : boolean;
@@ -52,6 +59,7 @@ export class PeptipoComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.mostrarcargando = true;
     this.obtenerTotalProyectotipos();
   }
 
@@ -70,12 +78,14 @@ export class PeptipoComponent implements OnInit {
         }
         else{
           this.source = new LocalDataSource();
+          this.mostrarcargando = false;
         }
       }
     })
   }
 
   cargarTabla(pagina? : number){
+    this.mostrarcargando = true;
     var filtro = {
       pagina: pagina,
       numeroproyectotipo: this.elementosPorPagina,
@@ -95,6 +105,8 @@ export class PeptipoComponent implements OnInit {
         ]);
         this.busquedaGlobal = null;
       }
+
+      this.mostrarcargando = false;
     })
   }
 
@@ -146,12 +158,6 @@ export class PeptipoComponent implements OnInit {
     else{
       alert('warning, Seleccione una propiedad de ' + this.etiqueta.proyecto);
     }
-  }
-
-  refresh(){
-    this.busquedaGlobal = null;
-    this.divSearch.nativeElement.value = null;
-    this.obtenerTotalProyectotipos();
   }
 
   filtrar(campo){
@@ -291,7 +297,7 @@ export class PeptipoComponent implements OnInit {
     actions: false,
     noDataMessage: 'Cargando, por favor espere...',
     attr: {
-      class: 'table table-bordered'
+      class: 'table table-bordered grid'
     },
     hideSubHeader: true
   };
@@ -343,7 +349,7 @@ export class PeptipoComponent implements OnInit {
     },
     actions: false,
     attr: {
-      class: 'table table-bordered'
+      class: 'table table-bordered grid estilo-letra'
     },
     hideSubHeader: true,
     noDataMessage: ''

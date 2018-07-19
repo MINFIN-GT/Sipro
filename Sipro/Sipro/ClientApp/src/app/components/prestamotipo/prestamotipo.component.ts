@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { LocalDataSource } from 'ng2-smart-table';
 import * as moment from 'moment';
 import { PrestamoTipo } from './model/model.prestamotipo';
-import { DialogDeleteTipoPrestamo, DialogOverviewDelete } from './modals/confirmation-delete';
+import { DialogDeleteTipoPrestamo, DialogOverviewDelete } from './modals/confirmationdelete/confirmation-delete';
 import { MatDialog } from '@angular/material';
 
 @Component({
@@ -14,6 +14,13 @@ import { MatDialog } from '@angular/material';
   styleUrls: ['./prestamotipo.component.css']
 })
 export class PrestamotipoComponent implements OnInit {
+  mostrarcargando : boolean;
+  color = 'primary';
+  mode = 'indeterminate';
+  value = 50;
+  diameter = 45;
+  strokewidth = 3;
+
   isLoggedIn : boolean;
   isMasterPage : boolean;
   esColapsado : boolean;
@@ -40,6 +47,7 @@ export class PrestamotipoComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.mostrarcargando = true;
     this.obtenerTotalprestamotipos();
   }
 
@@ -54,13 +62,16 @@ export class PrestamotipoComponent implements OnInit {
         this.paginaActual = 1;
         if(this.totalPrestamosTipos > 0)
           this.cargarTabla(this.paginaActual);
-        else
+        else{
           this.source = new LocalDataSource();
+          this.mostrarcargando = false;
+        }
       }
     })
   }
 
   cargarTabla(pagina? : number){
+    this.mostrarcargando = true;
     var filtro = {
       pagina: pagina,
       numeroprestamostipos: this.elementosPorPagina,
@@ -78,6 +89,8 @@ export class PrestamotipoComponent implements OnInit {
         ]);
         this.busquedaGlobal = null;
       }
+
+      this.mostrarcargando = false;
     })
   }
 
@@ -117,12 +130,6 @@ export class PrestamotipoComponent implements OnInit {
     else{
       alert('warning, Seleccione un préstamo');
     }
-  }
-
-  refresh(){
-    this.busquedaGlobal = null;
-    this.divSearch.nativeElement.value = null;
-    this.obtenerTotalprestamotipos();
   }
 
   filtrar(campo){
@@ -213,7 +220,7 @@ export class PrestamotipoComponent implements OnInit {
     actions: false,
     noDataMessage: 'Cargando, por favor espere...',
     attr: {
-      class: 'table table-bordered'
+      class: 'table table-bordered grid'
     },
     hideSubHeader: true
   };

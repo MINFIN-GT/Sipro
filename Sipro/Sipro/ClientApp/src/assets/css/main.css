@@ -349,13 +349,6 @@ input[type="checkbox"] {
     z-index: 3;
 }
 
-.label-form{
-	 font-size: 13px;
-	 opacity: 1;
-	 color: rgba(0,0,0,0.38) !important;
-	 font-weight: bold;
-}
-
 h3 {
     font-size: 20px;
     margin-top: 10px;

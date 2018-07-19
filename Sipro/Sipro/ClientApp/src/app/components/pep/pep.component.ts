@@ -8,8 +8,8 @@ import { MatDialog } from '@angular/material';
 import * as moment from 'moment';
 import { Etiqueta } from '../../../assets/models/Etiqueta';
 import { Proyecto } from './model/Proyecto';
-import { DialogOverviewProyectoTipo, DialogProyectoTipo } from './modals/proyecto-tipo';
-import { DialogOverviewUnidadEjecutora, DialogUnidadEjecutora } from './modals/unidad-ejecutora';
+import { DialogOverviewProyectoTipo, DialogProyectoTipo } from '../../../assets/modals/peptipo/proyecto-tipo';
+import { DialogOverviewUnidadEjecutora, DialogUnidadEjecutora } from '../../../assets/modals/unidadejecutora/unidad-ejecutora';
 import { ButtonDeleteComponent } from '../../../assets/customs/ButtonDeleteComponent';
 import { ButtonDownloadComponent } from '../../../assets/customs/ButtonDownloadComponent';
 import { DialogDownloadDocument, DialogOverviewDownloadDocument } from '../../../assets/modals/documentosadjuntos/documento-adjunto';
@@ -69,6 +69,11 @@ export class PepComponent implements OnInit {
   m_existenDatos: boolean;
   sourceArchivosAdjuntos: LocalDataSource;
   modalAdjuntarDocumento: DialogOverviewDownloadDocument;
+  sobrepaso: boolean;
+  desembolsoAFechaUsd: number;
+  montoDesembolsadoUE: number;
+  botones: boolean;
+  directorProyectoNombre: string;
 
   @ViewChild('search') divSearch: ElementRef;
 
@@ -95,7 +100,7 @@ export class PepComponent implements OnInit {
     this.proyectotiponombre = "";
     this.modalUnidadEjecutora = new DialogOverviewUnidadEjecutora(dialog);
     this.modalAdjuntarDocumento = new DialogOverviewDownloadDocument(dialog);
-
+    this.botones = true;
     this.obtenerPrestamo();
   }
 
@@ -131,6 +136,7 @@ export class PepComponent implements OnInit {
         }
         else{
           this.source = new LocalDataSource();
+          this.mostrarcargando=false;
         }
       }
     })
@@ -186,6 +192,7 @@ export class PepComponent implements OnInit {
       this.proyectotiponombre = this.proyecto.proyectotipo;
       this.unidadejecutoranombre = this.proyecto.unidadejecutora;
       this.unidadejecutoraid = this.proyecto.unidadejecutoraid;
+      this.directorProyectoNombre = this.proyecto.directorProyectoNmbre;
 
       var parametros ={
         idProyecto : this.proyecto.id,
@@ -218,6 +225,30 @@ export class PepComponent implements OnInit {
         this.http.get('http://localhost:60064/api/Proyecto/MontoTechos/' + this.proyecto.id, { withCredentials : true }).subscribe(response =>{
           if(response['success'] == true){
             this.montoTechos = response['techoPep'];
+
+            if(this.proyecto.costo > this.montoTechos)
+              this.sobrepaso = true;
+            else
+              this.sobrepaso = false;
+
+            var data = {
+              codPrep: this.codigoPresupuestario,
+              ejercicio: this.proyecto.ejercicio,
+              entidad: this.proyecto.entidadentidad,
+              ue: this.proyecto.unidadejecutoraid
+            }
+            this.http.post('http://localhost:60016/api/DataSigade/MontoDesembolsoUE', data, { withCredentials : true }).subscribe(response =>{
+              if(response['success']==true){
+                this.montoDesembolsadoUE = response['montoDesembolsadoUE'];
+                this.montoDesembolsadoUE = this.montoTechos - this.montoDesembolsadoUE;
+
+                this.http.post('http://localhost:60016/api/DataSigade/MontoDesembolsosUEALaFecha', data, { withCredentials : true }).subscribe(response =>{
+                  if(response['success']==true){
+                    this.desembolsoAFechaUsd = response['montoDesembolsadoUEALaFecha'];
+                  }
+                })
+              }
+            })
           }
         })
       }
@@ -252,6 +283,7 @@ export class PepComponent implements OnInit {
       })
 
       this.getDocumentosAdjuntos(this.proyecto.id, 0);
+      this.tabActive = 0;
     }
     else
       alert('seleccione un item');
@@ -262,7 +294,14 @@ export class PepComponent implements OnInit {
   }
 
   guardar(){
+    for(var i =0; i < this.camposdinamicos.length; i++){
+      this.botones = false;
+      if(this.camposdinamicos[i].tipo === 'fecha'){
+        this.camposdinamicos[i].valor_f = this.camposdinamicos[i].valor != null ? moment(this.camposdinamicos[i].valor).format('DD/MM/YYYY') : "";        
+      }
 
+
+    }
   }
 
   IrATabla(){
@@ -378,9 +417,9 @@ export class PepComponent implements OnInit {
       }
     },
     actions: false,
-    noDataMessage: 'Cargando, por favor espere...',
+    noDataMessage: 'No se obtuvo información...',
     attr: {
-      class: 'table table-bordered grid'
+      class: 'table table-bordered grid estilo-letra'
     },
     hideSubHeader: true
   };
@@ -439,7 +478,7 @@ export class PepComponent implements OnInit {
     },
     actions: false,
     attr: {
-      class: 'table table-bordered'
+      class: 'table table-bordered grid estilo-letra'
     },
     hideSubHeader: true,
     noDataMessage: ''
