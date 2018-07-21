@@ -60,7 +60,7 @@ namespace SLogin
 			services.ConfigureApplicationCookie(options => {
 				options.Cookie.Name = ".AspNet.Identity.Application";
 				options.Cookie.HttpOnly = true;
-				options.Cookie.Expiration = TimeSpan.FromMinutes(60);
+				options.Cookie.Expiration = TimeSpan.FromMinutes(6000);
 				options.SlidingExpiration = true;
 				options.Cookie.SameSite = SameSiteMode.None;
 				options.Cookie.Path = "/";

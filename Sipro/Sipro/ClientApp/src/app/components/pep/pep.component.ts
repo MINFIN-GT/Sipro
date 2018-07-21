@@ -13,6 +13,8 @@ import { DialogOverviewUnidadEjecutora, DialogUnidadEjecutora } from '../../../a
 import { ButtonDeleteComponent } from '../../../assets/customs/ButtonDeleteComponent';
 import { ButtonDownloadComponent } from '../../../assets/customs/ButtonDownloadComponent';
 import { DialogDownloadDocument, DialogOverviewDownloadDocument } from '../../../assets/modals/documentosadjuntos/documento-adjunto';
+import { DialogDirectorProyecto, DialogOverviewDirectorProyecto } from '../../../assets/modals/directorproyecto/director-proyecto';
+import { DialogImpacto, DialogOverviewImpacto } from '../../../assets/modals/impacto/modal-impacto';
 
 @Component({
   selector: 'app-pep',
@@ -74,6 +76,10 @@ export class PepComponent implements OnInit {
   montoDesembolsadoUE: number;
   botones: boolean;
   directorProyectoNombre: string;
+  directorProyectoId: number;
+  modalDirectorProyecto : DialogOverviewDirectorProyecto;
+  sourceImpacto: LocalDataSource;
+  modalImpacto : DialogOverviewImpacto;
 
   @ViewChild('search') divSearch: ElementRef;
 
@@ -100,7 +106,10 @@ export class PepComponent implements OnInit {
     this.proyectotiponombre = "";
     this.modalUnidadEjecutora = new DialogOverviewUnidadEjecutora(dialog);
     this.modalAdjuntarDocumento = new DialogOverviewDownloadDocument(dialog);
+    this.modalDirectorProyecto = new DialogOverviewDirectorProyecto(dialog);
+    this.modalImpacto = new DialogOverviewImpacto(dialog);
     this.botones = true;
+    this.sourceImpacto = new LocalDataSource();
     this.obtenerPrestamo();
   }
 
@@ -286,7 +295,7 @@ export class PepComponent implements OnInit {
       this.tabActive = 0;
     }
     else
-      alert('seleccione un item');
+      this.utils.mensaje("warning", "Debe de seleccionar el " + this.etiqueta.proyecto + " que desea editar");
   }
 
   borrar(){
@@ -468,7 +477,7 @@ export class PepComponent implements OnInit {
                 this.sourceArchivosAdjuntos.remove(row);
               }
               else{
-                alert("Error al borrar documento");
+                this.utils.mensaje("danger", "Error al borrar el documento");
               } 
             })
             
@@ -512,5 +521,71 @@ export class PepComponent implements OnInit {
 
   customTrackBy(index: number, obj: any): any {
     return index;
+  }
+
+  buscarDirecotorProyecto(){
+    this.modalDirectorProyecto.dialog.open(DialogDirectorProyecto, {
+      width: '600px',
+      height: '585px',
+      data: { titulo: 'Director del ' + this.etiqueta.proyecto }
+    }).afterClosed().subscribe(result=>{
+      if(result != null){
+        this.directorProyectoNombre = result.nombre;
+        this.directorProyectoId = result.id;
+      }
+    })
+  }
+
+  agregarImpacto(){
+    this.modalImpacto.dialog.open(DialogImpacto, {
+      width: '600px',
+      height: '400px',
+      data: { titulo: 'Impacto' }
+    }).afterClosed().subscribe(result =>{
+      if(result != null){
+         
+      }
+    })
+  }
+
+  settingsImpacto = {
+    columns: {
+      id: {
+        title: 'ID',
+        width: '10%',
+        filter: false,
+        type: 'html',
+        valuePrepareFunction : (cell) => {
+          return "<div class=\"datos-numericos\">" + cell + "</div>";
+        }
+      },
+      nombre: {
+        title: 'Organización',
+        filter: false
+      },
+      impacto: {
+        title: 'Impacto y participación de la organización',
+        filter: false
+      },
+      eliminar:{
+        title: 'Eliminar',
+        width: '10%',
+        sort: false,
+        type: 'custom',
+        class: 'align-center',
+        renderComponent: ButtonDeleteComponent,
+        onComponentInitFunction: (instance) =>{
+          instance.actionEmitter.subscribe(row => {
+            this.sourceImpacto.remove(row);            
+          });
+        }
+      }
+    },
+    actions: false,
+    attr: {
+      class: 'table table-bordered grid estilo-letra'
+    },
+    hideSubHeader: true,
+    noDataMessage: ''
   }
 }

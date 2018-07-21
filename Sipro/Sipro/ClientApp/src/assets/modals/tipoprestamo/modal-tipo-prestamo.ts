@@ -32,7 +32,7 @@ export class DialogTipoPrestamo {
   constructor(public dialog: MatDialog,
     public dialogRef: MatDialogRef<DialogTipoPrestamo>,
     @Inject(MAT_DIALOG_DATA) public data: any, private http: HttpClient) {
-      this.elementosPorPagina = 7;
+      this.elementosPorPagina = 10;
       this.busquedaGlobal = null;
     }
 

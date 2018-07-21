@@ -11,7 +11,7 @@ import { DialogOverviewTipoPrestamo, DialogTipoPrestamo } from '../../../assets/
 import { ButtonDeleteComponent } from '../../../assets/customs/ButtonDeleteComponent';
 import { ButtonDownloadComponent } from '../../../assets/customs/ButtonDownloadComponent';
 import { DialogDownloadDocument, DialogOverviewDownloadDocument } from '../../../assets/modals/documentosadjuntos/documento-adjunto';
-import { DialogDeletePrestamo, DialogOverviewDeletePrestamo } from './modals/confirmationdelete/confirmation-delete';
+import { DialogDelete, DialogOverviewDelete } from '../../../assets/modals/deleteconfirmation/confirmation-delete';
 import { Prestamo } from './model/Prestamo'
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
@@ -66,7 +66,7 @@ export class PrestamoComponent implements OnInit {
   modalMoneda: DialogOverviewMoneda;
   modalTipoPrestamo: DialogOverviewTipoPrestamo;
   modalAdjuntarDocumento: DialogOverviewDownloadDocument;
-  modalDelete: DialogOverviewDeletePrestamo;
+  modalDelete: DialogOverviewDelete;
   cooperanteid : number;
   matriz_valid : number;
   diferenciaCambios : number;
@@ -107,7 +107,7 @@ export class PrestamoComponent implements OnInit {
     this.modalTipoPrestamo = new DialogOverviewTipoPrestamo(dialog);
     this.sourceTipoPrestamo = new LocalDataSource();
     this.modalAdjuntarDocumento = new DialogOverviewDownloadDocument(dialog);
-    this.modalDelete = new DialogOverviewDeletePrestamo(dialog);
+    this.modalDelete = new DialogOverviewDelete(dialog);
     this.toggle = {};
     this.matriz_valid = 1;
     this.diferenciaCambios = 0;
@@ -190,12 +190,12 @@ export class PrestamoComponent implements OnInit {
 			this.getDocumentosAdjuntos(this.prestamo.id, -1);
     }
     else
-      alert('seleccione un item');
+    this.utils.mensaje("warning", "Debe de seleccionar el préstamo que desea editar");
   }
 
   borrar(){
     if(this.prestamo.id > 0){
-      this.modalDelete.dialog.open(DialogDeletePrestamo, {
+      this.modalDelete.dialog.open(DialogDelete, {
         width: '600px',
         height: '200px',
         data: { 
@@ -205,14 +205,16 @@ export class PrestamoComponent implements OnInit {
           textoBotonCancelar: 'Cancelar'
         }
       }).afterClosed().subscribe(result => {
-        if(result != null){
+        if(result == true){
+          //falta poner la lógica del borrar de préstamo
+
           this.prestamo.tipoMonedaNombre = result.tipoMonedaNombre;
           this.prestamo.tipoMonedaid = result.tipoMonedaId;
         }
       });
     }
     else{
-      alert('Seleccione un préstamo');
+      this.utils.mensaje("warning", "Debe de seleccionar el préstamo que desea borrar");
     }
   }
 
@@ -288,13 +290,13 @@ export class PrestamoComponent implements OnInit {
                       mi.esNuevoDocumento = false;
                     }
                     */
-                   alert('Guardado con éxito');
+                   this.utils.mensaje("success", "Préstamo guardado con éxito");
                    this.botones=true;
                    this.esNuevo=false;
                    this.obtenerTotalPrestamos();
                    this.tabActive = 0;
                   }else{
-                    alert('danger, Error al '+(this.esNuevo ? 'crear' : 'guardar')+' la matriz del préstamo');
+                    this.utils.mensaje("danger", "Error al " +(this.esNuevo ? "crear" : "guardar") + " la matriz del préstamo");
                     this.botones=true;
                   }
                 })
@@ -308,18 +310,18 @@ export class PrestamoComponent implements OnInit {
                 }
                 */
                this.botones=true;
-               alert('Guardado con éxito');
+               this.utils.mensaje("success", "Préstamo guardado con éxito");
               }
               this.esNuevo = false;
             }else{
-              alert('danger, Error al '+(this.esNuevo ? 'crear' : 'guardar')+' el préstamo');
+              this.utils.mensaje("danger", "Error al " +(this.esNuevo ? "crear" : "guardar") + " el préstamo");
               this.botones=true;
             }
           });
       });
     }
     else
-			alert('warning, Debe de llenar todos los campos obligatorios');    
+      this.utils.mensaje("warning", "Debe de llenar todos los campos obligatorios");
   }
 
   IrATabla(){
@@ -345,7 +347,6 @@ export class PrestamoComponent implements OnInit {
             this.mostrarcargando = false;
           }
         } else {
-          console.log('Error');
           this.mostrarcargando = false;
         }
       });
@@ -389,8 +390,6 @@ export class PrestamoComponent implements OnInit {
             { field: 'id', direction: 'asc' }  // primary sort
           ]);
           this.busquedaGlobal = null;
-        } else {
-          console.log('Error');
         }
 
         this.mostrarcargando = false;
@@ -512,7 +511,7 @@ export class PrestamoComponent implements OnInit {
         this.cooperanteid = this.prestamo.cooperantecodigo;
         this.getPorcentajes();
       }else{
-        alert('Warning, No se encontraron datos con los parámetros ingresados');
+        this.utils.mensaje("warning", "No se encontraron datos con los parámetros ingresados");
       }   
   });
   }
@@ -543,8 +542,6 @@ export class PrestamoComponent implements OnInit {
         this.diferenciaCambios = response["diferencia"];
         this.actualizarTotalesUE();
         this.actualizarComponentes();
-      }else{
-        alert('Warning, No se encontraron datos con los parámetros ingresados')
       }
     })
   }
@@ -766,7 +763,7 @@ export class PrestamoComponent implements OnInit {
                 this.sourceArchivosAdjuntos.remove(row);
               }
               else{
-                alert("Error al borrar documento");
+                this.utils.mensaje("danger", "Error al borrar el documento");
               } 
             })
             

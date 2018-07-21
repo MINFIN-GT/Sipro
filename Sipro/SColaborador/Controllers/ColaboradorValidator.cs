@@ -3,7 +3,7 @@ using FluentValidation;
 using Newtonsoft.Json.Linq;
 using Utilities;
 
-namespace SiproFluentValidatorCore.Validators
+namespace SColaborador.Controllers
 {
     /// <summary>
     /// A class which represents the ColaboradorValidator.

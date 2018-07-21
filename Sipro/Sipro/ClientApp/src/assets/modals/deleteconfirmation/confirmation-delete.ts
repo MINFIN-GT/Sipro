@@ -14,15 +14,15 @@ export class DialogOverviewDelete {
     selector: 'confirmation-delete.ts',
     templateUrl: './confirmation-dialog.html'
 })
-export class DialogDeleteTipoPrestamo {
+export class DialogDelete {
     id : number;
     titulo : string;
     textoCuerpo : string;
-    textoBotonOk : string;
-    textoBotonCancelar : string;
+    textoBotonOk: string;
+    textoBotonCancelar: string;
 
     constructor(public dialog: MatDialog,
-        public dialogRef: MatDialogRef<DialogDeleteTipoPrestamo>,
+        public dialogRef: MatDialogRef<DialogDelete>,
         @Inject(MAT_DIALOG_DATA) public data: any, private http: HttpClient,) {
             this.id = data.id;
             this.titulo = data.titulo;
@@ -34,16 +34,10 @@ export class DialogDeleteTipoPrestamo {
     ngOnInit() { }
 
     aceptar(){
-        this.http.delete('http://localhost:60057/api/PrestamoTipo/PrestamoTipo/'+ this.id, { withCredentials : true }).subscribe(response =>{
-            if(response['success'] == true){
-                this.dialogRef.close(true);
-            }
-            else
-                alert('Warning, Error al borrar el tipo de Préstamo');
-        })
+        this.dialogRef.close(true);        
     }
 
     cancelar(){
-        this.dialogRef.close();
+        this.dialogRef.close(false);
     }
 }

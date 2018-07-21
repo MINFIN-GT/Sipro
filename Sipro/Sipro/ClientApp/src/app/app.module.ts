@@ -23,16 +23,16 @@ import { MatPaginatorIntlSpanish } from '../assets/customs/custom-paginator-span
 import { ButtonDeleteComponent } from '../assets/customs/ButtonDeleteComponent';
 import { ButtonDownloadComponent } from '../assets/customs/ButtonDownloadComponent';
 import { DialogDownloadDocument } from '../assets/modals/documentosadjuntos/documento-adjunto';
-import { DialogDeletePrestamo } from './components/prestamo/modals/confirmationdelete/confirmation-delete';
 import { FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo } from '../assets/pipes/FormatoMillones.pipe';
 import { MatMomentDateModule, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { CUSTOM_DATE_FORMAT } from '../assets/customs/formatdate/CUSTOM_DATE_FORMAT';
-import { DialogDeleteTipoPrestamo } from './components/prestamotipo/modals/confirmationdelete/confirmation-delete';
-import { DialogDeleteProyectoPropiedad } from './components/peppropiedad/modals/confirmationdelete/confirmation-delete';
 import { DialogProyectoPropiedad } from '../assets/modals/proyectopropiedad/modal-proyecto-propiedad';
-import { DialogDeleteProyectoTipo } from './components/peptipo/modals/confirmationdelete/confirmation-delete';
+import { DialogDelete } from '../assets/modals/deleteconfirmation/confirmation-delete';
 import { CurrencyMaskModule } from "ng2-currency-mask";
 import { DialogUnidadEjecutora } from '../assets/modals/unidadejecutora/unidad-ejecutora';
+import { DialogDirectorProyecto } from '../assets/modals/directorproyecto/director-proyecto';
+import { DialogImpacto } from '../assets/modals/impacto/modal-impacto';
+import { DialogEntidad } from '../assets/modals/entidad/modal-entidad';
 
 import { AppComponent } from './app.component';
 import { MainComponent } from './components/main/main.component';
@@ -87,9 +87,9 @@ const routes: Routes = [{
       LoginComponent, 
       AccesodenegadoComponent, MainComponent, PagenotfoundComponent, FooterComponent, MainmenuComponent, PrestamoComponent,
       DialogCodigoPresupuestario, DialogMoneda, DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, DialogDownloadDocument, 
-      FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo, PepComponent, DialogDeletePrestamo, 
-      DialogProyectoTipo, PrestamotipoComponent, DialogDeleteTipoPrestamo, PeppropiedadComponent, DialogDeleteProyectoPropiedad, PeptipoComponent,
-      DialogProyectoPropiedad, DialogDeleteProyectoTipo, DialogUnidadEjecutora
+      FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo, PepComponent, DialogProyectoTipo, PrestamotipoComponent, 
+      PeppropiedadComponent, PeptipoComponent, DialogProyectoPropiedad, DialogDelete, DialogUnidadEjecutora, DialogDirectorProyecto,
+      DialogImpacto, DialogEntidad
   ],
   imports: [
       BrowserModule,
@@ -111,8 +111,8 @@ const routes: Routes = [{
   ],
   bootstrap: [AppComponent],
   entryComponents: [DialogCodigoPresupuestario, DialogMoneda, DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, 
-    DialogDownloadDocument, DialogDeletePrestamo, DialogProyectoTipo, DialogDeleteTipoPrestamo, DialogDeleteProyectoPropiedad, 
-    DialogProyectoPropiedad, DialogDeleteProyectoTipo, DialogUnidadEjecutora]
+    DialogDownloadDocument, DialogProyectoTipo, DialogProyectoPropiedad, DialogDelete, DialogUnidadEjecutora, DialogDirectorProyecto,
+    DialogImpacto, DialogEntidad]
 })
 export class AppModule { 
 

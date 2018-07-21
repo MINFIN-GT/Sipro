@@ -32,7 +32,7 @@ export class DialogMoneda {
   constructor(public dialog: MatDialog,
     public dialogRef: MatDialogRef<DialogMoneda>,
     @Inject(MAT_DIALOG_DATA) public data: any, private http: HttpClient) {
-      this.elementosPorPagina = 9;
+      this.elementosPorPagina = 10;
       this.busquedaGlobal = null;
     }
 

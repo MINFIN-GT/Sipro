@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { LocalDataSource } from 'ng2-smart-table';
 import * as moment from 'moment';
 import { PrestamoTipo } from './model/model.prestamotipo';
-import { DialogDeleteTipoPrestamo, DialogOverviewDelete } from './modals/confirmationdelete/confirmation-delete';
+import { DialogDelete, DialogOverviewDelete } from '../../../assets/modals/deleteconfirmation/confirmation-delete';
 import { MatDialog } from '@angular/material';
 
 @Component({
@@ -106,12 +106,12 @@ export class PrestamotipoComponent implements OnInit {
       this.esNuevo = false;
     }
     else
-      alert('warning, Debe seleccionar el Tipo de préstamo que desea editar');
+    this.utils.mensaje('warning', "Debe seleccionar el Tipo de préstamo que desea editar");
   }
 
   borrar(){
     if(this.prestamotipo.id > 0){
-      this.modalDelete.dialog.open(DialogDeleteTipoPrestamo, {
+      this.modalDelete.dialog.open(DialogDelete, {
         width: '600px',
         height: '200px',
         data: { 
@@ -122,13 +122,19 @@ export class PrestamotipoComponent implements OnInit {
           textoBotonCancelar: 'Cancelar'
         }
       }).afterClosed().subscribe(result => {
-        if(result != null){
-          this.obtenerTotalprestamotipos();
+        if(result == true){
+          this.http.delete('http://localhost:60057/api/PrestamoTipo/PrestamoTipo/'+ this.prestamotipo.id, { withCredentials : true }).subscribe(response =>{
+            if(response['success'] == true){
+              this.obtenerTotalprestamotipos();
+            }
+            else
+                this.utils.mensaje("danger", "Error al borrar el tipo de Préstamo");
+          })
         }
       });
     }
     else{
-      alert('warning, Seleccione un préstamo');
+      this.utils.mensaje("warning", "Debe seleccionar el Tipo de préstamo que desea borrar");
     }
   }
 
@@ -171,6 +177,7 @@ export class PrestamotipoComponent implements OnInit {
 
           this.esNuevo = false;
           this.obtenerTotalprestamotipos();
+          this.utils.mensaje('success', "Tipo préstamo guardado con éxito");          
         }
       })
     }

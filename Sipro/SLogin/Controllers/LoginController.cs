@@ -57,7 +57,7 @@ namespace Sipro.Controllers
 			{
 				Subject = claimsIdentity,
 				NotBefore = DateTime.UtcNow,
-				Expires = DateTime.UtcNow.AddMinutes(60),
+				Expires = DateTime.UtcNow.AddMinutes(6000),
 				SigningCredentials = new SigningCredentials(securityKey,
 				SecurityAlgorithms.HmacSha256Signature)
 			};
@@ -95,7 +95,7 @@ namespace Sipro.Controllers
 						_User,
 						new AuthenticationProperties()
 						{
-							ExpiresUtc = DateTime.UtcNow.AddMinutes(60),
+							ExpiresUtc = DateTime.UtcNow.AddMinutes(6000),
 							IsPersistent = false,
 							AllowRefresh = true
 						}

@@ -309,6 +309,17 @@
                                                         <mat-icon class="search-info" matSuffix (click)="buscarDirecotorProyecto()">search</mat-icon>
                                                     </mat-form-field>
                                                 </div>
+                                                <div fxLayout="column">
+                                                    <h5 class="label-form" fxLayoutAlign="center">Impacto en gobierno</h5>                                                    
+                                                    <div style="text-align: right;">
+                                                      <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="agregarImpacto()" matTooltip="Asignar un nuevo proyecto" matTooltipPosition="left"><mat-icon>add</mat-icon></button>
+                                                    </div>
+                                                    <br>
+                                                    <div>
+                                                      <ng2-smart-table [settings]="settingsImpacto" [source]="sourceImpacto"></ng2-smart-table>              
+                                                    </div>
+                                                    
+                                                </div>
                                             </div>
                                         </mat-tab>
                                         <mat-tab label="Desembolsos" style="overflow: hidden;">

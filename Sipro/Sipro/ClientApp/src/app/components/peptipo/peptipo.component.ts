@@ -10,7 +10,7 @@ import * as moment from 'moment';
 import { Etiqueta } from '../../../assets/models/Etiqueta';
 import { ProyectoTipo } from './model/ProyectoTipo'
 import { DialogProyectoPropiedad, DialogOverviewProyectoPropiedad } from '../../../assets/modals/proyectopropiedad/modal-proyecto-propiedad';
-import { DialogDeleteProyectoTipo, DialogOverviewDelete } from './modals/confirmationdelete/confirmation-delete';
+import { DialogDelete, DialogOverviewDelete } from '../../../assets/modals/deleteconfirmation/confirmation-delete';
 
 @Component({
   selector: 'app-peptipo',
@@ -133,13 +133,13 @@ export class PeptipoComponent implements OnInit {
       })
     }
     else{
-      alert('warning, Debe seleccionar un Tipo de ' + this.etiqueta.proyecto+' que desea editar');
+      this.utils.mensaje("warning", "Debe seleccionar un Tipo de " + this.etiqueta.proyecto + " que desea editar");
     }
   }
 
   borrar(){
     if(this.proyectotipo.id > 0){
-      this.modalDelete.dialog.open(DialogDeleteProyectoTipo, {
+      this.modalDelete.dialog.open(DialogDelete, {
         width: '600px',
         height: '200px',
         data: { 
@@ -150,13 +150,18 @@ export class PeptipoComponent implements OnInit {
           textoBotonCancelar: 'Cancelar'
         }
       }).afterClosed().subscribe(result => {
-        if(result != null){
-          this.obtenerTotalProyectotipos();
+        if(result == true){
+          this.http.delete('http://localhost:60068/api/ProyectoTipo/ProyectoTipo/'+ this.proyectotipo.id, { withCredentials : true }).subscribe(response =>{
+            if(response['success'] == true){
+              this.obtenerTotalProyectotipos();
+            }
+        })
+          
         }
       })
     }
     else{
-      alert('warning, Seleccione una propiedad de ' + this.etiqueta.proyecto);
+      this.utils.mensaje("warning", "Seleccione el tipo de " + this.etiqueta.proyecto + " que desea borrar");
     }
   }
 
@@ -211,13 +216,13 @@ export class PeptipoComponent implements OnInit {
   
             this.esNuevo = false;
             this.obtenerTotalProyectotipos();
-            alert("warning, Guardado exitosamente");
+            this.utils.mensaje("success", "Tipo de " + this.etiqueta.proyecto + " guardado con éxito");
           }
         })
       })
     }
     else{
-      alert("warning, Debe seleccionar un Tipo de dato");
+      this.utils.mensaje("warning", "Debe seleccionar un Tipo de dato");
     }
   }
 
@@ -354,5 +359,4 @@ export class PeptipoComponent implements OnInit {
     hideSubHeader: true,
     noDataMessage: ''
   };
-
 }

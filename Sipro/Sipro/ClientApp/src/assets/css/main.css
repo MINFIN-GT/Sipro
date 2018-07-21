@@ -609,3 +609,26 @@ input.riesgos[type='range']::-webkit-slider-thumb {
     background-color: #607d8b;
 }
 
+.alert-successm{
+    background-color: #cdf5c3;
+    width: 92%;
+    height: 60%;
+    padding-left: 10px;
+    color: #3c763d;
+}
+
+.alert-warningm{
+    background-color: #ffffd9;
+    width: 92%;
+    height: 60%;
+    padding-left: 10px;
+    color: #8a6d3b
+}
+
+.alert-dangerm{
+    background-color: #ffd3d3;
+    width: 92%;
+    height: 60%;
+    padding-left: 10px;
+    color: #ff3232
+}

@@ -34,7 +34,7 @@ export class DialogUnidadEjecutora {
   constructor(public dialog: MatDialog,
     public dialogRef: MatDialogRef<DialogUnidadEjecutora>,
     @Inject(MAT_DIALOG_DATA) public data: any, private http: HttpClient) {
-      this.elementosPorPagina = 9;
+      this.elementosPorPagina = 10;
       this.busquedaGlobal = null;
       this.ejercicio = data.ejercicio;
       this.codigoEntidad = data.entidad;

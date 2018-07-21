@@ -7,7 +7,7 @@ import * as moment from 'moment';
 import { MatDialog } from '@angular/material';
 import { PepPropiedad } from './model/PepPropiedad';
 import { Etiqueta } from '../../../assets/models/Etiqueta';
-import { DialogDeleteProyectoPropiedad, DialogOverviewDelete } from './modals/confirmationdelete/confirmation-delete';
+import { DialogDelete, DialogOverviewDelete } from '../../../assets/modals/deleteconfirmation/confirmation-delete';
 
 @Component({
   selector: 'app-peppropiedad',
@@ -78,11 +78,7 @@ export class PeppropiedadComponent implements OnInit {
       else{
         this.source = new LocalDataSource();
       }
-
-      this.mostrarcargando = false;
     })
-
-    this.mostrarcargando = false;
   }
 
   cargarTabla(pagina? : any){
@@ -103,9 +99,9 @@ export class PeppropiedadComponent implements OnInit {
           { field: 'id', direction: 'asc' }  // primary sort
         ]);
         this.busquedaGlobal = null;
-      }
 
-      this.mostrarcargando = false;
+        this.mostrarcargando = false;
+      }
     })
   }
 
@@ -129,7 +125,7 @@ export class PeppropiedadComponent implements OnInit {
 
   borrar(){
     if(this.proyectopropiedad.id > 0){
-      this.modalDelete.dialog.open(DialogDeleteProyectoPropiedad, {
+      this.modalDelete.dialog.open(DialogDelete, {
         width: '600px',
         height: '200px',
         data: { 
@@ -141,7 +137,11 @@ export class PeppropiedadComponent implements OnInit {
         }
       }).afterClosed().subscribe(result => {
         if(result != null){
-          this.obtenerTotalProyectoPropiedades();
+          this.http.delete('http://localhost:60067/api/ProyectoPropiedad/ProyectoPropiedad/'+ this.proyectopropiedad.id, { withCredentials : true }).subscribe(response =>{
+            if(response['success'] == true){
+              this.obtenerTotalProyectoPropiedades();
+            }
+          })          
         }
       })
     }

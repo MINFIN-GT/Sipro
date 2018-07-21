@@ -4,57 +4,55 @@ import { HttpClient } from '@angular/common/http';
 import { LocalDataSource } from 'ng2-smart-table';
 
 @Component({
-  templateUrl: './modal-dialog.html'
+  templateUrl: './modal-dialog.html',
 })
-export class DialogOverviewProyectoPropiedad {
+export class DialogOverviewEntidad {
   constructor(public dialog: MatDialog) {}
 }
 
 @Component({
-  selector: 'modal-tipo-prestamo.ts',
+  selector: 'modal-impacto.ts',
   templateUrl: './modal-dialog.html'
 })
-export class DialogProyectoPropiedad {
-  totalElementos : number;
-  source: LocalDataSource;
-  paginaActual : number;
-  elementosPorPagina : number;
-  id : number;
-  nombre: string;
-  tipoDatoNombre : string
-  color = 'primary';
-  mode = 'indeterminate';
-  value = 50;
-  diameter = 45;
-  strokewidth = 3;
-  esColapsado: boolean;
-  busquedaGlobal: string;
+export class DialogEntidad {
+    totalElementos : number;
+    source: LocalDataSource;
+    paginaActual : number;
+    elementosPorPagina : number;
+    entidad : number;
+    nombre: string;
+    color = 'primary';
+    mode = 'indeterminate';
+    value = 50;
+    diameter = 45;
+    strokewidth = 3;
+    esColapsado: boolean;
+    busquedaGlobal: string;
 
   constructor(public dialog: MatDialog,
-    public dialogRef: MatDialogRef<DialogProyectoPropiedad>,
+    public dialogRef: MatDialogRef<DialogEntidad>,
     @Inject(MAT_DIALOG_DATA) public data: any, private http: HttpClient) {
       this.elementosPorPagina = 10;
       this.busquedaGlobal = null;
-      this.source = new LocalDataSource();
     }
 
   ngOnInit() { 
-    this.obtenerTotalProyectosPropiedades();
+    this.obtenerTotalCodigos();
   }
 
   Ok(): void {    
-    this.data = { nombre : this.nombre, id : this.id, datoTiponombre: this.tipoDatoNombre };
+    this.data = { nombre : this.nombre, id : this.entidad };
     this.dialogRef.close(this.data);
   }
 
-  obtenerTotalProyectosPropiedades(){
-    this.esColapsado = false;
-    var filtro = {
+  obtenerTotalCodigos(){
+    var data = {  
       filtro_busqueda: this.busquedaGlobal
     };
-    this.http.post('http://localhost:60067/api/ProyectoPropiedad/NumeroProyectoPropiedades',filtro, {withCredentials: true}).subscribe(response => {
+    this.esColapsado = false;
+    this.http.post('http://localhost:60024/api/Entidad/totalEntidades',data,{withCredentials: true}).subscribe(response => {
       if (response['success'] == true) {   
-        this.totalElementos = response["totalproyectopropiedades"];
+        this.totalElementos = response["total"];
         this.paginaActual = 1;
         this.cargarTabla(this.paginaActual);
       } else {
@@ -66,12 +64,12 @@ export class DialogProyectoPropiedad {
   cargarTabla(pagina? : number){
     var filtro = {
       pagina: pagina,
-      numeroProyectoPropiedad: this.elementosPorPagina,
-      filtro_busqueda: this.busquedaGlobal
+      registros: this.elementosPorPagina,
+      filtro_busqueda: this.busquedaGlobal,
     }
-    this.http.post('http://localhost:60067/api/ProyectoPropiedad/ProyectoPropiedadPagina', filtro, { withCredentials: true }).subscribe(response => {
+    this.http.post('http://localhost:60024/api/Entidad/Entidades', filtro, { withCredentials: true }).subscribe(response => {
       if (response['success'] == true) {
-        var data = response["proyectopropiedades"];        
+        var data = response["entidades"];        
         this.source = new LocalDataSource(data);
         this.esColapsado = true;
 
@@ -89,19 +87,18 @@ export class DialogProyectoPropiedad {
   }
 
   onSelectRow(event){
+    this.entidad = event.data.entidad;
     this.nombre = event.data.nombre;
-    this.id = event.data.id;
-    this.tipoDatoNombre = event.data.datoTiponombre;
   }
 
   onDblClickRow(event){
-    this.data = { nombre : this.nombre, id : this.id, datoTiponombre : this.tipoDatoNombre };
+    this.data = { nombre : this.nombre, id : this.entidad };
     this.dialogRef.close(this.data);
   }
 
   settings = {
    columns: {
-      id: {
+      entidad: {
         title: 'ID',
         width: '10%',
         filter: false,
@@ -112,8 +109,8 @@ export class DialogProyectoPropiedad {
       },
       nombre: {
         title: 'Nombre',
-        filter: false, 
-        class: 'align-left'      
+        filter: false,    
+        class: 'align-left'   
       }
     },
     actions: false,
@@ -121,7 +118,10 @@ export class DialogProyectoPropiedad {
     attr: {
       class: 'table table-bordered grid estilo-letra'
     },
-    hideSubHeader: true
+    hideSubHeader: true,
+    pager:{
+        display: false
+    }
   };
 
   handlePage(event){
@@ -131,6 +131,6 @@ export class DialogProyectoPropiedad {
 
   filtrar(campo){  
     this.busquedaGlobal = campo;
-    this.obtenerTotalProyectosPropiedades();
+    this.obtenerTotalCodigos();
   }
 }

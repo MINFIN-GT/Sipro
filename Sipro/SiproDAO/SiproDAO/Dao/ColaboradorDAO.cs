@@ -46,240 +46,227 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-	 /*public static boolean guardar(Integer codigo, String primerNombre, String segundoNombre, String otrosNombres,
-			String primerApellido, String segundoApellido, String otrosApellidos, Long cui,
-			Integer ejercicio, Integer entidad,Integer codigoUnidadEjecutora, String usuario, String usuario_creacion, Date fecha_creacion) {
+        public static bool guardar(Colaborador colaborador)
+        {
+            bool ret = false;
 
-		Colaborador pojo = getColaborador(codigo);
-		boolean ret = false;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    int existe = db.ExecuteScalar<int>("SELECT COUNT(*) FROM colaborador WHERE id=:id", new { id = colaborador.id });
 
-		if (pojo == null) {
+                    if (existe > 1)
+                    {
+                        int guardado = db.Execute("UPDATE colaborador SET pnombre=:pnombre, snombre=:snombre, papellido=:papellido, sapellido=:sapellido, cui=:cui, ueunidad_ejecutora=:ueunidadEjecutora," +
+                            "usuariousuario=:usuariousuario, estado=:estado, usuario_creo=:usuarioCreo, usuario_actualizo=:usuarioActualizo, fecha_creacion=:fechaCreacion, fecha_actualizacion=:fechaActualizacion, " +
+                            "ejercicio=:ejercicio, entidad=:entidad WHERE id=:id", colaborador);
 
-			pojo = new Colaborador(UnidadEjecutoraDAO.getUnidadEjecutora(ejercicio, entidad,codigoUnidadEjecutora),UsuarioDAO.getUsuario(usuario),
-					primerNombre, segundoNombre, primerApellido, segundoApellido, cui, 1, usuario_creacion, null, fecha_creacion, null,
-					null, null, null,null,null);
-			Session session = CHibernateSession.getSessionFactory().openSession();
-			try {
-				session.beginTransaction();
-				session.save(pojo);
-				session.getTransaction().commit();
-				ret = true;
-			} catch (Throwable e) {
-				CLogger.write("3", ColaboradorDAO.class, e);
-			} finally {
-				session.close();
-			}
-		}
+                        ret = guardado > 0 ? true : false;
+                    }
+                    else
+                    {
+                        int sequenceId = db.ExecuteScalar<int>("SELECT seq_colaborador.nextval FROM DUAL");
+                        colaborador.id = sequenceId;
+                        int guardado = db.Execute("INSERT INTO colaborador(:id, :pnombre, :snombre, :papellido, :sapellido, :cui, :ueunidadEjecutora, :usuariousuario, :estado, :usuarioCreo, " +
+                            ":usuarioActualizo, :fechaCreacion, :fechaActualizacion, :ejercicio, :entidad)", colaborador);
 
-		return ret;
-	}
+                        ret = guardado > 0 ? true : false;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("3", "ColaboradorDAO.class", e);
+            }
 
-	public static boolean actualizar(Integer codigo, String primerNombre, String segundoNombre, 
-			String primerApellido, String segundoApellido, Long cui,
-			Integer ejercicio, Integer entidad,Integer codigoUnidadEjecutora, String usuario, String usuarioc) {
+            return ret;
+        }
 
-		Colaborador pojo = getColaborador(codigo);
-		boolean ret = false;
+        public static bool borrar(Colaborador colaborador)
+        {
+            bool ret = false;
 
-		if (pojo != null) {
-			pojo.setPnombre(primerNombre);
-			pojo.setSnombre(segundoNombre);
-			pojo.setPapellido(primerApellido);
-			pojo.setSapellido(segundoApellido);
-			pojo.setCui(cui);
-			pojo.setUsuarioActualizo(usuarioc);
-			pojo.setFechaActualizacion(new Date());
+            try
+            {
+                colaborador.estado = 0;
+                colaborador.fechaActualizacion = new DateTime();
+                ret = guardar(colaborador);
+            }
+            catch (Exception e)
+            {
+                CLogger.write("5", "ColaboradorDAO.class", e);
+            }
+            return ret;
+        }
 
-			pojo.setUnidadEjecutora(UnidadEjecutoraDAO.getUnidadEjecutora(ejercicio, entidad,codigoUnidadEjecutora));
-			if(usuario!=null)
-				pojo.setUsuario(UsuarioDAO.getUsuario(usuario));
+        public static List<Colaborador> getPagina(int pagina, int registros, String filtro_busqueda, String columna_ordenada, String orden_direccion, String excluir)
+        {
+            List<Colaborador> ret = new List<Colaborador>();
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    String query = String.Join(" ", "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT c.* FROM Colaborador c ",
+                        filtro_busqueda != null && filtro_busqueda.Length > 0 ? "INNER JOIN unidad_ejecutora ue ON ue.unidad_ejecutora=c.ueunidad_ejecutora AND ue.ejercicio=c.ejercicio AND ue.entidadentidad=c.entidad" : "",
+                        "WHERE c.estado=1 ");
+                    String query_a = "";
+                    if (filtro_busqueda != null && filtro_busqueda.Length > 0)
+                    {
+                        query_a = String.Join("", query_a, " c.pnombre LIKE '%" + filtro_busqueda + "%' ");
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " c.snombre LIKE '%" + filtro_busqueda + "%' ");
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " c.papellido LIKE '%" + filtro_busqueda + "%' ");
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " c.sapellido LIKE '%" + filtro_busqueda + "%' ");
 
-			Session session = CHibernateSession.getSessionFactory().openSession();
-			try {
-				session.beginTransaction();
-				session.update(pojo);
-				session.getTransaction().commit();
-				ret = true;
-			} catch (Throwable e) {
-				CLogger.write("4", ColaboradorDAO.class, e);
-			} finally {
-				session.close();
-			}
-		}
+                        long cui;
+                        if (long.TryParse(filtro_busqueda, out cui))
+                        {
+                            query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " str(c.cui) LIKE '%" + cui + "%' ");
+                        }
 
-		return ret;
-	}
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " ue.nombre LIKE '%" + filtro_busqueda + "%' ");                        
+                    }
+                    query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND (", query_a, ")") : ""));
+                    query = String.Join(" ", query, (excluir != null && excluir.Length > 0 ? "and c.id not in (" + excluir + ")" : ""));
+                    query = columna_ordenada != null && columna_ordenada.Trim().Length > 0 ? String.Join(" ", query, "ORDER BY", columna_ordenada, orden_direccion) : query;
+                    query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + registros + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + registros + ") + 1)");
+                    ret = db.Query<Colaborador>(query).AsList<Colaborador>();
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("6", "ColaboradorDAO.class", e);
+            }
+            return ret;
+        }
+
+        /*public static String getJson(int pagina, int registros, String filtro_pnombre, String filtro_snombre, String filtro_papellido, String filtro_sapellido,
+                String filtro_cui, String filtro_unidad_ejecutora, String columna_ordenada, String orden_direccion) {
+            String jsonEntidades = "";
+
+            List<Colaborador> pojos = getPagina(pagina, registros, filtro_pnombre, filtro_snombre, filtro_papellido, filtro_sapellido,
+                    filtro_cui, filtro_unidad_ejecutora, columna_ordenada, orden_direccion,null);
+
+            List<EstructuraPojo> listaEstructuraPojos = new ArrayList<EstructuraPojo>();
+
+            for (Colaborador pojo : pojos) {
+                EstructuraPojo estructuraPojo = new EstructuraPojo();
+                estructuraPojo.id = pojo.getId();
+                estructuraPojo.primerNombre = pojo.getPnombre();
+                estructuraPojo.segundoNombre = pojo.getSnombre();
+                estructuraPojo.primerApellido = pojo.getPapellido();
+                estructuraPojo.segundoApellido = pojo.getSapellido();
+                estructuraPojo.cui = pojo.getCui();
+
+                estructuraPojo.usuario = pojo.getUsuario().getUsuario();
+
+                estructuraPojo.unidadEjecutora = pojo.getUnidadEjecutora().getId().getUnidadEjecutora();
+
+                estructuraPojo.nombreUnidadEjecutora = pojo.getUnidadEjecutora().getNombre();
+
+                estructuraPojo.usuarioCreo = pojo.getUsuarioCreo();
+                estructuraPojo.usuarioActualizo = pojo.getUsuarioActualizo();
+                estructuraPojo.fechaCreacion = Utils.formatDateHour(pojo.getFechaCreacion());
+                estructuraPojo.fechaActualizacion = Utils.formatDateHour(pojo.getFechaActualizacion());
+                estructuraPojo.nombreCompleto = String.join(" ", estructuraPojo.primerNombre,
+                        estructuraPojo.segundoNombre!=null ? estructuraPojo.segundoNombre : "" ,
+                        estructuraPojo.primerApellido !=null ? estructuraPojo.primerApellido : "" ,
+                        estructuraPojo.segundoApellido !=null ? estructuraPojo.segundoApellido : "");
+
+                listaEstructuraPojos.add(estructuraPojo);
+            }
+
+            jsonEntidades = Utils.getJSonString("colaboradores", listaEstructuraPojos);
+
+            return jsonEntidades;
+        }
+        public static String getJson2() {
+            String jsonEntidades = "";
+
+            List<Colaborador> pojos = getPagina(1, 10000, null, null, null, null, null, null, null, null,null);
+
+            List<EstructuraPojo> listaEstructuraPojos = new ArrayList<EstructuraPojo>();
+
+            for (Colaborador pojo : pojos) {
+                if(pojo.getUsuario()==null){
+                    EstructuraPojo estructuraPojo = new EstructuraPojo();
+                    estructuraPojo.id = pojo.getId();
+                    estructuraPojo.primerNombre = pojo.getPnombre();
+                    estructuraPojo.segundoNombre = pojo.getSnombre();
+                    estructuraPojo.primerApellido = pojo.getPapellido();
+                    estructuraPojo.segundoApellido = pojo.getSapellido();
+                    estructuraPojo.cui = pojo.getCui();
+                    if(pojo.getUsuario()!=null)
+                        estructuraPojo.usuario = pojo.getUsuario().getUsuario();
+                    estructuraPojo.unidadEjecutora = pojo.getUnidadEjecutora().getId().getUnidadEjecutora();
+                    estructuraPojo.nombreUnidadEjecutora = pojo.getUnidadEjecutora().getNombre();
+                    estructuraPojo.usuarioCreo = pojo.getUsuarioCreo();
+                    estructuraPojo.usuarioActualizo = pojo.getUsuarioActualizo();
+                    estructuraPojo.fechaCreacion = Utils.formatDateHour(pojo.getFechaCreacion());
+                    estructuraPojo.fechaActualizacion = Utils.formatDateHour(pojo.getFechaActualizacion());
+                    estructuraPojo.nombreCompleto = String.join(" ", estructuraPojo.primerNombre,
+                            estructuraPojo.segundoNombre!=null ? estructuraPojo.segundoNombre : "" ,
+                            estructuraPojo.primerApellido !=null ? estructuraPojo.primerApellido : "" ,
+                            estructuraPojo.segundoApellido !=null ? estructuraPojo.segundoApellido : "");
+
+                    listaEstructuraPojos.add(estructuraPojo);
+                }
+
+            }
+
+            jsonEntidades = Utils.getJSonString("colaboradores", listaEstructuraPojos);
+
+            return jsonEntidades;
+        }*/
+
+        public static long getTotal(String filtro_busqueda, String excluir)
+        {
+            long ret = 0L;
+
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    String query = String.Join(" ", "SELECT COUNT(c.id) FROM colaborador c",
+                        filtro_busqueda != null && filtro_busqueda.Length > 0 ? "INNER JOIN unidad_ejecutora ue ON ue.unidad_ejecutora=c.ueunidad_ejecutora AND ue.ejercicio=c.ejercicio AND ue.entidadentidad=c.entidad" : "",
+                        "WHERE c.estado=1");
+                    String query_a = "";
+
+                    if (filtro_busqueda != null && filtro_busqueda.Length > 0)
+                    {
+                        query_a = String.Join("", query_a, " c.pnombre LIKE '%" + filtro_busqueda + "%' ");
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " c.snombre LIKE '%" + filtro_busqueda + "%' ");
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " c.papellido LIKE '%" + filtro_busqueda + "%' ");
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " c.sapellido LIKE '%" + filtro_busqueda + "%' ");
+
+                        long cui;
+                        if (long.TryParse(filtro_busqueda, out cui))
+                        {
+                            query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " str(c.cui) LIKE '%" + cui + "%' ");
+                        }
+
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " ue.nombre LIKE '%" + filtro_busqueda + "%' ");
+
+                        query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND (", query_a, ")") : ""));
+                        query = String.Join(" ", query, (excluir != null && excluir.Length > 0 ? "and c.id not in (" + excluir + ")" : ""));
+                    }
+
+                    ret = db.ExecuteScalar<long>(query);
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("7", "ColaboradorDAO.class", e);
+            }
+            return ret;
+        }
+
+        public static bool validarUsuario(String usuario)
+        {
+            return UsuarioDAO.getUsuario(usuario) != null;
+        }
 	
-	public static boolean borrar(Integer id, String usuarioc) {
-
-		Colaborador pojo = getColaborador(id);
-		pojo.setEstado(0);
-		pojo.setUsuarioActualizo(usuarioc);
-		pojo.setFechaActualizacion(new Date());
-		boolean ret = false;
-
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try {
-				session.beginTransaction();
-				session.update(pojo);
-				session.getTransaction().commit();
-				ret = true;
-		} catch (Throwable e) {
-			CLogger.write("5", ColaboradorDAO.class, e);
-		} finally {
-			session.close();
-		}
-		return ret;
-	}
-
-	public static List<Colaborador> getPagina(int pagina, int registros,String filtro_pnombre, String filtro_snombre, String filtro_papellido, String filtro_sapellido,
-			String filtro_cui, String filtro_unidad_ejecutora, String columna_ordenada, String orden_direccion, String excluir) {
-		List<Colaborador> ret = new ArrayList<Colaborador>();
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try {
-			String query = "SELECT c FROM Colaborador c WHERE c.estado=1 ";
-			String query_a="";
-			if(filtro_pnombre!=null && filtro_pnombre.trim().length()>0)
-				query_a = String.join("",query_a, " c.pnombre LIKE '%",filtro_pnombre,"%' ");
-			if(filtro_snombre!=null && filtro_snombre.trim().length()>0)
-				query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " c.snombre LIKE '%", filtro_snombre,"%' ");
-			if(filtro_papellido!=null && filtro_papellido.trim().length()>0)
-				query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " c.papellido LIKE '%", filtro_papellido,"%' ");
-			if(filtro_sapellido!=null && filtro_sapellido.trim().length()>0)
-				query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " c.sapellido LIKE '%", filtro_sapellido,"%' ");
-			if(filtro_cui!=null && filtro_cui.trim().length()>0)
-				query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " str(c.cui) LIKE '%", filtro_cui,"%' ");
-			if(filtro_unidad_ejecutora!=null && filtro_unidad_ejecutora.trim().length()>0)
-				query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " c.unidadEjecutora.nombre LIKE '%", filtro_unidad_ejecutora,"%' ");
-			query = String.join(" ", query, (query_a.length()>0 ? String.join("","AND (",query_a,")") : ""));
-			query = String.join(" ", query, (excluir!=null && excluir.length()>0 ? "and c.id not in (" + excluir + ")" : ""));
-			query = columna_ordenada!=null && columna_ordenada.trim().length()>0 ? String.join(" ",query,"ORDER BY",columna_ordenada,orden_direccion ) : query;
-			
-			Query<Colaborador> criteria = session.createQuery(query,Colaborador.class);
-			criteria.setFirstResult(((pagina-1)*(registros)));
-			criteria.setMaxResults(registros);
-			ret = criteria.getResultList();
-		} catch (Throwable e) {
-			CLogger.write("6", ColaboradorDAO.class, e);
-		} finally {
-			session.close();
-		}
-		return ret;
-	}
-
-	public static String getJson(int pagina, int registros, String filtro_pnombre, String filtro_snombre, String filtro_papellido, String filtro_sapellido,
-			String filtro_cui, String filtro_unidad_ejecutora, String columna_ordenada, String orden_direccion) {
-		String jsonEntidades = "";
-
-		List<Colaborador> pojos = getPagina(pagina, registros, filtro_pnombre, filtro_snombre, filtro_papellido, filtro_sapellido,
-				filtro_cui, filtro_unidad_ejecutora, columna_ordenada, orden_direccion,null);
-
-		List<EstructuraPojo> listaEstructuraPojos = new ArrayList<EstructuraPojo>();
-
-		for (Colaborador pojo : pojos) {
-			EstructuraPojo estructuraPojo = new EstructuraPojo();
-			estructuraPojo.id = pojo.getId();
-			estructuraPojo.primerNombre = pojo.getPnombre();
-			estructuraPojo.segundoNombre = pojo.getSnombre();
-			estructuraPojo.primerApellido = pojo.getPapellido();
-			estructuraPojo.segundoApellido = pojo.getSapellido();
-			estructuraPojo.cui = pojo.getCui();
-
-			estructuraPojo.usuario = pojo.getUsuario().getUsuario();
-			
-			estructuraPojo.unidadEjecutora = pojo.getUnidadEjecutora().getId().getUnidadEjecutora();
-			
-			estructuraPojo.nombreUnidadEjecutora = pojo.getUnidadEjecutora().getNombre();
-			
-			estructuraPojo.usuarioCreo = pojo.getUsuarioCreo();
-			estructuraPojo.usuarioActualizo = pojo.getUsuarioActualizo();
-			estructuraPojo.fechaCreacion = Utils.formatDateHour(pojo.getFechaCreacion());
-			estructuraPojo.fechaActualizacion = Utils.formatDateHour(pojo.getFechaActualizacion());
-			estructuraPojo.nombreCompleto = String.join(" ", estructuraPojo.primerNombre,
-					estructuraPojo.segundoNombre!=null ? estructuraPojo.segundoNombre : "" ,
-					estructuraPojo.primerApellido !=null ? estructuraPojo.primerApellido : "" ,
-					estructuraPojo.segundoApellido !=null ? estructuraPojo.segundoApellido : "");
-
-			listaEstructuraPojos.add(estructuraPojo);
-		}
-
-		jsonEntidades = Utils.getJSonString("colaboradores", listaEstructuraPojos);
-
-		return jsonEntidades;
-	}
-	public static String getJson2() {
-		String jsonEntidades = "";
-
-		List<Colaborador> pojos = getPagina(1, 10000, null, null, null, null, null, null, null, null,null);
-
-		List<EstructuraPojo> listaEstructuraPojos = new ArrayList<EstructuraPojo>();
-
-		for (Colaborador pojo : pojos) {
-			if(pojo.getUsuario()==null){
-				EstructuraPojo estructuraPojo = new EstructuraPojo();
-				estructuraPojo.id = pojo.getId();
-				estructuraPojo.primerNombre = pojo.getPnombre();
-				estructuraPojo.segundoNombre = pojo.getSnombre();
-				estructuraPojo.primerApellido = pojo.getPapellido();
-				estructuraPojo.segundoApellido = pojo.getSapellido();
-				estructuraPojo.cui = pojo.getCui();
-				if(pojo.getUsuario()!=null)
-					estructuraPojo.usuario = pojo.getUsuario().getUsuario();
-				estructuraPojo.unidadEjecutora = pojo.getUnidadEjecutora().getId().getUnidadEjecutora();
-				estructuraPojo.nombreUnidadEjecutora = pojo.getUnidadEjecutora().getNombre();
-				estructuraPojo.usuarioCreo = pojo.getUsuarioCreo();
-				estructuraPojo.usuarioActualizo = pojo.getUsuarioActualizo();
-				estructuraPojo.fechaCreacion = Utils.formatDateHour(pojo.getFechaCreacion());
-				estructuraPojo.fechaActualizacion = Utils.formatDateHour(pojo.getFechaActualizacion());
-				estructuraPojo.nombreCompleto = String.join(" ", estructuraPojo.primerNombre,
-						estructuraPojo.segundoNombre!=null ? estructuraPojo.segundoNombre : "" ,
-						estructuraPojo.primerApellido !=null ? estructuraPojo.primerApellido : "" ,
-						estructuraPojo.segundoApellido !=null ? estructuraPojo.segundoApellido : "");
-				
-				listaEstructuraPojos.add(estructuraPojo);
-			}
-			
-		}
-
-		jsonEntidades = Utils.getJSonString("colaboradores", listaEstructuraPojos);
-
-		return jsonEntidades;
-	}
-
-	public static Long getTotal(String filtro_pnombre, String filtro_snombre, String filtro_papellido, String filtro_sapellido, String filtro_cui, String filtro_unidad_ejecutora) {
-		Long ret = 0L;
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try {
-			String query = "SELECT count(c.id) FROM Colaborador c WHERE c.estado=1 ";
-			String query_a="";
-			if(filtro_pnombre!=null && filtro_pnombre.trim().length()>0)
-				query_a = String.join("",query_a, " c.pnombre LIKE '%",filtro_pnombre,"%' ");
-			if(filtro_snombre!=null && filtro_snombre.trim().length()>0)
-				query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " c.snombre LIKE '%", filtro_snombre,"%' ");
-			if(filtro_papellido!=null && filtro_papellido.trim().length()>0)
-				query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " c.papellido LIKE '%", filtro_papellido,"%' ");
-			if(filtro_sapellido!=null && filtro_sapellido.trim().length()>0)
-				query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " c.sapellido LIKE '%", filtro_sapellido,"%' ");
-			if(filtro_cui!=null && filtro_cui.trim().length()>0)
-				query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " str(c.cui) LIKE '%", filtro_cui,"%' ");
-			if(filtro_unidad_ejecutora!=null && filtro_unidad_ejecutora.trim().length()>0)
-				query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " c.unidadEjecutora.nombre LIKE '%", filtro_unidad_ejecutora,"%' ");
-			query = String.join(" ", query, (query_a.length()>0 ? String.join("","AND (",query_a,")") : ""));
-			Query<Long> criteria = session.createQuery(query,Long.class);
-			ret = criteria.getSingleResult();
-		} catch (Throwable e) {
-			CLogger.write("7", ColaboradorDAO.class, e);
-		} finally {
-			session.close();
-		}
-		return ret;
-	}
-	
-	public static boolean validarUsuario(String usuario){
-			return UsuarioDAO.getUsuario(usuario) != null;
-	}
-	
-	public static String getColaboradorByUsuario(String usuario){
+	/*public static String getColaboradorByUsuario(String usuario){
 		String ret = "";
 		List<?> retList = null;
 		Session session = CHibernateSession.getSessionFactory().openSession();
