@@ -24,9 +24,6 @@ namespace SiproModelCore.Models
 	    public virtual string destino { get; set; }
 	    [Column("SECTOR_ECONOMICO")]
 	    public virtual string sectorEconomico { get; set; }
-	    [Column("UEUNIDAD_EJECUTORA")]
-	    [ForeignKey("UnidadEjecutora")]
-        public virtual Int32 ueunidadEjecutora { get; set; }
 	    [Column("FECHA_FIRMA")]
 	    public virtual DateTime? fechaFirma { get; set; }
 	    [Column("AUTORIZACION_TIPOID")]
@@ -148,10 +145,6 @@ namespace SiproModelCore.Models
 	    public virtual decimal? desembolsoAFechaUeUsd { get; set; }
 	    [Column("MONTO_POR_DESEMBOLSAR_UE_USD")]
 	    public virtual decimal? montoPorDesembolsarUeUsd { get; set; }
-	    [ForeignKey("UnidadEjecutora")]
-        public virtual Int32 entidad { get; set; }
-	    [ForeignKey("UnidadEjecutora")]
-        public virtual Int32 ejercicio { get; set; }
 	    public virtual string objetivo { get; set; }
 	    [Column("OBJETIVO_ESPECIFICO")]
 	    public virtual string objetivoEspecifico { get; set; }

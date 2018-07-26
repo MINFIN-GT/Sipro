@@ -14,4 +14,15 @@
   <ItemGroup>
     <None Remove="app.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="IKVM.OpenJDK.Core">
+      <HintPath>..\..\..\..\Downloads\lib.net\IKVM.OpenJDK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="mpxj-for-csharp">
+      <HintPath>..\..\..\..\Downloads\lib.net\mpxj-for-csharp.dll</HintPath>
+    </Reference>
+    <Reference Include="poi-3.17">
+      <HintPath>..\..\..\..\Downloads\lib.net\poi-3.17.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>

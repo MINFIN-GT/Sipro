@@ -11,7 +11,7 @@ export class DialogOverviewEntidad {
 }
 
 @Component({
-  selector: 'modal-impacto.ts',
+  selector: 'modal-entidad.ts',
   templateUrl: './modal-dialog.html'
 })
 export class DialogEntidad {

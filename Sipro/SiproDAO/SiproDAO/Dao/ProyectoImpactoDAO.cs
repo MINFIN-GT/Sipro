@@ -17,7 +17,7 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    ret = db.QueryFirstOrDefault<ProyectoImpacto>("SELECT * FROM PROYECTO_IMPACTO WHERE proyectoid=:idProyecto AND entidadentidad=:entidad",
+                    ret = db.QueryFirstOrDefault<ProyectoImpacto>("SELECT * FROM PROYECTO_IMPACTO WHERE proyectoid=:idProyecto AND entidadentidad=:entidad AND ejercicio=:ejercicio",
                         new { proyectoid = idProyecto, entidadentidad = entidad });
                 }
             }
@@ -35,7 +35,7 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    int existe = db.ExecuteScalar<int>("SELECT COUNT(*) FROM PROYECTO_IMPACTO WHERE id=:id", new { id = proyectoImpacto.id });
+                    int existe = db.ExecuteScalar<int>("SELECT COUNT(*) FROM PROYECTO_IMPACTO WHERE proyectoid=:proyectoid AND entidadentidad=:entidadentidad AND ejercicio=:ejercicio", proyectoImpacto);
 
                     if (existe > 0)
                     {
@@ -47,7 +47,7 @@ namespace SiproDAO.Dao
                     }
                     else
                     {
-                        int guardado = db.Execute("INSERT INTO proyecto_impacto VALUE (:id, :proyectoid, :entidadentidad, :impacto, :estado, :usuarioCreo, :usuarioActualizo, " +
+                        int guardado = db.Execute("INSERT INTO proyecto_impacto VALUES (:proyectoid, :entidadentidad, :impacto, :estado, :usuarioCreo, :usuarioActualizo, " +
                             ":fechaCreacion, :fechaActualizacion, :ejercicio)", proyectoImpacto);
 
                         ret = guardado > 0 ? true : false;
@@ -84,7 +84,7 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    int eliminado = db.Execute("DELETE FROM PROYECTO_IMPACTO WHERE id=:id", proyectoImpacto.id);
+                    int eliminado = db.Execute("DELETE FROM PROYECTO_IMPACTO WHERE proyectoid=:proyectoid AND entidadentidad=:entidadentidad AND ejercicio=:ejercicio", proyectoImpacto);
 
                     ret = eliminado > 0 ? true : false;
                 }

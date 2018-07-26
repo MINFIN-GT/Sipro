@@ -13,8 +13,6 @@ namespace SiproModelCore.Models
 	[Table("PROYECTO_IMPACTO")]
 	public partial class ProyectoImpacto
 	{
-		[Key]
-	    public virtual Int64 id { get; set; }
 	    [ForeignKey("Proyecto")]
         public virtual Int32 proyectoid { get; set; }
 	    [ForeignKey("Entidad")]

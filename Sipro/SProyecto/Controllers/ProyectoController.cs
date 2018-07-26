@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Cors;
 using FluentValidation.Results;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json.Linq;
 
 namespace SProyecto.Controllers
 {
@@ -24,11 +25,11 @@ namespace SProyecto.Controllers
             public String objetivo;
             public String descripcion;
             public long snip;
-            public int proyectotipoid;
+            public int proyectoTipoid;
             public String proyectotipo;
             public String unidadejecutora;
-            public int unidadejecutoraid;
-            public int entidadentidad;
+            public int ueunidadEjecutora;
+            public int entidad;
             public String entidadnombre;
             public int ejercicio;
             public String fechaCreacion;
@@ -44,17 +45,17 @@ namespace SProyecto.Controllers
             public int? ubicacionGeografica;
             public String longitud;
             public String latitud;
-            public int directorProyectoId;
+            public int directorProyecto;
             public String directorProyectoNmbre;
             public decimal costo;
-            public int acumulacionCosto;
+            public int acumulacionCostoid;
             public String acumulacionCostoNombre;
             public String objetivoEspecifico;
             public String visionGeneral;
             public int ejecucionFisicaReal;
             public int proyectoClase;
             public int projectCargado;
-            public int prestamoId;
+            public int prestamoid;
             public String fechaInicio;
             public String fechaFin;
             public String observaciones;
@@ -65,6 +66,9 @@ namespace SProyecto.Controllers
             public int porcentajeAvance;
             public bool permisoEditarCongelar;
             public int lineaBaseId;
+            public int duracion;
+            public String fechaElegibilidad;
+            public String fechaCierre;
         };
 
         private class stdatadinamico
@@ -140,7 +144,7 @@ namespace SProyecto.Controllers
 
                     proyecto.proyectoTipos = ProyectoTipoDAO.getProyectoTipoPorId(proyecto.proyectoTipoid);
                     dato.proyectotipo = proyecto.proyectoTipos.nombre;
-                    dato.proyectotipoid = proyecto.proyectoTipos.id;
+                    dato.proyectoTipoid = proyecto.proyectoTipos.id;
 
                     proyecto.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(proyecto.ejercicio, proyecto.entidad ?? default(int), proyecto.ueunidadEjecutora);
                     dato.unidadejecutora = proyecto.unidadEjecutoras != null ? proyecto.unidadEjecutoras.nombre : "";
@@ -150,8 +154,8 @@ namespace SProyecto.Controllers
                         proyecto.unidadEjecutoras.entidads = EntidadDAO.getEntidad(proyecto.unidadEjecutoras.entidadentidad, proyecto.ejercicio);
                     }
 
-                    dato.unidadejecutoraid = proyecto.unidadEjecutoras != null ? proyecto.unidadEjecutoras.unidadEjecutora : default(int);
-                    dato.entidadentidad = proyecto.unidadEjecutoras != null ? proyecto.unidadEjecutoras.entidadentidad : default(int);
+                    dato.ueunidadEjecutora = proyecto.unidadEjecutoras != null ? proyecto.unidadEjecutoras.unidadEjecutora : default(int);
+                    dato.entidad = proyecto.unidadEjecutoras != null ? proyecto.unidadEjecutoras.entidadentidad : default(int);
 
                     dato.entidadnombre = proyecto.unidadEjecutoras.entidads != null ? proyecto.unidadEjecutoras.entidads.nombre : default(string);
                     dato.ejercicio = proyecto.unidadEjecutoras != null ? proyecto.unidadEjecutoras.ejercicio : default(int);
@@ -170,12 +174,12 @@ namespace SProyecto.Controllers
                     dato.costo = proyecto.costo ?? default(decimal);
 
                     proyecto.acumulacionCostos = AcumulacionCostoDAO.getAcumulacionCostoById(Convert.ToInt32(proyecto.acumulacionCostoid));
-                    dato.acumulacionCosto = Convert.ToInt32(proyecto.acumulacionCostos.id);
+                    dato.acumulacionCostoid = Convert.ToInt32(proyecto.acumulacionCostos.id);
                     dato.acumulacionCostoNombre = proyecto.acumulacionCostos.nombre;
                     dato.objetivoEspecifico = proyecto.objetivoEspecifico;
                     dato.visionGeneral = proyecto.visionGeneral;
 
-                    dato.directorProyectoId = proyecto.directorProyecto ?? default(int);
+                    dato.directorProyecto = proyecto.directorProyecto ?? default(int);
 
                     Colaborador colaborador = ColaboradorDAO.getColaborador(proyecto.directorProyecto ?? default(int));
                     dato.directorProyectoNmbre = colaborador != null ? (colaborador.pnombre
@@ -188,7 +192,7 @@ namespace SProyecto.Controllers
 
                     dato.proyectoClase = etiqueta.id;
                     dato.projectCargado = proyecto.projectCargado ?? default(int);
-                    dato.prestamoId = proyecto.prestamoid ?? default(int);
+                    dato.prestamoid = proyecto.prestamoid ?? default(int);
                     dato.fechaInicio = proyecto.fechaInicio != null ? proyecto.fechaInicio.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     dato.fechaFin = proyecto.fechaFin != null ? proyecto.fechaFin.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     dato.observaciones = proyecto.observaciones;
@@ -196,6 +200,8 @@ namespace SProyecto.Controllers
                     dato.fechaFinReal = proyecto.fechaFinReal != null ? proyecto.fechaFinReal.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     dato.congelado = proyecto.congelado ?? default(int);
                     dato.coordinador = proyecto.coordinador ?? default(int);
+                    dato.fechaElegibilidad = proyecto.fechaElegibilidad != null ? proyecto.fechaElegibilidad.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
+                    dato.fechaCierre = proyecto.fechaCierre != null ? proyecto.fechaCierre.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     datos_.Add(dato);
                 }
 
@@ -229,7 +235,7 @@ namespace SProyecto.Controllers
 
                     proyecto.proyectoTipos = ProyectoTipoDAO.getProyectoTipoPorId(proyecto.proyectoTipoid);
                     dato.proyectotipo = proyecto.proyectoTipos.nombre;
-                    dato.proyectotipoid = proyecto.proyectoTipos.id;
+                    dato.proyectoTipoid = proyecto.proyectoTipos.id;
 
                     proyecto.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(proyecto.ejercicio, proyecto.entidad ?? default(int), proyecto.ueunidadEjecutora);
                     dato.unidadejecutora = proyecto.unidadEjecutoras != null ? proyecto.unidadEjecutoras.nombre : "";
@@ -239,8 +245,8 @@ namespace SProyecto.Controllers
                         proyecto.unidadEjecutoras.entidads = EntidadDAO.getEntidad(proyecto.unidadEjecutoras.entidadentidad, proyecto.ejercicio);
                     }
 
-                    dato.unidadejecutoraid = proyecto.unidadEjecutoras != null ? proyecto.unidadEjecutoras.unidadEjecutora : default(int);
-                    dato.entidadentidad = proyecto.unidadEjecutoras != null ? proyecto.unidadEjecutoras.entidadentidad : default(int);
+                    dato.ueunidadEjecutora = proyecto.unidadEjecutoras != null ? proyecto.unidadEjecutoras.unidadEjecutora : default(int);
+                    dato.entidad = proyecto.unidadEjecutoras != null ? proyecto.unidadEjecutoras.entidadentidad : default(int);
 
                     dato.entidadnombre = proyecto.unidadEjecutoras.entidads != null ? proyecto.unidadEjecutoras.entidads.nombre : default(string);
                     dato.ejercicio = proyecto.unidadEjecutoras != null ? proyecto.unidadEjecutoras.ejercicio : default(int);
@@ -259,12 +265,12 @@ namespace SProyecto.Controllers
                     dato.costo = proyecto.costo ?? default(decimal);
 
                     proyecto.acumulacionCostos = AcumulacionCostoDAO.getAcumulacionCostoById(Convert.ToInt32(proyecto.acumulacionCostoid));
-                    dato.acumulacionCosto = Convert.ToInt32(proyecto.acumulacionCostos.id);
+                    dato.acumulacionCostoid = Convert.ToInt32(proyecto.acumulacionCostos.id);
                     dato.acumulacionCostoNombre = proyecto.acumulacionCostos.nombre;
                     dato.objetivoEspecifico = proyecto.objetivoEspecifico;
                     dato.visionGeneral = proyecto.visionGeneral;
 
-                    dato.directorProyectoId = proyecto.directorProyecto ?? default(int);
+                    dato.directorProyecto = proyecto.directorProyecto ?? default(int);
 
                     Colaborador colaborador = ColaboradorDAO.getColaborador(proyecto.directorProyecto ?? default(int));
                     dato.directorProyectoNmbre = colaborador != null ? (colaborador.pnombre
@@ -277,7 +283,7 @@ namespace SProyecto.Controllers
 
                     dato.proyectoClase = etiqueta.id;
                     dato.projectCargado = proyecto.projectCargado ?? default(int);
-                    dato.prestamoId = proyecto.prestamoid ?? default(int);
+                    dato.prestamoid = proyecto.prestamoid ?? default(int);
                     dato.fechaInicio = proyecto.fechaInicio != null ? proyecto.fechaInicio.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     dato.fechaFin = proyecto.fechaFin != null ? proyecto.fechaFin.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     dato.observaciones = proyecto.observaciones;
@@ -285,6 +291,8 @@ namespace SProyecto.Controllers
                     dato.fechaFinReal = proyecto.fechaFinReal != null ? proyecto.fechaFinReal.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     dato.congelado = proyecto.congelado ?? default(int);
                     dato.coordinador = proyecto.coordinador ?? default(int);
+                    dato.fechaElegibilidad = proyecto.fechaElegibilidad != null ? proyecto.fechaElegibilidad.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
+                    dato.fechaCierre = proyecto.fechaCierre != null ? proyecto.fechaCierre.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     datos_.Add(dato);
                 }
 
@@ -326,14 +334,14 @@ namespace SProyecto.Controllers
 
                     proyecto.proyectoTipos = ProyectoTipoDAO.getProyectoTipoPorId(proyecto.proyectoTipoid);
                     dato.proyectotipo = proyecto.proyectoTipos.nombre;
-                    dato.proyectotipoid = proyecto.proyectoTipos.id;
+                    dato.proyectoTipoid = proyecto.proyectoTipos.id;
 
                     proyecto.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(proyecto.ejercicio, proyecto.entidad ?? default(int), proyecto.ueunidadEjecutora);
                     if (proyecto.unidadEjecutoras != null)
                     {
                         dato.unidadejecutora = proyecto.unidadEjecutoras.nombre;
-                        dato.unidadejecutoraid = proyecto.unidadEjecutoras.unidadEjecutora;
-                        dato.entidadentidad = proyecto.unidadEjecutoras.entidadentidad;
+                        dato.ueunidadEjecutora = proyecto.unidadEjecutoras.unidadEjecutora;
+                        dato.entidad = proyecto.unidadEjecutoras.entidadentidad;
 
                         proyecto.unidadEjecutoras.entidads = EntidadDAO.getEntidad(proyecto.unidadEjecutoras.entidadentidad, proyecto.unidadEjecutoras.ejercicio);
 
@@ -358,12 +366,12 @@ namespace SProyecto.Controllers
                     dato.latitud = proyecto.latitud;
 
                     proyecto.acumulacionCostos = AcumulacionCostoDAO.getAcumulacionCostoById(Convert.ToInt32(proyecto.acumulacionCostoid));
-                    dato.acumulacionCosto = proyecto.acumulacionCostos != null ? Convert.ToInt32(proyecto.acumulacionCostos.id) : default(int);
+                    dato.acumulacionCostoid = proyecto.acumulacionCostos != null ? Convert.ToInt32(proyecto.acumulacionCostos.id) : default(int);
                     dato.acumulacionCostoNombre = proyecto.acumulacionCostos != null ? proyecto.acumulacionCostos.nombre : null;
                     dato.objetivoEspecifico = proyecto.objetivoEspecifico;
                     dato.visionGeneral = proyecto.visionGeneral;
 
-                    dato.directorProyectoId = proyecto.directorProyecto ?? default(int);
+                    dato.directorProyecto = proyecto.directorProyecto ?? default(int);
 
                     Colaborador colaborador = ColaboradorDAO.getColaborador(proyecto.directorProyecto ?? default(int));
 
@@ -379,7 +387,7 @@ namespace SProyecto.Controllers
                     dato.proyectoClase = etiqueta.id;
 
                     dato.projectCargado = proyecto.projectCargado ?? default(int);
-                    dato.prestamoId = proyecto.prestamoid ?? default(int);
+                    dato.prestamoid = proyecto.prestamoid ?? default(int);
                     dato.costo = proyecto.costo ?? default(decimal);
                     dato.fechaInicio = proyecto.fechaInicio != null ? proyecto.fechaInicio.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     dato.fechaFin = proyecto.fechaFin != null ? proyecto.fechaFin.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
@@ -388,6 +396,8 @@ namespace SProyecto.Controllers
                     dato.fechaFinReal = proyecto.fechaFinReal != null ? proyecto.fechaFinReal.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     dato.congelado = proyecto.congelado ?? default(int);
                     dato.coordinador = proyecto.coordinador ?? default(int);
+                    dato.fechaElegibilidad = proyecto.fechaElegibilidad != null ? proyecto.fechaElegibilidad.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
+                    dato.fechaCierre = proyecto.fechaCierre != null ? proyecto.fechaCierre.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     datos_.Add(dato);
                 }
 
@@ -428,14 +438,14 @@ namespace SProyecto.Controllers
 
                     proyecto.proyectoTipos = ProyectoTipoDAO.getProyectoTipoPorId(proyecto.proyectoTipoid);
                     dato.proyectotipo = proyecto.proyectoTipos.nombre;
-                    dato.proyectotipoid = proyecto.proyectoTipos.id;
+                    dato.proyectoTipoid = proyecto.proyectoTipos.id;
 
                     proyecto.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(proyecto.ejercicio, proyecto.entidad ?? default(int), proyecto.ueunidadEjecutora);
                     if (proyecto.unidadEjecutoras != null)
                     {
                         dato.unidadejecutora = proyecto.unidadEjecutoras.nombre;
-                        dato.unidadejecutoraid = proyecto.unidadEjecutoras.unidadEjecutora;
-                        dato.entidadentidad = proyecto.unidadEjecutoras.entidadentidad;
+                        dato.ueunidadEjecutora = proyecto.unidadEjecutoras.unidadEjecutora;
+                        dato.entidad = proyecto.unidadEjecutoras.entidadentidad;
 
                         proyecto.unidadEjecutoras.entidads = EntidadDAO.getEntidad(proyecto.unidadEjecutoras.entidadentidad, proyecto.unidadEjecutoras.ejercicio);
 
@@ -460,12 +470,12 @@ namespace SProyecto.Controllers
                     dato.latitud = proyecto.latitud;
 
                     proyecto.acumulacionCostos = AcumulacionCostoDAO.getAcumulacionCostoById(Convert.ToInt32(proyecto.acumulacionCostoid));
-                    dato.acumulacionCosto = proyecto.acumulacionCostos != null ? Convert.ToInt32(proyecto.acumulacionCostos.id) : default(int);
+                    dato.acumulacionCostoid = proyecto.acumulacionCostos != null ? Convert.ToInt32(proyecto.acumulacionCostos.id) : default(int);
                     dato.acumulacionCostoNombre = proyecto.acumulacionCostos != null ? proyecto.acumulacionCostos.nombre : null;
                     dato.objetivoEspecifico = proyecto.objetivoEspecifico;
                     dato.visionGeneral = proyecto.visionGeneral;
 
-                    dato.directorProyectoId = proyecto.directorProyecto ?? default(int);
+                    dato.directorProyecto = proyecto.directorProyecto ?? default(int);
 
                     Colaborador colaborador = ColaboradorDAO.getColaborador(proyecto.directorProyecto ?? default(int));
 
@@ -481,7 +491,7 @@ namespace SProyecto.Controllers
                     dato.proyectoClase = etiqueta.id;
 
                     dato.projectCargado = proyecto.projectCargado ?? default(int);
-                    dato.prestamoId = proyecto.prestamoid ?? default(int);
+                    dato.prestamoid = proyecto.prestamoid ?? default(int);
                     dato.costo = proyecto.costo ?? default(decimal);
                     dato.fechaInicio = proyecto.fechaInicio != null ? proyecto.fechaInicio.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     dato.fechaFin = proyecto.fechaFin != null ? proyecto.fechaFin.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
@@ -490,6 +500,8 @@ namespace SProyecto.Controllers
                     dato.fechaFinReal = proyecto.fechaFinReal != null ? proyecto.fechaFinReal.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     dato.congelado = proyecto.congelado ?? default(int);
                     dato.coordinador = proyecto.coordinador ?? default(int);
+                    dato.fechaElegibilidad = proyecto.fechaElegibilidad != null ? proyecto.fechaElegibilidad.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
+                    dato.fechaCierre = proyecto.fechaCierre != null ? proyecto.fechaCierre.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     datos_.Add(dato);
                 }
 
@@ -706,8 +718,8 @@ namespace SProyecto.Controllers
                         id = proyecto.id,
                         usuarioCreo = proyecto.usuarioCreo,
                         fechaCreacion = proyecto.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
-                        usuarioactualizo = proyecto.usuarioActualizo,
-                        fechaactualizacion = proyecto.fechaActualizacion != null ? proyecto.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
+                        usuarioActualizo = proyecto.usuarioActualizo,
+                        fechaActualizacion = proyecto.fechaActualizacion != null ? proyecto.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
                     });
                 }
                 else
@@ -740,52 +752,58 @@ namespace SProyecto.Controllers
                     String descripcion = value.descripcion;
                     int ejercicio = value.ejercicio;
 
-                    int programa = value.programa;
-                    int subPrograma = value.subprograma;
-                    int proyecto_ = value.proyecto_;
-                    int actividad = value.actividad;
-                    int obra = value.obra;
+                    int programa = value.programa != null ? value.programa : default(int);
+                    int subPrograma = value.subprograma != null ? value.subprograma : default(int);
+                    int proyecto_ = value.proyecto != null ? value.proyecto : default(int);
+                    int actividad = value.actividad != null ? value.actividad : default(int);
+                    int obra = value.obra != null ? value.obra : default(int);
                     String longitud = value.longitud;
                     String latitud = value.latitud;
-                    int renglon = value.renglon;
-                    int ubicacionGeografica = value.ubicacionGeografica;
-                    decimal costo = value.costo;
+                    int renglon = value.renglon != null ? value.renglon : default(int);
+                    int ubicacionGeografica = value.ubicacionGeografica != null ? value.ubicacionGeografica : default(int);
+                    decimal costo = value.costo != null ? value.costo : default(decimal);
                     String objetivoEspecifico = value.objetoivoEspecifico;
                     String visionGeneral = value.visionGeneral;
-                    int unidad_ejecutora = value.unidadejecutoraid;
-                    int entidad = value.entidadid;
-                    int ejecucionFisicaReal = value.ejecucionFisicaReal;
+                    int unidad_ejecutora = value.unidadejecutoraid != null ? value.unidadejecutoraid : default(int);
+                    int entidad = value.entidad != null ? value.entidad : default(int);
+                    int ejecucionFisicaReal = value.ejecucionFisicaReal != null ? value.ejecucionFisicaReal : default(int);
                     int proyectoClase = value.proyectoClase == null ? 1 : value.proyectoClase;
                     Etiqueta etiqueta = EtiquetaDAO.getEtiquetaPorId(proyectoClase);
-                    int projectCargado = value.projectCargado == null ? 0 : value.projectCargado;
-                    int? prestamoId = value.prestamoId;
+                    int projectCargado = value.projectCargado == null ? 0 : value.projectCargado;                    
                     String observaciones = value.observaciones;
                     int porcentajeAvance = value.porcentajeAvance;
+
+                    int? prestamoId = value.prestamoid;
                     Prestamo prestamo = null;
                     if (prestamoId != null)
                     {
                         prestamo = PrestamoDAO.getPrestamoById(prestamoId ?? default(int));
                     }
 
+                    int? acumulacionCostoid = value.acumulacionCostoid;
                     AcumulacionCosto acumulacionCosto = null;
-                    if (value.acumulacionCosto != null)
+                    if (acumulacionCostoid != null)
                     {
-                        acumulacionCosto = new AcumulacionCosto();
-                        acumulacionCosto.id = value.acumulacionCosto;
+                        acumulacionCosto = AcumulacionCostoDAO.getAcumulacionCostoById(acumulacionCostoid ?? default(int));
                     }
 
                     String enunciadoAlcance = value.enunciadoAlcance;
 
-                    ProyectoTipo proyectoTipo = new ProyectoTipo();
-                    proyectoTipo.id = value.proyectotipoid;
+                    int? proyectoTipoid = value.proyectoTipoid;
+                    ProyectoTipo proyectoTipo = null;
+                    if (proyectoTipoid != null)
+                    {
+                        proyectoTipo = ProyectoTipoDAO.getProyectoTipoPorId(proyectoTipoid ?? default(int));
+                    }
+                    
 
                     UnidadEjecutora unidadEjecutora = UnidadEjecutoraDAO.getUnidadEjecutora(ejercicio, entidad, unidad_ejecutora);
 
+                    int? directorProyectoid = value.directorProyecto;
                     Colaborador directorProyecto = null;
-                    if (value.directorProyecto != null && value.directorProyecto.Length > 0)
+                    if (value.directorProyecto != null && value.directorProyecto > 0)
                     {
-                        directorProyecto = new Colaborador();
-                        directorProyecto.id = value.directorProyecto;
+                        directorProyecto = ColaboradorDAO.getColaborador(directorProyectoid ?? default(int));
                     }
 
                     Proyecto proyecto = ProyectoDAO.getProyectoPorId(id, User.Identity.Name);
@@ -858,13 +876,15 @@ namespace SProyecto.Controllers
                     }
                     if (result)
                     {
-                        List<stdatadinamico> datos = JsonConvert.DeserializeObject<stdatadinamico>(value.datadinamica);
+                        JArray datosDinamicos = JArray.Parse((string)value.camposDinamicos);
 
-                        foreach (stdatadinamico data in datos)
+                        for (int i = 0; i < datosDinamicos.Count; i++)
                         {
-                            if (data.valor != null && data.valor.Length > 0 && data.valor.CompareTo("null") != 0)
+                            JObject data = (JObject)datosDinamicos[i];
+
+                            if (data["valor"] != null && data["valor"].ToString().Length > 0 && data["valor"].ToString().CompareTo("null") != 0)
                             {
-                                ProyectoPropiedad proyectoPropiedad = ProyectoPropiedadDAO.getProyectoPropiedadPorId(Convert.ToInt32(data.id));
+                                ProyectoPropiedad proyectoPropiedad = ProyectoPropiedadDAO.getProyectoPropiedadPorId(Convert.ToInt32(data["id"]));
                                 ProyectoPropiedadValor valor = new ProyectoPropiedadValor();
                                 valor.proyectos = proyecto;
                                 valor.proyectoid = proyecto.id;
@@ -877,19 +897,19 @@ namespace SProyecto.Controllers
                                 switch (proyectoPropiedad.datoTipoid)
                                 {
                                     case 1:
-                                        valor.valorString = data.valor;
+                                        valor.valorString = data["valor"].ToString();
                                         break;
                                     case 2:
-                                        valor.valorEntero = Convert.ToInt32(data.valor);
+                                        valor.valorEntero = Convert.ToInt32(data["valor"].ToString());
                                         break;
                                     case 3:
-                                        valor.valorDecimal = Convert.ToDecimal(data.valor);
+                                        valor.valorDecimal = Convert.ToDecimal(data["valor"].ToString());
                                         break;
                                     case 4:
-                                        valor.valorEntero = data.valor == "true" ? 1 : 0;
+                                        valor.valorEntero = data["valor"].ToString() == "true" ? 1 : 0;
                                         break;
                                     case 5:
-                                        valor.valorTiempo = Convert.ToDateTime(data.valor_f);
+                                        valor.valorTiempo = Convert.ToDateTime(data["valor_f"].ToString());
                                         break;
                                 }
                                 result = (result && ProyectoPropiedadValorDAO.guardarProyectoPropiedadValor(valor));
@@ -898,7 +918,8 @@ namespace SProyecto.Controllers
                     }
                     if (result)
                     {
-                        String[] impactos = value.impactos != null && value.impactos.Length > 0 ? value.impactos.toString().Split("~") : null;
+                        String dataImpactos = (string)value.impactos;
+                        String[] impactos = dataImpactos != null && dataImpactos.Length > 0 ? dataImpactos.Split("~") : null;
                         if (impactos != null && impactos.Length > 0)
                         {
                             foreach (String impacto in impactos)
@@ -913,6 +934,8 @@ namespace SProyecto.Controllers
                                 proyImpacto.impacto = temp[1];
                                 proyImpacto.usuarioCreo = User.Identity.Name;
                                 proyImpacto.fechaCreacion = DateTime.Now;
+                                proyImpacto.ejercicio = proyecto.ejercicio;
+                                proyImpacto.estado = 1;
 
                                 result = ProyectoImpactoDAO.guardarProyectoImpacto(proyImpacto);
                             }
@@ -920,7 +943,8 @@ namespace SProyecto.Controllers
                     }
                     if (result)
                     {
-                        String[] miembroIds = value.miembros != null && value.miembros.Length > 0 ? value.miembros.ToString().Split(",") : null;
+                        String datosMiembros = (string)value.miembros;
+                        String[] miembroIds = datosMiembros != null && datosMiembros.Length > 0 ? datosMiembros.Split(",") : null;
                         if (miembroIds != null && miembroIds.Length > 0)
                         {
                             foreach (String miembroId in miembroIds)
@@ -946,8 +970,8 @@ namespace SProyecto.Controllers
                         id = proyecto.id,
                         usuarioCreo = proyecto.usuarioCreo,
                         fechaCreacion = proyecto.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
-                        usuarioactualizo = proyecto.usuarioActualizo,
-                        fechaactualizacion = proyecto.fechaActualizacion != null ? proyecto.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
+                        usuarioActualizo = proyecto.usuarioActualizo,
+                        fechaActualizacion = proyecto.fechaActualizacion != null ? proyecto.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
                     });
                 }
                 else
@@ -1070,11 +1094,11 @@ namespace SProyecto.Controllers
                     datos temp = new datos();
                     temp.id = proyecto.id;
                     temp.nombre = proyecto.nombre;
-                    temp.proyectotipoid = proyecto.proyectoTipoid;
+                    temp.proyectoTipoid = proyecto.proyectoTipoid;
                     temp.proyectotipo = proyecto.proyectoTipos.nombre;
                     temp.unidadejecutora = proyecto.unidadEjecutoras.nombre;
-                    temp.unidadejecutoraid = proyecto.unidadEjecutoras.unidadEjecutora;
-                    temp.entidadentidad = proyecto.unidadEjecutoras.entidadentidad;
+                    temp.ueunidadEjecutora = proyecto.unidadEjecutoras.unidadEjecutora;
+                    temp.entidad = proyecto.unidadEjecutoras.entidadentidad;
                     temp.ejercicio = proyecto.unidadEjecutoras.ejercicio;
 
                     return Ok(new { success = true, proyecto = temp });
@@ -1207,14 +1231,14 @@ namespace SProyecto.Controllers
 
                     proyecto.proyectoTipos = ProyectoTipoDAO.getProyectoTipoPorId(proyecto.proyectoTipoid);
                     dato.proyectotipo = proyecto.proyectoTipos.nombre;
-                    dato.proyectotipoid = proyecto.proyectoTipos.id;
+                    dato.proyectoTipoid = proyecto.proyectoTipos.id;
 
                     proyecto.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(proyecto.ejercicio, proyecto.entidad ?? default(int), proyecto.ueunidadEjecutora);
                     if (proyecto.unidadEjecutoras != null)
                     {
                         dato.unidadejecutora = proyecto.unidadEjecutoras.nombre;
-                        dato.unidadejecutoraid = proyecto.unidadEjecutoras.unidadEjecutora;
-                        dato.entidadentidad = proyecto.unidadEjecutoras.entidadentidad;
+                        dato.ueunidadEjecutora = proyecto.unidadEjecutoras.unidadEjecutora;
+                        dato.entidad = proyecto.unidadEjecutoras.entidadentidad;
 
                         proyecto.unidadEjecutoras.entidads = EntidadDAO.getEntidad(proyecto.unidadEjecutoras.entidadentidad, proyecto.unidadEjecutoras.ejercicio);
 
@@ -1239,12 +1263,12 @@ namespace SProyecto.Controllers
                     dato.latitud = proyecto.latitud;
 
                     proyecto.acumulacionCostos = AcumulacionCostoDAO.getAcumulacionCostoById(Convert.ToInt32(proyecto.acumulacionCostoid));
-                    dato.acumulacionCosto = proyecto.acumulacionCostos != null ? Convert.ToInt32(proyecto.acumulacionCostos.id) : default(int);
+                    dato.acumulacionCostoid = proyecto.acumulacionCostos != null ? Convert.ToInt32(proyecto.acumulacionCostos.id) : default(int);
                     dato.acumulacionCostoNombre = proyecto.acumulacionCostos != null ? proyecto.acumulacionCostos.nombre : null;
                     dato.objetivoEspecifico = proyecto.objetivoEspecifico;
                     dato.visionGeneral = proyecto.visionGeneral;
 
-                    dato.directorProyectoId = proyecto.directorProyecto ?? default(int);
+                    dato.directorProyecto = proyecto.directorProyecto ?? default(int);
 
                     Colaborador colaborador = ColaboradorDAO.getColaborador(proyecto.directorProyecto ?? default(int));
 
@@ -1260,7 +1284,7 @@ namespace SProyecto.Controllers
                     dato.proyectoClase = etiqueta.id;
 
                     dato.projectCargado = proyecto.projectCargado ?? default(int);
-                    dato.prestamoId = proyecto.prestamoid ?? default(int);
+                    dato.prestamoid = proyecto.prestamoid ?? default(int);
                     dato.costo = proyecto.costo ?? default(decimal);
                     dato.fechaInicio = proyecto.fechaInicio != null ? proyecto.fechaInicio.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     dato.fechaFin = proyecto.fechaFin != null ? proyecto.fechaFin.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
@@ -1269,6 +1293,7 @@ namespace SProyecto.Controllers
                     dato.fechaFinReal = proyecto.fechaFinReal != null ? proyecto.fechaFinReal.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     dato.congelado = proyecto.congelado ?? default(int);
                     dato.coordinador = proyecto.coordinador ?? default(int);
+                    dato.fechaElegibilidad = proyecto.fechaElegibilidad != null ? proyecto.fechaElegibilidad.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                 }
 
                 return Ok(new { success = true, proyecto = dato });

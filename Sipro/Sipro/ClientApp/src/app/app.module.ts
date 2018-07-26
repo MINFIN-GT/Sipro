@@ -30,9 +30,10 @@ import { DialogProyectoPropiedad } from '../assets/modals/proyectopropiedad/moda
 import { DialogDelete } from '../assets/modals/deleteconfirmation/confirmation-delete';
 import { CurrencyMaskModule } from "ng2-currency-mask";
 import { DialogUnidadEjecutora } from '../assets/modals/unidadejecutora/unidad-ejecutora';
-import { DialogDirectorProyecto } from '../assets/modals/directorproyecto/director-proyecto';
+import { DialogColaborador } from '../assets/modals/colaborador/modal-colaborador';
 import { DialogImpacto } from '../assets/modals/impacto/modal-impacto';
 import { DialogEntidad } from '../assets/modals/entidad/modal-entidad';
+import { DialogCargarProject } from '../assets/modals/cargarproject/modal-cargar-project';
 
 import { AppComponent } from './app.component';
 import { MainComponent } from './components/main/main.component';
@@ -46,6 +47,7 @@ import { PepComponent } from './components/pep/pep.component';
 import { PrestamotipoComponent } from './components/prestamotipo/prestamotipo.component';
 import { PeppropiedadComponent } from './components/peppropiedad/peppropiedad.component';
 import { PeptipoComponent } from './components/peptipo/peptipo.component';
+import { ComponenteComponent } from './components/componente/componente.component';
 
 const routes: Routes = [{
           path: '',    // Va a Main
@@ -71,6 +73,9 @@ const routes: Routes = [{
           path: 'main/peptipo',
           component: PeptipoComponent
         },{
+          path: 'main/componente/:id',
+          component: ComponenteComponent
+        },{
           path: 'accesodenegado',
           component: AccesodenegadoComponent
         },{
@@ -88,8 +93,8 @@ const routes: Routes = [{
       AccesodenegadoComponent, MainComponent, PagenotfoundComponent, FooterComponent, MainmenuComponent, PrestamoComponent,
       DialogCodigoPresupuestario, DialogMoneda, DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, DialogDownloadDocument, 
       FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo, PepComponent, DialogProyectoTipo, PrestamotipoComponent, 
-      PeppropiedadComponent, PeptipoComponent, DialogProyectoPropiedad, DialogDelete, DialogUnidadEjecutora, DialogDirectorProyecto,
-      DialogImpacto, DialogEntidad
+      PeppropiedadComponent, PeptipoComponent, DialogProyectoPropiedad, DialogDelete, DialogUnidadEjecutora, DialogColaborador,
+      DialogImpacto, DialogEntidad, ComponenteComponent, DialogCargarProject
   ],
   imports: [
       BrowserModule,
@@ -111,8 +116,8 @@ const routes: Routes = [{
   ],
   bootstrap: [AppComponent],
   entryComponents: [DialogCodigoPresupuestario, DialogMoneda, DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, 
-    DialogDownloadDocument, DialogProyectoTipo, DialogProyectoPropiedad, DialogDelete, DialogUnidadEjecutora, DialogDirectorProyecto,
-    DialogImpacto, DialogEntidad]
+    DialogDownloadDocument, DialogProyectoTipo, DialogProyectoPropiedad, DialogDelete, DialogUnidadEjecutora, DialogColaborador,
+    DialogImpacto, DialogEntidad, DialogCargarProject]
 })
 export class AppModule { 
 

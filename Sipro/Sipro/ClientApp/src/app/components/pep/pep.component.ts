@@ -13,8 +13,10 @@ import { DialogOverviewUnidadEjecutora, DialogUnidadEjecutora } from '../../../a
 import { ButtonDeleteComponent } from '../../../assets/customs/ButtonDeleteComponent';
 import { ButtonDownloadComponent } from '../../../assets/customs/ButtonDownloadComponent';
 import { DialogDownloadDocument, DialogOverviewDownloadDocument } from '../../../assets/modals/documentosadjuntos/documento-adjunto';
-import { DialogDirectorProyecto, DialogOverviewDirectorProyecto } from '../../../assets/modals/directorproyecto/director-proyecto';
+import { DialogColaborador, DialogOverviewColaborador } from '../../../assets/modals/colaborador/modal-colaborador';
 import { DialogImpacto, DialogOverviewImpacto } from '../../../assets/modals/impacto/modal-impacto';
+import { Router } from '@angular/router';
+import { DialogCargarProject, DialogOverviewCargarProject } from '../../../assets/modals/cargarproject/modal-cargar-project';
 
 @Component({
   selector: 'app-pep',
@@ -77,13 +79,17 @@ export class PepComponent implements OnInit {
   botones: boolean;
   directorProyectoNombre: string;
   directorProyectoId: number;
-  modalDirectorProyecto : DialogOverviewDirectorProyecto;
+  modalDirectorProyecto : DialogOverviewColaborador;
   sourceImpacto: LocalDataSource;
   modalImpacto : DialogOverviewImpacto;
+  sourceMiembro: LocalDataSource;
+  esTreeview: boolean;
+  entidadnombre: string;
+  modalCargarProject : DialogOverviewCargarProject;
 
   @ViewChild('search') divSearch: ElementRef;
 
-  constructor(private route: ActivatedRoute, private auth: AuthService, private utils: UtilsService, private http: HttpClient, private dialog: MatDialog) { 
+  constructor(private route: ActivatedRoute, private auth: AuthService, private utils: UtilsService, private http: HttpClient, private dialog: MatDialog, private router: Router) { 
     this.etiqueta = JSON.parse(localStorage.getItem("_etiqueta"));
     this.etiquetaProyecto = this.etiqueta.proyecto;
     this.isMasterPage = this.auth.isLoggedIn();
@@ -106,10 +112,12 @@ export class PepComponent implements OnInit {
     this.proyectotiponombre = "";
     this.modalUnidadEjecutora = new DialogOverviewUnidadEjecutora(dialog);
     this.modalAdjuntarDocumento = new DialogOverviewDownloadDocument(dialog);
-    this.modalDirectorProyecto = new DialogOverviewDirectorProyecto(dialog);
+    this.modalDirectorProyecto = new DialogOverviewColaborador(dialog);
     this.modalImpacto = new DialogOverviewImpacto(dialog);
+    this.modalCargarProject = new DialogOverviewCargarProject(dialog);
     this.botones = true;
     this.sourceImpacto = new LocalDataSource();
+    this.sourceMiembro = new LocalDataSource();
     this.obtenerPrestamo();
   }
 
@@ -189,6 +197,13 @@ export class PepComponent implements OnInit {
     this.unidadejecutoranombre = "";
     this.unidadejecutoraid = 0;
     this.sourceArchivosAdjuntos = new LocalDataSource();
+    this.fechaInicioTemp = "";
+    this.fechaFinalTemp = "";
+    this.fechaInicioRealTemp = "";
+    this.fechaFinalRealTemp = "";
+    this.duracionReal = 0;
+    this.directorProyectoNombre = "";
+    this.directorProyectoId = 0;
   }
 
   editar(){
@@ -197,11 +212,13 @@ export class PepComponent implements OnInit {
       this.esNuevo = false;
       this.esNuevoDocumento = false;
       this.tabActive = 0;
-      this.proyectotipoid = this.proyecto.proyectotipoid;
+      this.proyectotipoid = this.proyecto.proyectoTipoid;
       this.proyectotiponombre = this.proyecto.proyectotipo;
       this.unidadejecutoranombre = this.proyecto.unidadejecutora;
-      this.unidadejecutoraid = this.proyecto.unidadejecutoraid;
+      this.unidadejecutoraid = this.proyecto.ueunidadEjecutora;
       this.directorProyectoNombre = this.proyecto.directorProyectoNmbre;
+      this.directorProyectoId = this.proyecto.directorProyecto;
+      this.entidadnombre = this.proyecto.entidadnombre;
 
       var parametros ={
         idProyecto : this.proyecto.id,
@@ -243,8 +260,8 @@ export class PepComponent implements OnInit {
             var data = {
               codPrep: this.codigoPresupuestario,
               ejercicio: this.proyecto.ejercicio,
-              entidad: this.proyecto.entidadentidad,
-              ue: this.proyecto.unidadejecutoraid
+              entidad: this.proyecto.entidad,
+              ue: this.proyecto.ueunidadEjecutora
             }
             this.http.post('http://localhost:60016/api/DataSigade/MontoDesembolsoUE', data, { withCredentials : true }).subscribe(response =>{
               if(response['success']==true){
@@ -259,15 +276,42 @@ export class PepComponent implements OnInit {
               }
             })
           }
+        });
+
+        this.http.get('http://localhost:60066/api/ProyectoMiembro/MiembrosPorProyecto/' + this.proyecto.id, { withCredentials : true }).subscribe(response =>{
+          if(response['success'] == true){
+            let miembros = [];
+            let tablaMiembro = [];
+            miembros = response['miembros'];
+            for(var i=0; i<miembros.length; i++)
+            {
+              tablaMiembro.push({ nombre: miembros[i].nombre, id: miembros[i].id });
+            }
+
+            this.sourceMiembro = new LocalDataSource(tablaMiembro);
+          }
+        });
+
+        this.http.get('http://localhost:60065/api/ProyectoImpacto/ImpactosPorProyecto/' + this.proyecto.id, { withCredentials : true}).subscribe(response =>{
+          if(response['success'] == true){
+            let impactos = [];
+            let tablaImpacto = [];
+            impactos = response['impactos'];
+            for(var i=0; i<impactos.length; i++){
+              tablaImpacto.push({ id: impactos[i].entidadId, nombre: impactos[i].entidadNombre, impacto: impactos[i].impacto });
+            }
+
+            this.sourceImpacto = new LocalDataSource(tablaImpacto);
+          }
         })
       }
 
-      if(this.fechaInicioTemp == null){
+      if(this.fechaInicioTemp == null || this.fechaInicioTemp == ""){
         this.fechaInicioTemp = moment(this.proyecto.fechaInicio,'DD/MM/YYYY').format('DD/MM/YYYY');
         this.fechaFinalTemp = moment(this.proyecto.fechaFin,'DD/MM/YYYY').format('DD/MM/YYYY');
       }
 
-      if(this.fechaInicioRealTemp == null){
+      if(this.fechaInicioRealTemp == null || this.fechaInicioRealTemp == ""){
         this.fechaInicioRealTemp = this.proyecto.fechaInicioReal != null ? moment(this.proyecto.fechaInicioReal,'DD/MM/YYYY').format('DD/MM/YYYY') : null;
         this.fechaFinalRealTemp = this.proyecto.fechaFinReal != null ? moment(this.proyecto.fechaFinReal,'DD/MM/YYYY').format('DD/MM/YYYY') : null;
 
@@ -303,13 +347,79 @@ export class PepComponent implements OnInit {
   }
 
   guardar(){
-    for(var i =0; i < this.camposdinamicos.length; i++){
-      this.botones = false;
-      if(this.camposdinamicos[i].tipo === 'fecha'){
-        this.camposdinamicos[i].valor_f = this.camposdinamicos[i].valor != null ? moment(this.camposdinamicos[i].valor).format('DD/MM/YYYY') : "";        
+    if(this.proyecto != null){
+      for(var i=0; i < this.camposdinamicos.length; i++){
+        this.botones = false;
+        if(this.camposdinamicos[i].tipo === 'fecha'){
+          this.camposdinamicos[i].valor_f = this.camposdinamicos[i].valor != null ? moment(this.camposdinamicos[i].valor).format('DD/MM/YYYY') : "";        
+        }
       }
 
+      this.sourceImpacto.getAll().then(value =>{
+        var impactos = "";
+        value.forEach(element => {
+          impactos += (impactos.length > 0 ? "~" : "") + element.id + "," + element.impacto;
+        });     
+        
+        this.sourceMiembro.getAll().then(value => {
+          var miembros = "";
+          value.forEach(element => {
+            miembros += (miembros.length > 0 ? "," : "") + element.id;
+          });
 
+          this.proyecto.camposDinamicos = JSON.stringify(this.camposdinamicos);
+          this.proyecto.impactos = impactos;
+          this.proyecto.miembros = miembros;
+          this.proyecto.directorProyecto = this.directorProyectoId;
+          this.proyecto.duracion = this.duracionReal;
+
+          var objetoHttp;
+
+          if(this.proyecto.id > 0){
+            objetoHttp = this.http.put("http://localhost:60064/api/Proyecto/Proyecto/" + this.proyecto.id, this.proyecto, { withCredentials: true });
+          }
+          else{
+            this.proyecto.id=0;            
+            //this.proyecto.entidad = 11110001;
+            //this.proyecto.ejercicio = new Date().getFullYear();
+            objetoHttp = this.http.post("http://localhost:60064/api/Proyecto/Proyecto", this.proyecto, { withCredentials: true });
+          }
+
+          objetoHttp.subscribe(response => {
+            if(response['success'] == true){
+              this.proyecto.id = response['id'];
+              this.proyecto.usuarioCreo = response['usuarioCreo'];
+              this.proyecto.fechaCreacion = response['fechaCreacion'];
+              this.proyecto.usuarioActualizo = response['usuarioActualizo'];
+              this.proyecto.fechaActualizacion = response['fechaActualizacion'];
+
+              if(this.esTreeview){
+                //this.t_cambiarNombreNodo();
+              }
+              else
+                this.obtenerTotalProyectos();
+
+              /*if(this.child_desembolso!=null || this.child_riesgos!=null){
+                if(this.child_desembolso)
+                  ret = this.child_desembolso.guardar($rootScope.etiquetas.proyecto+' '+(this.esNuevo ? 'creado' : 'guardado')+' con Éxito',
+                      'Error al '+(mi.esNuevo ? 'creado' : 'guardado')+' el '+$rootScope.etiquetas.proyecto,
+                      this.child_riesgos!=null ? this.child_riesgos.guardar :  null);
+                else if(this.child_riesgos)
+                  ret = this.child_riesgos.guardar($rootScope.etiquetas.proyecto+' '+(this.esNuevo ? 'creado' : 'guardado')+' con Éxito',
+                      'Error al '+(this.esNuevo ? 'creado' : 'guardado')+' el '+$rootScope.etiquetas.proyecto);
+              }
+              else{
+                $utilidades.mensaje('success',$rootScope.etiquetas.proyecto+' '+(this.esNuevo ? 'creado' : 'guardado')+' con Éxito');
+                this.botones=true;
+              }*/
+              this.utils.mensaje('success', this.etiqueta.proyecto + ' ' + (this.esNuevo ? 'creado' : 'guardado') + ' con Éxito');
+            }
+            else{
+              this.utils.mensaje('warning', 'Ocurrió un error al guardar el ' + this.etiqueta.proyecto);
+            }
+          });
+        })
+      })
     }
   }
 
@@ -318,6 +428,9 @@ export class PepComponent implements OnInit {
     this.proyecto = new Proyecto();
     this.proyectotipoid = 0;
     this.proyectotiponombre = "";
+    this.sourceArchivosAdjuntos = new LocalDataSource();
+    this.sourceImpacto = new LocalDataSource();
+    this.sourceMiembro = new LocalDataSource();
   }
 
   onSelectRow(event) {
@@ -370,18 +483,18 @@ export class PepComponent implements OnInit {
   }
 
   buscarUnidadEjecutora(){
-    //if(this.prestamoid == null){
+    if(this.prestamoid == null){
       this.modalUnidadEjecutora.dialog.open(DialogUnidadEjecutora, {
         width: '600px',
         height: '585px',
-        data: { titulo: 'Unidades Ejecutoras', ejercicio: this.proyecto.ejercicio, entidad: this.proyecto.entidadentidad }
+        data: { titulo: 'Unidades Ejecutoras', ejercicio: this.proyecto.ejercicio, entidad: this.proyecto.entidad }
       }).afterClosed().subscribe(result => {
         if(result != null){
           this.unidadejecutoraid = result.id;
           this.unidadejecutoranombre = result.nombre;
         }
       })
-    //}
+    }
   }
 
   handlePage(event){
@@ -523,8 +636,8 @@ export class PepComponent implements OnInit {
     return index;
   }
 
-  buscarDirecotorProyecto(){
-    this.modalDirectorProyecto.dialog.open(DialogDirectorProyecto, {
+  buscarDirectorProyecto(){
+    this.modalDirectorProyecto.dialog.open(DialogColaborador, {
       width: '600px',
       height: '585px',
       data: { titulo: 'Director del ' + this.etiqueta.proyecto }
@@ -543,7 +656,27 @@ export class PepComponent implements OnInit {
       data: { titulo: 'Impacto' }
     }).afterClosed().subscribe(result =>{
       if(result != null){
-         
+        let tablaImpacto = [];
+        this.sourceImpacto.getAll().then(value =>{
+          value.forEach(element =>{
+            tablaImpacto.push(element);
+          })
+
+          let existe = false;
+          if(tablaImpacto.length==0)
+            tablaImpacto.push({ id: result.id, nombre: result.nombre, impacto: result.impacto });
+          else{
+            tablaImpacto.forEach(element => {
+              if(element.id==result.tipoPrestamoId)
+                existe = true;              
+            });
+
+            if(!existe)
+              tablaImpacto.push({ id: result.id, nombre: result.nombre, impacto: result.impacto });
+          }  
+        })
+              
+        this.sourceImpacto = new LocalDataSource(tablaImpacto);
       }
     })
   }
@@ -552,9 +685,10 @@ export class PepComponent implements OnInit {
     columns: {
       id: {
         title: 'ID',
-        width: '10%',
+        width: '8%',
         filter: false,
         type: 'html',
+        class: 'align-center',
         valuePrepareFunction : (cell) => {
           return "<div class=\"datos-numericos\">" + cell + "</div>";
         }
@@ -587,5 +721,95 @@ export class PepComponent implements OnInit {
     },
     hideSubHeader: true,
     noDataMessage: ''
+  }
+
+  agregarMiembro(){
+    this.modalDirectorProyecto.dialog.open(DialogColaborador, {
+      width: '600px',
+      height: '585px',
+      data: { titulo: 'Miembro' }
+    }).afterClosed().subscribe(result=>{
+      if(result != null){
+        let tablaMiembro = [];
+        this.sourceMiembro.getAll().then(value =>{
+          value.forEach(element =>{
+            tablaMiembro.push(element);
+          })
+
+          let existe = false;
+          if(tablaMiembro.length==0)
+            tablaMiembro.push({ nombre: result.nombre, id: result.id });
+          else{
+            tablaMiembro.forEach(element => {
+              if(element.id==result.tipoPrestamoId)
+                existe = true;              
+            });
+
+            if(!existe)
+              tablaMiembro.push({ nombre: result.nombre, id: result.id });
+          }  
+        })
+              
+        this.sourceMiembro = new LocalDataSource(tablaMiembro);
+      }
+    })
+  }
+
+  settingsMiembro = {
+    columns: {
+      nombre: {
+        title: 'Nombre',
+        filter: false
+      },
+      eliminar:{
+        title: 'Eliminar',
+        width: '10%',
+        sort: false,
+        type: 'custom',
+        class: 'align-center',
+        renderComponent: ButtonDeleteComponent,
+        onComponentInitFunction: (instance) =>{
+          instance.actionEmitter.subscribe(row => {
+            this.sourceMiembro.remove(row);            
+          });
+        }
+      }
+    },
+    actions: false,
+    attr: {
+      class: 'table table-bordered grid estilo-letra'
+    },
+    hideSubHeader: true,
+    noDataMessage: ''
+  }
+
+  cargarArchivo(){
+    this.modalCargarProject.dialog.open(DialogCargarProject, {
+      width: '600px',
+      height: '250px',
+      data: { titulo: 'Cargar desde Project' }
+    }).afterClosed().subscribe(result=>{
+      if(result != null){
+
+      }
+    })
+  }
+
+  irAComponentes(proyectoId){
+    if(this.proyecto!=null){
+      this.router.navigateByUrl('/main/componente/'+ proyectoId);
+    }
+  }
+
+  completarConArchivo(proyectoId){
+    this.modalCargarProject.dialog.open(DialogCargarProject, {
+      width: '600px',
+      height: '250px',
+      data: { titulo: 'Completar desde Project' }
+    }).afterClosed().subscribe(result=>{
+      if(result != null){
+
+      }
+    })
   }
 }

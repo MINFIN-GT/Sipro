@@ -44,7 +44,7 @@ namespace SiproDAO.Dao
                     if (existe > 0)
                     {
                         int result = db.Execute("UPDATE PRESTAMO SET fecha_corte=:fechaCorte, codigo_presupuestario=:codigoPresupuestario, numero_prestamo=:numeroPrestamo, destino=:destino, " +
-                            "sector_economico=:sectorEconomico, ueunidad_ejecutora=:ueunidadEjecutora, fecha_firma=:fechaFirma, autorizacion_tipoid=:autorizacionTipoid, numero_autorizacion=:numeroAutorizacion, " +
+                            "sector_economico=:sectorEconomico, fecha_firma=:fechaFirma, autorizacion_tipoid=:autorizacionTipoid, numero_autorizacion=:numeroAutorizacion, " +
                             "fecha_autorizacion=:fechaAutorizacion, anios_plazo=:aniosPlazo, anios_gracia=:aniosGracia, fecha_fin_ejecucion=:fechaFinEjecucion, perido_ejecucion=:peridoEjecucion, " +
                             "interes_tipoid=:interesTipoid, porcentaje_interes=:porcentajeInteres, porcentaje_comision_compra=:porcentajeComisionCompra, tipo_monedaid=:tipoMonedaid, " +
                             "monto_contratado=:montoContratado, amortizado=:amortizado, por_amortizar=:porAmortizar, principal_anio=:principalAnio, intereses_anio=:interesesAnio, " +
@@ -59,7 +59,7 @@ namespace SiproDAO.Dao
                             "plazo_ejecucion_ue=:plazoEjecucionUe, monto_asignado_ue=:montoAsignadoUe, desembolso_a_fecha_ue=:desembolsoAFechaUe, monto_por_desembolsar_ue=:montoPorDesembolsarUe, " +
                             "fecha_vigencia=:fechaVigencia, monto_contratado_usd=:montoContratadoUsd, monto_contratado_qtz=:montoContratadoQtz, desembolso_a_fecha_usd=:desembolsoAFechaUsd, " +
                             "monto_por_desembolsar_usd=:montoPorDesembolsarUsd, monto_asignado_ue_usd=:montoAsignadoUeUsd, monto_asignado_ue_qtz=:montoAsignadoUeQtz, desembolso_a_fecha_ue_usd=:desembolsoAFechaUeUsd, " +
-                            "monto_por_desembolsar_ue_usd=:montoPorDesembolsarUeUsd, entidad=:entidad, ejercicio=:ejercicio, objetivo=:objetivo, objetivo_Especifico=:objetivoEspecifico, " +
+                            "monto_por_desembolsar_ue_usd=:montoPorDesembolsarUeUsd, objetivo=:objetivo, objetivo_Especifico=:objetivoEspecifico, " +
                             "porcentaje_Avance=:porcentajeAvance, cooperantecodigo=:cooperantecodigo, cooperanteejercicio=:cooperanteejercicio WHERE id=:id", prestamo);
                         ret = result > 0 ? true : false;
                     }
@@ -67,7 +67,7 @@ namespace SiproDAO.Dao
                     {
                         int sequenceId = db.ExecuteScalar<int>("SELECT seq_prestamo.nextval FROM DUAL");
                         prestamo.id = sequenceId;
-                        int result = db.Execute("INSERT INTO PRESTAMO VALUES (:id, :fechaCorte, :codigoPresupuestario, :numeroPrestamo, :destino, :sectorEconomico, :ueunidadEjecutora, " +
+                        int result = db.Execute("INSERT INTO PRESTAMO VALUES (:id, :fechaCorte, :codigoPresupuestario, :numeroPrestamo, :destino, :sectorEconomico, " +
                             ":fechaFirma, :autorizacionTipoid, :numeroAutorizacion, :fechaAutorizacion, :aniosPlazo, :aniosGracia, :fechaFinEjecucion, :peridoEjecucion, :interesTipoid, " +
                             ":porcentajeInteres, :porcentajeComisionCompra, :tipoMonedaid, :montoContratado, :amortizado, :porAmortizar, :principalAnio, :interesesAnio, :comisionCompromisoAnio, " +
                             ":otrosGastos, :principalAcumulado, :interesesAcumulados, :comisionCompromisoAcumulado, :otrosCargosAcumulados, :presupuestoAsignadoFunc, :presupuestoAsignadoInv, " +
@@ -75,7 +75,7 @@ namespace SiproDAO.Dao
                             ":presupuestoPagadoFunc, :presupuestoPagadoInv, :saldoCuentas, :desembolsadoReal, :ejecucionEstadoid, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion, " +
                             ":estado, :proyectoPrograma, :fechaDecreto, :fechaSuscripcion, :fechaElegibilidadUe, :fechaCierreOrigianlUe, :fechaCierreActualUe, :mesesProrrogaUe, :plazoEjecucionUe, " +
                             ":montoAsignadoUe, :desembolsoAFechaUe, :montoPorDesembolsarUe, :fechaVigencia, :montoContratadoUsd, :montoContratadoQtz, :desembolsoAFechaUsd, :montoPorDesembolsarUsd, " +
-                            ":montoAsignadoUeUsd, :montoAsignadoUeQtz, :desembolsoAFechaUeUsd, :montoPorDesembolsarUeUsd, :entidad, :ejercicio, :objetivo, :objetivoEspecifico, :porcentajeAvance, " +
+                            ":montoAsignadoUeUsd, :montoAsignadoUeQtz, :desembolsoAFechaUeUsd, :montoPorDesembolsarUeUsd, :objetivo, :objetivoEspecifico, :porcentajeAvance, " +
                             ":cooperantecodigo, :cooperanteejercicio)", prestamo);
 
                         if(result > 0)
@@ -237,9 +237,7 @@ namespace SiproDAO.Dao
                 using (DbConnection db = new OracleContext().getConnection())
                 {
                     String query = "SELECT p.* " +
-                        "FROM PRESTAMO p " +
-                        "INNER JOIN UNIDAD_EJECUTORA ue ON ue.unidad_ejecutora=p.ueunidad_ejecutora " +
-                        "INNER JOIN ENTIDAD e ON e.entidad=ue.entidadentidad AND e.entidad=p.entidad " +
+                        "FROM PRESTAMO p " +                        
                         "INNER JOIN Cooperante c ON c.codigo=p.cooperantecodigo AND c.ejercicio=p.cooperanteejercicio " +
                         "INNER JOIN TIPO_MONEDA tm ON tm.id=p.tipo_monedaid " +
                         "WHERE p.estado=1 ";

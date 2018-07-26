@@ -6,7 +6,6 @@
 
 .mat-card {
     font-size: 14px;
-    font-weight: bold;
     border-collapse:collapse;
     padding: 18px !important;
 }
@@ -200,6 +199,7 @@ html, body {
     margin-top: 10px; 
     background-color: #f5f5f5; 
     border-color: #ddd;
+    font-weight: bold;
 }
 
 .estilo-letra{
@@ -226,4 +226,21 @@ html, body {
 
 .align-center{
     text-align: center;
+}
+
+.upload-file-button{
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+    height: 34px;
+    width: 42px;
+}
+
+.upload-file-text{
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+
 }

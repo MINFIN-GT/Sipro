@@ -51,7 +51,7 @@ namespace SiproDAO.Dao
                     else
                     {
                         int guardado = db.Execute("INSERT INTO proyecto_propiedad_valor VALUES (:proyectoid, :proyectoPropiedadid, :valorString, :valorEntero, " +
-                            ":valorDecimal, :valorTiempo, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion, estado)", proyectoPropiedadValor);
+                            ":valorDecimal, :valorTiempo, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion, :estado)", proyectoPropiedadValor);
                         ret = guardado > 0 ? true : false;
                     }
                 }
@@ -100,13 +100,13 @@ namespace SiproDAO.Dao
 
         public static List<ProyectoPropiedadValor> getProyectoPropiedadadesValoresPorProyecto(int idProyecto)
         {
-            List<ProyectoPropiedadValor> ret = new List<ProyectoPropiedadValor>();
+            List<ProyectoPropiedadValor> ret = null;
             try
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
                     string query = String.Join(" ", "SELECT * FROM PROYECTO_PROPIEDAD_VALOR ppv",
-                        "JOIN PROYECTO p p.id=ppv.proyectoid",
+                        "INNER JOIN PROYECTO p ON p.id=ppv.proyectoid",
                         "WHERE p.id=:idProy AND ppv.estado=1");
                     ret = db.Query<ProyectoPropiedadValor>(query, new { idProy = idProyecto }).AsList<ProyectoPropiedadValor>();
                 }

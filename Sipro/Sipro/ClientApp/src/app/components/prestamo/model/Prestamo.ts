@@ -19,8 +19,6 @@ export class Prestamo{
     ejecucionEstadoid: number;
     ejecucionEstadoNombre: string;
     ejecucionFisicaRealPEP: number;
-    ejercicio: number;
-    entidad: number;
     fechaActualizacion: Date;
     fechaAutorizacion: Date;
     fechaCierreActualUe: Date;
@@ -85,8 +83,6 @@ export class Prestamo{
     tipoInteresNombre: string;
     tipoMonedaid: number;
     tipoMonedaNombre: string;
-    ueunidadEjecutora: number;
-    unidadEjecutoraNombre: string;
     usuarioActualizo: string;
     usuarioCreo: string;
 

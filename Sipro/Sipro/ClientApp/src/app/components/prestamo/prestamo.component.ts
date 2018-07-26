@@ -16,7 +16,7 @@ import { Prestamo } from './model/Prestamo'
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { Router } from '@angular/router'
+import { Router } from '@angular/router';
 import { Etiqueta } from '../../../assets/models/Etiqueta';
 
 export interface Cooperante {
@@ -238,8 +238,6 @@ export class PrestamoComponent implements OnInit {
           }
           else{
             this.prestamo.id=0;
-            this.prestamo.ejercicio = new Date().getFullYear();
-            this.prestamo.entidad = 11110001;
             objetoHttp = this.http.post("http://localhost:60054/api/Prestamo/Prestamo", this.prestamo, { withCredentials: true });
           }
     
@@ -277,17 +275,17 @@ export class PrestamoComponent implements OnInit {
                     this.m_existenDatos = true;
     
                     /*
-                    if(mi.child_metas!=null || mi.child_riesgos!=null){
-                      if(mi.child_metas)
-                        mi.child_metas.guardar(null, (mi.child_riesgos!=null) ?  mi.child_riesgos.guardar : null,'Préstamo '+(mi.esNuevo ? 'creado' : 'guardado')+' con éxito',
-                            'Error al '+(mi.esNuevo ? 'creado' : 'guardado')+' el Préstamo');
-                      else if(mi.child_riesgos)
-                        mi.child_riesgos.guardar('Préstamo '+(mi.esNuevo ? 'creado' : 'guardado')+' con Éxito',
-                            'Error al '+(mi.esNuevo ? 'creado' : 'guardado')+' el Préstamo');
+                    if(this.child_metas!=null || this.child_riesgos!=null){
+                      if(this.child_metas)
+                        this.child_metas.guardar(null, (this.child_riesgos!=null) ?  this.child_riesgos.guardar : null,'Préstamo '+(this.esNuevo ? 'creado' : 'guardado')+' con éxito',
+                            'Error al '+(this.esNuevo ? 'creado' : 'guardado')+' el Préstamo');
+                      else if(this.child_riesgos)
+                        this.child_riesgos.guardar('Préstamo '+(this.esNuevo ? 'creado' : 'guardado')+' con Éxito',
+                            'Error al '+(this.esNuevo ? 'creado' : 'guardado')+' el Préstamo');
                     }else{
-                      $utilidades.mensaje('success','Préstamo '+(mi.esNuevo ? 'creado' : 'guardado')+' con éxito');
+                      $utilidades.mensaje('success','Préstamo '+(this.esNuevo ? 'creado' : 'guardado')+' con éxito');
                       
-                      mi.esNuevoDocumento = false;
+                      this.esNuevoDocumento = false;
                     }
                     */
                    this.utils.mensaje("success", "Préstamo guardado con éxito");

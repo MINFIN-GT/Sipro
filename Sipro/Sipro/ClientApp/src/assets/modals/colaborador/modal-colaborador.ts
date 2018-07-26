@@ -6,7 +6,7 @@ import { LocalDataSource } from 'ng2-smart-table';
 @Component({
   templateUrl: './modal-dialog.html',
 })
-export class DialogOverviewDirectorProyecto {
+export class DialogOverviewColaborador {
   constructor(public dialog: MatDialog) {}
 }
 
@@ -14,7 +14,7 @@ export class DialogOverviewDirectorProyecto {
   selector: 'director-proyecto.ts',
   templateUrl: './modal-dialog.html'
 })
-export class DialogDirectorProyecto {
+export class DialogColaborador {
     totalElementos : number;
     source: LocalDataSource;
     paginaActual : number;
@@ -30,7 +30,7 @@ export class DialogDirectorProyecto {
     busquedaGlobal: string;
 
   constructor(public dialog: MatDialog,
-    public dialogRef: MatDialogRef<DialogDirectorProyecto>,
+    public dialogRef: MatDialogRef<DialogColaborador>,
     @Inject(MAT_DIALOG_DATA) public data: any, private http: HttpClient) {
       this.elementosPorPagina = 10;
       this.busquedaGlobal = null;

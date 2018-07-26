@@ -572,10 +572,8 @@ h2 {
 
 .componente_sigade{
 	background-color: #98fb98;
-	text-align: center;
-	width: 100%;
-	margin-top: 15px;
-	margin-bottom: 10px;
+    color: #3c763d;
+    font-size: 12px;
 }
 
 .form-control[disabled], .form-control[readonly] {
@@ -622,7 +620,7 @@ input.riesgos[type='range']::-webkit-slider-thumb {
     width: 92%;
     height: 60%;
     padding-left: 10px;
-    color: #8a6d3b
+    color: #8a6d3b;
 }
 
 .alert-dangerm{
@@ -630,5 +628,11 @@ input.riesgos[type='range']::-webkit-slider-thumb {
     width: 92%;
     height: 60%;
     padding-left: 10px;
-    color: #ff3232
+    color: #ff3232;
+}
+
+.alert-dangerTecho{
+    background-color: #ffd3d3;
+    color: #ff3232;
+    font-size: 12px;
 }

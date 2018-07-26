@@ -62,6 +62,9 @@ export class DialogUnidadEjecutora {
         this.paginaActual = 1;
         if(this.totalElementos > 0)
             this.cargarTabla(this.paginaActual);
+        else{
+          this.esColapsado = true;
+        }
       } else {
         console.log('Error');
       }

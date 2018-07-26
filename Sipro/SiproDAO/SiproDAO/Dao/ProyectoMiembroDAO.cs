@@ -34,11 +34,11 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    int existe = db.ExecuteScalar<int>("SELECT COUNT(*) FROM PROYECTO_MIEMBRO WHERE proyectoid=:proyectoid WHERE colaboradorid=:colaboradorid", ProyectoMiembro);
+                    int existe = db.ExecuteScalar<int>("SELECT COUNT(*) FROM PROYECTO_MIEMBRO WHERE proyectoid=:proyectoid AND colaboradorid=:colaboradorid", ProyectoMiembro);
 
                     if (existe > 0)
                     {
-                        int guardado = db.Execute("UPDATE PROYECTO_MIEMBRO SET estado=:estado, fecha_creacion=:fechaCreacion, fecha_actualizacion=fechaActualizacion, " +
+                        int guardado = db.Execute("UPDATE PROYECTO_MIEMBRO SET estado=:estado, fecha_creacion=:fechaCreacion, fecha_actualizacion=:fechaActualizacion, " +
                             "usuario_creo=:usuarioCreo, usuario_actualizo=:usuarioActualizo WHERE proyectoid=:proyectoid AND colaboradorid=:colaboradorid", ProyectoMiembro);
 
                         ret = guardado > 0 ? true : false;

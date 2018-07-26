@@ -27,8 +27,6 @@ namespace SPrestamo.Controllers
             public String numeroPrestamo;
             public String destino;
             public String sectorEconomico;
-            public int ueunidadEjecutora;
-            public String unidadEjecutoraNombre;
             public String fechaFirma;
             public int autorizacionTipoid;
             public String tipoAutorizacionNombre;
@@ -104,8 +102,6 @@ namespace SPrestamo.Controllers
             public Double plazoEjecucionPEP;
             public int ejecucionFisicaRealPEP;
             public int porcentajeAvance;
-            public int ejercicio;
-            public int entidad;
         }
 
         private class sttiposprestamo
@@ -254,19 +250,7 @@ namespace SPrestamo.Controllers
                         prestamo.cooperantes = CooperanteDAO.getCooperantePorCodigo(prestamo.cooperantecodigo ?? default(int));
                         temp.cooperantecodigo = prestamo.cooperantes.codigo;
                         temp.cooperantenombre = prestamo.cooperantes.siglas != null ? prestamo.cooperantes.siglas + " - " + prestamo.cooperantes.nombre : prestamo.cooperantes.nombre;
-                        temp.cooperanteejercicio = prestamo.cooperantes.ejercicio;
-
-                        prestamo.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(prestamo.ejercicio, prestamo.entidad, prestamo.ueunidadEjecutora);
-
-                        if (prestamo.unidadEjecutoras != null)
-                        {
-                            prestamo.unidadEjecutoras.entidads = EntidadDAO.getEntidad(prestamo.entidad, prestamo.ejercicio);
-                            temp.ueunidadEjecutora = prestamo.unidadEjecutoras.unidadEjecutora;
-                            temp.unidadEjecutoraNombre = prestamo.unidadEjecutoras.nombre;
-                            temp.nombreEntidadEjecutora = prestamo.unidadEjecutoras.entidads.nombre;
-                        }
-
-                        temp.ejercicio = prestamo.ejercicio;
+                        temp.cooperanteejercicio = prestamo.cooperantes.ejercicio;                       
                         temp.usuarioCreo = prestamo.usuarioCreo;
                         temp.usuarioActualizo = prestamo.usuarioActualizo;
                         temp.fechaCreacion = prestamo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss");
@@ -293,7 +277,7 @@ namespace SPrestamo.Controllers
 
         // POST api/Prestamos/Prestamo
         [HttpPost]
-        [Authorize("Préstamos o Proyectos - Visualizar")]
+        [Authorize("Préstamos o Proyectos - Crear")]
         public IActionResult Prestamo([FromBody]dynamic value)
         {
             try
@@ -319,8 +303,6 @@ namespace SPrestamo.Controllers
                     prestamo.desembolsoAFechaUsd = value.desembolsoAFechaUsd;
                     prestamo.destino = value.destino;
                     prestamo.ejecucionEstadoid = value.ejecucionEstadoId;
-                    prestamo.ejercicio = value.ejercicio;
-                    prestamo.entidad = value.entidad;
                     prestamo.estado = 1;
                     prestamo.fechaCreacion = DateTime.Now;
                     prestamo.fechaAutorizacion = value.fechaAutorizacion;
@@ -374,7 +356,6 @@ namespace SPrestamo.Controllers
                     prestamo.saldoCuentas = value.saldoCuentas;
                     prestamo.sectorEconomico = value.sectorEconomico;
                     prestamo.tipoMonedaid = value.tipoMonedaid;
-                    prestamo.ueunidadEjecutora = value.ueunidadEjecutora;
                     prestamo.usuarioCreo = User.Identity.Name;
 
                     bool result = PrestamoDAO.guardarPrestamo(prestamo);
@@ -445,8 +426,6 @@ namespace SPrestamo.Controllers
                     prestamo.desembolsoAFechaUsd = value.desembolsoAFechaUsd;
                     prestamo.destino = value.destino;
                     prestamo.ejecucionEstadoid = value.ejecucionEstadoId;
-                    prestamo.ejercicio = value.ejercicio;
-                    prestamo.entidad = value.entidad;
                     prestamo.estado = 1;
                     prestamo.fechaActualizacion = DateTime.Now;
                     prestamo.fechaAutorizacion = value.fechaAutorizacion;
@@ -500,7 +479,6 @@ namespace SPrestamo.Controllers
                     prestamo.saldoCuentas = value.saldoCuentas;
                     prestamo.sectorEconomico = value.sectorEconomico;
                     prestamo.tipoMonedaid = value.tipoMonedaid;
-                    prestamo.ueunidadEjecutora = value.ueunidadEjecutora;
                     prestamo.usuarioActualizo = User.Identity.Name;
 
                     bool result = PrestamoDAO.guardarPrestamo(prestamo);
@@ -660,17 +638,6 @@ namespace SPrestamo.Controllers
                         temp.cooperanteejercicio = prestamo.cooperantes.ejercicio;
                     }
 
-                    prestamo.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(prestamo.ejercicio, prestamo.entidad, prestamo.ueunidadEjecutora);
-                    if (prestamo.unidadEjecutoras != null)
-                    {
-                        prestamo.unidadEjecutoras.entidads = EntidadDAO.getEntidad(prestamo.entidad, prestamo.ejercicio);
-                        temp.ueunidadEjecutora = prestamo.unidadEjecutoras.unidadEjecutora;
-                        temp.unidadEjecutoraNombre = prestamo.unidadEjecutoras.nombre != null ? prestamo.unidadEjecutoras.nombre : default(string);
-                        temp.nombreEntidadEjecutora = prestamo.unidadEjecutoras.entidads.nombre;                        
-                    }
-
-                    temp.entidad = prestamo.entidad;
-                    temp.ejercicio = prestamo.ejercicio;
                     temp.usuarioCreo = prestamo.usuarioCreo;
                     temp.usuarioActualizo = prestamo.usuarioActualizo;
                     temp.fechaCreacion = prestamo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss");
@@ -1149,19 +1116,7 @@ namespace SPrestamo.Controllers
 
                     temp.cooperantecodigo = prestamo.cooperantes.codigo;
                     temp.cooperantenombre = (prestamo.cooperantes.siglas != null ? prestamo.cooperantes.siglas + " - " : default(string)) + prestamo.cooperantes.nombre;
-                    temp.cooperanteejercicio = prestamo.cooperantes.ejercicio;
-
-                    prestamo.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(prestamo.ejercicio, prestamo.entidad, prestamo.ueunidadEjecutora);
-
-                    if (prestamo.unidadEjecutoras != null)
-                    {
-                        prestamo.unidadEjecutoras.entidads = EntidadDAO.getEntidad(prestamo.entidad, prestamo.ejercicio);
-                        temp.ueunidadEjecutora = prestamo.unidadEjecutoras.unidadEjecutora;
-                        temp.unidadEjecutoraNombre = prestamo.unidadEjecutoras.nombre != null ? prestamo.unidadEjecutoras.nombre : default(string);
-                        temp.nombreEntidadEjecutora = prestamo.unidadEjecutoras.entidads.nombre != null ? prestamo.unidadEjecutoras.entidads.nombre : default(string);
-                    }
-
-                    temp.ejercicio = prestamo.ejercicio;
+                    temp.cooperanteejercicio = prestamo.cooperantes.ejercicio;                 
                     temp.usuarioCreo = prestamo.usuarioCreo;
                     temp.usuarioActualizo = prestamo.usuarioActualizo;
                     temp.fechaCreacion = prestamo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss");
@@ -1169,7 +1124,6 @@ namespace SPrestamo.Controllers
                     temp.objetivo = prestamo.objetivo != null ? prestamo.objetivo : default(string);
                     temp.objetivoEspecifico = prestamo.objetivoEspecifico != null ? prestamo.objetivoEspecifico : default(string);
                     temp.porcentajeAvance = prestamo.porcentajeAvance;
-                    temp.entidad = prestamo.entidad;
                 }
 
                 return Ok(new { success = true, prestamo = temp });
@@ -1278,17 +1232,6 @@ namespace SPrestamo.Controllers
                         temp.cooperantecodigo = prestamo.cooperantes.codigo;
                         temp.cooperantenombre = (prestamo.cooperantes.siglas != null ? prestamo.cooperantes.siglas + " - " : default(string)) + prestamo.cooperantes.nombre;
                         temp.cooperanteejercicio = prestamo.cooperantes.ejercicio;
-
-                        prestamo.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(prestamo.ejercicio, prestamo.entidad, prestamo.ueunidadEjecutora);
-
-                        if (prestamo.unidadEjecutoras != null)
-                        {
-                            prestamo.unidadEjecutoras.entidads = EntidadDAO.getEntidad(prestamo.entidad, prestamo.ejercicio);
-                            temp.ueunidadEjecutora = prestamo.unidadEjecutoras.unidadEjecutora;
-                            temp.unidadEjecutoraNombre = prestamo.unidadEjecutoras.nombre;
-                            temp.nombreEntidadEjecutora = prestamo.unidadEjecutoras.entidads.nombre;
-                        }
-
                         temp.montoContratadoEntidadUsd = decimal.Zero;
                         List<Componente> componentes = (List<Componente>)ComponenteDAO.getComponentesPorProyectoHistory(proyecto.id, null);
                         if (componentes != null)
@@ -1310,8 +1253,6 @@ namespace SPrestamo.Controllers
                         temp.fechaActualizacion = prestamo.fechaActualizacion != null ? prestamo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                         temp.objetivo = prestamo.objetivo;
                         temp.objetivoEspecifico = prestamo.objetivoEspecifico;
-                        temp.ejercicio = prestamo.ejercicio;
-                        temp.entidad = prestamo.entidad;
 
                         long tiempo1 = DateTime.Now.Ticks;
                         Double f1 = (((DateTime.Now.Ticks * 1.0) - tiempo1) - proyecto.fechaInicio.Value.Ticks) / 86400000;
@@ -1428,17 +1369,6 @@ namespace SPrestamo.Controllers
                     temp.cooperantecodigo = prestamo.cooperantes.codigo;
                     temp.cooperantenombre = (prestamo.cooperantes.siglas != null ? prestamo.cooperantes.siglas + " - " : default(string)) + prestamo.cooperantes.nombre;
                     temp.cooperanteejercicio = prestamo.cooperantes.ejercicio;
-
-                    prestamo.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(prestamo.ejercicio, prestamo.entidad, prestamo.ueunidadEjecutora);
-
-                    if (prestamo.unidadEjecutoras != null)
-                    {
-                        prestamo.unidadEjecutoras.entidads = EntidadDAO.getEntidad(prestamo.entidad, prestamo.ejercicio);
-                        temp.ueunidadEjecutora = prestamo.unidadEjecutoras.unidadEjecutora;
-                        temp.unidadEjecutoraNombre = prestamo.unidadEjecutoras.nombre;
-                        temp.nombreEntidadEjecutora = prestamo.unidadEjecutoras.entidads.nombre;
-                    }
-
                     temp.usuarioCreo = prestamo.usuarioCreo;
                     temp.usuarioActualizo = prestamo.usuarioActualizo;
                     temp.fechaCreacion = prestamo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss");
@@ -1446,8 +1376,6 @@ namespace SPrestamo.Controllers
                     temp.objetivo = prestamo.objetivo;
                     temp.objetivoEspecifico = prestamo.objetivoEspecifico;
                     temp.porcentajeAvance = prestamo.porcentajeAvance;
-                    temp.ejercicio = prestamo.ejercicio;
-                    temp.entidad = prestamo.entidad;
                 }
 
                 return Ok(new { success = true, prestamo = temp });

@@ -141,7 +141,7 @@ namespace SiproDAO.Dao
                 using (DbConnection db = new OracleContext().getConnection())
                 {
                     ret = db.QueryFirstOrDefault<Proyecto>("SELECT * FROM PROYECTO WHERE id=:id AND id " +
-                        "IN(SELECT u.proyectoid FROM PROYECTO_USUARIO u WHERE u.usaurio=:usuario)", new { id = id, usuario = usuario });
+                        "IN(SELECT u.proyectoid FROM PROYECTO_USUARIO u WHERE u.usuario=:usuario)", new { id = id, usuario = usuario });
                 }
             }
             catch (Exception e)
@@ -197,7 +197,7 @@ namespace SiproDAO.Dao
                         query_a = String.Join("", " p.prestamoid=null");
                     if (filtro_busqueda != null && filtro_busqueda.Length > 0)
                     {
-                        query_a = String.Join("", query_a, " p.nombre LIKE '%" + filtro_busqueda + "%' ");
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " AND " : ""), " p.nombre LIKE '%" + filtro_busqueda + "%' ");
 
                         query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.usuario_creo LIKE '%" + filtro_busqueda + "%' ");
 
@@ -239,7 +239,7 @@ namespace SiproDAO.Dao
 
                     if (filtro_busqueda != null && filtro_busqueda.Length > 0)
                     {
-                        query_a = String.Join("", query_a, " p.nombre LIKE '%" + filtro_busqueda + "%' ");
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " AND " : ""), " p.nombre LIKE '%" + filtro_busqueda + "%' ");
 
                         query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.usuario_creo LIKE '%" + filtro_busqueda + "%' ");
 
