@@ -34,6 +34,8 @@ import { DialogColaborador } from '../assets/modals/colaborador/modal-colaborado
 import { DialogImpacto } from '../assets/modals/impacto/modal-impacto';
 import { DialogEntidad } from '../assets/modals/entidad/modal-entidad';
 import { DialogCargarProject } from '../assets/modals/cargarproject/modal-cargar-project';
+import { NguiMapModule } from '@ngui/map';
+import { DialogMapa } from '../assets/modals/cargamapa/modal-carga-mapa'
 
 import { AppComponent } from './app.component';
 import { MainComponent } from './components/main/main.component';
@@ -94,11 +96,12 @@ const routes: Routes = [{
       DialogCodigoPresupuestario, DialogMoneda, DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, DialogDownloadDocument, 
       FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo, PepComponent, DialogProyectoTipo, PrestamotipoComponent, 
       PeppropiedadComponent, PeptipoComponent, DialogProyectoPropiedad, DialogDelete, DialogUnidadEjecutora, DialogColaborador,
-      DialogImpacto, DialogEntidad, ComponenteComponent, DialogCargarProject
+      DialogImpacto, DialogEntidad, ComponenteComponent, DialogCargarProject, DialogMapa
   ],
   imports: [
       BrowserModule,
       FormsModule, ReactiveFormsModule, 
+      NguiMapModule.forRoot({apiUrl: 'https://maps.google.com/maps/api/js?key=AIzaSyDgZeBouc6cujKM2NM3_F_jMJbKUc1XjKk'}),
       RouterModule.forRoot(routes),
       HttpClientModule,
       FlashMessagesModule.forRoot(),
@@ -117,7 +120,7 @@ const routes: Routes = [{
   bootstrap: [AppComponent],
   entryComponents: [DialogCodigoPresupuestario, DialogMoneda, DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, 
     DialogDownloadDocument, DialogProyectoTipo, DialogProyectoPropiedad, DialogDelete, DialogUnidadEjecutora, DialogColaborador,
-    DialogImpacto, DialogEntidad, DialogCargarProject]
+    DialogImpacto, DialogEntidad, DialogCargarProject, DialogMapa]
 })
 export class AppModule { 
 

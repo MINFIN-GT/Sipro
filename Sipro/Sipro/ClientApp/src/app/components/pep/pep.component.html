@@ -12,10 +12,10 @@
         <div fxLayout="column" fxLayoutAlign="center" fxFlexFill>
             <div [hidden]="esColapsado" *ngIf="!esTreeview">
                 <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2px" *ngIf="!esTreeview">
-                    <button mat-raised-button style="background-color: #337ab7; color:#fff" (click)="congelado == 0 ? nuevo() : null" matTooltip="Nuevo" matTooltipPosition="above" [disabled]="prestamoid > 0"><mat-icon>add</mat-icon>Nuevo</button>
-                    <button mat-raised-button style="background-color: #337ab7; color:#fff" (click)="congelado == 0 ? cargarArchivo() : null" matTooltip="Importar PEP desde project" matTooltipPosition="above"><mat-icon>add</mat-icon>Project</button>
-                    <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="editar()" matTooltip="Editar" matTooltipPosition="above"><mat-icon>mode_edit</mat-icon>Editar</button>
-                    <button mat-raised-button style="background-color: #d9534f; color: #fff;" (click)="congelado == 0 ? borrar() : null" matTooltip="Borrar" matTooltipPosition="above"><mat-icon>delete</mat-icon>Borrar</button>
+                    <button id="primary-disabled" mat-raised-button class="primary-btn" (click)="congelado == 0 ? nuevo() : null" matTooltip="Nuevo" matTooltipPosition="above" [disabled]="prestamo > 0"><mat-icon>add</mat-icon>Nuevo</button>
+                    <button mat-raised-button class="primary-btn" (click)="congelado == 0 ? cargarArchivo() : null" matTooltip="Importar PEP desde project" matTooltipPosition="above" *ngIf="prestamo==0"><mat-icon>add</mat-icon>Project</button>
+                    <button mat-raised-button class="primary-btn" (click)="editar()" matTooltip="Editar" matTooltipPosition="above"><mat-icon>mode_edit</mat-icon>Editar</button>
+                    <button mat-raised-button class="danger-btn" (click)="congelado == 0 ? borrar() : null" matTooltip="Borrar" matTooltipPosition="above"><mat-icon>delete</mat-icon>Borrar</button>
                 </div>
                 <br>
                 <div fxLayout="row" fxLayoutAlign="center">
@@ -65,7 +65,7 @@
                             <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="irAHitos(proyecto.id)" matTooltip="Hitos" matTooltipPosition="above"><mat-icon>my_location</mat-icon></button>
                             <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="irAMapa(proyecto.id)" matTooltip="Mapa" matTooltipPosition="above"><mat-icon>zoom_out_map</mat-icon></button>
                             <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="irAGantt(proyecto.id)" matTooltip="Ir a Gant" matTooltipPosition="above"><mat-icon>format_align_left</mat-icon></button>
-                            <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="completarConArchivo(proyecto.id)" matTooltip="Importar PEP desde Project" matTooltipPosition="above"><mat-icon>content_copy</mat-icon></button>
+                            <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" *ngIf="proyecto.projectCargado!=1" (click)="completarConArchivo(proyecto.id)" matTooltip="Importar PEP desde Project" matTooltipPosition="above"><mat-icon>content_copy</mat-icon></button>
                             <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="exportar()" matTooltip="Exportar PEP a Project" matTooltipPosition="above"><mat-icon>content_paste</mat-icon></button>
                             <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="irAKanban(proyecto.id)" matTooltip="Cartelera de Actividades" matTooltipPosition="above"><mat-icon>dashboard</mat-icon></button>
                             <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="irAAgenda(proyecto.id)" matTooltip="Agenda" matTooltipPosition="above"><mat-icon>date_range</mat-icon></button>
@@ -77,8 +77,8 @@
                             <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="verHistoria()" matTooltip="Ver Historia" matTooltipPosition="above"><mat-icon>history</mat-icon></button>
                         </div>
                         <div fxFlex fxLayoutAlign="end" fxLayoutGap="2px">
-                            <button mat-raised-button style="background-color: #5cb85c; color:#fff; border-color: #4cae4c" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
-                            <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
+                            <button mat-raised-button id="applying-disabled" class="applying-btn" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
+                            <button mat-raised-button class="primary-btn" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
                         </div>
                     </div>
                     <br>
@@ -441,8 +441,8 @@
                         <div fxLayout="row" fxLayoutAlign="center" class="label-form">Los campos marcados con * son obligatorios y las fechas deben tener formato de dd/mm/aaaa</div>
                         <br>
                         <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2px">
-                            <button mat-raised-button style="background-color: #5cb85c; color:#fff; border-color: #4cae4c" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
-                            <button mat-raised-button style="background-color: #337ab7; color: #fff;" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
+                            <button mat-raised-button id="applying-disabled" class="applying-btn" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
+                            <button mat-raised-button class="primary-btn" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
                         </div>
                     </div>
                 </form>

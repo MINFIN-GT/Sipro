@@ -1,0 +1,26 @@
+<div style="height: 100%; overflow: hidden;">
+    <div style="height: 10%;">
+        <h1 mat-dialog-title style="border-bottom: 1px double #ddd !important;">{{data.titulo}}</h1>
+    </div>
+    <div style="height: 80%;">
+        <div style="height: 100%; width: 100%;">
+            <ngui-map style="height:100%; width:100%;" [options]="mapOptions"
+                (mapReady$)="onMapReady($event)"
+                (mapClick)="onMapClick($event)"
+                (idle)="onIdle($event)">
+                <marker *ngFor="let pos of positions" 
+                    [position]="pos"
+                    (initialized$)="onMarkerInit($event)">
+                </marker>
+            </ngui-map>
+        </div>       
+    </div>
+    <div style="height: 10%;">
+        <div mat-dialog-actions align="end" style="border-top: 1px double #ddd !important;">
+            <button mat-raised-button id="applying-disabled" class="applying-btn" (click)="aceptar()" [disabled]="mostrarcargando">Ok</button>
+            <button mat-raised-button id="primary-disabled" class="primary-btn" (click)="cancelar()" [disabled]="mostrarcargando">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+

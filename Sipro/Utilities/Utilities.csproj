@@ -12,17 +12,15 @@
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.4.1" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="app.config" />
+    <ProjectReference Include="..\SiproModelCore\SiproModelCore\SiproModelCore.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="IKVM.OpenJDK.Core">
-      <HintPath>..\..\..\..\Downloads\lib.net\IKVM.OpenJDK.Core.dll</HintPath>
+    <Reference Include="SiproDAO">
+      <HintPath>..\SiproDAO\SiproDAO\bin\Debug\netcoreapp2.0\SiproDAO.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="mpxj-for-csharp">
-      <HintPath>..\..\..\..\Downloads\lib.net\mpxj-for-csharp.dll</HintPath>
-    </Reference>
-    <Reference Include="poi-3.17">
-      <HintPath>..\..\..\..\Downloads\lib.net\poi-3.17.dll</HintPath>
+    <Reference Include="System">
+      <HintPath>System</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

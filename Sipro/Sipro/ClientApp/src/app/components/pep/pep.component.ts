@@ -175,10 +175,10 @@ export class PepComponent implements OnInit {
         var data = response['proyectos'];
 
         this.source = new LocalDataSource(data);
-            this.source.setSort([
-              { field: 'id', direction: 'asc' }  // primary sort
-            ]);
-            this.busquedaGlobal = null;
+        this.source.setSort([
+            { field: 'id', direction: 'asc' }  // primary sort
+        ]);
+        this.busquedaGlobal = null;
       }
 
       this.mostrarcargando = false;
@@ -787,10 +787,11 @@ export class PepComponent implements OnInit {
     this.modalCargarProject.dialog.open(DialogCargarProject, {
       width: '600px',
       height: '250px',
-      data: { titulo: 'Cargar desde Project' }
+      data: { titulo: 'Cargar desde Project', proyectoid : 0, prestamoid: this.prestamoid }
     }).afterClosed().subscribe(result=>{
       if(result != null){
-
+        if(result)
+          this.proyecto.projectCargado = 1;
       }
     })
   }
@@ -805,10 +806,13 @@ export class PepComponent implements OnInit {
     this.modalCargarProject.dialog.open(DialogCargarProject, {
       width: '600px',
       height: '250px',
-      data: { titulo: 'Completar desde Project' }
+      data: { titulo: 'Completar desde Project', proyectoid : this.proyecto.id, prestamoid: this.prestamoid }
     }).afterClosed().subscribe(result=>{
       if(result != null){
-
+        if(result)
+          this.proyecto.projectCargado = 1;
+        else
+          this.utils.mensaje('danger', 'Error al importar el archivo de Project');
       }
     })
   }

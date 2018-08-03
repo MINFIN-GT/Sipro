@@ -721,5 +721,22 @@ namespace SiproDAO.Dao
             }
             return ret;
         }
+
+        public static List<Producto> getProductosBySubComponente(int subcomponenteId)
+        {
+            List<Producto> ret = null;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    ret = db.Query<Producto>("SELECT * FROM PRODUCTO WHERE subcomponenteid=:componenteId AND estado=1", new { componenteId = subcomponenteId }).AsList<Producto>();
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("26", "ProductoDAO.class", e);
+            }
+            return ret;
+        }
     }
 }

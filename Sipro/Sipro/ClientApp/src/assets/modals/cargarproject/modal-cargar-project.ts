@@ -28,6 +28,9 @@ export class DialogCargarProject {
     mostrarcargando: boolean;
     nombreArchivo: string;
     documento: File;
+    proyectoid : number;
+    prestamoid : number;
+    multiproyecto : boolean;
 
     constructor(public dialog: MatDialog,
         public dialogRef: MatDialogRef<DialogCargarProject>,
@@ -37,6 +40,9 @@ export class DialogCargarProject {
             this.textoCuerpo = data.textoCuerpo;
             this.textoBotonOk = data.textoBotonOk;
             this.textoBotonCancelar = data.textoBotonCancelar;
+            this.proyectoid = data.proyectoid;
+            this.prestamoid = data.prestamoid;
+            dialogRef.disableClose = true;
         }
 
     ngOnInit() { 
@@ -44,13 +50,16 @@ export class DialogCargarProject {
     }
 
     aceptar(){
+        this.mostrarcargando = true;
         if(this.documento != null){
             var formData = new FormData();
             formData.append("file", this.documento);
-            this.http.post('http://localhost:60030/api/Gantt/Importar/'+0+'/'+0+'/'+1+'/'+1, formData, { withCredentials : true }).subscribe(response => {
+            this.http.post('http://localhost:60030/api/Gantt/Importar/'+ (this.multiproyecto ? '1' : '0') + '/0/' + this.proyectoid + '/' + this.prestamoid, formData, { withCredentials : true }).subscribe(response => {
                 if(response['success'] == true){
+                    this.mostrarcargando = false;
                     this.dialogRef.close(true);   
-                }
+                }else
+                    this.dialogRef.close(false); 
             })
         }           
     }

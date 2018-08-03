@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 
 namespace Utilities
 {
@@ -38,6 +39,24 @@ namespace Utilities
             }
 
             return totalWorkingDays + 1;
+        }
+
+        public static DateTime setDateCeroHoras(DateTime fecha)
+        {
+            DateTime cfecha = new DateTime(fecha.Year, fecha.Month, fecha.Day, 0, 0, 0, 0);
+            return cfecha;
+        }
+
+        public static string getDirectorioTemporal()
+        {
+            var directorioTemporal = ConfigurationManager.AppSettings["directorioTemporal"];
+            return directorioTemporal;
+        }
+
+        public static string getJartImportProject()
+        {
+            var pathJar = ConfigurationManager.AppSettings["pathImportJar"];
+            return pathJar;
         }
     }
 }

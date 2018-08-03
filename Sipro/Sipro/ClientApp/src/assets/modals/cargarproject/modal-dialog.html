@@ -41,8 +41,8 @@
     </div>
     <div style="height: 20%;">
         <div mat-dialog-actions align="end" style="border-top: 1px double #ddd !important;">
-            <button mat-raised-button class="applying-btn" (click)="aceptar()">Ok</button>
-            <button mat-raised-button class="primary-btn" (click)="cancelar()">Cancelar</button>
+            <button mat-raised-button id="applying-disabled" class="applying-btn" (click)="aceptar()" [disabled]="mostrarcargando">Ok</button>
+            <button mat-raised-button id="primary-disabled" class="primary-btn" (click)="cancelar()" [disabled]="mostrarcargando">Cancelar</button>
         </div>
     </div>
 </div>

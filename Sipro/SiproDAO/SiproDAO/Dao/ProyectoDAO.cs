@@ -254,7 +254,7 @@ namespace SiproDAO.Dao
                     if (usuario != null)
                         query = String.Join("", query, " AND p.id in (SELECT u.proyectoid FROM PROYECTO_USUARIO u where u.usuario=:usuario )");
                     query = columna_ordenada != null && columna_ordenada.Trim().Length > 0 ? String.Join(" ", query, "ORDER BY", columna_ordenada, orden_direccion) :
-                                String.Join(" ", query, "ORDER BY fecha_creacion ASC");
+                        String.Join(" ", query, "ORDER BY fecha_creacion ASC");
                     query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + numeroproyecto + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + numeroproyecto + ") + 1)");
 
                     ret = db.Query<Proyecto>(query, new { usuario = usuario }).AsList<Proyecto>();
@@ -747,34 +747,34 @@ namespace SiproDAO.Dao
             }
 
             return ret;
-        }
+        }*/
 
-        public static Proyecto getProyectobyTreePath(String treePath){
+        public static Proyecto getProyectobyTreePath(String treePath)
+        {
             Proyecto ret = null;
-            
-            try{
-                String treePathProyecto = treePath.substring(0,8);
-                Integer proyectoId = Utils.String2Int(treePathProyecto) - 10000000;
+            try
+            {
+                String treePathProyecto = treePath.Substring(0, 8);
+                int proyectoId = Convert.ToInt32(treePathProyecto) - 10000000;
                 ret = getProyecto(proyectoId);
-            }catch(Exception e){
-                CLogger.write("23", ProyectoDAO.class, e);
-            }finally{
-                session.close();
+            }
+            catch (Exception e)
+            {
+                CLogger.write("23", "ProyectoDAO.class", e);
             }
 
             return ret;
-        }*/
+        }
 
-        public static String getVersiones(int productoId)
+        public static String getVersiones(int proyectoId)
         {
             String resultado = "";
             try
             {
-                using (DbConnection db = new OracleContext().getConnection())
+                using (DbConnection db = new OracleContext().getConnectionHistory())
                 {
-                    String query = "SELECT DISTINCT(version) "
-                        + " FROM sipro_history.PROYECTO "
-                        + " WHERE id = " + productoId;
+                    String query = "SELECT DISTINCT(version) FROM proyecto "
+                        + " WHERE id=" + proyectoId;
 
                     List<dynamic> versiones = db.Query<dynamic>(query).AsList<dynamic>();
 
@@ -799,7 +799,7 @@ namespace SiproDAO.Dao
             return resultado;
         }
 
-        public static String getHistoria (int productoId, int version){
+        public static String getHistoria(int proyectoId, int version){
             String resultado = "";
             String query = "SELECT c.version, c.nombre, c.descripcion, ct.nombre tipo, ue.nombre unidad_ejecutora, c.costo, ac.nombre tipo_costo, "
                     + " c.programa, c.subprograma, c.proyecto, c.actividad, c.obra, c.renglon, c.ubicacion_geografica, c.latitud, c.longitud, "
@@ -809,10 +809,10 @@ namespace SiproDAO.Dao
                     + " THEN 'Activo' "
                     + " ELSE 'Inactivo' "
                     + " END AS estado, ejecucion_fisica_real "
-                    + " FROM sipro_history.proyecto c "
-                    + " JOIN sipro.unidad_ejecutora ue ON c.unidad_ejecutoraunidad_ejecutora = ue.unidad_ejecutora and c.entidad = ue.entidadentidad and c.ejercicio = ue.ejercicio  JOIN sipro_history.proyecto_tipo ct ON c.proyecto_tipoid = ct.id "
-                    + " LEFT JOIN sipro_history.acumulacion_costo ac ON c.acumulacion_costoid = ac.id "
-                    + " WHERE c.id = "+productoId
+                    + " FROM proyecto c "
+                    + " INNER JOIN sipro.unidad_ejecutora ue ON c.unidad_ejecutoraunidad_ejecutora = ue.unidad_ejecutora and c.entidad = ue.entidadentidad and c.ejercicio = ue.ejercicio  JOIN sipro_history.proyecto_tipo ct ON c.proyecto_tipoid = ct.id "
+                    + " LEFT JOIN acumulacion_costo ac ON c.acumulacion_costoid = ac.id "
+                    + " WHERE c.id = " + proyectoId
                     + " AND c.version = " +version;
 
             String [] campos = {"Version", "Nombre", "Descripción", "Tipo", "Unidad Ejecutora", "Monto Planificado", "Tipo Acumulación de Monto Planificado", 
@@ -821,55 +821,8 @@ namespace SiproDAO.Dao
                     "Fecha Creación", "Usuario que creo", "Fecha Actualización", "Usuario que actualizó", 
                     "Estado", "Ejecución Fí­sica %"};
 
-            resultado = getHistoria(query, campos);
+            resultado = CHistoria.getHistoria(query, campos);
             return resultado;
-        }
-
-        public static String getHistoria(String query, String[] campos)
-        {
-            String resultado = "";
-            if (query != null && query.Length > 0 && campos != null && campos.Length > 0)
-            {
-                List<dynamic> datos = getDatos(query);
-                for (int d = 0; d < datos.Count; d++)
-                {
-                    Object[] dato = (Object[])datos[d];
-                    if (resultado.Length > 0)
-                    {
-                        resultado += ", ";
-                    }
-                    resultado += "[";
-                    String objeto = "";
-                    for (int c = 0; c < campos.Length; c++)
-                    {
-                        if (objeto.Length > 0)
-                        {
-                            objeto += ", ";
-                        }
-                        objeto += "{\"nombre\": \"" + campos[c] + "\", \"valor\": \"" + (dato[c] != null ? ((string)dato[c]) : "") + "\"}";
-                    }
-                    resultado += objeto + "]";
-                }
-            }
-            resultado = "[" + resultado + "]";
-            return resultado;
-        }
-
-        public static List<dynamic> getDatos(String query)
-        {
-            List<dynamic> ret = null;
-            try
-            {
-                using (DbConnection db = new OracleContext().getConnection())
-                {
-                    ret = db.Query<dynamic>(query).AsList<dynamic>();
-                }
-            }
-            catch (Exception e)
-            {
-                CLogger.write("2", "ProyectoDAO.class", e);
-            }
-            return ret;
-        }
+        }             
     }
 }

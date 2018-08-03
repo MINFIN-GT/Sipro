@@ -5,6 +5,7 @@ using System.Data.Common;
 using Utilities;
 using SiproModelCore.Models;
 using System.Numerics;
+using SiproModelAnalyticCore.Models;
 
 namespace SiproDAO.Dao
 {
@@ -537,46 +538,57 @@ namespace SiproDAO.Dao
                 }
             }
             return objetoCosto;
-        }
+        }*/
 
-        public static boolean tieneHijos(int objetoId, int objetoTipo){
-            if(ActividadDAO.getActividadesPorObjeto(objetoId, objetoTipo)!=null && ActividadDAO.getActividadesPorObjeto(objetoId, objetoTipo).size()>0){
+        public static bool tieneHijos(int objetoId, int objetoTipo)
+        {
+            if (ActividadDAO.getActividadesPorObjeto(objetoId, objetoTipo) != null && ActividadDAO.getActividadesPorObjeto(objetoId, objetoTipo).Count > 0)
+            {
                 return true;
             }
-            switch(objetoTipo){
-            case 0:
-                Proyecto proyecto = ProyectoDAO.getProyecto(objetoId);
-                if (proyecto.getComponentes()!=null && proyecto.getComponentes().size()>0){
-                    return true;
-                }
-                return false;
-            case 1:
-                Componente componente = ComponenteDAO.getComponente(objetoId);
-                if (componente.getProductos()!=null && componente.getProductos().size()>0){
-                    return true;
-                }
-                if (componente.getSubcomponentes()!=null && componente.getSubcomponentes().size()>0){
-                    return true;
-                }
-                return false;
-            case 2:
-                Subcomponente subcomponente = SubComponenteDAO.getSubComponente(objetoId);
-                if (subcomponente.getProductos()!=null && subcomponente.getProductos().size()>0){
-                    return true;
-                }
-                return false;
-            case 3:
-                Producto producto = ProductoDAO.getProductoPorId(objetoId);
-                if (producto.getSubproductos()!=null && producto.getSubproductos().size()>0){
-                    return true;
-                }
-                return false;
-            default:
-                return false;
+            switch (objetoTipo)
+            {
+                case 0:
+                    List<Componente> componentes = ComponenteDAO.getComponentesPorProyecto(objetoId);
+                    if (componentes != null && componentes.Count > 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                case 1:
+                    List<Producto> productos = ProductoDAO.getProductosByComponente(objetoId);
+                    Componente componente = ComponenteDAO.getComponente(objetoId);
+                    if (productos != null && productos.Count > 0)
+                    {
+                        return true;
+                    }
+
+                    List<Subcomponente> subcomponentes = SubComponenteDAO.getSubComponentesPorComponente(objetoId);
+                    if (subcomponentes != null && subcomponentes.Count > 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                case 2:
+                    productos = ProductoDAO.getProductosBySubComponente(objetoId);
+                    if (productos != null && productos.Count > 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                case 3:
+                    List<Subproducto> subproductos = SubproductoDAO.getSubproductosByProductoid(objetoId);
+                    if (subproductos != null && subproductos.Count > 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                default:
+                    return false;
             }
         }
 
-        public static List<ObjetoHoja> getHojas(Integer proyectoId){
+        /*public static List<ObjetoHoja> getHojas(Integer proyectoId){
             Session session = CHibernateSession.getSessionFactory().openSession();
             ArrayList<ObjetoHoja> hojas = new ArrayList<ObjetoHoja>();
             try{
@@ -847,102 +859,99 @@ namespace SiproDAO.Dao
 
             return ret;
         }
-	
-	/*public static List<?> getVigente(Integer fuente, Integer organismo, Integer correlativo,
-			int ejercicio, int mesMaximo, int entidad){
-		List<?> ret = null;
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		
-		try{
-			String query =String.join(" ","select ",
-			"sum(case when t.mes = 1 then t.vigente else null end) enero,",
-			"sum(case when t.mes = 2 then t.vigente else null end) febrero,",
-			"sum(case when t.mes = 3 then t.vigente else null end) marzo,",
-			"sum(case when t.mes = 4 then t.vigente else null end) abril,",
-			"sum(case when t.mes = 5 then t.vigente else null end) mayo,",
-			"sum(case when t.mes = 6 then t.vigente else null end) junio,",
-			"sum(case when t.mes = 7 then t.vigente else null end) julio,",
-			"sum(case when t.mes = 8 then t.vigente else null end) agosto,",
-			"sum(case when t.mes = 9 then t.vigente else null end) septiembre,",
-			"sum(case when t.mes = 10 then t.vigente else null end) octubre,",
-			"sum(case when t.mes = 11 then t.vigente else null end) noviembre,",
-			"sum(case when t.mes = 12 then t.vigente else null end) diciembre",
-			"from",
-			"(",
-				"select  v.ejercicio,v.mes, sum(v.asignado + v.modificaciones) vigente",
-				"from sipro_analytic.mv_ep_ejec_asig_vige  v",
-				"where organismo =:proyectoId",
-				"and fuente = ?2",
-				"and correlativo = ?3",
-				"and entidad = ?4",
-//				"and unidad_ejecutra = ?5",
-				"and ejercicio = ?6",
-				"and mes between 1 and ?7",
-				"group by  v.ejercicio,v.mes",
-			") as t");
-			
-			
-			Query<?> criteria = session.createNativeQuery(query);
-			criteria.setParameter("1", organismo);
-			criteria.setParameter("2", fuente);
-			criteria.setParameter("3", correlativo);
-			criteria.setParameter("4", entidad);
-//			criteria.setParameter("5", unidad_ejecutora);
-			criteria.setParameter("6", ejercicio);
-			criteria.setParameter("7", mesMaximo);
-			ret = criteria.getResultList();
-		}
-		catch(Throwable e){
-			CLogger.write("7", ObjetoDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return  ret;
-	}
-	
-	public static BigDecimal getAsignadoPorLineaPresupuestaria(Integer ejercicio, Integer entidad,  
-			Integer programa, Integer subprograma, Integer proyecto, Integer actividad, Integer obra, Integer renglon, Integer geografico){
-		
-		BigDecimal ret = new BigDecimal(0);
-		List<?> lstret = null;
-		
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			String query = String.join(" ", "select sum(asignado) asignado from sipro_analytic.mv_ep_ejec_asig_vige c where", 
-				"programa=:proyectoId",
-				"and subprograma=?2",
-				"and proyecto=?3",
-				"and actividad=?4",
-				"and obra=?5",
-				"and renglon=?6",
-				"and geografico=?7",
-				"and ejercicio=?8",
-				"and entidad=?9");//,
-//				"and unidad_ejecutra=:proyectoId0");
-			Query<?> criteria = session.createNativeQuery(query);
-			criteria.setParameter("1", programa);
-			criteria.setParameter("2", subprograma);
-			criteria.setParameter("3", proyecto);
-			criteria.setParameter("4", actividad);
-			criteria.setParameter("5", obra);
-			criteria.setParameter("6", renglon);
-			criteria.setParameter("7", geografico);
-			criteria.setParameter("8", ejercicio);
-			criteria.setParameter("9", entidad);
-//			criteria.setParameter("10", unidadEjecutora);
-			lstret = criteria.getResultList();
-			
-			if(!lstret.isEmpty()){
-				ret = new BigDecimal(lstret.get(0).toString());
-			}
-		}catch(Exception e){
-			CLogger.write("8", ObjetoDAO.class, e);
-		}
-		
-		return ret;
-	}
-         
-         */
+
+        /*public static List<?> getVigente(Integer fuente, Integer organismo, Integer correlativo,
+                int ejercicio, int mesMaximo, int entidad){
+            List<?> ret = null;
+            Session session = CHibernateSession.getSessionFactory().openSession();
+
+            try{
+                String query =String.join(" ","select ",
+                "sum(case when t.mes = 1 then t.vigente else null end) enero,",
+                "sum(case when t.mes = 2 then t.vigente else null end) febrero,",
+                "sum(case when t.mes = 3 then t.vigente else null end) marzo,",
+                "sum(case when t.mes = 4 then t.vigente else null end) abril,",
+                "sum(case when t.mes = 5 then t.vigente else null end) mayo,",
+                "sum(case when t.mes = 6 then t.vigente else null end) junio,",
+                "sum(case when t.mes = 7 then t.vigente else null end) julio,",
+                "sum(case when t.mes = 8 then t.vigente else null end) agosto,",
+                "sum(case when t.mes = 9 then t.vigente else null end) septiembre,",
+                "sum(case when t.mes = 10 then t.vigente else null end) octubre,",
+                "sum(case when t.mes = 11 then t.vigente else null end) noviembre,",
+                "sum(case when t.mes = 12 then t.vigente else null end) diciembre",
+                "from",
+                "(",
+                    "select  v.ejercicio,v.mes, sum(v.asignado + v.modificaciones) vigente",
+                    "from sipro_analytic.mv_ep_ejec_asig_vige  v",
+                    "where organismo =:proyectoId",
+                    "and fuente = ?2",
+                    "and correlativo = ?3",
+                    "and entidad = ?4",
+    //				"and unidad_ejecutra = ?5",
+                    "and ejercicio = ?6",
+                    "and mes between 1 and ?7",
+                    "group by  v.ejercicio,v.mes",
+                ") as t");
+
+
+                Query<?> criteria = session.createNativeQuery(query);
+                criteria.setParameter("1", organismo);
+                criteria.setParameter("2", fuente);
+                criteria.setParameter("3", correlativo);
+                criteria.setParameter("4", entidad);
+    //			criteria.setParameter("5", unidad_ejecutora);
+                criteria.setParameter("6", ejercicio);
+                criteria.setParameter("7", mesMaximo);
+                ret = criteria.getResultList();
+            }
+            catch(Throwable e){
+                CLogger.write("7", ObjetoDAO.class, e);
+            }
+            finally{
+                session.close();
+            }
+            return  ret;
+        }*/
+
+        public static decimal getAsignadoPorLineaPresupuestaria(int ejercicio, int entidad, int programa, int subprograma, int proyecto, int actividad, int obra, int renglon,
+            int geografico)
+        {
+            Decimal ret = decimal.Zero;
+
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnectionAnalytic())
+                {
+                    String query = String.Join(" ", "SELECT SUM(asignado) AS asignado FROM mv_ep_ejec_asig_vige c WHERE",
+                        "programa=:programa",
+                        "AND subprograma=:subprograma",
+                        "AND proyecto=:proyecto",
+                        "AND actividad=:actividad",
+                        "AND obra=:obra",
+                        "AND renglon=:renglon",
+                        "AND geografico=:geografico",
+                        "AND ejercicio=:ejercicio",
+                        "AND entidad=:entidad");
+
+                    ret = db.ExecuteScalar<decimal>(query, new {
+                        programa = programa,
+                        subprograma = subprograma,
+                        proyecto = proyecto,
+                        actividad = actividad,
+                        obra = obra,
+                        renglon = renglon,
+                        geografico = geografico,
+                        ejercicio = ejercicio,
+                        entidad = entidad
+                    });
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("8", "ObjetoDAO.class", e);
+            }
+
+            return ret;
+        }
     }
 }

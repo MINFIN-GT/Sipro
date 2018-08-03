@@ -1186,6 +1186,13 @@ namespace SProyecto.Controllers
             {
                 Proyecto proyecto = ProyectoDAO.getProyectoPorId(id, User.Identity.Name);
 
+                proyecto.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(proyecto.ejercicio, proyecto.entidad ?? default(int), proyecto.ueunidadEjecutora);
+
+                if (proyecto.unidadEjecutoras != null)
+                {
+                    proyecto.unidadEjecutoras.entidads = EntidadDAO.getEntidad(proyecto.entidad ?? default(int), proyecto.ejercicio);
+                }
+
                 if (proyecto != null)
                 {
                     return Ok(new

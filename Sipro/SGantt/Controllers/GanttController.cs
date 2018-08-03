@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using net.sf.mpxj;
-using net.sf.mpxj.mpp;
 using Utilities;
-using java.io;
 
 namespace SGantt.Controllers
 {
@@ -35,18 +31,19 @@ namespace SGantt.Controllers
             }
         }
 
-        [HttpPost("{multiproyecto}/{marcarCargado}/{proyecto_id}/{prestamoId}")]
+        [HttpPost("{multiproyecto}/{mostrarCargando}/{proyecto_id}/{prestamoId}")]
+        [DisableRequestSizeLimit]
         [Authorize("Gantt - Crear")]
-        public async Task<IActionResult> Importar([FromForm]IFormFile file, int multiproyecto, int marcarCargado, int proyecto_id, int prestamoId)
+        public async Task<IActionResult> Importar([FromForm]IFormFile file, int multiproyecto, int mostrarCargando, int proyecto_id, int prestamoId)
         {
             try
             {
-                String directorioTemporal = @"\SIPRO\archivos\temporales\";
+                String directorioTemporal = @Utils.getDirectorioTemporal();
 
                 if (!Directory.Exists(directorioTemporal))
                     Directory.CreateDirectory(directorioTemporal);
 
-                String fullPath = directorioTemporal + "temp_" + DateTime.Now.Ticks;
+                String fullPath = directorioTemporal + "temp_" + Guid.NewGuid();
                 FileStream documento = new FileStream(fullPath, FileMode.OpenOrCreate);
 
                 if (documento.Length == 0)
@@ -57,8 +54,23 @@ namespace SGantt.Controllers
                         documento.Close();
                     }
                 }
-                
-                return Ok(new { success = true });
+
+                Process p = new Process();
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.RedirectStandardOutput = true;
+                String arguments = "-jar \"" + @Utils.getJartImportProject() + "\" \"" + fullPath + "\" \""+ User.Identity.Name +"\" \"0\" \"" + proyecto_id + "\" \"1\" \"" + prestamoId + "\"";
+                p.StartInfo.FileName = "java.exe";
+                p.StartInfo.Arguments = arguments;
+                p.Start();
+                string output = p.StandardOutput.ReadToEnd();
+                p.WaitForExit();
+
+                Int32 proyResult;
+                if (Int32.TryParse(output, out proyResult)) { }
+
+                System.IO.File.Delete(fullPath);
+
+                return Ok(new { success = proyResult > 0 ? true : false, proyectoId = proyResult });
             }
             catch (Exception e)
             {
