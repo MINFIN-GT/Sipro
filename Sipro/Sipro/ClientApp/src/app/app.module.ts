@@ -35,7 +35,9 @@ import { DialogImpacto } from '../assets/modals/impacto/modal-impacto';
 import { DialogEntidad } from '../assets/modals/entidad/modal-entidad';
 import { DialogCargarProject } from '../assets/modals/cargarproject/modal-cargar-project';
 import { NguiMapModule } from '@ngui/map';
-import { DialogMapa } from '../assets/modals/cargamapa/modal-carga-mapa'
+import { DialogMapa } from '../assets/modals/cargamapa/modal-carga-mapa';
+import { DialogComponentePropiedad } from '../assets/modals/componentepropiedad/modal-componente-propiedad';
+import { DialogComponenteTipo } from '../assets/modals/componentetipo/componente-tipo';
 
 import { AppComponent } from './app.component';
 import { MainComponent } from './components/main/main.component';
@@ -50,6 +52,9 @@ import { PrestamotipoComponent } from './components/prestamotipo/prestamotipo.co
 import { PeppropiedadComponent } from './components/peppropiedad/peppropiedad.component';
 import { PeptipoComponent } from './components/peptipo/peptipo.component';
 import { ComponenteComponent } from './components/componente/componente.component';
+import { ComponentepropiedadComponent } from './components/componentepropiedad/componentepropiedad.component';
+import { ComponentetipoComponent } from './components/componentetipo/componentetipo.component';
+import { SubcomponenteComponent } from './components/subcomponente/subcomponente.component';
 
 const routes: Routes = [{
           path: '',    // Va a Main
@@ -78,6 +83,15 @@ const routes: Routes = [{
           path: 'main/componente/:id',
           component: ComponenteComponent
         },{
+          path: 'main/componentepropiedad',
+          component: ComponentepropiedadComponent
+        },{
+          path: 'main/componentetipo',
+          component: ComponentetipoComponent
+        },{
+          path: 'main/subcomponente/:id',
+          component: SubcomponenteComponent
+        },{
           path: 'accesodenegado',
           component: AccesodenegadoComponent
         },{
@@ -96,7 +110,8 @@ const routes: Routes = [{
       DialogCodigoPresupuestario, DialogMoneda, DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, DialogDownloadDocument, 
       FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo, PepComponent, DialogProyectoTipo, PrestamotipoComponent, 
       PeppropiedadComponent, PeptipoComponent, DialogProyectoPropiedad, DialogDelete, DialogUnidadEjecutora, DialogColaborador,
-      DialogImpacto, DialogEntidad, ComponenteComponent, DialogCargarProject, DialogMapa
+      DialogImpacto, DialogEntidad, ComponenteComponent, DialogCargarProject, DialogMapa, ComponentepropiedadComponent, ComponentetipoComponent,
+      DialogComponentePropiedad, DialogComponenteTipo, SubcomponenteComponent
   ],
   imports: [
       BrowserModule,
@@ -120,7 +135,7 @@ const routes: Routes = [{
   bootstrap: [AppComponent],
   entryComponents: [DialogCodigoPresupuestario, DialogMoneda, DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, 
     DialogDownloadDocument, DialogProyectoTipo, DialogProyectoPropiedad, DialogDelete, DialogUnidadEjecutora, DialogColaborador,
-    DialogImpacto, DialogEntidad, DialogCargarProject, DialogMapa]
+    DialogImpacto, DialogEntidad, DialogCargarProject, DialogMapa, DialogComponentePropiedad, DialogComponenteTipo]
 })
 export class AppModule { 
 

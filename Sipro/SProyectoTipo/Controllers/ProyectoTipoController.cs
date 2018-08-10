@@ -163,47 +163,54 @@ namespace SProyectoTipo.Controllers
                     proyectoTipo.fechaActualizacion = DateTime.Now;
                     proyectoTipo.usuarioActualizo = User.Identity.Name;
 
-                    List<PtipoPropiedad> propiedades_temp = PtipoPropiedadDAO.getPtipoPropiedades(proyectoTipo.id);
-
-                    if (propiedades_temp != null)
-                    {
-                        foreach (PtipoPropiedad ptipoPropiedad in propiedades_temp)
-                        {
-                            PtipoPropiedadDAO.eliminarTotalPtipoPropiedad(ptipoPropiedad);
-                        }
-                    }
-
                     bool guardado = ProyectoTipoDAO.guardarProyectoTipo(proyectoTipo);
 
                     if (guardado)
                     {
-                        string propiedades = value.propiedades != null ? (string)value.propiedades : default(string);
-                        String[] idsPropiedades = propiedades != null && propiedades.Length > 0 ? propiedades.Split(",") : null;
-                        if (idsPropiedades != null && idsPropiedades.Length > 0)
-                        {
-                            foreach (String idPropiedad in idsPropiedades)
-                            {
-                                PtipoPropiedad ptipoPropiedad = new PtipoPropiedad();
-                                ptipoPropiedad.proyectoTipoid = proyectoTipo.id;
-                                ptipoPropiedad.proyectoPropiedadid = Convert.ToInt32(idPropiedad);
-                                ptipoPropiedad.fechaCreacion = DateTime.Now;
-                                ptipoPropiedad.usuarioCreo = User.Identity.Name;
-                                ptipoPropiedad.estado = 1;
+                        List<PtipoPropiedad> propiedades_temp = PtipoPropiedadDAO.getPtipoPropiedades(proyectoTipo.id);
 
-                                guardado = guardado & PtipoPropiedadDAO.guardarPtipoPropiedad(ptipoPropiedad);
+                        if (propiedades_temp != null)
+                        {
+                            foreach (PtipoPropiedad ptipoPropiedad in propiedades_temp)
+                            {
+                                guardado = guardado & PtipoPropiedadDAO.eliminarTotalPtipoPropiedad(ptipoPropiedad);
                             }
                         }
-                    }
 
-                    return Ok(new
-                    {
-                        success = guardado,
-                        id = proyectoTipo.id,
-                        usuarioCreo = proyectoTipo.usarioCreo,
-                        fechaCreacion = proyectoTipo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
-                        usuarioActualizo = proyectoTipo.usuarioActualizo,
-                        fechaActualizacion = proyectoTipo.fechaActualizacion != null ? proyectoTipo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
-                    });
+                        if (guardado)
+                        {
+                            string propiedades = value.propiedades != null ? (string)value.propiedades : default(string);
+                            String[] idsPropiedades = propiedades != null && propiedades.Length > 0 ? propiedades.Split(",") : null;
+                            if (idsPropiedades != null && idsPropiedades.Length > 0)
+                            {
+                                foreach (String idPropiedad in idsPropiedades)
+                                {
+                                    PtipoPropiedad ptipoPropiedad = new PtipoPropiedad();
+                                    ptipoPropiedad.proyectoTipoid = proyectoTipo.id;
+                                    ptipoPropiedad.proyectoPropiedadid = Convert.ToInt32(idPropiedad);
+                                    ptipoPropiedad.fechaCreacion = DateTime.Now;
+                                    ptipoPropiedad.usuarioCreo = User.Identity.Name;
+                                    ptipoPropiedad.estado = 1;
+
+                                    guardado = guardado & PtipoPropiedadDAO.guardarPtipoPropiedad(ptipoPropiedad);
+                                }
+                            }
+
+                            return Ok(new
+                            {
+                                success = guardado,
+                                id = proyectoTipo.id,
+                                usuarioCreo = proyectoTipo.usarioCreo,
+                                fechaCreacion = proyectoTipo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
+                                usuarioActualizo = proyectoTipo.usuarioActualizo,
+                                fechaActualizacion = proyectoTipo.fechaActualizacion != null ? proyectoTipo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
+                            });
+                        }
+                        else
+                            return Ok(new { success = false });
+                    }
+                    else
+                        return Ok(new { success = false });
                 }
                 else
                     return Ok(new { success = false });

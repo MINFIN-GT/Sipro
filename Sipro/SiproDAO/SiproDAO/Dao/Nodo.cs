@@ -16,7 +16,7 @@ namespace SiproDAO.Dao
         public virtual DateTime fecha_inicio { get; set; }
         public virtual DateTime fecha_fin { get; set; }
         public virtual int duracion { get; set; }
-        public virtual Double costo { get; set; }
+        public virtual decimal costo { get; set; }
         public virtual Object objeto { get; set; }
         public virtual DateTime fecha_inicio_real { get; set; }
         public virtual DateTime fecha_fin_real { get; set; }

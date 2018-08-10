@@ -10,53 +10,44 @@ namespace SiproDAO.Dao
 {
     public class SubComponenteDAO
     {
-        /*
-         public static List<Subcomponente> getSubComponentes(String usuario){
-		List<Subcomponente> ret = new ArrayList<Subcomponente>();
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			Query<Subcomponente> criteria = session.createQuery("FROM Subcomponente p where estado = 1 AND p.id in (SELECT u.id.subcomponenteid from SubcomponenteUsuario u where u.id.usuario=:usuario )", Subcomponente.class);
-			criteria.setParameter("usuario", usuario);
-			ret =   criteria.getResultList();
-		}
-		catch(Throwable e){
-			CLogger.write("1", SubComponenteDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
+        public static List<Subcomponente> getSubComponentes(String usuario)
+        {
+            List<Subcomponente> ret = new List<Subcomponente>();
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    string query = String.Join(" ", "SELECT * FROM subcomponente p WHERE estado = 1",
+                        "AND p.id in (SELECT u.subcomponenteid FROM subcomponente_usuario u WHERE u.usuario=:usuario )");
+                    ret = db.Query<Subcomponente>(query, new { usuario = usuario }).AsList<Subcomponente>();
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("1", "SubComponenteDAO.class", e);
+            }
+            return ret;
+        }
 
-	public static Subcomponente getSubComponentePorId(int id, String usuario){
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		Subcomponente ret = null;
-		List<Subcomponente> listRet = null;
-		try{
-			String Str_query = String.join(" ", "Select c FROM Subcomponente c",
-					"where id=:id");
-			String Str_usuario = "";
-			if(usuario != null){
-				Str_usuario = String.join(" ", "AND id in (SELECT u.id.subcomponenteid from SubcomponenteUsuario u where u.id.usuario=:usuario )");
-			}
-			
-			Str_query = String.join(" ", Str_query, Str_usuario);
-			Query<Subcomponente> criteria = session.createQuery(Str_query, Subcomponente.class);
-			criteria.setParameter("id", id);
-			if(usuario != null){
-				criteria.setParameter("usuario", usuario);
-			}
-			 listRet = criteria.getResultList();
-			 
-			 ret = !listRet.isEmpty() ? listRet.get(0) : null;
-		} catch(Throwable e){
-			CLogger.write("2", SubComponenteDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}*/
+        public static Subcomponente getSubComponentePorId(int id, String usuario)
+        {
+            Subcomponente ret = null;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    string query = String.Join(" ", "SELECT * FROM subcomponente WHERE id=:id",
+                        usuario != null ? "AND id IN (SELECT u.subcomponenteid FROM subcomponente_usuario u WHERE u.usuario=:usuario)" : "");
+
+                    ret = db.QueryFirstOrDefault<Subcomponente>(query, new { id = id, usuario = usuario });
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("2", "SubComponenteDAO.class", e);
+            }
+            return ret;
+        }
 
         public static bool guardarSubComponente(Subcomponente SubComponente, bool calcular_valores_agregados)
         {
@@ -148,147 +139,160 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-	/*public static boolean eliminarSubComponente(Subcomponente SubComponente){
-		boolean ret = false;
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			SubComponente.setEstado(0);
-			SubComponente.setOrden(null);
-			session.beginTransaction();
-			session.update(SubComponente);
-			session.getTransaction().commit();
-			ret = true;
-		}
-		catch(Throwable e){
-			CLogger.write("4", SubComponenteDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
+        /*public static boolean eliminarSubComponente(Subcomponente SubComponente){
+            boolean ret = false;
+            Session session = CHibernateSession.getSessionFactory().openSession();
+            try{
+                SubComponente.setEstado(0);
+                SubComponente.setOrden(null);
+                session.beginTransaction();
+                session.update(SubComponente);
+                session.getTransaction().commit();
+                ret = true;
+            }
+            catch(Throwable e){
+                CLogger.write("4", SubComponenteDAO.class, e);
+            }
+            finally{
+                session.close();
+            }
+            return ret;
+        }
 
-	public static boolean eliminarTotalSubComponente(Subcomponente SubComponente){
-		boolean ret = false;
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			session.beginTransaction();
-			session.delete(SubComponente);
-			session.getTransaction().commit();
-			ret = true;
-		}
-		catch(Throwable e){
-			CLogger.write("5", SubComponenteDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
+        public static boolean eliminarTotalSubComponente(Subcomponente SubComponente){
+            boolean ret = false;
+            Session session = CHibernateSession.getSessionFactory().openSession();
+            try{
+                session.beginTransaction();
+                session.delete(SubComponente);
+                session.getTransaction().commit();
+                ret = true;
+            }
+            catch(Throwable e){
+                CLogger.write("5", SubComponenteDAO.class, e);
+            }
+            finally{
+                session.close();
+            }
+            return ret;
+        }*/
 
-	public static List<Subcomponente> getSubComponentesPagina(int pagina, int numeroSubComponentes, String usuario){
-		List<Subcomponente> ret = new ArrayList<Subcomponente>();
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			Query<Subcomponente> criteria = session.createQuery("SELECT c FROM Subcomponente c WHERE estado = 1 AND c.id in (SELECT u.id.subcomponenteid from SubcomponenteUsuario u where u.id.usuario=:usuario )",Subcomponente.class);
-			criteria.setParameter("usuario", usuario);
-			criteria.setFirstResult(((pagina-1)*(numeroSubComponentes)));
-			criteria.setMaxResults(numeroSubComponentes);
-			ret = criteria.getResultList();
-		}
-		catch(Throwable e){
-			CLogger.write("6", SubComponenteDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
+        public static List<Subcomponente> getSubComponentesPagina(int pagina, int numeroSubComponentes, String usuario)
+        {
+            List<Subcomponente> ret = new List<Subcomponente>();
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    string query = String.Join(" ", "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT * FROM subcomponente c WHERE c.estado = 1",
+                        "AND c.id in (SELECT u.subcomponenteid FROM subcomponente_usuario u",
+                        "WHERE u.usuario=:usuario)");
+                    query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + numeroSubComponentes + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + numeroSubComponentes + ") + 1)");
 
-	public static Long getTotalSubComponentes(String usuario){
-		Long ret=0L;
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			Query<Long> conteo = session.createQuery("SELECT count(c.id) FROM Subcomponente c WHERE c.estado=1 AND  c.id in (SELECT u.id.subcomponenteid from SubcomponenteUsuario u where u.id.usuario=:usuario )",Long.class);
-			conteo.setParameter("usuario", usuario);
-			ret = conteo.getSingleResult();
-		} catch(Throwable e){
-			CLogger.write("7", SubComponenteDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
+                    ret = db.Query<Subcomponente>(query, new { usuario = usuario }).AsList<Subcomponente>();
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("6", "SubComponenteDAO.class", e);
+            }
+            return ret;
+        }
 
-	public static List<Subcomponente> getSubComponentesPaginaPorComponente(int pagina, int numeroSubComponentes, int componenteId,
-			String filtro_nombre, String filtro_usuario_creo, String filtro_fecha_creacion, String columna_ordenada, String orden_direccion, String usuario){
+        public static long getTotalSubComponentes(String usuario)
+        {
+            long ret = 0L;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    ret = db.ExecuteScalar<long>("SELECT COUNT(*) FROM subcomponente c WHERE c.estado=1 " +
+                        "AND c.id IN (SELECT u.subcomponenteid FROM Subcomponente_usuario u where u.usuario=:usuario)", new { usuario = usuario });
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("7", "SubComponenteDAO.class", e);
+            }
+            return ret;
+        }
 
-		List<Subcomponente> ret = new ArrayList<Subcomponente>();
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
+        public static List<Subcomponente> getSubComponentesPaginaPorComponente(int pagina, int numeroSubComponentes, int componenteId, String filtro_busqueda, 
+            String columna_ordenada, String orden_direccion, String usuario)
+        {
 
-			String query = "SELECT c FROM Subcomponente c WHERE estado = 1 AND c.componente.id = :compId ";
-			String query_a="";
-			if(filtro_nombre!=null && filtro_nombre.trim().length()>0)
-				query_a = String.join("",query_a, " c.nombre LIKE '%",filtro_nombre,"%' ");
-			if(filtro_usuario_creo!=null && filtro_usuario_creo.trim().length()>0)
-				query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " c.usuarioCreo LIKE '%", filtro_usuario_creo,"%' ");
-			if(filtro_fecha_creacion!=null && filtro_fecha_creacion.trim().length()>0)
-				query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " str(date_format(c.fechaCreacion,'%d/%m/%YYYY')) LIKE '%", filtro_fecha_creacion,"%' ");
-			query = String.join(" ", query, (query_a.length()>0 ? String.join("","AND (",query_a,")") : ""));
-			query =String.join("",query," AND  c.id in (SELECT u.id.subcomponenteid from SubcomponenteUsuario u where u.id.usuario=:usuario ) ");
-			query = columna_ordenada!=null && columna_ordenada.trim().length()>0 ? String.join(" ",query,"ORDER BY",columna_ordenada,orden_direccion ) : query;
-			Query<Subcomponente> criteria = session.createQuery(query,Subcomponente.class);
-			criteria.setParameter("compId", componenteId);
-			criteria.setParameter("usuario", usuario);
-			criteria.setFirstResult(((pagina-1)*(numeroSubComponentes)));
-			criteria.setMaxResults(numeroSubComponentes);
-			ret = criteria.getResultList();
-		}
-		catch(Throwable e){
-			CLogger.write("8", SubComponenteDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
+            List<Subcomponente> ret = new List<Subcomponente>();
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    String query = "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT * FROM subcomponente c WHERE estado = 1 AND c.componenteid = :compId ";
+                    String query_a = "";
+
+                    if (filtro_busqueda != null && filtro_busqueda.Length > 0)
+                    {
+                        query_a = String.Join("", query_a, " c.nombre LIKE '%" + filtro_busqueda + "%' ");
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " c.usuario_creo LIKE '%" + filtro_busqueda + "%' ");
+
+                        DateTime fecha_creacion;
+                        if (DateTime.TryParse(filtro_busqueda, out fecha_creacion))
+                        {
+                            query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(c.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE('" + fecha_creacion.ToString("dd/MM/yyyy") + "','DD/MM/YY') ");
+                        }
+                    }
+
+                    query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND (", query_a, ")") : ""));
+                    query = String.Join("", query, " AND  c.id IN (SELECT u.subcomponenteid FROM SubcomponenteUsuario u WHERE u.usuario=:usuario) ");
+                    query = columna_ordenada != null && columna_ordenada.Trim().Length > 0 ? String.Join(" ", query, "ORDER BY", columna_ordenada, orden_direccion) : query;
+                    query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + numeroSubComponentes + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + numeroSubComponentes + ") + 1)");
+
+                    ret = db.Query<Subcomponente>(query, new { compId = componenteId, usuario = usuario }).AsList<Subcomponente>();
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("8", "SubComponenteDAO.class", e);
+            }
+            return ret;
+        }
 
 
-	public static Long getTotalSubComponentesPorComponente(int componenteId,
-			String filtro_nombre,String filtro_usuario_creo,
-			String filtro_fecha_creacion, String usuario){
-		Long ret=0L;
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
+        public static long getTotalSubComponentesPorComponente(int componenteId, String filtro_busqueda, String usuario)
+        {
+            long ret = 0L;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    String query = "SELECT COUNT(*) FROM subcomponente c WHERE c.estado=1 AND c.componenteid = :compId ";
+                    String query_a = "";
 
-			String query = "SELECT count(c.id) FROM Subcomponente c WHERE c.estado=1 AND c.componente.id = :compId ";
-			String query_a="";
-			if(filtro_nombre!=null && filtro_nombre.trim().length()>0)
-				query_a = String.join("",query_a, " c.nombre LIKE '%",filtro_nombre,"%' ");
-			if(filtro_usuario_creo!=null && filtro_usuario_creo.trim().length()>0)
-				query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " c.usuarioCreo LIKE '%", filtro_usuario_creo,"%' ");
-			if(filtro_fecha_creacion!=null && filtro_fecha_creacion.trim().length()>0)
-				query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " str(date_format(c.fechaCreacion,'%d/%m/%YYYY')) LIKE '%", filtro_fecha_creacion,"%' ");
-			query = String.join(" ", query, (query_a.length()>0 ? String.join("","AND (",query_a,")") : ""));
-			query = String.join("", query, " AND  c.id in (SELECT u.id.subcomponenteid from SubcomponenteUsuario u where u.id.usuario=:usuario )");
-			Query<Long> conteo = session.createQuery(query,Long.class);
-			conteo.setParameter("compId", componenteId);
-			conteo.setParameter("usuario", usuario);
-			ret = conteo.getSingleResult();
-		}catch (NoResultException e){
-			
-		}catch(Throwable e){
-			CLogger.write("9", SubComponenteDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
+                    if (filtro_busqueda != null && filtro_busqueda.Length > 0)
+                    {
+                        query_a = String.Join("", query_a, " c.nombre LIKE '%" + filtro_busqueda + "%' ");
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " c.usuario_creo LIKE '%" + filtro_busqueda + "%' ");
+
+                        DateTime fecha_creacion;
+                        if (DateTime.TryParse(filtro_busqueda, out fecha_creacion))
+                        {
+                            query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(c.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE('" + fecha_creacion.ToString("dd/MM/yyyy") + "','DD/MM/YY') ");
+                        }
+                    }
+
+                    query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND (", query_a, ")") : ""));
+                    query = String.Join("", query, " AND  c.id IN (SELECT u.subcomponenteid FROM subcomponente_usuario u WHERE u.usuario=:usuario )");
+                    ret = db.ExecuteScalar<long>(query, new { compId = componenteId, usuario = usuario });
+                }
+
+            }
+            catch (Exception e)
+            {
+                CLogger.write("9", "SubComponenteDAO.class", e);
+            }
+            return ret;
+        }
 	
-	public static Subcomponente getSubComponenteInicial(Integer componenteId, String usuario, Session session){
+	/*public static Subcomponente getSubComponenteInicial(Integer componenteId, String usuario, Session session){
 		Subcomponente ret = null;
 		List<Subcomponente> listRet = null;
 		try{
@@ -457,172 +461,188 @@ namespace SiproDAO.Dao
             }
             return ret;
         }
-	
-	/*public static boolean calcularCostoyFechas(Integer subcomponenteId){
-		boolean ret = false;
-		ArrayList<ArrayList<Nodo>> listas = EstructuraProyectoDAO.getEstructuraObjetoArbolCalculos(subcomponenteId, 2);
-		for(int i=listas.size()-2; i>=0; i--){
-			for(int j=0; j<listas.get(i).size(); j++){
-				Nodo nodo = listas.get(i).get(j);
-				Double costo=0.0d;
-				Timestamp fecha_maxima=new Timestamp(0);
-				Timestamp fecha_minima=new Timestamp((new DateTime(2999,12,31,0,0,0)).getMillis());
-				for(Nodo nodo_hijo:nodo.children){
-					costo += nodo_hijo.costo;
-					fecha_minima = (nodo_hijo.fecha_inicio.getTime()<fecha_minima.getTime()) ? nodo_hijo.fecha_inicio : fecha_minima;
-					fecha_maxima = (nodo_hijo.fecha_fin.getTime()>fecha_maxima.getTime()) ? nodo_hijo.fecha_fin : fecha_maxima;
-				}
-				nodo.objeto = ObjetoDAO.getObjetoPorIdyTipo(nodo.id, nodo.objeto_tipo);
-				if(nodo.children!=null && nodo.children.size()>0){
-					nodo.fecha_inicio = fecha_minima;
-					nodo.fecha_fin = fecha_maxima;
-					nodo.costo = costo;
-				}
-				else
-					nodo.costo = calcularCosto((Subcomponente)nodo.objeto).doubleValue();
-				nodo.duracion = Utils.getWorkingDays(new DateTime(nodo.fecha_inicio), new DateTime(nodo.fecha_fin));
-				setDatosCalculados(nodo.objeto,nodo.fecha_inicio,nodo.fecha_fin,nodo.costo, nodo.duracion);
-			}
-			ret = true;
-		}
-		ret= ret && guardarSubComponenteBatch(listas);	
-		return ret;
-	}
-	
-	private static void setDatosCalculados(Object objeto,Timestamp fecha_inicio, Timestamp fecha_fin, Double costo, int duracion){
-		try{
-			if(objeto!=null){
-				Method setFechaInicio =objeto.getClass().getMethod("setFechaInicio",Date.class);
-				Method setFechaFin =  objeto.getClass().getMethod("setFechaFin",Date.class);
-				Method setCosto = objeto.getClass().getMethod("setCosto",BigDecimal.class);
-				Method setDuracion = objeto.getClass().getMethod("setDuracion", int.class);
-				setFechaInicio.invoke(objeto, new Date(fecha_inicio.getTime()));
-				setFechaFin.invoke(objeto, new Date(fecha_fin.getTime()));
-				setCosto.invoke(objeto, new BigDecimal(costo));
-				setDuracion.invoke(objeto, duracion);
-			}
-		}
-		catch(Throwable e){
-			CLogger.write("20", SubComponenteDAO.class, e);
-		}
-		
-	}
-	
-	private static boolean guardarSubComponenteBatch(ArrayList<ArrayList<Nodo>> listas){
-		boolean ret = true;
-		try{
-			Session session = CHibernateSession.getSessionFactory().openSession();
-			session.beginTransaction();
-			int count=0;
-			for(int i=0; i<listas.size()-1; i++){
-				for(int j=0; j<listas.get(i).size();j++){
-					session.saveOrUpdate(listas.get(i).get(j).objeto);
-					if ( ++count % 20 == 0 ) {
-				        session.flush();
-				        session.clear();
-				    }
-				}
-			}
-			session.flush();
-			session.getTransaction().commit();
-			session.close();
-		}
-		catch(Throwable e){
-			ret = false;
-			CLogger.write("21", SubComponenteDAO.class, e);
-		}
-		return ret;
-	}
-	
-	public static List<Subcomponente> getSubcomponentesPorComponenteHistory(Integer componenteId,String lineaBase){
-		List<Subcomponente> ret = new ArrayList<Subcomponente>();
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			String query = String.join(" ", "select * ", 
-					"from sipro_history.subcomponente c ",
-					"where c.estado = 1 ",
-					"and componenteid = ?1 ",
-					lineaBase != null ? "and c.linea_base like '%" + lineaBase + "%'" : "and c.actual = 1",
-							"order by c.id desc");
-			Query<Subcomponente> criteria = session.createNativeQuery(query, Subcomponente.class);
-			criteria.setParameter(1, componenteId);
-			ret =   criteria.getResultList();
-		}
-		catch(Throwable e){
-			CLogger.write("22", SubComponenteDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
-	
-	public static Subcomponente getSubcomponenteHistory(Integer subcomponenteId,String lineaBase){
-		Subcomponente ret = null;
-		List<Subcomponente> listRet = null;
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			String query = String.join(" ", "select * ", 
-					"from sipro_history.subcomponente c ",
-					"where c.estado = 1 ",
-					"and c.id = ?1 ",
-					lineaBase != null ? "and c.linea_base like '%" + lineaBase + "%'" : "and c.actual = 1",
-							"order by c.id desc");
-			Query<Subcomponente> criteria = session.createNativeQuery(query, Subcomponente.class);
-			criteria.setParameter(1, subcomponenteId);
-			listRet =   criteria.getResultList();
-			ret = !listRet.isEmpty() ? listRet.get(0) : null;
-		}
-		catch(Throwable e){
-			CLogger.write("23", SubComponenteDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}
-	
-	public static String getVersiones (Integer componenteId){
-		String resultado = "";
-		String query = "SELECT DISTINCT(version) "
-				+ " FROM sipro_history.subcomponente "
-				+ " WHERE id = "+componenteId;
-		List<?> versiones = CHistoria.getVersiones(query);
-		if(versiones!=null){
-			for(int i=0; i<versiones.size(); i++){
-				if(!resultado.isEmpty()){
-					resultado+=",";
-				}
-				resultado+=(Integer)versiones.get(i);
-			}
-		}
-		return resultado;
-	}
-	
-	public static String getHistoria (Integer componenteId, Integer version){
-		String resultado = "";
-		String query = "SELECT c.version, c.nombre, c.descripcion, ct.nombre tipo, ue.nombre unidad_ejecutora, c.costo, ac.nombre tipo_costo, "
-				+ " c.programa, c.subprograma, c.proyecto, c.actividad, c.obra, c.renglon, c.ubicacion_geografica, c.latitud, c.longitud, "
-				+ " c.fecha_inicio, c.fecha_fin, c.duracion, c.fecha_inicio_real, c.fecha_fin_real, "
-				+ " c.fecha_creacion, c.usuario_creo, c.fecha_actualizacion, c.usuario_actualizo, "
-				+ " CASE WHEN c.estado = 1 "
-				+ " THEN 'Activo' "
-				+ " ELSE 'Inactivo' "
-				+ " END AS estado "
-				+ " FROM sipro_history.subcomponente c "
-				+ " JOIN sipro.unidad_ejecutora ue ON c.unidad_ejecutoraunidad_ejecutora = ue.unidad_ejecutora and c.entidad = ue.entidadentidad and c.ejercicio = ue.ejercicio  JOIN sipro_history.subcomponente_tipo ct ON c.subcomponente_tipoid = ct.id "
-				+ " JOIN sipro_history.acumulacion_costo ac ON c.acumulacion_costoid = ac.id "
-				+ " WHERE c.id = "+componenteId
-				+ " AND c.version = " +version;
-		
-		String [] campos = {"Version", "Nombre", "DescripciÃ³n", "Tipo", "Unidad Ejecutora", "Monto Planificado", "Tipo AcumulaciÃ³n de Monto Planificado", 
-				"Programa", "Subprograma", "Proyecto", "Actividad", "Obra", "Renglon", "UbicaciÃ³n GeogrÃ¡fica", "Latitud", "Longitud", 
-				"Fecha Inicio", "Fecha Fin", "DuraciÃ³n", "Fecha Inicio Real", "Fecha Fin Real", 
-				"Fecha CreaciÃ³n", "Usuario que creo", "Fecha ActualizaciÃ³n", "Usuario que actualizÃ³", 
-				"Estado"};
-		resultado = CHistoria.getHistoria(query, campos);
-		return resultado;
-	}
-         */
+
+        /*public static boolean calcularCostoyFechas(Integer subcomponenteId){
+            boolean ret = false;
+            ArrayList<ArrayList<Nodo>> listas = EstructuraProyectoDAO.getEstructuraObjetoArbolCalculos(subcomponenteId, 2);
+            for(int i=listas.size()-2; i>=0; i--){
+                for(int j=0; j<listas.get(i).size(); j++){
+                    Nodo nodo = listas.get(i).get(j);
+                    Double costo=0.0d;
+                    Timestamp fecha_maxima=new Timestamp(0);
+                    Timestamp fecha_minima=new Timestamp((new DateTime(2999,12,31,0,0,0)).getMillis());
+                    for(Nodo nodo_hijo:nodo.children){
+                        costo += nodo_hijo.costo;
+                        fecha_minima = (nodo_hijo.fecha_inicio.getTime()<fecha_minima.getTime()) ? nodo_hijo.fecha_inicio : fecha_minima;
+                        fecha_maxima = (nodo_hijo.fecha_fin.getTime()>fecha_maxima.getTime()) ? nodo_hijo.fecha_fin : fecha_maxima;
+                    }
+                    nodo.objeto = ObjetoDAO.getObjetoPorIdyTipo(nodo.id, nodo.objeto_tipo);
+                    if(nodo.children!=null && nodo.children.size()>0){
+                        nodo.fecha_inicio = fecha_minima;
+                        nodo.fecha_fin = fecha_maxima;
+                        nodo.costo = costo;
+                    }
+                    else
+                        nodo.costo = calcularCosto((Subcomponente)nodo.objeto).doubleValue();
+                    nodo.duracion = Utils.getWorkingDays(new DateTime(nodo.fecha_inicio), new DateTime(nodo.fecha_fin));
+                    setDatosCalculados(nodo.objeto,nodo.fecha_inicio,nodo.fecha_fin,nodo.costo, nodo.duracion);
+                }
+                ret = true;
+            }
+            ret= ret && guardarSubComponenteBatch(listas);	
+            return ret;
+        }
+
+        private static void setDatosCalculados(Object objeto,Timestamp fecha_inicio, Timestamp fecha_fin, Double costo, int duracion){
+            try{
+                if(objeto!=null){
+                    Method setFechaInicio =objeto.getClass().getMethod("setFechaInicio",Date.class);
+                    Method setFechaFin =  objeto.getClass().getMethod("setFechaFin",Date.class);
+                    Method setCosto = objeto.getClass().getMethod("setCosto",BigDecimal.class);
+                    Method setDuracion = objeto.getClass().getMethod("setDuracion", int.class);
+                    setFechaInicio.invoke(objeto, new Date(fecha_inicio.getTime()));
+                    setFechaFin.invoke(objeto, new Date(fecha_fin.getTime()));
+                    setCosto.invoke(objeto, new BigDecimal(costo));
+                    setDuracion.invoke(objeto, duracion);
+                }
+            }
+            catch(Throwable e){
+                CLogger.write("20", SubComponenteDAO.class, e);
+            }
+
+        }
+
+        private static boolean guardarSubComponenteBatch(ArrayList<ArrayList<Nodo>> listas){
+            boolean ret = true;
+            try{
+                Session session = CHibernateSession.getSessionFactory().openSession();
+                session.beginTransaction();
+                int count=0;
+                for(int i=0; i<listas.size()-1; i++){
+                    for(int j=0; j<listas.get(i).size();j++){
+                        session.saveOrUpdate(listas.get(i).get(j).objeto);
+                        if ( ++count % 20 == 0 ) {
+                            session.flush();
+                            session.clear();
+                        }
+                    }
+                }
+                session.flush();
+                session.getTransaction().commit();
+                session.close();
+            }
+            catch(Throwable e){
+                ret = false;
+                CLogger.write("21", SubComponenteDAO.class, e);
+            }
+            return ret;
+        }
+
+        public static List<Subcomponente> getSubcomponentesPorComponenteHistory(Integer componenteId,String lineaBase){
+            List<Subcomponente> ret = new ArrayList<Subcomponente>();
+            Session session = CHibernateSession.getSessionFactory().openSession();
+            try{
+                String query = String.join(" ", "select * ", 
+                        "from sipro_history.subcomponente c ",
+                        "where c.estado = 1 ",
+                        "and componenteid = ?1 ",
+                        lineaBase != null ? "and c.linea_base like '%" + lineaBase + "%'" : "and c.actual = 1",
+                                "order by c.id desc");
+                Query<Subcomponente> criteria = session.createNativeQuery(query, Subcomponente.class);
+                criteria.setParameter(1, componenteId);
+                ret =   criteria.getResultList();
+            }
+            catch(Throwable e){
+                CLogger.write("22", SubComponenteDAO.class, e);
+            }
+            finally{
+                session.close();
+            }
+            return ret;
+        }
+
+        public static Subcomponente getSubcomponenteHistory(Integer subcomponenteId,String lineaBase){
+            Subcomponente ret = null;
+            List<Subcomponente> listRet = null;
+            Session session = CHibernateSession.getSessionFactory().openSession();
+            try{
+                String query = String.join(" ", "select * ", 
+                        "from sipro_history.subcomponente c ",
+                        "where c.estado = 1 ",
+                        "and c.id = ?1 ",
+                        lineaBase != null ? "and c.linea_base like '%" + lineaBase + "%'" : "and c.actual = 1",
+                                "order by c.id desc");
+                Query<Subcomponente> criteria = session.createNativeQuery(query, Subcomponente.class);
+                criteria.setParameter(1, subcomponenteId);
+                listRet =   criteria.getResultList();
+                ret = !listRet.isEmpty() ? listRet.get(0) : null;
+            }
+            catch(Throwable e){
+                CLogger.write("23", SubComponenteDAO.class, e);
+            }
+            finally{
+                session.close();
+            }
+            return ret;
+        }*/
+
+        public static String getVersiones(int subComponenteId)
+        {
+            String resultado = "";
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnectionHistory())
+                {
+                    String query = "SELECT DISTINCT(version) FROM subcomponente "
+                        + " WHERE id=" + subComponenteId;
+
+                    List<dynamic> versiones = db.Query<dynamic>(query).AsList<dynamic>();
+
+                    if (versiones != null)
+                    {
+                        for (int i = 0; i < versiones.Count; i++)
+                        {
+                            if (resultado.Length > 0)
+                            {
+                                resultado += ",";
+                            }
+                            resultado += (int)versiones[i];
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("21", "ComponenteDAO.class", e);
+            }
+            return resultado;
+        }
+
+        public static String getHistoria(int SubComponenteId, int version)
+        {
+            String resultado = "";
+            String query = "SELECT c.version, c.nombre, c.descripcion, ct.nombre tipo, ue.nombre unidad_ejecutora, c.costo, ac.nombre tipo_costo, "
+                    + " c.programa, c.subprograma, c.proyecto, c.actividad, c.obra, c.renglon, c.ubicacion_geografica, c.latitud, c.longitud, "
+                    + " c.fecha_inicio, c.fecha_fin, c.duracion, c.fecha_inicio_real, c.fecha_fin_real, "
+                    + " c.fecha_creacion, c.usuario_creo, c.fecha_actualizacion, c.usuario_actualizo, "
+                    + " CASE WHEN c.estado = 1 "
+                    + " THEN 'Activo' "
+                    + " ELSE 'Inactivo' "
+                    + " END AS estado "
+                    + " FROM sipro_history.subcomponente c "
+                    + " JOIN sipro_history.unidad_ejecutora ue ON c.unidad_ejecutoraunidad_ejecutora = ue.unidad_ejecutora and c.entidad = ue.entidadentidad and c.ejercicio = ue.ejercicio  JOIN sipro_history.subcomponente_tipo ct ON c.subcomponente_tipoid = ct.id "
+                    + " JOIN sipro_history.acumulacion_costo ac ON c.acumulacion_costoid = ac.id "
+                    + " WHERE c.id = " + SubComponenteId
+                    + " AND c.version = " + version;
+
+            String[] campos = {"Version", "Nombre", "Descripción", "Tipo", "Unidad Ejecutora", "Monto Planificado", "Tipo Acumulación de Monto Planificado",
+                "Programa", "Subprograma", "Proyecto", "Actividad", "Obra", "Renglon", "Ubicación Geográfica", "Latitud", "Longitud",
+                "Fecha Inicio", "Fecha Fin", "Duración", "Fecha Inicio Real", "Fecha Fin Real",
+                "Fuente Préstamo", "Fuente Donación", "Fuente Nacional",
+                "Fecha Creación", "Usuario que creo", "Fecha Actualización", "Usuario que actualizó",
+                "Estado"};
+            resultado = CHistoria.getHistoria(query, campos);
+            return resultado;
+        }
     }
 }

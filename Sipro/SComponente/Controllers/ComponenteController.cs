@@ -55,7 +55,7 @@ namespace SComponente.Controllers
             public decimal fuenteDonacion;
             public decimal fuenteNacional;
             public bool tieneHijos;
-            public bool esDeSigade;
+            public int esDeSigade;
             public int prestamoId;
             public String fechaInicioReal;
             public String fechaFinReal;
@@ -175,16 +175,17 @@ namespace SComponente.Controllers
                     temp.duracionDimension = componente.duracionDimension;
 
                     temp.tieneHijos = ObjetoDAO.tieneHijos(temp.id, 1);
-                    temp.esDeSigade = componente.esDeSigade == 1 ? true : false;
+                    temp.esDeSigade = componente.esDeSigade ?? default(int);
                     temp.fuentePrestamo = componente.fuentePrestamo ?? default(decimal);
                     temp.fuenteDonacion = componente.fuenteDonacion ?? default(decimal);
                     temp.fuenteNacional = componente.fuenteNacional ?? default(decimal);
 
-                    esDeSigade = esDeSigade || temp.esDeSigade;
+                    esDeSigade = temp.esDeSigade==1 ? true : false;
 
                     temp.fechaInicioReal = componente.fechaInicioReal != null ? componente.fechaInicioReal.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     temp.fechaFinReal = componente.fechaFinReal != null ? componente.fechaFinReal.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     temp.inversionNueva = componente.inversionNueva;
+                    temp.proyectoid = componente.proyectoid;
 
                     stcomponentes.Add(temp);
                 }
@@ -269,16 +270,17 @@ namespace SComponente.Controllers
                     temp.duracionDimension = componente.duracionDimension;
 
                     temp.tieneHijos = ObjetoDAO.tieneHijos(temp.id, 1);
-                    temp.esDeSigade = componente.esDeSigade == 1 ? true : false;
+                    temp.esDeSigade = componente.esDeSigade ?? default(int);
                     temp.fuentePrestamo = componente.fuentePrestamo ?? default(decimal);
                     temp.fuenteDonacion = componente.fuenteDonacion ?? default(decimal);
                     temp.fuenteNacional = componente.fuenteNacional ?? default(decimal);
 
-                    esDeSigade = esDeSigade || temp.esDeSigade;
+                    esDeSigade = temp.esDeSigade==1 ? true : false;
 
                     temp.fechaInicioReal = componente.fechaInicioReal != null ? componente.fechaInicioReal.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     temp.fechaFinReal = componente.fechaFinReal != null ? componente.fechaFinReal.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     temp.inversionNueva = componente.inversionNueva;
+                    temp.proyectoid = componente.proyectoid;
 
                     stcomponentes.Add(temp);
                 }
@@ -404,16 +406,17 @@ namespace SComponente.Controllers
                 temp.duracionDimension = componente.duracionDimension;
 
                 temp.tieneHijos = ObjetoDAO.tieneHijos(temp.id, 1);
-                temp.esDeSigade = componente.esDeSigade == 1 ? true : false;
+                temp.esDeSigade = componente.esDeSigade ?? default(int);
                 temp.fuentePrestamo = componente.fuentePrestamo ?? default(decimal);
                 temp.fuenteDonacion = componente.fuenteDonacion ?? default(decimal);
                 temp.fuenteNacional = componente.fuenteNacional ?? default(decimal);
 
-                esDeSigade = esDeSigade || temp.esDeSigade;
+                esDeSigade = temp.esDeSigade==1 ? true : false;
 
                 temp.fechaInicioReal = componente.fechaInicioReal != null ? componente.fechaInicioReal.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                 temp.fechaFinReal = componente.fechaFinReal != null ? componente.fechaFinReal.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                 temp.inversionNueva = componente.inversionNueva;
+                temp.proyectoid = componente.proyectoid;
 
                 return Ok(new { success = true, componente = temp });
             }
@@ -784,7 +787,7 @@ namespace SComponente.Controllers
                         foreach (ComponentePropiedad componentePropiedad in componentePropiedades)
                         {
                             ComponentePropiedadValor compPropVal = ComponentePropiedadValorDAO.getValorPorComponenteYPropiedad(componentePropiedad.id, componente.id);
-                            result = result && ComponentePropiedadValorDAO.eliminarTotalComponentePropiedadValor(compPropVal);
+                            result &= ComponentePropiedadValorDAO.eliminarTotalComponentePropiedadValor(compPropVal);
                         }
 
                         JArray datosDinamicos = JArray.Parse((string)value.camposDinamicos);
@@ -822,7 +825,7 @@ namespace SComponente.Controllers
                                         valor.valorTiempo = Convert.ToDateTime(data["valor_f"].ToString());
                                         break;
                                 }
-                                result = (result && ComponentePropiedadValorDAO.guardarComponentePropiedadValor(valor));
+                                result &= ComponentePropiedadValorDAO.guardarComponentePropiedadValor(valor);
                             }
                         }
                     }

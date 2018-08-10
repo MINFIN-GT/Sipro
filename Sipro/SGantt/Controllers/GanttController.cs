@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SiproDAO.Dao;
 using Utilities;
 
 namespace SGantt.Controllers
@@ -39,11 +41,12 @@ namespace SGantt.Controllers
             try
             {
                 String directorioTemporal = @Utils.getDirectorioTemporal();
-
+                String lineaBase = null;
                 if (!Directory.Exists(directorioTemporal))
                     Directory.CreateDirectory(directorioTemporal);
 
-                String fullPath = directorioTemporal + "temp_" + Guid.NewGuid();
+                String nombreArchivo = "temp_" + Guid.NewGuid();
+                String fullPath = directorioTemporal + nombreArchivo;
                 FileStream documento = new FileStream(fullPath, FileMode.OpenOrCreate);
 
                 if (documento.Length == 0)
@@ -58,7 +61,7 @@ namespace SGantt.Controllers
                 Process p = new Process();
                 p.StartInfo.UseShellExecute = false;
                 p.StartInfo.RedirectStandardOutput = true;
-                String arguments = "-jar \"" + @Utils.getJartImportProject() + "\" \"" + fullPath + "\" \""+ User.Identity.Name +"\" \"0\" \"" + proyecto_id + "\" \"1\" \"" + prestamoId + "\"";
+                String arguments = "-jar \"" + @Utils.getJartImportProject()+ "\" \"1\" \"" + directorioTemporal + "\" \"" + nombreArchivo + "\" \"" + User.Identity.Name +"\" \"0\" \"" + proyecto_id + "\" \"1\" \"" + prestamoId + "\" \"" + lineaBase + "\"";
                 p.StartInfo.FileName = "java.exe";
                 p.StartInfo.Arguments = arguments;
                 p.Start();
@@ -69,6 +72,8 @@ namespace SGantt.Controllers
                 if (Int32.TryParse(output, out proyResult)) { }
 
                 System.IO.File.Delete(fullPath);
+
+                ProyectoDAO.calcularCostoyFechas(proyResult);
 
                 return Ok(new { success = proyResult > 0 ? true : false, proyectoId = proyResult });
             }
@@ -81,17 +86,68 @@ namespace SGantt.Controllers
 
         [HttpGet("{proyectoId}")]
         [Authorize("Gantt - Exportar")]
-        public IActionResult Exportar(int proyectoId)
+        public async Task<IActionResult> Exportar(int proyectoId)
         {
             try
             {
-                return Ok();
+                String directorioTemporal = @Utils.getDirectorioTemporal();
+                String lineaBase = null;
+
+                if (!Directory.Exists(directorioTemporal))
+                    Directory.CreateDirectory(directorioTemporal);
+
+                String nombreArchivo = "temp_" + Guid.NewGuid();
+
+                Process p = new Process();
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.RedirectStandardOutput = true;
+                String arguments = "-jar \"" + @Utils.getJartImportProject() + "\" \"2\" \"" + directorioTemporal + "\" \"" + nombreArchivo + "\" \"" + User.Identity.Name + "\" \"0\" \"" + proyectoId + "\" \"1\" \"" + 0 + "\" \"" + lineaBase + "\"";
+                p.StartInfo.FileName = "java.exe";
+                p.StartInfo.Arguments = arguments;
+                p.Start();
+                string output = p.StandardOutput.ReadToEnd();
+                p.WaitForExit();
+
+                var memory = new MemoryStream();
+                using (var stream = new FileStream(directorioTemporal + nombreArchivo + ".xml", FileMode.Open))
+                {
+                    await stream.CopyToAsync(memory);
+                }
+                memory.Position = 0;
+                return File(memory, GetContentType(directorioTemporal+nombreArchivo+".xml"), Path.GetFileName(directorioTemporal + nombreArchivo + ".xml"));               
             }
             catch (Exception e)
             {
                 CLogger.write("3", "GanttController.class", e);
                 return BadRequest(500);
             }
+        }
+
+        private string GetContentType(string path)
+        {
+            var types = GetMimeTypes();
+            var ext = Path.GetExtension(path).ToLowerInvariant();
+            return types[ext];
+        }
+
+        private Dictionary<string, string> GetMimeTypes()
+        {
+            return new Dictionary<string, string>
+            {
+                {".txt", "text/plain"},
+                {".pdf", "application/pdf"},
+                {".doc", "application/vnd.ms-word"},
+                {".docx", "application/vnd.ms-word"},
+                {".pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation" },
+                {".xls", "application/vnd.ms-excel"},
+                {".xlsx", "application/vnd.openxmlformats officedocument.spreadsheetml.sheet"},
+                {".png", "image/png"},
+                {".jpg", "image/jpeg"},
+                {".jpeg", "image/jpeg"},
+                {".gif", "image/gif"},
+                {".csv", "text/csv"},
+                {".xml", "text/xml"}
+            };
         }
     }
 }

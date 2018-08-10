@@ -164,7 +164,7 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    String query = "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT c FROM componente_propiedad c WHERE c.estado=1";
+                    String query = "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT * FROM componente_propiedad c WHERE c.estado=1";
                     String query_a = "";
 
                     if (filtro_busqueda != null && filtro_busqueda.Length > 0)

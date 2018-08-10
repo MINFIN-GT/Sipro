@@ -379,9 +379,7 @@ export class PepComponent implements OnInit {
             objetoHttp = this.http.put("http://localhost:60064/api/Proyecto/Proyecto/" + this.proyecto.id, this.proyecto, { withCredentials: true });
           }
           else{
-            this.proyecto.id=0;            
-            //this.proyecto.entidad = 11110001;
-            //this.proyecto.ejercicio = new Date().getFullYear();
+            this.proyecto.id=0;
             objetoHttp = this.http.post("http://localhost:60064/api/Proyecto/Proyecto", this.proyecto, { withCredentials: true });
           }
 
@@ -446,7 +444,7 @@ export class PepComponent implements OnInit {
     this.modalProyectoTipo.dialog.open(DialogProyectoTipo, {
       width: '600px',
       height: '585px',
-      data: { titulo: 'Proyecto Tipo' }
+      data: { titulo: this.etiquetaProyecto + ' Tipo' }
     }).afterClosed().subscribe(result => {
       if(result != null){
         this.proyectotipoid = result.id;
@@ -805,15 +803,19 @@ export class PepComponent implements OnInit {
   completarConArchivo(proyectoId){
     this.modalCargarProject.dialog.open(DialogCargarProject, {
       width: '600px',
-      height: '250px',
-      data: { titulo: 'Completar desde Project', proyectoid : this.proyecto.id, prestamoid: this.prestamoid }
+      height: '300px',
+      data: { titulo: 'Completar desde Project', proyectoid : this.proyecto.id, prestamoid: this.prestamoid, etiqueta : this.etiquetaProyecto }
     }).afterClosed().subscribe(result=>{
       if(result != null){
         if(result)
           this.proyecto.projectCargado = 1;
-        else
-          this.utils.mensaje('danger', 'Error al importar el archivo de Project');
       }
+      else
+          this.utils.mensaje('danger', 'Error al importar el archivo de Project');
     })
+  }
+
+  exportar(){
+    window.location.href='http://localhost:60030/api/Gantt/Exportar/' + this.proyecto.id;
   }
 }

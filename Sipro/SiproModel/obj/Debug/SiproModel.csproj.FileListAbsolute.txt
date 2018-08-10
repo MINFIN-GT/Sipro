@@ -55,3 +55,5 @@ C:/Users/pedro/git/Sipro/Sipro/SiproModel/obj/Debug/SiproModel.pdb
 =======
 C:/Users/pedro/git/Sipro/Sipro/SiproModel/obj/Debug/SiproModel.csprojResolveAssemblyReference.cache
 >>>>>>> Stashed changes
+C:\Users\pedro\git\Sipro\Sipro\SiproModel\obj\Debug\SiproModel.csprojResolveAssemblyReference.cache
+C:\Users\pedro\git\Sipro\Sipro\SiproModel\obj\Debug\SiproModel.csproj.CoreCompileInputs.cache

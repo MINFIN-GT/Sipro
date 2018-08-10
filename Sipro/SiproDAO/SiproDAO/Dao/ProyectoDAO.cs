@@ -538,68 +538,80 @@ namespace SiproDAO.Dao
 
         public static bool calcularCostoyFechas(int proyectoId){
             bool ret = false;
-            List<List<Nodo>> listas = EstructuraProyectoDAO.getEstructuraProyectoArbolCalculos(proyectoId, null);
-            for(int i=listas.Count-1; i>=0; i--){
-                for(int j=0; j<listas[i].Count; j++){
-                    Nodo nodo = listas[i][j];
-                    Double costo=0.0d;
-                    DateTime fecha_maxima= new DateTime(0);
-                    DateTime fecha_minima =new DateTime(new DateTime(2999,12,31,0,0,0).Ticks);
-                    DateTime fecha_maxima_real = default(DateTime);
-                    DateTime fecha_minima_real = default(DateTime);
-                    foreach (Nodo nodo_hijo in nodo.children){
-                        costo += nodo_hijo.costo;
-                        fecha_minima = (nodo_hijo.fecha_inicio.TimeOfDay<fecha_minima.TimeOfDay) ? nodo_hijo.fecha_inicio : fecha_minima;
-                        fecha_maxima = (nodo_hijo.fecha_fin.TimeOfDay > fecha_maxima.TimeOfDay) ? nodo_hijo.fecha_fin : fecha_maxima;
-                        fecha_minima_real = nodo_hijo.fecha_inicio_real != null ? fecha_minima_real != null ? ((nodo_hijo.fecha_inicio_real.TimeOfDay < fecha_minima_real.TimeOfDay) ? nodo_hijo.fecha_inicio_real : fecha_minima_real) : nodo_hijo.fecha_inicio_real : fecha_minima_real != null ? fecha_minima_real : fecha_minima_real;
-                        fecha_maxima_real = nodo_hijo.fecha_fin_real != null ? fecha_maxima_real != null ? ((nodo_hijo.fecha_fin_real.TimeOfDay > fecha_maxima_real.TimeOfDay) ? nodo_hijo.fecha_fin_real : fecha_maxima_real) : nodo_hijo.fecha_fin_real : fecha_maxima_real != default(DateTime) ? fecha_maxima_real : default(DateTime);
+            try
+            {
+                List<List<Nodo>> listas = EstructuraProyectoDAO.getEstructuraProyectoArbolCalculos(proyectoId, null);
+                for (int i = listas.Count - 1; i >= 0; i--)
+                {
+                    for (int j = 0; j < listas[i].Count; j++)
+                    {
+                        Nodo nodo = listas[i][j];
+                        decimal costo = decimal.Zero;
+                        DateTime fecha_maxima = new DateTime(0);
+                        DateTime fecha_minima = new DateTime(new DateTime(2999, 12, 31, 0, 0, 0).Ticks);
+                        DateTime fecha_maxima_real = default(DateTime);
+                        DateTime fecha_minima_real = default(DateTime);
+                        foreach (Nodo nodo_hijo in nodo.children)
+                        {
+                            costo += nodo_hijo.costo;
+                            fecha_minima = (nodo_hijo.fecha_inicio.TimeOfDay < fecha_minima.TimeOfDay) ? nodo_hijo.fecha_inicio : fecha_minima;
+                            fecha_maxima = (nodo_hijo.fecha_fin.TimeOfDay > fecha_maxima.TimeOfDay) ? nodo_hijo.fecha_fin : fecha_maxima;
+                            fecha_minima_real = nodo_hijo.fecha_inicio_real != null ? fecha_minima_real != null ? ((nodo_hijo.fecha_inicio_real.TimeOfDay < fecha_minima_real.TimeOfDay) ? nodo_hijo.fecha_inicio_real : fecha_minima_real) : nodo_hijo.fecha_inicio_real : fecha_minima_real != null ? fecha_minima_real : fecha_minima_real;
+                            fecha_maxima_real = nodo_hijo.fecha_fin_real != null ? fecha_maxima_real != null ? ((nodo_hijo.fecha_fin_real.TimeOfDay > fecha_maxima_real.TimeOfDay) ? nodo_hijo.fecha_fin_real : fecha_maxima_real) : nodo_hijo.fecha_fin_real : fecha_maxima_real != default(DateTime) ? fecha_maxima_real : default(DateTime);
+                        }
+                        nodo.objeto = ObjetoDAO.getObjetoPorIdyTipo(nodo.id, nodo.objeto_tipo);
+                        if (nodo.children != null && nodo.children.Count > 0)
+                        {
+                            nodo.fecha_inicio = fecha_minima;
+                            nodo.fecha_fin = fecha_maxima;
+                            nodo.fecha_inicio_real = fecha_minima_real;
+                            nodo.fecha_fin_real = fecha_maxima_real;
+                            nodo.costo = costo;
+                        }
+                        else
+                        {
+                            decimal costo_temp = ObjetoDAO.calcularCostoPlan(nodo.objeto, nodo.objeto_tipo);
+                            nodo.costo = (decimal)costo_temp;
+                        }
+                        nodo.duracion = Utils.getWorkingDays(nodo.fecha_inicio, nodo.fecha_fin);
+                        setDatosCalculados(nodo.objeto, nodo.fecha_inicio, nodo.fecha_fin, nodo.costo, nodo.duracion, nodo.fecha_inicio_real, nodo.fecha_fin_real);
                     }
-                    nodo.objeto = ObjetoDAO.getObjetoPorIdyTipo(nodo.id, nodo.objeto_tipo);
-                    if(nodo.children!=null && nodo.children.Count>0){
-                        nodo.fecha_inicio = fecha_minima;
-                        nodo.fecha_fin = fecha_maxima;
-                        nodo.fecha_inicio_real = fecha_minima_real;
-                        nodo.fecha_fin_real = fecha_maxima_real;
-                        nodo.costo = costo;
-                    }
-                    else{
-                        decimal costo_temp= ObjetoDAO.calcularCostoPlan(nodo.objeto, nodo.objeto_tipo);
-                        nodo.costo = (Double)costo_temp;
-                    }
-                    nodo.duracion = Utils.getWorkingDays(nodo.fecha_inicio, nodo.fecha_fin);
-                    setDatosCalculados(nodo.objeto,nodo.fecha_inicio,nodo.fecha_fin,nodo.costo, nodo.duracion, nodo.fecha_inicio_real, nodo.fecha_fin_real);
+                    ret = true;
                 }
-                ret = true;
+                ret = ret && guardarProyectoBatch(listas);
             }
-            ret= ret && guardarProyectoBatch(listas);	
+            catch (Exception e)
+            {
+                CLogger.write("19", "ProyectoDAO.class", e);
+            }            	
             return ret;
         }
 
-        private static void setDatosCalculados(Object objeto, DateTime fecha_inicio, DateTime fecha_fin, Double costo, int duracion, DateTime fecha_inicio_real, DateTime fecha_fin_real)
+        private static void setDatosCalculados(Object objeto, DateTime fecha_inicio, DateTime fecha_fin, decimal costo, int duracion, DateTime fecha_inicio_real, DateTime fecha_fin_real)
         {
             try
             {
                 if (objeto != null)
                 {
                     Type objetoType = objeto.GetType();
-                    var setFechaInicio = objetoType.GetMethod("setFechaInicio", new Type[] { typeof(object) });
-                    var setFechaFin = objetoType.GetMethod("setFechaFin", new Type[] { typeof(object) });
-                    var setCosto = objetoType.GetMethod("setCosto", new Type[] { typeof(object) });
-                    var setDuracion = objetoType.GetMethod("setDuracion", new Type[] { typeof(object) });
-                    var setFechaInicioReal = objetoType.GetMethod("setFechaInicioReal", new Type[] { typeof(object) });
-                    var setFechaFinReal = objetoType.GetMethod("setFechaFinReal", new Type[] { typeof(object) });
+                    var setFechaInicio = objetoType.GetProperty("fechaInicio");
+                    var setFechaFin = objetoType.GetProperty("fechaFin");
+                    var setCosto = objetoType.GetProperty("costo");
+                    var setDuracion = objetoType.GetProperty("duracion");
+                    var setFechaInicioReal = objetoType.GetProperty("fechaInicioReal");
+                    var setFechaFinReal = objetoType.GetProperty("fechaFinReal");
 
                     if (fecha_inicio != null)
-                        setFechaInicio.Invoke(objeto, new object[] { fecha_inicio });
+                        setFechaInicio.SetValue(objeto,fecha_inicio);
                     if (fecha_fin != null)
-                        setFechaFin.Invoke(objeto, new object[] { fecha_fin });
-                    if (costo != default(Double))
-                        setCosto.Invoke(objeto, new object[] { costo });
-                    setDuracion.Invoke(objeto, new object[] { duracion });
+                        setFechaFin.SetValue(objeto, fecha_fin);
+                    if (costo != default(decimal))
+                        setCosto.SetValue(objeto, costo);
+                    setDuracion.SetValue(objeto, duracion);
                     if (fecha_inicio_real != null)
-                        setFechaInicioReal.Invoke(objeto, new object[] { fecha_inicio_real });
+                        setFechaInicioReal.SetValue(objeto, fecha_inicio_real);
                     if (fecha_fin_real != null)
-                        setFechaFinReal.Invoke(objeto, new object[] { fecha_fin_real });
+                        setFechaFinReal.SetValue(objeto, fecha_fin_real);
                 }
             }
             catch (Exception e)

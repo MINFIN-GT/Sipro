@@ -45,6 +45,17 @@ namespace SComponente
                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
                .MakeGenericType(typeof(AcumulacionCosto)));
             SqlMapper.SetTypeMap(typeof(AcumulacionCosto), mapper5);
+            var mapper6 = (SqlMapper.ITypeMap)Activator
+              .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+              .MakeGenericType(typeof(ComponentePropiedad)));
+            SqlMapper.SetTypeMap(typeof(ComponentePropiedad), mapper6);
+            var mapper7 = (SqlMapper.ITypeMap)Activator
+              .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+              .MakeGenericType(typeof(ComponentePropiedadValor)));
+            SqlMapper.SetTypeMap(typeof(ComponentePropiedadValor), mapper7);
+            
+
+
         }
 
         public IConfiguration Configuration { get; }

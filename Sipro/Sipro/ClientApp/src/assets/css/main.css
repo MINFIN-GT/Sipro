@@ -636,3 +636,16 @@ input.riesgos[type='range']::-webkit-slider-thumb {
     color: #ff3232;
     font-size: 12px;
 }
+
+.w3-blue,.w3-hover-blue:hover{
+    color: black!important;
+    background-color:#2196F3!important;
+    border-radius: 5px;
+    text-align: center;
+    height: 100%;
+}
+.w3-light-grey{
+    color:#000!important;
+    background-color:#cccccc!important;
+    border-radius: 5px;
+}

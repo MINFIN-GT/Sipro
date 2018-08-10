@@ -25,6 +25,10 @@ namespace SProyectoPropiedad
                .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
                .MakeGenericType(typeof(ProyectoPropiedad)));
             SqlMapper.SetTypeMap(typeof(ProyectoPropiedad), mapper);
+            var mapper2 = (SqlMapper.ITypeMap)Activator
+               .CreateInstance(typeof(ColumnAttributeTypeMapper<>)
+               .MakeGenericType(typeof(DatoTipo)));
+            SqlMapper.SetTypeMap(typeof(DatoTipo), mapper2);
         }
 
         public IConfiguration Configuration { get; }

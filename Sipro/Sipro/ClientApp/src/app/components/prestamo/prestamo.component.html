@@ -62,7 +62,7 @@
                   <button fxFlex="25px" fxLayoutAlign="center" mat-raised-button (click)="congelarDescongelar" matTooltip="Congelar o descongelar linea base" matTooltipPosition="above"><mat-icon>ac_unit</mat-icon></button>
                 </div>
                 <div fxFlex fxLayoutAlign="end" fxLayoutGap="2px">
-                    <button mat-raised-button class="applying-btn" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
+                    <button mat-raised-button id="applying-disabled" class="applying-btn" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
                     <button mat-raised-button class="primary-btn" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
                 </div>
               </div>              
@@ -566,7 +566,7 @@
                   <div fxLayout="row" fxLayoutAlign="center" class="label-form">Los campos marcados con son obligatorios y las fechas deben tener formato de dd/mm/aaaa</div>
 			            <br/>
                   <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2px">
-                    <button mat-raised-button class="applying-btn" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
+                    <button mat-raised-button id="applying-disabled" class="applying-btn" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
                     <button mat-raised-button class="primary-btn" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
                   </div>
                   <br>

@@ -1,7 +1,7 @@
 export class Componente{
     id: number;
     nombre : string;
-    descripcion : string;
+    descripcion : string = null;
     usuarioCreo : string;
     usuarioActualizo : string;
     fechaCreacion : string;
@@ -9,17 +9,17 @@ export class Componente{
     componenteTipoid: number;
     componentetiponombre : string;
     estado: number;
-    snip: number;
-    programa: number;
-    subprograma: number;
-    proyecto: number;
-    obra: number;
-    actividad: number;
-    renglon: number;
-    ubicacionGeografica: number;
+    snip: number = null;
+    programa: number = null;
+    subprograma: number = null;
+    proyecto: number = null;
+    obra: number = null;
+    actividad: number = null;
+    renglon: number = null;
+    ubicacionGeografica: number = null;
     duracion: number;
     duracionDimension : string;
-    fechaInicio : string;
+    fechaInicio : Date;
     fechaFin : string;
     ueunidadEjecutora: number;
     ejercicio: number;
@@ -29,17 +29,17 @@ export class Componente{
     latitud : string;
     longitud : string;
     costo: number;
-    acumulacionCostoid: number;
+    acumulacionCostoid: number = 3;
     acumulacionCostoNombre : string;
-    fuentePrestamo: number;
-    fuenteDonacion: number;
-    fuenteNacional: number;
+    fuentePrestamo: number = null;
+    fuenteDonacion: number = null;
+    fuenteNacional: number = null;
     tieneHijos: boolean;
-    esDeSigade: boolean;
+    esDeSigade: number = null;
     prestamoId: number;
-    fechaInicioReal : string;
-    fechaFinReal : string;
-    inversionNueva: number;
+    fechaInicioReal : string = null;
+    fechaFinReal : string = null;
+    inversionNueva: number = 0;
     proyectoid: number;
     orden: number;
     treepath: string;
@@ -47,4 +47,5 @@ export class Componente{
     componenteSigadeid: number;
 
     pagosPlanificados: string;
+    camposDinamicos: string;
 }

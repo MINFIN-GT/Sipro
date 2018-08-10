@@ -1,0 +1,42 @@
+export class Subcomponente{
+    id: number;
+    nombre: string = null;
+    descripcion: string = null;
+    componenteid: number = null;
+    usuarioCreo: string;
+    usuarioActualizo: string;
+    fechaCreacion: Date;
+    fechaActualizacion: Date;
+    subcomponenteTipoid: number = null;
+    subcomponentetiponombre: string;
+    estado: number;
+    snip: number = null;
+    programa: number = null;
+    subprograma: number = null;
+    proyecto: number = null;
+    obra: number = null;
+    actividad: number = null;
+    renglon: number = null;
+    ubicacionGeografica: number = null;
+    duracion: number = null;
+    duracionDimension: string = null;
+    fechaInicio: Date = null;
+    fechaFin: Date = null;
+    ueunidadEjecutora: number = null;
+    ejercicio: number = null;
+    entidad: number = null;
+    unidadejecutoranombre: string;
+    entidadnombre: string;
+    latitud: string = null;
+    longitud: string = null;
+    costo: number = null;
+    acumulacionCostoid: number = null;
+    acumulacionCostoNombre: string;
+    tieneHijos: boolean;
+    fechaInicioReal: Date = null;
+    fechaFinReal: Date = null;
+    congelado: number;
+    inversionNueva: number = null;
+
+    pagosPlanificados: string;
+}

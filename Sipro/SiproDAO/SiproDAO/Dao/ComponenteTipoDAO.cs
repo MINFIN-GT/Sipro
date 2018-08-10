@@ -44,7 +44,7 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        public static bool guardarComponenteTipo(ComponenteTipo componenteTipo, List<CtipoPropiedad> ctipoPropiedades)
+        public static bool guardarComponenteTipo(ComponenteTipo componenteTipo)
         {
             bool ret = false;
             try
@@ -65,34 +65,10 @@ namespace SiproDAO.Dao
                     {
                         int sequenceId = db.ExecuteScalar<int>("SELECT seq_componente_tipo.nextval FROM DUAL");
                         componenteTipo.id = sequenceId;
-                        int guardar = db.Execute("INSERT INTO COMPONENTE_TIPO VALUE (:id, :nombre, :descripcion, :usuarioCreo, :usuarioActualizo, :fechaCreacion, " +
-                            "fechaActualizacion, estado)", componenteTipo);
+                        int guardar = db.Execute("INSERT INTO COMPONENTE_TIPO VALUES (:id, :nombre, :descripcion, :usuarioCreo, :usuarioActualizo, :fechaCreacion, " +
+                            ":fechaActualizacion, :estado)", componenteTipo);
 
                         ret = guardar > 0 ? true : false;
-                    }
-
-                    if (ret == true && ctipoPropiedades != null && ctipoPropiedades.Count > 0)
-                    {
-                        foreach (CtipoPropiedad propiedad in ctipoPropiedades)
-                        {
-                            existe = db.ExecuteScalar<int>("SELECT * FROM CTIPO_PROPIEDAD WHERE componente_tipoid=:componenteTipoId AND componente_propiedadid=:componentePropiedadId",
-                                new { componenteTipoId = propiedad.componentePropiedadid, componentePropiedadId = propiedad.componentePropiedadid });
-
-                            if (existe > 0)
-                            {
-                                int guardar = db.Execute("UPDATE CTIPO_PROPIEDAD SET usuario_creo=:usuarioCreo, usuario_actualizo=:usuarioActualizo, fecha_creacion=:fechaCreacion, " +
-                                    "fecha_actualizacion=:fechaActualizacion WHERE componente_tipoid=:componenteTipoid AND componente_propiedadid=:componentePropiedadid", propiedad);
-
-                                ret = guardar > 0 ? true : false;
-                            }
-                            else
-                            {
-                                int guardar = db.Execute("INSERT INTO CTIPO_PROPIEDAD VALUES (:componenteTipoid, :componentePropiedadid, :usuarioCreo, :usuarioActualizo, :fechaCreacion, " +
-                                    ":fechaActualizacion)", propiedad);
-
-                                ret = guardar > 0 ? true : false;
-                            }
-                        }
                     }
                 }
             }
@@ -108,16 +84,8 @@ namespace SiproDAO.Dao
             bool ret = false;
             try
             {
-                using (DbConnection db = new OracleContext().getConnection())
-                {
-                    componenteTipo.estado = 0;
-
-                    int guardar = db.Execute("UPDATE COMPONENTE_TIPO SET nombre=:nombre, descripcion=:descripcion, usuario_creo=:usuarioCreo, " +
-                            "usuario_actualizo=:usuarioActualizo, fecha_creacion=:fechaCreacion, fecha_actualizacion=:fechaActualizacion, estado=:estado " +
-                            "WHERE id=:id", componenteTipo);
-
-                    ret = guardar > 0 ? true : false;
-                }
+                componenteTipo.estado = 0;
+                ret = guardarComponenteTipo(componenteTipo);                
             }
             catch (Exception e)
             {
@@ -145,8 +113,8 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        public static List<ComponenteTipo> getComponenteTiposPagina(int pagina, int numerocomponentestipo, String filtro_nombre, String filtro_usuario_creo,
-                String filtro_fecha_creacion, String columna_ordenada, String orden_direccion)
+        public static List<ComponenteTipo> getComponenteTiposPagina(int pagina, int numerocomponentestipo, String filtro_busqueda, String columna_ordenada, 
+            String orden_direccion)
         {
             List<ComponenteTipo> ret = new List<ComponenteTipo>();
             try
@@ -155,12 +123,19 @@ namespace SiproDAO.Dao
                 {
                     String query = "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT * FROM COMPONENTE_TIPO c WHERE c.estado = 1 ";
                     String query_a = "";
-                    if (filtro_nombre != null && filtro_nombre.Trim().Length > 0)
-                        query_a = String.Join("", query_a, " c.nombre LIKE '%", filtro_nombre, "%' ");
-                    if (filtro_usuario_creo != null && filtro_usuario_creo.Trim().Length > 0)
-                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " c.usuarioCreo LIKE '%", filtro_usuario_creo, "%' ");
-                    if (filtro_fecha_creacion != null && filtro_fecha_creacion.Trim().Length > 0)
-                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(c.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE(:filtro_fecha_creacion,'DD/MM/YY') ");
+                    if (filtro_busqueda != null && filtro_busqueda.Length > 0)
+                    {
+                        query_a = String.Join("", query_a, " c.nombre LIKE '%" + filtro_busqueda + "%' ");
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " c.descripcion LIKE '%" + filtro_busqueda + "%' ");
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " c.usuario_creo LIKE '%" + filtro_busqueda + "%' ");
+
+                        DateTime fecha_creacion;
+                        if (DateTime.TryParse(filtro_busqueda, out fecha_creacion))
+                        {
+                            query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(c.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE('" + fecha_creacion.ToString("dd/MM/yyyy") + "','DD/MM/YY') ");
+                        }                        
+                    }    
+                    
                     query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND (", query_a, ")") : ""));
                     query = columna_ordenada != null && columna_ordenada.Trim().Length > 0 ? String.Join(" ", query, "ORDER BY", columna_ordenada, orden_direccion) : query;
                     query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + numerocomponentestipo + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + numerocomponentestipo + ") + 1)");
@@ -175,21 +150,27 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        public static long getTotalComponenteTipo(String filtro_nombre, String filtro_usuario_creo, String filtro_fecha_creacion)
+        public static long getTotalComponenteTipo(String filtro_busqueda)
         {
             long ret = 0L;
             try
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    String query = "SELECT COUNT(*) FROM ComponenteTipo c WHERE c.estado=1 ";
+                    String query = "SELECT COUNT(*) FROM Componente_tipo c WHERE c.estado=1 ";
                     String query_a = "";
-                    if (filtro_nombre != null && filtro_nombre.Trim().Length > 0)
-                        query_a = String.Join("", query_a, " c.nombre LIKE '%", filtro_nombre, "%' ");
-                    if (filtro_usuario_creo != null && filtro_usuario_creo.Trim().Length > 0)
-                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " c.usuarioCreo LIKE '%", filtro_usuario_creo, "%' ");
-                    if (filtro_fecha_creacion != null && filtro_fecha_creacion.Trim().Length > 0)
-                        query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(c.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE(:filtro_fecha_creacion,'DD/MM/YY') ");
+                    if (filtro_busqueda != null && filtro_busqueda.Length > 0)
+                    {
+                        query_a = String.Join("", query_a, " c.nombre LIKE '%" + filtro_busqueda + "%' ");
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " c.descripcion LIKE '%" + filtro_busqueda + "%' ");
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " c.usuario_creo LIKE '%" + filtro_busqueda + "%' ");
+
+                        DateTime fecha_creacion;
+                        if (DateTime.TryParse(filtro_busqueda, out fecha_creacion))
+                        {
+                            query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(c.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE('" + fecha_creacion.ToString("dd/MM/yyyy") + "','DD/MM/YY') ");
+                        }
+                    }                    
                     query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND (", query_a, ")") : ""));
 
                     ret = db.ExecuteScalar<long>(query);

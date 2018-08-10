@@ -10,6 +10,21 @@ import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { Etiqueta } from '../../../assets/models/Etiqueta';
 import { DialogMapa, DialogOverviewMapa } from '../../../assets/modals/cargamapa/modal-carga-mapa';
+import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
+import { DialogComponenteTipo, DialogOverviewComponenteTipo } from '../../../assets/modals/componentetipo/componente-tipo';
+import { DialogOverviewUnidadEjecutora, DialogUnidadEjecutora } from '../../../assets/modals/unidadejecutora/unidad-ejecutora';
+
+export interface AcumulacionCosto {
+  id: number;
+  nombre: string;
+  usuarioActualizo: string;
+  usuarioCreo: string;
+  fechaActualizacion : Date;
+  fechaCreacion: Date;
+  estado: number;
+}
 
 @Component({
   selector: 'app-componente',
@@ -51,8 +66,27 @@ export class ComponenteComponent implements OnInit {
   esNuevo: boolean;
   modalMapa: DialogOverviewMapa;
   coordenadas: string;
+  bloquearCosto: boolean;
+  asignado: number;
+  sobrepaso: boolean;
+  acumulacion_costo = [];
+  dimensionSelected: number;
+  modalComponenteTipo: DialogOverviewComponenteTipo;
+  unidadejecutoraid: number;
+  unidadejecutoranombre: string;
+  entidadnombre: string;
+  mostraringreso: boolean;
+  camposdinamicos = [];
+  modalUnidadEjecutora: DialogOverviewUnidadEjecutora;
+  botones: boolean;
+
+  dimensiones = [
+    {value:1,nombre:'Dias',sigla:'d'}
+  ];
 
   @ViewChild('search') divSearch: ElementRef;
+  myControl = new FormControl();
+  filteredAcumulacionCosto: Observable<AcumulacionCosto[]>;
   
   constructor(private route: ActivatedRoute, private auth: AuthService, private utils: UtilsService, private http: HttpClient, private dialog: MatDialog, private router: Router) { 
     this.etiqueta = JSON.parse(localStorage.getItem("_etiqueta"));
@@ -73,11 +107,30 @@ export class ComponenteComponent implements OnInit {
     this.obtenerPep();
     this.componente = new Componente();
     this.modalMapa = new DialogOverviewMapa(dialog);
+
+    this.filteredAcumulacionCosto = this.myControl.valueChanges
+      .pipe(
+        startWith(''),
+        map(value => value ? this._filterAcumulacionCosto(value) : this.acumulacion_costo.slice())
+      );
+
+    this.modalComponenteTipo = new DialogOverviewComponenteTipo(dialog);
+    this.modalUnidadEjecutora = new DialogOverviewUnidadEjecutora(dialog);
+  }
+
+  private _filterAcumulacionCosto(value: string): AcumulacionCosto[] {
+    const filterValue = value.toLowerCase();
+    return this.acumulacion_costo.filter(c => c.nombre.toLowerCase().indexOf(filterValue) === 0);
+  }
+
+  acumulacionCostoSeleccionado(value){
+    this.componente.acumulacionCostoid = value.id;
   }
 
   ngOnInit() {
     this.mostrarcargando=true;
     this.obtenerTotalComponentes();
+    this.obtenerAcumulacionCosto();
   }
 
   obtenerPep(){
@@ -132,6 +185,11 @@ export class ComponenteComponent implements OnInit {
       if(response['success'] == true){
         var data = response['componentes'];
 
+        for(var i =0; i<data.length; i++){
+          data[i].fechaInicio = data[i].fechaInicio != null ? moment(data[i].fechaInicio,'DD/MM/YYYY').toDate() : null;
+          data[i].fechaFin = data[i].fechaFin != null ? moment(data[i].fechaFin,'DD/MM/YYYY').format('DD/MM/YYYY') : null;
+        }
+
         this.source = new LocalDataSource(data);
         this.source.setSort([
             { field: 'id', direction: 'asc' }  // primary sort
@@ -148,6 +206,12 @@ export class ComponenteComponent implements OnInit {
     this.esColapsado = true;
     this.esNuevo = true;
     this.tabActive = 0;
+    this.dimensionSelected = 1;
+    this.coordenadas = null;
+    this.camposdinamicos = [];
+    this.unidadejecutoraid= this.prestamoid != null ? this.unidadEjecutora :  null;
+    this.unidadejecutoranombre= this.prestamoid != null ? this.unidadEjecutoraNombre : null;
+    this.componente.duracionDimension = this.dimensiones[this.dimensionSelected].sigla;
   }
 
   editar(){
@@ -155,6 +219,28 @@ export class ComponenteComponent implements OnInit {
       this.esColapsado = true;
       this.esNuevo = false;
       this.tabActive = 0;
+      this.dimensionSelected = 1;
+
+      this.unidadejecutoraid= this.componente.ueunidadEjecutora;
+      this.unidadejecutoranombre= this.componente.unidadejecutoranombre;
+      this.ejercicio = this.componente.ejercicio;
+      this.entidad = this.componente.entidad;
+      this.entidadnombre = this.componente.entidadnombre;
+
+      if(this.componente.acumulacionCostoid==2)
+        this.bloquearCosto = true;
+      else
+        this.bloquearCosto = false;
+
+      this.mostraringreso = true;
+      this.esNuevo = false;
+
+      this.coordenadas = (this.componente.latitud !=null ?  this.componente.latitud : '') +
+        (this.componente.latitud!=null ? ', ' : '') + (this.componente.longitud!=null ? this.componente.longitud : '');
+        
+      this.obtenerCamposDinamicos();
+
+      this.getAsignado();      
     }
     else
       this.utils.mensaje("warning", "Debe de seleccionar el componente que desea editar");
@@ -224,7 +310,57 @@ export class ComponenteComponent implements OnInit {
   };
 
   guardar(){
+    if(this.componente != null){
+      for(var i=0; i < this.camposdinamicos.length; i++){
+        this.botones = false;
+        if(this.camposdinamicos[i].tipo === 'fecha'){
+          this.camposdinamicos[i].valor_f = this.camposdinamicos[i].valor != null ? moment(this.camposdinamicos[i].valor).format('DD/MM/YYYY') : "";        
+        }
+      }
 
+      this.componente.camposDinamicos = JSON.stringify(this.camposdinamicos);
+
+      var objetoHttp;
+
+      if(this.componente.id > 0){
+        objetoHttp = this.http.put("http://localhost:60012/api/Componente/Componente/" + this.componente.id, this.componente, { withCredentials: true });
+      }
+      else{
+        this.componente.proyectoid = this.pepid;
+        this.componente.id=0;
+        this.componente.ejercicio = this.ejercicio;
+        this.componente.entidad = this.entidad;
+        this.componente.ueunidadEjecutora = this.unidadEjecutora;
+        objetoHttp = this.http.post("http://localhost:60012/api/Componente/Componente", this.componente, { withCredentials: true });
+      }
+
+      objetoHttp.subscribe(response => {
+        if(response['success'] == true){
+          this.componente.id = response['id'];
+          this.componente.usuarioCreo = response['usuarioCreo'];
+          this.componente.fechaCreacion = response['fechaCreacion'];
+          this.componente.usuarioActualizo = response['usuarioActualizo'];
+          this.componente.fechaActualizacion = response['fechaActualizacion'];
+
+          if(!this.esTreeview)
+							this.obtenerTotalComponentes();
+						/*else{
+							//if(!this.esNuevo)
+								//mi.t_cambiarNombreNodo();
+							//else
+								//mi.t_crearNodo(mi.componente.id,mi.componente.nombre,1,true);
+						}
+						if(this.child_riesgos!=null){
+							//ret = mi.child_riesgos.guardar('Componente '+(mi.esNuevo ? 'creado' : 'guardado')+' con éxito',
+							//		'Error al '+(mi.esNuevo ? 'creado' : 'guardado')+' el Componente');
+						}
+						else
+              $utilidades.mensaje('success','Componente '+(this.esNuevo ? 'creado' : 'guardado')+' con éxito');*/
+            this.utils.mensaje('success', 'Componente '+(this.esNuevo ? 'creado' : 'guardado')+' con éxito');
+            this.esNuevo = false;
+        }
+      })
+    }
   }
 
   IrATabla(){
@@ -233,7 +369,33 @@ export class ComponenteComponent implements OnInit {
   }
 
   buscarUnidadEjecutora(){
-    
+    if(this.prestamoid == null){
+      this.modalUnidadEjecutora.dialog.open(DialogUnidadEjecutora, {
+        width: '600px',
+        height: '585px',
+        data: { titulo: 'Unidades Ejecutoras', ejercicio: this.componente.ejercicio, entidad: this.componente.entidad }
+      }).afterClosed().subscribe(result => {
+        if(result != null){
+          this.unidadejecutoraid = result.id;
+          this.unidadejecutoranombre = result.nombre;
+        }
+      })
+    }
+  }
+
+  buscarComponenteTipo(){
+    this.modalComponenteTipo.dialog.open(DialogComponenteTipo, {
+      width: '600px',
+      height: '585px',
+      data: { titulo: 'Componente Tipo' }
+    }).afterClosed().subscribe(result => {
+      if(result != null){
+        this.componente.componenteTipoid = result.id;
+        this.componente.componentetiponombre = result.nombre;
+
+        this.obtenerCamposDinamicos();
+      }
+    })
   }
 
   abrirMapa(){
@@ -250,5 +412,104 @@ export class ComponenteComponent implements OnInit {
         this.coordenadas = '';
       }
     })
+  }
+
+  validarAsignado(){
+    if(this.componente.costo != null){
+      if(this.componente.programa != null){
+        if(this.componente.costo <= this.asignado)
+          this.sobrepaso = false;
+        else
+          this.sobrepaso = true;
+      }
+    }
+  }
+
+  getAsignado() {
+    var params = {
+      id: this.componente.id,
+      programa: this.componente.programa,
+      subprograma: this.componente.subprograma,
+      proyecto: this.componente.proyecto,
+      actividad: this.componente.actividad,
+      obra: this.componente.obra,
+      renglon: this.componente.renglon,
+      geografico: this.componente.ubicacionGeografica,
+      t: new Date().getDate()
+    }
+    this.http.post('http://localhost:60012/api/Componente/ValidacionAsignado', params, { withCredentials: true }).subscribe(response =>{
+      if(response['success']==true){
+        this.asignado = response['asignado'];
+        this.sobrepaso = response['sobrepaso'];
+      }
+    })
+  }
+
+  obtenerAcumulacionCosto(){
+    this.http.get('http://localhost:60004/api/AcumulacionCosto/AcumulacionesCosto', { withCredentials: true}).subscribe(response => {
+      if (response['success'] == true) {
+        this.acumulacion_costo = response["acumulacionesTipos"];        
+      }
+    })
+  }
+
+  cambioDuracion(dimension){
+    this.componente.fechaFin = this.sumarDias(this.componente.fechaInicio, this.componente.duracion, dimension.sigla);
+  }
+
+  modelChangedFechaInicio(event, dimension){
+    this.componente.fechaFin = this.sumarDias(event._d, this.componente.duracion, dimension.sigla);
+  }
+
+  sumarDias(fecha, dias, dimension){
+    if(dimension != undefined && dias != undefined && fecha != ""){
+      var cnt = 0;
+      var tmpDate = moment(fecha,'DD/MM/YYYY');
+        while (cnt < (dias -1 )) {
+          if(dimension=='d'){
+            tmpDate = tmpDate.add(1,'days');	
+          }
+            if (tmpDate.weekday() != moment().day("Sunday").weekday() && tmpDate.weekday() != moment().day("Saturday").weekday()) {
+                cnt = cnt + 1;
+            }
+        }
+        tmpDate = moment(tmpDate,'DD/MM/YYYY');
+        return tmpDate.format('DD/MM/YYYY');
+    }
+  }
+
+  obtenerCamposDinamicos(){
+    var parametros ={
+      idProyecto : this.componente.id,
+      idComponenteTipo : this.componente.componenteTipoid,
+      t: new Date().getTime() 
+    }
+    this.http.get('http://localhost:60013/api/ComponentePropiedad/ComponentePropiedadPorTipo/'+this.componente.id+'/'+this.componente.componenteTipoid,  { withCredentials: true }).subscribe(response => {
+      if (response['success'] == true) {
+        this.camposdinamicos = response['componentepropiedades'];
+        for(var i=0; i<this.camposdinamicos.length; i++){
+          switch(this.camposdinamicos[i].tipo){
+            case "fecha":
+              this.camposdinamicos[i].valor = this.camposdinamicos[i].valor != null ? moment(this.camposdinamicos[i].valor, 'DD/MM/YYYY').toDate() : null;
+            break;
+            case "entero":
+              this.camposdinamicos[i].valor = this.camposdinamicos[i].valor != null ? Number(this.camposdinamicos[i].valor) : null;
+            break;
+            case "decimal":
+              this.camposdinamicos[i].valor = this.camposdinamicos[i].valor != null ? Number(this.camposdinamicos[i].valor) : null;
+            break;
+            case "booleano":
+              this.camposdinamicos[i].valor = this.camposdinamicos[i].valor == 'true' ? true : false;
+            break;
+          }
+        }
+      }
+    })
+  }
+
+  irASubcomponentes(componenteId){
+    if(this.componente!=null){
+      this.router.navigateByUrl('/main/subcomponente/'+ componenteId);
+    }
   }
 }

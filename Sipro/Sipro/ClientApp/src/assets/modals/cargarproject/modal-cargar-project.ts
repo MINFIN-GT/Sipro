@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
+import { Subscription } from 'rxjs'
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpRequest, HttpResponse, HttpEvent } from '@angular/common/http';
 
 @Component({
     templateUrl: './modal-dialog.html'
@@ -20,10 +21,11 @@ export class DialogCargarProject {
     textoCuerpo : string;
     textoBotonOk: string;
     textoBotonCancelar: string;
+    etiqueta: string;
     color = 'primary';
     mode = 'indeterminate';
     value = 50;
-    diameter = 45;
+    diameter = 20;
     strokewidth = 3;
     mostrarcargando: boolean;
     nombreArchivo: string;
@@ -31,6 +33,10 @@ export class DialogCargarProject {
     proyectoid : number;
     prestamoid : number;
     multiproyecto : boolean;
+    progress:number;
+    httpEmitter:Subscription;
+    httpEvent:HttpEvent<Event>;
+    mensaje: string;
 
     constructor(public dialog: MatDialog,
         public dialogRef: MatDialogRef<DialogCargarProject>,
@@ -43,24 +49,39 @@ export class DialogCargarProject {
             this.proyectoid = data.proyectoid;
             this.prestamoid = data.prestamoid;
             dialogRef.disableClose = true;
+            this.progress = 0;
+            this.etiqueta = data.etiqueta;
         }
 
     ngOnInit() { 
         this.mostrarcargando = false;
     }
 
-    aceptar(){
-        this.mostrarcargando = true;
+    aceptar():Subscription{
         if(this.documento != null){
             var formData = new FormData();
             formData.append("file", this.documento);
-            this.http.post('http://localhost:60030/api/Gantt/Importar/'+ (this.multiproyecto ? '1' : '0') + '/0/' + this.proyectoid + '/' + this.prestamoid, formData, { withCredentials : true }).subscribe(response => {
-                if(response['success'] == true){
-                    this.mostrarcargando = false;
-                    this.dialogRef.close(true);   
-                }else
-                    this.dialogRef.close(false); 
+
+            const req = new HttpRequest<FormData>('POST', 'http://localhost:60030/api/Gantt/Importar/'+ (this.multiproyecto ? '1' : '0') + '/0/' + this.proyectoid + '/' + this.prestamoid, formData, {
+                reportProgress: true,
+                withCredentials: true
             })
+
+            return this.httpEmitter = this.http.request(req).subscribe(
+                event=>{
+                    if(event["type"] == 1){
+                        this.mostrarcargando = true;
+                        this.progress = (event["loaded"]/event["total"])*100;
+                        this.mensaje = "Cargando archivo al servidor";
+                    }
+                    else if(event["type"]==2 && event["ok"]==true && event["status"]==200){
+                        this.dialogRef.close(true);                         
+                    }
+                    if(this.progress==100)
+                        this.mensaje = "Actualizando " + this.etiqueta;
+                },
+                error=>console.log('Error Uploading',error)                
+            )
         }           
     }
 

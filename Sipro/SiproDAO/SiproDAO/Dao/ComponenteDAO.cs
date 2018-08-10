@@ -37,7 +37,7 @@ namespace SiproDAO.Dao
                     String Str_query = String.Join(" ", "SELECT * FROM componente c WHERE c.id=:id");
                     if (usuario != null)
                     {
-                        Str_query = String.Join(" ", "AND id in (SELECT u.componenteid FROM componente_usuario u WHERE u.usuario=:usuario)");
+                        Str_query = String.Join(" ", Str_query, "AND id in (SELECT u.componenteid FROM componente_usuario u WHERE u.usuario=:usuario)");
                     }
 
                     ret = db.QueryFirstOrDefault<Componente>(Str_query, new { id = id, usuario = usuario });
@@ -456,82 +456,82 @@ namespace SiproDAO.Dao
             }
             return ret;
         }
-	
-	/*public static boolean calcularCostoyFechas(Integer componenteId){
-		boolean ret = false;
-		ArrayList<ArrayList<Nodo>> listas = EstructuraProyectoDAO.getEstructuraObjetoArbolCalculos(componenteId, 2);
-		for(int i=listas.size()-2; i>=0; i--){
-			for(int j=0; j<listas.get(i).size(); j++){
-				Nodo nodo = listas.get(i).get(j);
-				Double costo=0.0d;
-				Timestamp fecha_maxima=new Timestamp(0);
-				Timestamp fecha_minima=new Timestamp((new DateTime(2999,12,31,0,0,0)).getMillis());
-				for(Nodo nodo_hijo:nodo.children){
-					costo += nodo_hijo.costo;
-					fecha_minima = (nodo_hijo.fecha_inicio.getTime()<fecha_minima.getTime()) ? nodo_hijo.fecha_inicio : fecha_minima;
-					fecha_maxima = (nodo_hijo.fecha_fin.getTime()>fecha_maxima.getTime()) ? nodo_hijo.fecha_fin : fecha_maxima;
-				}
-				nodo.objeto = ObjetoDAO.getObjetoPorIdyTipo(nodo.id, nodo.objeto_tipo);
-				if(nodo.children!=null && nodo.children.size()>0){
-					nodo.fecha_inicio = fecha_minima;
-					nodo.fecha_fin = fecha_maxima;
-					nodo.costo = costo;
-				}
-				else
-					nodo.costo = calcularCosto((Componente)nodo.objeto).doubleValue();
-				nodo.duracion = Utils.getWorkingDays(new DateTime(nodo.fecha_inicio), new DateTime(nodo.fecha_fin));
-				setDatosCalculados(nodo.objeto,nodo.fecha_inicio,nodo.fecha_fin,nodo.costo, nodo.duracion);
-			}
-			ret = true;
-		}
-		ret= ret && guardarComponenteBatch(listas);	
-		return ret;
-	}
-	
-	private static void setDatosCalculados(Object objeto,Timestamp fecha_inicio, Timestamp fecha_fin, Double costo, int duracion){
-		try{
-			if(objeto!=null){
-				Method setFechaInicio =objeto.getClass().getMethod("setFechaInicio",Date.class);
-				Method setFechaFin =  objeto.getClass().getMethod("setFechaFin",Date.class);
-				Method setCosto = objeto.getClass().getMethod("setCosto",BigDecimal.class);
-				Method setDuracion = objeto.getClass().getMethod("setDuracion", int.class);
-				setFechaInicio.invoke(objeto, new Date(fecha_inicio.getTime()));
-				setFechaFin.invoke(objeto, new Date(fecha_fin.getTime()));
-				setCosto.invoke(objeto, new BigDecimal(costo));
-				setDuracion.invoke(objeto, duracion);
-			}
-		}
-		catch(Throwable e){
-			CLogger.write("20", ComponenteDAO.class, e);
-		}
-		
-	}
-	
-	private static boolean guardarComponenteBatch(ArrayList<ArrayList<Nodo>> listas){
-		boolean ret = true;
-		try{
-			Session session = CHibernateSession.getSessionFactory().openSession();
-			session.beginTransaction();
-			int count=0;
-			for(int i=0; i<listas.size()-1; i++){
-				for(int j=0; j<listas.get(i).size();j++){
-					session.saveOrUpdate(listas.get(i).get(j).objeto);
-					if ( ++count % 20 == 0 ) {
-				        session.flush();
-				        session.clear();
-				    }
-				}
-			}
-			session.flush();
-			session.getTransaction().commit();
-			session.close();
-		}
-		catch(Throwable e){
-			ret = false;
-			CLogger.write("21", ComponenteDAO.class, e);
-		}
-		return ret;
-	}*/
+
+        /*public static boolean calcularCostoyFechas(Integer componenteId){
+            boolean ret = false;
+            ArrayList<ArrayList<Nodo>> listas = EstructuraProyectoDAO.getEstructuraObjetoArbolCalculos(componenteId, 2);
+            for(int i=listas.size()-2; i>=0; i--){
+                for(int j=0; j<listas.get(i).size(); j++){
+                    Nodo nodo = listas.get(i).get(j);
+                    Double costo=0.0d;
+                    Timestamp fecha_maxima=new Timestamp(0);
+                    Timestamp fecha_minima=new Timestamp((new DateTime(2999,12,31,0,0,0)).getMillis());
+                    for(Nodo nodo_hijo:nodo.children){
+                        costo += nodo_hijo.costo;
+                        fecha_minima = (nodo_hijo.fecha_inicio.getTime()<fecha_minima.getTime()) ? nodo_hijo.fecha_inicio : fecha_minima;
+                        fecha_maxima = (nodo_hijo.fecha_fin.getTime()>fecha_maxima.getTime()) ? nodo_hijo.fecha_fin : fecha_maxima;
+                    }
+                    nodo.objeto = ObjetoDAO.getObjetoPorIdyTipo(nodo.id, nodo.objeto_tipo);
+                    if(nodo.children!=null && nodo.children.size()>0){
+                        nodo.fecha_inicio = fecha_minima;
+                        nodo.fecha_fin = fecha_maxima;
+                        nodo.costo = costo;
+                    }
+                    else
+                        nodo.costo = calcularCosto((Componente)nodo.objeto).doubleValue();
+                    nodo.duracion = Utils.getWorkingDays(new DateTime(nodo.fecha_inicio), new DateTime(nodo.fecha_fin));
+                    setDatosCalculados(nodo.objeto,nodo.fecha_inicio,nodo.fecha_fin,nodo.costo, nodo.duracion);
+                }
+                ret = true;
+            }
+            ret= ret && guardarComponenteBatch(listas);	
+            return ret;
+        }
+
+        private static void setDatosCalculados(Object objeto,Timestamp fecha_inicio, Timestamp fecha_fin, Double costo, int duracion){
+            try{
+                if(objeto!=null){
+                    Method setFechaInicio =objeto.getClass().getMethod("setFechaInicio",Date.class);
+                    Method setFechaFin =  objeto.getClass().getMethod("setFechaFin",Date.class);
+                    Method setCosto = objeto.getClass().getMethod("setCosto",BigDecimal.class);
+                    Method setDuracion = objeto.getClass().getMethod("setDuracion", int.class);
+                    setFechaInicio.invoke(objeto, new Date(fecha_inicio.getTime()));
+                    setFechaFin.invoke(objeto, new Date(fecha_fin.getTime()));
+                    setCosto.invoke(objeto, new BigDecimal(costo));
+                    setDuracion.invoke(objeto, duracion);
+                }
+            }
+            catch(Throwable e){
+                CLogger.write("20", ComponenteDAO.class, e);
+            }
+
+        }
+
+        private static boolean guardarComponenteBatch(ArrayList<ArrayList<Nodo>> listas){
+            boolean ret = true;
+            try{
+                Session session = CHibernateSession.getSessionFactory().openSession();
+                session.beginTransaction();
+                int count=0;
+                for(int i=0; i<listas.size()-1; i++){
+                    for(int j=0; j<listas.get(i).size();j++){
+                        session.saveOrUpdate(listas.get(i).get(j).objeto);
+                        if ( ++count % 20 == 0 ) {
+                            session.flush();
+                            session.clear();
+                        }
+                    }
+                }
+                session.flush();
+                session.getTransaction().commit();
+                session.close();
+            }
+            catch(Throwable e){
+                ret = false;
+                CLogger.write("21", ComponenteDAO.class, e);
+            }
+            return ret;
+        }*/
 
         public static Componente obtenerComponentePorEntidad(string codigo_presupuestario, int ejercicio, int entidad, int unidadEjectora, int numeroComponente, int prestamoId)
         {
@@ -603,34 +603,35 @@ namespace SiproDAO.Dao
             }
             return ret;
         }
-	
-	/*public static Componente getComponenteHistory(Integer componenteId,String lineaBase){
-		Componente ret = null;
-		List<Componente> listRet = null;
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try{
-			String query = String.join(" ", "select * ", 
-					"from sipro_history.componente c ",
-					"where c.estado = 1 ",
-					"and c.id = ?1 ",
-					lineaBase != null ? "and c.linea_base like '%" + lineaBase + "%'" : "and c.actual = 1",
-							"order by c.id desc");
-			Query<Componente> criteria = session.createNativeQuery(query, Componente.class);
-			criteria.setParameter(1, componenteId);
-			listRet =   criteria.getResultList();
-			ret = !listRet.isEmpty() ? listRet.get(0) : null;
-		}
-		catch(Throwable e){
-			CLogger.write("20", ComponenteDAO.class, e);
-		}
-		finally{
-			session.close();
-		}
-		return ret;
-	}*/
-	
-	public static String getVersiones (int componenteId){
-		String resultado = "";
+
+        /*public static Componente getComponenteHistory(Integer componenteId,String lineaBase){
+            Componente ret = null;
+            List<Componente> listRet = null;
+            Session session = CHibernateSession.getSessionFactory().openSession();
+            try{
+                String query = String.join(" ", "select * ", 
+                        "from sipro_history.componente c ",
+                        "where c.estado = 1 ",
+                        "and c.id = ?1 ",
+                        lineaBase != null ? "and c.linea_base like '%" + lineaBase + "%'" : "and c.actual = 1",
+                                "order by c.id desc");
+                Query<Componente> criteria = session.createNativeQuery(query, Componente.class);
+                criteria.setParameter(1, componenteId);
+                listRet =   criteria.getResultList();
+                ret = !listRet.isEmpty() ? listRet.get(0) : null;
+            }
+            catch(Throwable e){
+                CLogger.write("20", ComponenteDAO.class, e);
+            }
+            finally{
+                session.close();
+            }
+            return ret;
+        }*/
+
+        public static String getVersiones(int componenteId)
+        {
+            String resultado = "";
             try
             {
                 using (DbConnection db = new OracleContext().getConnectionHistory())
@@ -658,33 +659,34 @@ namespace SiproDAO.Dao
                 CLogger.write("21", "ComponenteDAO.class", e);
             }
             return resultado;
-	}
-	
-	public static String getHistoria (int componenteId, int version){
-		String resultado = "";
-		String query = "SELECT c.version, c.nombre, c.descripcion, ct.nombre tipo, ue.nombre unidad_ejecutora, c.costo, ac.nombre tipo_costo, "
-				+ " c.programa, c.subprograma, c.proyecto, c.actividad, c.obra, c.renglon, c.ubicacion_geografica, c.latitud, c.longitud, "
-				+ " c.fecha_inicio, c.fecha_fin, c.duracion, c.fecha_inicio_real, c.fecha_fin_real, "
-				+ " c.fuente_prestamo, c.fuente_donacion, c.fuente_nacional, "
-				+ " c.fecha_creacion, c.usuario_creo, c.fecha_actualizacion, c.usuario_actualizo, "
-				+ " CASE WHEN c.estado = 1 "
-				+ " THEN 'Activo' "
-				+ " ELSE 'Inactivo' "
-				+ " END AS estado "
-				+ " FROM componente c "
-				+ " INNER JOIN sipro.unidad_ejecutora ue ON c.unidad_ejecutoraunidad_ejecutora = ue.unidad_ejecutora and c.entidad = ue.entidadentidad and c.ejercicio = ue.ejercicio  JOIN sipro_history.componente_tipo ct ON c.componente_tipoid = ct.id "
-				+ " LEFT JOIN acumulacion_costo ac ON c.acumulacion_costoid = ac.id "
-                + " WHERE c.id = "+componenteId
-				+ " AND c.version = " +version;
-		
-		String [] campos = {"Version", "Nombre", "DescripciÃ³n", "Tipo", "Unidad Ejecutora", "Monto Planificado", "Tipo AcumulaciÃ³n de Monto Planificado", 
-				"Programa", "Subprograma", "Proyecto", "Actividad", "Obra", "Renglon", "UbicaciÃ³n GeogrÃ¡fica", "Latitud", "Longitud", 
-				"Fecha Inicio", "Fecha Fin", "DuraciÃ³n", "Fecha Inicio Real", "Fecha Fin Real", 
-				"Fuente PrÃ©stamo", "Fuente DonaciÃ³n", "Fuente Nacional", 
-				"Fecha CreaciÃ³n", "Usuario que creo", "Fecha ActualizaciÃ³n", "Usuario que actualizÃ³", 
-				"Estado"};
-		resultado = CHistoria.getHistoria(query, campos);
-		return resultado;
-	}      
+        }
+
+        public static String getHistoria(int componenteId, int version)
+        {
+            String resultado = "";
+            String query = "SELECT c.version, c.nombre, c.descripcion, ct.nombre tipo, ue.nombre unidad_ejecutora, c.costo, ac.nombre tipo_costo, "
+                    + " c.programa, c.subprograma, c.proyecto, c.actividad, c.obra, c.renglon, c.ubicacion_geografica, c.latitud, c.longitud, "
+                    + " c.fecha_inicio, c.fecha_fin, c.duracion, c.fecha_inicio_real, c.fecha_fin_real, "
+                    + " c.fuente_prestamo, c.fuente_donacion, c.fuente_nacional, "
+                    + " c.fecha_creacion, c.usuario_creo, c.fecha_actualizacion, c.usuario_actualizo, "
+                    + " CASE WHEN c.estado = 1 "
+                    + " THEN 'Activo' "
+                    + " ELSE 'Inactivo' "
+                    + " END AS estado "
+                    + " FROM componente c "
+                    + " INNER JOIN sipro.unidad_ejecutora ue ON c.unidad_ejecutoraunidad_ejecutora = ue.unidad_ejecutora and c.entidad = ue.entidadentidad and c.ejercicio = ue.ejercicio  JOIN sipro_history.componente_tipo ct ON c.componente_tipoid = ct.id "
+                    + " LEFT JOIN acumulacion_costo ac ON c.acumulacion_costoid = ac.id "
+                    + " WHERE c.id = " + componenteId
+                    + " AND c.version = " + version;
+
+            String[] campos = {"Version", "Nombre", "DescripciÃ³n", "Tipo", "Unidad Ejecutora", "Monto Planificado", "Tipo AcumulaciÃ³n de Monto Planificado",
+                "Programa", "Subprograma", "Proyecto", "Actividad", "Obra", "Renglon", "UbicaciÃ³n GeogrÃ¡fica", "Latitud", "Longitud",
+                "Fecha Inicio", "Fecha Fin", "DuraciÃ³n", "Fecha Inicio Real", "Fecha Fin Real",
+                "Fuente PrÃ©stamo", "Fuente DonaciÃ³n", "Fuente Nacional",
+                "Fecha CreaciÃ³n", "Usuario que creo", "Fecha ActualizaciÃ³n", "Usuario que actualizÃ³",
+                "Estado"};
+            resultado = CHistoria.getHistoria(query, campos);
+            return resultado;
+        }
     }
 }

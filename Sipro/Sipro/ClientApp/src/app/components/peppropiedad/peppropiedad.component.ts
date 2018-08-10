@@ -119,7 +119,7 @@ export class PeppropiedadComponent implements OnInit {
       this.datoTipoSelected = this.proyectopropiedad.datoTipoid;
     }
     else{
-      alert('warning, Debe seleccionar la Propiedad de ' + this.etiqueta.proyecto+' que desea editar');
+      this.utils.mensaje('warning', 'Debe seleccionar la Propiedad de ' + this.etiqueta.proyecto+' que desea editar');
     }
   }
 
@@ -146,7 +146,7 @@ export class PeppropiedadComponent implements OnInit {
       })
     }
     else{
-      alert('warning, Seleccione una propiedad de ' + this.etiqueta.proyecto);
+      this.utils.mensaje('warning', 'Seleccione una propiedad de ' + this.etiqueta.proyecto);
     }
   }
 
@@ -185,12 +185,12 @@ export class PeppropiedadComponent implements OnInit {
 
           this.esNuevo = false;
           this.obtenerTotalProyectoPropiedades();
-          alert("warning, Guardado exitosamente");
+          this.utils.mensaje('success', 'Propiedad guardada exitosamente');
         }
       })
     }
     else{
-      alert("warning, Debe seleccionar un Tipo de dato");
+      this.utils.mensaje('warning', 'Debe seleccionar un Tipo de dato');
     }
   }
 
