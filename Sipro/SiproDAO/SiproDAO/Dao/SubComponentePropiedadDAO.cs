@@ -18,7 +18,7 @@ namespace SiproDAO.Dao
                 using (DbConnection db = new OracleContext().getConnection())
                 {
                     string query = String.Join(" ", "SELECT p.* FROM subcomponente_propiedad p",
-                        "INNER JOIN sctipo_propiedad ptp ON ptp.subcomponente_propiedad=p.id",
+                        "INNER JOIN sctipo_propiedad ptp ON ptp.subcomponente_propiedadid=p.id",
                         "INNER JOIN subcomponente_tipo pt ON pt.id=ptp.subcomponente_tipoid",
                         "WHERE p.estado=1 AND pt.id=:idSubcomponenteTipo");
                     ret = db.Query<SubcomponentePropiedad>(query, new { idSubcomponenteTipo = idTipoSubComponente }).AsList<SubcomponentePropiedad>();
@@ -162,7 +162,7 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    String query = "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT c FROM subcomponente_propiedad c WHERE c.estado=1";
+                    String query = "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT c.* FROM subcomponente_propiedad c WHERE c.estado=1";
                     String query_a = "";
 
                     if (filtro_busqueda != null && filtro_busqueda.Length > 0)

@@ -86,7 +86,7 @@ namespace SiproDAO.Dao
                         "producto_tipoid=:productoTipoid, estado=:estado, ueunidad_ejecutora=:ueunidadEjecutora, snip=:snip, programa=:programa, subprograma=:subprograma, " +
                         "proyecto=:proyecto, actividad=:actividad, obra=:obra, latitud=:latitud, longitud=:longitud, peso=:peso, costo=:costo, acumulacion_costoid=:acumulacionCostoid, " +
                         "renglon=:renglon, ubicacion_geografica=:ubicacionGeografica, fecha_inicio=:fechaInicio, fecha_fin=:fechaFin, duracion=:duracion, duracion_dimension=:duracionDimension, " +
-                        "orden = ?, treePath = ?, nivel = ?, ejercicio = ?, entidad = ?, fecha_inicio_real = ?, fecha_fin_real = ?, inversion_nueva = ? WHERE id = ?", producto);
+                        "orden=:orden, treePath=:treePath, nivel=:nivel, ejercicio=:ejercicio, entidad=:entidad, fecha_inicio_real=:fechaInicioReal, fecha_fin_real=:fechaFinReal, inversion_nueva=:inversionNueva WHERE id=:id", producto);
 
                     if (guardado > 0)
                     {
@@ -102,7 +102,7 @@ namespace SiproDAO.Dao
 
                         if (existe > 0)
                         {
-                            guardado = db.Execute("UPDATE PRODUCTO_USUARIO SET usuario_creo=:usuario_creo, usuario_actualizo=:usuarioActualizo, fecha_creacion=:fechaCreacion, " +
+                            guardado = db.Execute("UPDATE PRODUCTO_USUARIO SET usuario_creo=:usuarioCreo, usuario_actualizo=:usuarioActualizo, fecha_creacion=:fechaCreacion, " +
                                 "fecha_actualizacion=:fechaActualizacion WHERE productoid=:productoid AND usuario=:usuario", pu);
                         }
                         else
@@ -123,7 +123,7 @@ namespace SiproDAO.Dao
 
                             if (existe > 0)
                             {
-                                guardado = db.Execute("UPDATE PRODUCTO_USUARIO SET usuario_creo=:usuario_creo, usuario_actualizo=:usuarioActualizo, fecha_creacion=:fechaCreacion, " +
+                                guardado = db.Execute("UPDATE PRODUCTO_USUARIO SET usuario_creo=:usuarioCreo, usuario_actualizo=:usuarioActualizo, fecha_creacion=:fechaCreacion, " +
                                     "fecha_actualizacion=:fechaActualizacion WHERE productoid=:productoid AND usuario=:usuario", pu_admin);
                             }
                             else

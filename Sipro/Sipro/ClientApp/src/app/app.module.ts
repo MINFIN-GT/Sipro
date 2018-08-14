@@ -38,6 +38,8 @@ import { NguiMapModule } from '@ngui/map';
 import { DialogMapa } from '../assets/modals/cargamapa/modal-carga-mapa';
 import { DialogComponentePropiedad } from '../assets/modals/componentepropiedad/modal-componente-propiedad';
 import { DialogComponenteTipo } from '../assets/modals/componentetipo/componente-tipo';
+import { DialogSubComponentePropiedad } from '../assets/modals/subcomponentepropiedad/modal-subcomponente-propiedad';
+import { DialogSubComponenteTipo } from '../assets/modals/subcomponentetipo/modal-subcomponente-tipo';
 
 import { AppComponent } from './app.component';
 import { MainComponent } from './components/main/main.component';
@@ -55,6 +57,8 @@ import { ComponenteComponent } from './components/componente/componente.componen
 import { ComponentepropiedadComponent } from './components/componentepropiedad/componentepropiedad.component';
 import { ComponentetipoComponent } from './components/componentetipo/componentetipo.component';
 import { SubcomponenteComponent } from './components/subcomponente/subcomponente.component';
+import { SubcomponentepropiedadComponent } from './components/subcomponentepropiedad/subcomponentepropiedad.component';
+import { SubcomponentetipoComponent } from './components/subcomponentetipo/subcomponentetipo.component';
 
 const routes: Routes = [{
           path: '',    // Va a Main
@@ -92,6 +96,12 @@ const routes: Routes = [{
           path: 'main/subcomponente/:id',
           component: SubcomponenteComponent
         },{
+          path: 'main/subcomponentepropiedad',
+          component: SubcomponentepropiedadComponent
+        },{
+          path: 'main/subcomponentetipo',
+          component: SubcomponentetipoComponent
+        },{
           path: 'accesodenegado',
           component: AccesodenegadoComponent
         },{
@@ -111,7 +121,8 @@ const routes: Routes = [{
       FormatoMillones, FormatoMillonesDolares, FormatoMillonesSinTipo, PepComponent, DialogProyectoTipo, PrestamotipoComponent, 
       PeppropiedadComponent, PeptipoComponent, DialogProyectoPropiedad, DialogDelete, DialogUnidadEjecutora, DialogColaborador,
       DialogImpacto, DialogEntidad, ComponenteComponent, DialogCargarProject, DialogMapa, ComponentepropiedadComponent, ComponentetipoComponent,
-      DialogComponentePropiedad, DialogComponenteTipo, SubcomponenteComponent
+      DialogComponentePropiedad, DialogComponenteTipo, SubcomponenteComponent, SubcomponentepropiedadComponent, SubcomponentetipoComponent,
+      DialogSubComponentePropiedad, DialogSubComponenteTipo
   ],
   imports: [
       BrowserModule,
@@ -135,7 +146,8 @@ const routes: Routes = [{
   bootstrap: [AppComponent],
   entryComponents: [DialogCodigoPresupuestario, DialogMoneda, DialogTipoPrestamo, ButtonDeleteComponent, ButtonDownloadComponent, 
     DialogDownloadDocument, DialogProyectoTipo, DialogProyectoPropiedad, DialogDelete, DialogUnidadEjecutora, DialogColaborador,
-    DialogImpacto, DialogEntidad, DialogCargarProject, DialogMapa, DialogComponentePropiedad, DialogComponenteTipo]
+    DialogImpacto, DialogEntidad, DialogCargarProject, DialogMapa, DialogComponentePropiedad, DialogComponenteTipo, DialogSubComponentePropiedad,
+    DialogSubComponenteTipo]
 })
 export class AppModule { 
 

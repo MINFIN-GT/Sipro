@@ -106,32 +106,47 @@ namespace SComponenteTipo.Controllers
 
                     if (guardado)
                     {
-                        string propiedades = value.propiedades != null ? (string)value.propiedades : default(string);
-                        String[] idsPropiedades = propiedades != null && propiedades.Length > 0 ? propiedades.Split(",") : null;
+                        List<CtipoPropiedad> propiedades_temp = CtipoPropiedadDAO.getCtipoPropiedades(componenteTipo.id);
 
-                        if (idsPropiedades != null && idsPropiedades.Length > 0)
+                        if (propiedades_temp != null)
                         {
-                            foreach (String idPropiedad in idsPropiedades)
+                            foreach (CtipoPropiedad ctipoPropiedad in propiedades_temp)
                             {
-                                CtipoPropiedad ctipoPropiedad = new CtipoPropiedad();
-                                ctipoPropiedad.componenteTipoid = componenteTipo.id;
-                                ctipoPropiedad.componentePropiedadid = Convert.ToInt32(idPropiedad);
-                                ctipoPropiedad.fechaCreacion = DateTime.Now;
-                                ctipoPropiedad.usuarioCreo = User.Identity.Name;
-
-                                guardado = guardado & CtipoPropiedadDAO.guardarCtipoPropiedad(ctipoPropiedad);
+                                guardado = guardado & CtipoPropiedadDAO.eliminarTotalCtipoPropiedad(ctipoPropiedad);
                             }
                         }
 
-                        return Ok(new
+                        if (guardado)
                         {
-                            success = guardado,
-                            id = componenteTipo.id,
-                            usuarioCreo = componenteTipo.usuarioCreo,
-                            fechaCreacion = componenteTipo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
-                            usuarioActualizo = componenteTipo.usuarioActualizo,
-                            fechaActualizacion = componenteTipo.fechaActualizacion != null ? componenteTipo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
-                        });
+                            string propiedades = value.propiedades != null ? (string)value.propiedades : default(string);
+                            String[] idsPropiedades = propiedades != null && propiedades.Length > 0 ? propiedades.Split(",") : null;
+
+                            if (idsPropiedades != null && idsPropiedades.Length > 0)
+                            {
+                                foreach (String idPropiedad in idsPropiedades)
+                                {
+                                    CtipoPropiedad ctipoPropiedad = new CtipoPropiedad();
+                                    ctipoPropiedad.componenteTipoid = componenteTipo.id;
+                                    ctipoPropiedad.componentePropiedadid = Convert.ToInt32(idPropiedad);
+                                    ctipoPropiedad.fechaCreacion = DateTime.Now;
+                                    ctipoPropiedad.usuarioCreo = User.Identity.Name;
+
+                                    guardado = guardado & CtipoPropiedadDAO.guardarCtipoPropiedad(ctipoPropiedad);
+                                }
+                            }
+
+                            return Ok(new
+                            {
+                                success = guardado,
+                                id = componenteTipo.id,
+                                usuarioCreo = componenteTipo.usuarioCreo,
+                                fechaCreacion = componenteTipo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
+                                usuarioActualizo = componenteTipo.usuarioActualizo,
+                                fechaActualizacion = componenteTipo.fechaActualizacion != null ? componenteTipo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
+                            });
+                        }
+                        else
+                            return Ok(new { success = false });
                     }
                     else
                         return Ok(new { success = false });

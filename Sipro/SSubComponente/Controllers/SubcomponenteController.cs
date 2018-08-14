@@ -278,7 +278,7 @@ namespace SSubComponente.Controllers
                     subComponente.costo = value.costo;
                     subComponente.acumulacionCostoid = value.acumulacionCostoid;
                     subComponente.fechaInicio = value.fechaInicio;
-                    subComponente.fechaFin = value.fechaFin;
+                    subComponente.fechaFin = Convert.ToDateTime(value.fechaFin);
                     subComponente.duracion = value.duracion;
                     subComponente.duracionDimension = value.duracionDimension;
                     subComponente.inversionNueva = value.inversionNueva;

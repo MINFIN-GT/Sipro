@@ -740,10 +740,10 @@ namespace SiproDAO.Dao
             try
             {
                 Type objetoType = objeto.GetType();
-                var getId = objetoType.GetMethod("getId", new Type[] { typeof(object) });
-                var getCosto = objetoType.GetMethod("getCosto", new Type[] { typeof(object) });
+                var getId = objetoType.GetProperty("id");
+                var getCosto = objetoType.GetProperty("costo");
 
-                PlanAdquisicion pa = PlanAdquisicionDAO.getPlanAdquisicionByObjeto(objetoTipo, (int)getId.Invoke(objeto, null));
+                PlanAdquisicion pa = PlanAdquisicionDAO.getPlanAdquisicionByObjeto(objetoTipo, (int)getId.GetValue(objeto));
                 if (pa != null)
                 {
                     List<PlanAdquisicionPago> lstpagos = PlanAdquisicionPagoDAO.getPagosByPlan(Convert.ToInt32(pa.id));
@@ -759,7 +759,7 @@ namespace SiproDAO.Dao
                         costo = pa.total ?? default(decimal);
                 }
                 else
-                    costo = (decimal)getCosto.Invoke(objeto, null);
+                    costo = (decimal)getCosto.GetValue(objeto);
             }
             catch (Exception e)
             {
@@ -811,44 +811,45 @@ namespace SiproDAO.Dao
                     foreach (Object objeto in objetos)
                     {
                         Type objetoType = objeto.GetType();
-                        var setEstado = objetoType.GetMethod("setEstado", new Type[] { typeof(object) });
-                        var setUsuarioActualiza = objetoType.GetMethod("setUsuarioActualizo", new Type[] { typeof(object) });
-                        var setFechaActualizacion = objetoType.GetMethod("setFechaActualizacion", new Type[] { typeof(object) });
-                        setEstado.Invoke(objeto, new object[] { 0 });
-                        setUsuarioActualiza.Invoke(objeto, new object[] { usuarioActualiza });
-                        setFechaActualizacion.Invoke(objeto, new object[] { DateTime.Now });
+                        var setEstado = objetoType.GetProperty("estado");
+                        var setUsuarioActualiza = objetoType.GetProperty("usuarioActualizo");
+                        var setFechaActualizacion = objetoType.GetProperty("fechaActualizacion");
+                        setEstado.SetValue(objeto, 0);
+                        setUsuarioActualiza.SetValue(objeto, usuarioActualiza);
+                        setFechaActualizacion.SetValue(objeto, DateTime.Now);
                     }
 
-                    for (int i = 0; i < objetos.Count - 1; i++)
+                    bool guardado = true;
+                    for (int i = 0; i < objetos.Count; i++)
                     {
                         Type obj = objetos[i].GetType();
                         if (obj == typeof(Proyecto))
                         {
-                            ProyectoDAO.guardarProyecto((Proyecto)objetos[i], false);
+                            guardado = guardado & ProyectoDAO.guardarProyecto((Proyecto)objetos[i], false);
                         }
                         else if (obj == typeof(Componente))
                         {
-                            ComponenteDAO.guardarComponente((Componente)objetos[i], false);
+                            guardado = guardado & ComponenteDAO.guardarComponente((Componente)objetos[i], false);
                         }
                         else if (obj == typeof(Subcomponente))
                         {
-                            SubComponenteDAO.guardarSubComponente((Subcomponente)objetos[i], false);
+                            guardado = guardado & SubComponenteDAO.guardarSubComponente((Subcomponente)objetos[i], false);
                         }
                         else if (obj == typeof(Producto))
                         {
-                            ProductoDAO.guardarProducto((Producto)objetos[i], false);
+                            guardado = guardado & ProductoDAO.guardarProducto((Producto)objetos[i], false);
                         }
                         else if (obj == typeof(Subproducto))
                         {
-                            SubproductoDAO.guardarSubproducto((Subproducto)objetos[i], false);
+                            guardado = guardado & SubproductoDAO.guardarSubproducto((Subproducto)objetos[i], false);
                         }
                         else if (obj == typeof(Actividad))
                         {
-                            ActividadDAO.guardarActividad((Actividad)objetos[i], false);
+                            guardado = guardado & ActividadDAO.guardarActividad((Actividad)objetos[i], false);
                         }
                     }
 
-                    ret = true;
+                    ret = guardado;
                 }
             }
             catch (Exception e)

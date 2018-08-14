@@ -1,0 +1,133 @@
+<div fxLayout="column" fxLayoutAlign="center" fxFlexFill fxFlex>
+  <div class="middle">
+    <div fxLayout="column">
+      <mat-card class="titulo">
+        Tipo de subcomponente
+      </mat-card>
+    </div>
+    <br>
+    <div fxLayout="column" fxLayoutAlign="center" fxFlexFill>
+      <div [hidden]="esColapsado">
+        <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2px">
+          <button mat-raised-button class="primary-btn" (click)="nuevo()" matTooltip="Nuevo" matTooltipPosition="above"><mat-icon>add</mat-icon>Nuevo</button>
+          <button mat-raised-button class="primary-btn" (click)="editar()" matTooltip="Editar" matTooltipPosition="above"><mat-icon>mode_edit</mat-icon>Editar</button>
+          <button mat-raised-button class="danger-btn" (click)="borrar()" matTooltip="Borrar" matTooltipPosition="above"><mat-icon>delete</mat-icon>Borrar</button>
+        </div>
+        <br>
+        <div fxLayout="row" fxLayoutAlign="center">
+            <mat-form-field fxFlex="50%">
+                <input matInput #search class="search" type="text" placeholder="Busqueda..." (keydown.enter)="filtrar(search.value)">
+                <mat-icon class="search-info" (click)="filtrar(search.value)" matSuffix>search</mat-icon>
+            </mat-form-field>              
+        </div> 
+        <div fxLayout="column" class="grid-principal">
+            <div style="position: relative; top: 0; bottom: 0; width:100%; height: 100%;" [hidden]="!mostrarcargando" fxFlex fxFlexFill>
+                <mat-progress-spinner
+                class="progress-spinner"
+                [color]="color"
+                [mode]="mode"
+                [value]="value"
+                [diameter]="diameter" 
+                [strokeWidth]="strokewidth"
+                >
+                </mat-progress-spinner>
+                <div style="text-align: center; padding-top: 20px;">
+                    <b>Cargando, por favor espere...</b>
+                </div>
+            </div>
+            <div style="position: relative; top: 0; bottom: 0; width:100%; height: 100%;" [hidden]="mostrarcargando">
+              <ng2-smart-table [settings]="settings" [source]="source" (dblClickRow)="onDblClickRow($event)" (userRowSelect)="onSelectRow($event)"></ng2-smart-table>
+          </div>              
+        </div>
+        <br>
+        <div fxLayout="row" fxLayoutAlign="end" style="font-weight: bold;">
+          Total de tipos de subcomponente: {{totalSubComponentetipos}}
+        </div>
+        <div fxLayout="column" fxLayoutAlign="center">
+          <mat-paginator [length]="totalSubComponentetipos" [hidePageSize]="true" [pageSize]="elementosPorPagina" 
+          [showFirstLastButtons]="true" (page)="pageEvent = handlePage($event)">
+          </mat-paginator>
+        </div>
+      </div>
+      <div [hidden]="!esColapsado">
+        <form #myForm="ngForm">
+          <div fxLayout="row" fxLayoutAlign="start" class="nuevo-edicion">
+            <label>{{esNuevo == true ? 'Nuevo tipo de componente' : 'Edición de tipo de componente' }}</label>
+          </div>
+          <br>
+          <div fxLayout="row">
+            <div fxFlex fxLayoutAlign="end" fxLayoutGap="2px">
+                <button mat-raised-button id="applying-disabled" class="applying-btn" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
+                <button mat-raised-button class="primary-btn" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
+            </div>
+          </div>
+          <br>
+          <div fxLayout="row" fxLayoutAlign="start">
+              <label class="label-id">ID {{subcomponentetipo.id}}</label>
+          </div>
+          <br>
+          <div fxLayout="column">
+            <mat-form-field>
+              <input name="nombre" [(ngModel)]="subcomponentetipo.nombre" matInput placeholder="Nombre" [required]="true">
+            </mat-form-field>
+          </div>
+          <div fxLayout="column">
+            <mat-form-field>
+              <textarea name="descripcion" matInput rows="4" [(ngModel)]="subcomponentetipo.descripcion" placeholder="Descripción"></textarea>
+            </mat-form-field>
+          </div>
+          <div fxLayout="column">
+            <h5 fxLayoutAlign="center">Propiedades</h5>
+            <div style="text-align: right;">
+              <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="buscarPropiedades()" matTooltip="Asignar nueva propiedad" matTooltipPosition="above"><mat-icon>add</mat-icon></button>
+            </div>
+            <br>
+            <div>
+              <ng2-smart-table [settings]="settingsPropiedades" [source]="sourcePropiedades"></ng2-smart-table>              
+            </div>
+          </div>
+          <br>
+          <div fxLayout="column">
+              <div class="panel panel-default" style="height: 180px;">
+                  <div class="panel-heading label-form" fxLayoutAlign="center">Datos de auditoría</div>
+                  <div class="panel-body">
+                    <div>
+                      <div fxLayout="row" fxLayoutGap="20px">
+                        <div fxFlex="50%">
+                          <label fxLayoutAlign="end" class="label-form" for="usuarioCreo">Usuario que creo</label>
+                          <p fxLayoutAlign="end">{{ subcomponentetipo.usuarioCreo }}</p>
+                        </div>
+
+                        <div fxFlex="50%">
+                            <label fxLayoutAlign="start" class="label-form"  for="fechaCreacion">Fecha de creación</label>
+                            <p fxLayoutAlign="start">{{ subcomponentetipo.fechaCreacion }}</p>
+                        </div>
+                      </div>
+                      <div fxLayout="row" fxLayoutGap="20px">
+                          <div fxFlex="50%">
+                            <label fxLayoutAlign="end" class="label-form" for="usuarioActualizo">Usuario que actualizo</label>
+                            <p fxLayoutAlign="end">{{ subcomponentetipo.usuarioActualizo }}</p>
+                          </div>
+
+                          <div fxFlex="50%">
+                            <label fxLayoutAlign="start" for="fechaActualizacion"  class="label-form" >Fecha de actualizacion</label>
+                            <p fxLayoutAlign="start">{{ subcomponentetipo.fechaActualizacion }}</p>
+                          </div>
+                      </div>
+                    </div>                                  
+                  </div>
+              </div>
+          </div>
+          <br>
+          <div fxLayout="row" fxLayoutAlign="center" class="label-form">Los campos marcados con * son obligatorios y las fechas deben tener formato de dd/mm/aaaa</div>
+          <br/>
+          <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2px">
+            <button mat-raised-button id="applying-disabled" class="applying-btn" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
+            <button mat-raised-button class="primary-btn" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
+          </div>
+          <br>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

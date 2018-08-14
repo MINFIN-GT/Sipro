@@ -17,7 +17,7 @@
       <mat-menu #mCatalogos="matMenu" [overlapTrigger]="false">
         <button mat-menu-item *ngIf="hasClaim('Actividad Tipos - Visualizar')" [routerLink]="main/actividadtipo"> Tipo de Actividad</button>
         <button mat-menu-item *ngIf="hasClaim('Componente Tipos - Visualizar')" [routerLink]="['main/componentetipo']"> Tipo de Componente</button>
-        <button mat-menu-item *ngIf="hasClaim('Componente Tipos - Visualizar')" [routerLink]="main/subcomponentetipo"> Tipo de Subcomponente</button>
+        <button mat-menu-item *ngIf="hasClaim('Componente Tipos - Visualizar')" [routerLink]="['main/subcomponentetipo']"> Tipo de Subcomponente</button>
         <button mat-menu-item *ngIf="hasClaim('Hito Tipos - Visualizar')" [routerLink]="main/hitotipo"> Tipo de Hito</button>
         <button mat-menu-item *ngIf="hasClaim('Meta Tipos - Visualizar')" [routerLink]="main/metatipo"> Tipo de Meta</button>
         <button mat-menu-item *ngIf="hasClaim('Producto Tipos - Visualizar')" [routerLink]="main/productotipo"> Tipo de Producto</button>
@@ -34,7 +34,7 @@
         <button mat-menu-item *ngIf="hasClaim('Programa Propiedades - Visualizar')" [routerLink]="main/prestamopropiedad"> Préstamo</button>
         <button mat-menu-item *ngIf="hasClaim('Actividad Propiedades - Visualizar')" [routerLink]="main/actividadpropiedad"> Actividad</button>
         <button mat-menu-item *ngIf="hasClaim('Componente Propiedades - Visualizar')" [routerLink]="['main/componentepropiedad']"> Componente</button>
-        <button mat-menu-item *ngIf="hasClaim('Componente Propiedades - Visualizar')" [routerLink]="main/subcomponentepropiedad"> Subcomponente</button>
+        <button mat-menu-item *ngIf="hasClaim('Componente Propiedades - Visualizar')" [routerLink]="['main/subcomponentepropiedad']"> Subcomponente</button>
         <button mat-menu-item *ngIf="hasClaim('Producto Propiedades - Visualizar')" [routerLink]="main/productopropiedad"> Producto</button>
         <button mat-menu-item *ngIf="hasClaim('Subproducto Propiedades - Visualizar')" [routerLink]="main/subproductopropiedad"> Subproducto</button>
         <button mat-menu-item *ngIf="hasClaim('Préstamo o Proyecto Propiedades - Visualizar')" [routerLink]="['main/peppropiedad']"> {{etiqueta.proyecto}}</button>

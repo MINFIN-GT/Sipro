@@ -5,15 +5,15 @@ import { HttpClient } from '@angular/common/http';
 import { LocalDataSource } from 'ng2-smart-table';
 import * as moment from 'moment';
 import { MatDialog } from '@angular/material';
-import { ComponentePropiedad } from './model/ComponentePropiedad';
+import { SubcomponentePropiedad } from './model/SubcomponentePropiedad';
 import { DialogDelete, DialogOverviewDelete } from '../../../assets/modals/deleteconfirmation/confirmation-delete';
 
 @Component({
-  selector: 'app-componentepropiedad',
-  templateUrl: './componentepropiedad.component.html',
-  styleUrls: ['./componentepropiedad.component.css']
+  selector: 'app-subcomponentepropiedad',
+  templateUrl: './subcomponentepropiedad.component.html',
+  styleUrls: ['./subcomponentepropiedad.component.css']
 })
-export class ComponentepropiedadComponent implements OnInit {
+export class SubcomponentepropiedadComponent implements OnInit {
   mostrarcargando : boolean;
   color = 'primary';
   mode = 'indeterminate';
@@ -26,8 +26,8 @@ export class ComponentepropiedadComponent implements OnInit {
   esColapsado : boolean;
   elementosPorPagina : number;
   numeroMaximoPaginas : number;
-  totalComponentePropiedades : number;
-  componentepropiedad : ComponentePropiedad;
+  totalSubComponentePropiedades : number;
+  subcomponentepropiedad : SubcomponentePropiedad;
   busquedaGlobal: string;
   paginaActual : number;
   source: LocalDataSource;
@@ -43,29 +43,29 @@ export class ComponentepropiedadComponent implements OnInit {
     this.utils.setIsMasterPage(this.isMasterPage);
     this.elementosPorPagina = utils._elementosPorPagina;
     this.numeroMaximoPaginas = utils._numeroMaximoPaginas;
-    this.totalComponentePropiedades = 0;
-    this.componentepropiedad = new ComponentePropiedad();
+    this.totalSubComponentePropiedades = 0;
+    this.subcomponentepropiedad = new SubcomponentePropiedad();
     this.source = new LocalDataSource();
     this.modalDelete = new DialogOverviewDelete(dialog);
   }
 
   ngOnInit() {
     this.mostrarcargando = true;
-    this.obtenerTotalComponentePropiedades();
+    this.obtenerTotalSubComponentePropiedades();
     this.obtenerDatosTipo();
   }
 
-  obtenerTotalComponentePropiedades(){
+  obtenerTotalSubComponentePropiedades(){
     var data = {  
       filtro_busqueda: this.busquedaGlobal,
       t:moment().unix()
     };
 
-    this.http.post('http://localhost:60013/api/ComponentePropiedad/NumeroComponentePropiedades', data, { withCredentials : true }).subscribe(response =>{
+    this.http.post('http://localhost:60081/api/SubcomponentePropiedad/NumeroSubComponentePropiedades', data, { withCredentials : true }).subscribe(response =>{
       if(response['success'] == true){
-        this.totalComponentePropiedades = response['totalcomponentepropiedades'];
+        this.totalSubComponentePropiedades = response['totalsubcomponentepropiedades'];
         this.paginaActual = 1;
-        if(this.totalComponentePropiedades > 0)
+        if(this.totalSubComponentePropiedades > 0)
           this.cargarTabla(this.paginaActual);
         else{
           this.source = new LocalDataSource();
@@ -82,15 +82,15 @@ export class ComponentepropiedadComponent implements OnInit {
     this.mostrarcargando = true;
     var filtro = {
       pagina: pagina,
-      numerocomponentepropiedades: this.elementosPorPagina,
+      numeroSubComponentePropiedad: this.elementosPorPagina,
       filtro_busqueda: this.busquedaGlobal,
       columna_ordenada: null,
       t:moment().unix()
     };
 
-    this.http.post('http://localhost:60013/api/ComponentePropiedad/ComponentePropiedadPagina', filtro, { withCredentials : true }).subscribe(response =>{
+    this.http.post('http://localhost:60081/api/SubcomponentePropiedad/SubComponentePropiedadPagina', filtro, { withCredentials : true }).subscribe(response =>{
       if(response['success'] == true){
-        var data = response['componentepropiedades'];
+        var data = response['subcomponentepropiedades'];
         this.source = new LocalDataSource(data);
         this.source.setSort([
           { field: 'id', direction: 'asc' }  // primary sort
@@ -111,7 +111,7 @@ export class ComponentepropiedadComponent implements OnInit {
   }
 
   cambioOpcionDatoTipo(opcion){
-    this.componentepropiedad.datoTipoid = opcion;
+    this.subcomponentepropiedad.datoTipoid = opcion;
   }
 
   handlePage(event){
@@ -121,42 +121,40 @@ export class ComponentepropiedadComponent implements OnInit {
   nuevo(){
     this.esColapsado = true;
     this.esNuevo = true;
-    this.componentepropiedad = new ComponentePropiedad();
+    this.subcomponentepropiedad = new SubcomponentePropiedad();
     this.datoTipoSelected = 0;
   }
 
   editar(){
-    if(this.componentepropiedad.id > 0){
+    if(this.subcomponentepropiedad.id > 0){
       this.esColapsado = true;
       this.esNuevo = false;
-      this.datoTipoSelected = this.componentepropiedad.datoTipoid;
+      this.datoTipoSelected = this.subcomponentepropiedad.datoTipoid;
     }
     else{
-      this.utils.mensaje('warning', 'Debe seleccionar la Propiedad de componente que desea editar');
+      this.utils.mensaje('warning', 'Debe seleccionar la Propiedad de subcomponente que desea editar');
     }
   }
 
   borrar(){
-    if(this.componentepropiedad.id > 0){
+    if(this.subcomponentepropiedad.id > 0){
       this.modalDelete.dialog.open(DialogDelete, {
         width: '600px',
         height: '200px',
         data: { 
-          id: this.componentepropiedad.id,
+          id: this.subcomponentepropiedad.id,
           titulo: 'Confirmación de Borrado', 
-          textoCuerpo: '¿Desea borrar la propiedad de componente?',
+          textoCuerpo: '¿Desea borrar la propiedad de subcomponente?',
           textoBotonOk: 'Borrar',
           textoBotonCancelar: 'Cancelar'
         }
       }).afterClosed().subscribe(result => {
-        if(result != null){
-          if(result){
-            this.http.delete('http://localhost:60013/api/ComponentePropiedad/ComponentePropiedad/'+ this.componentepropiedad.id, { withCredentials : true }).subscribe(response =>{
-              if(response['success'] == true){
-                this.obtenerTotalComponentePropiedades();
-              }
-            })
-          } 
+        if(result != null && result){
+          this.http.delete('http://localhost:60081/api/SubcomponentePropiedad/SubComponentePropiedad/'+ this.subcomponentepropiedad.id, { withCredentials : true }).subscribe(response =>{
+            if(response['success'] == true){
+              this.obtenerTotalSubComponentePropiedades();
+            }
+          })  
         }
       })
     }
@@ -167,39 +165,39 @@ export class ComponentepropiedadComponent implements OnInit {
 
   filtrar(campo){
     this.busquedaGlobal = campo;
-    this.obtenerTotalComponentePropiedades();
+    this.obtenerTotalSubComponentePropiedades();
   }
 
   onDblClickRow(event){
-    this.componentepropiedad = event.data;
+    this.subcomponentepropiedad = event.data;
     this.editar();
   }
 
   onSelectRow(event){
-    this.componentepropiedad = event.data;
+    this.subcomponentepropiedad = event.data;
   }
 
   guardar(){
-    if(this.componentepropiedad != null && Number(this.datoTipoSelected) != 0){
+    if(this.subcomponentepropiedad != null && Number(this.datoTipoSelected) != 0){
       var objetoHttp;
 
-      if(this.componentepropiedad.id > 0){
-        objetoHttp = this.http.put("http://localhost:60013/api/ComponentePropiedad/ComponentePropiedad/" + this.componentepropiedad.id, this.componentepropiedad, { withCredentials: true });
+      if(this.subcomponentepropiedad.id > 0){
+        objetoHttp = this.http.put("http://localhost:60081/api/SubcomponentePropiedad/SubComponentePropiedad/" + this.subcomponentepropiedad.id, this.subcomponentepropiedad, { withCredentials: true });
       }
       else{
-        objetoHttp = this.http.post("http://localhost:60013/api/ComponentePropiedad/ComponentePropiedad", this.componentepropiedad, { withCredentials: true });
+        objetoHttp = this.http.post("http://localhost:60081/api/SubcomponentePropiedad/SubComponentePropiedad", this.subcomponentepropiedad, { withCredentials: true });
       }
 
       objetoHttp.subscribe(response =>{
         if(response['success'] == true){
-          this.componentepropiedad.usuarioCreo = response['usuarioCreo'];
-          this.componentepropiedad.fechaCreacion = response['fechaCreacion'];
-          this.componentepropiedad.fechaActualizacion = response['fechaActualizacion'];
-          this.componentepropiedad.usuarioActualizo = response['usuarioActualizo'];
-          this.componentepropiedad.id = response['id'];
+          this.subcomponentepropiedad.usuarioCreo = response['usuarioCreo'];
+          this.subcomponentepropiedad.fechaCreacion = response['fechaCreacion'];
+          this.subcomponentepropiedad.fechaActualizacion = response['fechaActualizacion'];
+          this.subcomponentepropiedad.usuarioActualizo = response['usuarioActualizo'];
+          this.subcomponentepropiedad.id = response['id'];
 
           this.esNuevo = false;
-          this.obtenerTotalComponentePropiedades();
+          this.obtenerTotalSubComponentePropiedades();
           this.utils.mensaje('success', 'Propiedad guardada exitosamente');
         }
       })
@@ -211,7 +209,7 @@ export class ComponentepropiedadComponent implements OnInit {
 
   IrATabla(){
     this.esColapsado = false;
-    this.componentepropiedad = new ComponentePropiedad();
+    this.subcomponentepropiedad = new SubcomponentePropiedad();
   }
 
   settings = {

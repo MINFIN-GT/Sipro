@@ -190,7 +190,7 @@
                                                 <div fxLayout="row" fxLayoutGap="15px">
                                                     <mat-form-field fxFlex="50%">
                                                         <input min="1" matInput type="number" placeholder="Duración" [required]="true"
-                                                            name="duracion" [(ngModel)]="componente.duracion" 
+                                                            name="duracion" style="text-align: right;" [(ngModel)]="componente.duracion" 
                                                             (ngModelChange)="componente.fechaInicio != null && dimensionSelected != 0 ? cambioDuracion(dimensiones[dimensionSelected-1]) : ''" 
                                                             [readonly]="componente.tieneHijos != true ? (dimensionSelected != 0 ? false : true) : componente.tieneHijos">
                                                     </mat-form-field>
@@ -236,10 +236,10 @@
                                                             <input name="{{'campo_'+campo.id}}" [(ngModel)]="campo.valor" matInput placeholder="{{campo.label}}" id="{{'campo_'+ campo.id}}">
                                                         </mat-form-field>
                                                         <mat-form-field *ngSwitchCase="'entero'">
-                                                            <input type="number" name="{{'campo_'+campo.id}}" [(ngModel)]="campo.valor" matInput placeholder="{{campo.label}}" id="{{'campo_'+ campo.id}}">
+                                                            <input style="text-align: right" type="number" name="{{'campo_'+campo.id}}" [(ngModel)]="campo.valor" matInput placeholder="{{campo.label}}" id="{{'campo_'+ campo.id}}">
                                                         </mat-form-field>
                                                         <mat-form-field *ngSwitchCase="'decimal'">
-                                                            <input type="number" name="{{'campo_'+campo.id}}" [(ngModel)]="campo.valor" matInput placeholder="{{campo.label}}" id="{{'campo_'+ campo.id}}">
+                                                            <input style="text-align: right" type="number" name="{{'campo_'+campo.id}}" [(ngModel)]="campo.valor" matInput placeholder="{{campo.label}}" id="{{'campo_'+ campo.id}}">
                                                         </mat-form-field>
                                                         <div *ngSwitchCase="'booleano'">
                                                             <mat-checkbox color="primary" name="{{'campo_'+campo.id}}" [(ngModel)]="campo.valor" id="{{'campo_'+ campo.id}}">

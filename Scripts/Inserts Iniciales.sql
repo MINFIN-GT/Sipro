@@ -935,6 +935,14 @@ INSERT INTO PERMISO VALUES (48470,'Subcomponentes - Visualizar','Permite visuali
 INSERT INTO PERMISO VALUES (48480,'Subcomponentes - Editar','Permite editar subcomponentes','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO PERMISO VALUES (48490,'Subcomponentes - Eliminar','Permite eliminar subcomponentes','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO PERMISO VALUES (48500,'Subcomponentes - Crear','Permite crear subcomponentes','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO PERMISO VALUES (48510,'Subcomponentes Propiedades - Visualizar','Permite visualizar propiedades de subcomponentes','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO PERMISO VALUES (48520,'Subcomponentes Propiedades - Editar','Permite editar propiedades de subcomponentes','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO PERMISO VALUES (48530,'Subcomponentes Propiedades - Eliminar','Permite eliminar propiedades de subcomponentes','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO PERMISO VALUES (48540,'Subcomponentes Propiedades - Crear','Permite crear propiedades de subcomponentes','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO PERMISO VALUES (48550,'Subcomponentes Tipos - Visualizar','Permite visualizar tipos de subcomponentes','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO PERMISO VALUES (48560,'Subcomponentes Tipos - Editar','Permite editar tipos de subcomponentes','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO PERMISO VALUES (48570,'Subcomponentes Tipos - Eliminar','Permite eliminar tipos de subcomponentes','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO PERMISO VALUES (48580,'Subcomponentes Tipos - Crear','Permite crear tipos de subcomponentes','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO PERMISO VALUES (99999,'prueba treeview','prueba treeview','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 	
 INSERT INTO PRESTAMO_TIPO VALUES (1,'Inversión','Inversión','admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
@@ -2214,6 +2222,14 @@ INSERT INTO USUARIO_PERMISO VALUES ('admin',48470,'admin',NULL,TO_TIMESTAMP ('20
 INSERT INTO USUARIO_PERMISO VALUES ('admin',48480,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO USUARIO_PERMISO VALUES ('admin',48490,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO USUARIO_PERMISO VALUES ('admin',48500,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO USUARIO_PERMISO VALUES ('admin',48510,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO USUARIO_PERMISO VALUES ('admin',48520,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO USUARIO_PERMISO VALUES ('admin',48530,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO USUARIO_PERMISO VALUES ('admin',48540,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO USUARIO_PERMISO VALUES ('admin',48550,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO USUARIO_PERMISO VALUES ('admin',48560,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO USUARIO_PERMISO VALUES ('admin',48570,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
+INSERT INTO USUARIO_PERMISO VALUES ('admin',48580,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 INSERT INTO USUARIO_PERMISO VALUES ('admin',99999,'admin',NULL,TO_TIMESTAMP ('2018-01-01 00:00:00','yyyy/mm/dd hh24:mi:ss'),NULL,1);
 
 COMMIT;

@@ -15,6 +15,7 @@ import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { DialogComponenteTipo, DialogOverviewComponenteTipo } from '../../../assets/modals/componentetipo/componente-tipo';
 import { DialogOverviewUnidadEjecutora, DialogUnidadEjecutora } from '../../../assets/modals/unidadejecutora/unidad-ejecutora';
+import { DialogDelete, DialogOverviewDelete } from '../../../assets/modals/deleteconfirmation/confirmation-delete';
 
 export interface AcumulacionCosto {
   id: number;
@@ -79,6 +80,7 @@ export class ComponenteComponent implements OnInit {
   camposdinamicos = [];
   modalUnidadEjecutora: DialogOverviewUnidadEjecutora;
   botones: boolean;
+  modalDelete: DialogOverviewDelete;
 
   dimensiones = [
     {value:1,nombre:'Dias',sigla:'d'}
@@ -116,6 +118,7 @@ export class ComponenteComponent implements OnInit {
 
     this.modalComponenteTipo = new DialogOverviewComponenteTipo(dialog);
     this.modalUnidadEjecutora = new DialogOverviewUnidadEjecutora(dialog);
+    this.modalDelete = new DialogOverviewDelete(dialog);
   }
 
   private _filterAcumulacionCosto(value: string): AcumulacionCosto[] {
@@ -211,7 +214,7 @@ export class ComponenteComponent implements OnInit {
     this.camposdinamicos = [];
     this.unidadejecutoraid= this.prestamoid != null ? this.unidadEjecutora :  null;
     this.unidadejecutoranombre= this.prestamoid != null ? this.unidadEjecutoraNombre : null;
-    this.componente.duracionDimension = this.dimensiones[this.dimensionSelected].sigla;
+    this.componente.duracionDimension = this.dimensiones[this.dimensionSelected-1].sigla;
   }
 
   editar(){
@@ -219,7 +222,7 @@ export class ComponenteComponent implements OnInit {
       this.esColapsado = true;
       this.esNuevo = false;
       this.tabActive = 0;
-      this.dimensionSelected = 1;
+      this.dimensionSelected = 0;
 
       this.unidadejecutoraid= this.componente.ueunidadEjecutora;
       this.unidadejecutoranombre= this.componente.unidadejecutoranombre;
@@ -247,7 +250,33 @@ export class ComponenteComponent implements OnInit {
   }
 
   borrar(){
-
+    if(this.componente.id > 0){
+      this.modalDelete.dialog.open(DialogDelete, {
+        width: '600px',
+        height: '200px',
+        data: { 
+          id: this.componente.id,
+          titulo: 'Confirmación de Borrado', 
+          textoCuerpo: '¿Desea borrar el componente?',
+          textoBotonOk: 'Borrar',
+          textoBotonCancelar: 'Cancelar'
+        }
+      }).afterClosed().subscribe(result => {
+        if(result != null){
+          if(result){
+            this.http.delete('http://localhost:60012/api/Componente/Componente/'+ this.componente.id, { withCredentials : true }).subscribe(response =>{
+              if(response['success'] == true){
+                this.obtenerTotalComponentes();
+                this.utils.mensaje('success', 'Componente borrado exitosamente');
+              }
+            })
+          } 
+        }
+      })
+    }
+    else{
+      this.utils.mensaje('warning', 'Seleccione una propiedad de componente');
+    }
   }
 
   filtrar(campo){
@@ -359,6 +388,8 @@ export class ComponenteComponent implements OnInit {
             this.utils.mensaje('success', 'Componente '+(this.esNuevo ? 'creado' : 'guardado')+' con éxito');
             this.esNuevo = false;
         }
+        else
+          this.utils.mensaje('danger', 'No se pudo guardar el Componente.');
       })
     }
   }

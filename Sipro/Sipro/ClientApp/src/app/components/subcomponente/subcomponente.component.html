@@ -1,3 +1,308 @@
-<p>
-  subcomponente works!
-</p>
+<div fxLayout="column" fxLayoutAlign="center" fxFlexFill fxFlex>
+    <div class="middle">
+        <div fxLayout="column">
+            <mat-card class="titulo">
+                Subcomponentes
+            </mat-card>
+            <div fxLayout="column" class="subtitulo" *ngIf="!esTreeview">
+              {{objetoTipoNombre}} {{componenteNombre}}
+            </div>
+            <br>
+            <div fxLayout="column" fxLayoutAlign="center" fxFlexFill>
+                <div [hidden]="esColapsado" *ngIf="!esTreeview">
+                  <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2px" *ngIf="!esTreeview">
+                      <button mat-raised-button class="primary-btn" (click)="congelado == 0 ? nuevo() : null" matTooltip="Nuevo" matTooltipPosition="above"><mat-icon>add</mat-icon>Nuevo</button>
+                      <button mat-raised-button class="primary-btn" (click)="editar()" matTooltip="Editar" matTooltipPosition="above"><mat-icon>mode_edit</mat-icon>Editar</button>
+                      <button mat-raised-button class="danger-btn" (click)="congelado == 0 ? borrar() : null" matTooltip="Borrar" matTooltipPosition="above"><mat-icon>delete</mat-icon>Borrar</button>
+                  </div>
+                  <br>
+                  <div fxLayout="row" fxLayoutAlign="center">
+                      <mat-form-field fxFlex="50%">
+                          <input matInput #search type="text" placeholder="Busqueda..." (keydown.enter)="filtrar(search.value)">
+                          <mat-icon class="search-info" (click)="filtrar(search.value)" matSuffix>search</mat-icon>
+                      </mat-form-field>              
+                  </div> 
+                  <div fxLayout="column" class="grid-principal">
+                      <div style="position: relative; top: 0; bottom: 0; width:100%; height: 100%;" [hidden]="!mostrarcargando" fxFlex fxFlexFill>
+                          <mat-progress-spinner
+                          class="progress-spinner"
+                          [color]="color"
+                          [mode]="mode"
+                          [value]="value"
+                          [diameter]="diameter" 
+                          [strokeWidth]="strokewidth"
+                          >
+                          </mat-progress-spinner>
+                          <div style="text-align: center; padding-top: 20px;">
+                              <b>Cargando, por favor espere...</b>
+                          </div>
+                      </div>
+                      <div style="position: relative; top: 0; bottom: 0; width:100%; height: 100%;" [hidden]="mostrarcargando">
+                          <ng2-smart-table [settings]="settings" [source]="source" (dblClickRow)="onDblClickRow($event)" (userRowSelect)="onSelectRow($event)"></ng2-smart-table>
+                      </div>              
+                  </div>
+                  <br>
+                  <div fxLayout="row" fxLayoutAlign="end" style="font-weight: bold;">
+                      Total de Subcomponentes: {{totalSubComponentes}}
+                  </div>
+                  <div fxLayout="column" fxLayoutAlign="center">
+                      <mat-paginator [length]="totalSubComponentes" [hidePageSize]="true" [pageSize]="elementosPorPagina" 
+                      [showFirstLastButtons]="true" (page)="pageEvent = handlePage($event)">
+                      </mat-paginator>
+                  </div>
+                </div>
+                <div [hidden]="!esColapsado || esTreeview">
+                    <form #myForm="ngForm">
+                        <div fxLayout="row" fxLayoutAlign="start" class="nuevo-edicion">
+                            <label>{{esNuevo == true ? 'Nuevo Subcomponente' : 'Edición de Subcomponente' }}</label>
+                        </div> 
+                        <br>
+                        <div fxLayout="row">
+                            <div [hidden]="esNuevo" fxFlex="50%" fxLayoutAlign="start" fxLayoutGap="1px">
+                            
+                            </div>
+                            <div fxFlex fxLayoutAlign="end" fxLayoutGap="2px">
+                                <button mat-raised-button id="applying-disabled" class="applying-btn" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
+                                <button mat-raised-button class="primary-btn" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
+                            </div>
+                        </div>
+                        <br>
+                        <div fxLayout="column" *ngIf="sobrepaso">
+                            <div class="alert-dangerTecho" fxLayoutAlign="center">La planificación sobrepasa la asignación presupuestaria</div>
+                        </div>
+                        <br>
+                        <div fxLayout="column">
+                            <div [@.disabled]="true">
+                                <mat-card>
+                                    <mat-card-content>
+                                        <mat-tab-group class="demo-tab-group" [(selectedIndex)]="tabActive">
+                                            <mat-tab label="Subcomponente" style="overflow: hidden;">
+                                                <div class="demo-tab-content">
+                                                    <br>
+                                                    <div fxLayout="row" fxLayoutAlign="start">
+                                                        <label class="label-id">ID {{subcomponente.id}}</label>
+                                                    </div>
+                                                    <br>
+                                                    <div fxLayout="column">
+                                                        <mat-form-field>
+                                                          <input name="nombre" [(ngModel)]="subcomponente.nombre" matInput placeholder="Nombre" [required]="true" [readonly]="congelado > 0">
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="3px">
+                                                        <div fxLayout="row" fxFlex="14%">
+                                                            <mat-form-field>
+                                                                <input style="text-align: center" type="text"  pattern="[0-9]{1,4}" minlength="0" maxlength="4" name="programa" maxlength="4"  [(ngModel)]="subcomponente.programa" matInput placeholder="Programa" [readonly]="congelado > 0">
+                                                            </mat-form-field>
+                                                        </div>
+                                                        <div fxLayout="row" fxFlex="14%">
+                                                            <mat-form-field>
+                                                                <input style="text-align: center" type="text"  pattern="[0-9]{1,4}" minlength="0" maxlength="4" name="subprograma" [(ngModel)]="subcomponente.subprograma" matInput placeholder="Subprograma" [readonly]="congelado > 0">
+                                                            </mat-form-field>
+                                                        </div>
+                                                        <div fxLayout="row" fxFlex="14%">
+                                                            <mat-form-field>
+                                                                <input style="text-align: center" type="text"  pattern="[0-9]{1,4}" minlength="0" maxlength="4" name="proyecto" [(ngModel)]="subcomponente.proyecto" matInput placeholder="Proyecto" [readonly]="congelado > 0">
+                                                            </mat-form-field>
+                                                        </div>
+                                                        <div fxLayout="row" fxFlex="14%">
+                                                            <mat-form-field>
+                                                                <input style="text-align: center" type="text"  pattern="[0-9]{1,4}" minlength="0" maxlength="4" name="actividad" [(ngModel)]="subcomponente.actividad" matInput placeholder="Actividad" [readonly]="congelado > 0">
+                                                            </mat-form-field>
+                                                        </div>
+                                                        <div fxLayout="row" fxFlex="14%">
+                                                            <mat-form-field>
+                                                                <input style="text-align: center" type="text"  pattern="[0-9]{1,4}" minlength="0" maxlength="4" name="obra" [(ngModel)]="subcomponente.obra" matInput placeholder="Obra" [readonly]="congelado > 0">
+                                                            </mat-form-field>
+                                                        </div>
+                                                        <div fxLayout="row" fxFlex="14%">
+                                                            <mat-form-field>
+                                                                <input style="text-align: center" type="text"  pattern="[0-9]{1,4}" minlength="0" maxlength="4" name="renglon" [(ngModel)]="subcomponente.renglon" matInput placeholder="Renglón" [readonly]="congelado > 0">
+                                                            </mat-form-field>
+                                                        </div>    
+                                                        <div fxLayout="row" fxFlex="14%">
+                                                            <mat-form-field>
+                                                                <input style="text-align: center" type="text"  pattern="[0-9]{1,4}" minlength="0" maxlength="4" name="geografico" [(ngModel)]="subcomponente.ubicacionGeografica" matInput placeholder="Geográfico" [readonly]="congelado > 0">
+                                                            </mat-form-field>
+                                                        </div>                                              
+                                                    </div>
+                                                    <div fxLayout="column">
+                                                        <mat-form-field>
+                                                          <input style="text-align: right;" type="number" name="snip" [(ngModel)]="subcomponente.snip" matInput placeholder="SNIP" [readonly]="congelado > 0">
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div fxLayout="column" [hidden]="!unidadejecutoranombre.length>0">
+                                                        <mat-form-field>
+                                                          <input name="entidadNombre" [(ngModel)]="entidadNombre" matInput placeholder="Organismo Ejecutor" [readonly]="true">
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div fxLayout="column">
+                                                        <mat-form-field>                                        
+                                                            <input class="search-info" name="unidadejecutoranombre" [(ngModel)]="unidadejecutoranombre" matInput placeholder="Unidad Ejecutora" 
+                                                            [readonly]="true" (click)="prestamoId != null ? '' : buscarUnidadEjecutora()" [required]="true">
+                                                            <mat-icon class="search-info" matSuffix (click)="prestamoId != null ? '' : buscarUnidadEjecutora()">search</mat-icon>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div fxLayout="column">
+                                                        <mat-form-field>                                        
+                                                            <input class="search-info" name="subcomponentetiponombre" [(ngModel)]="subcomponente.subcomponentetiponombre" matInput placeholder="Tipo de Subcomponente" 
+                                                            [readonly]="true" (click)="congelado > 0 ? '' : buscarSubcomponenteTipo()" [required]="true">
+                                                            <mat-icon class="search-info" matSuffix (click)="congelado > 0 ? '' : buscarSubcomponenteTipo()">search</mat-icon>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div fxLayout="column">
+                                                        <mat-form-field>                                        
+                                                            <input class="search-info" name="coordenadas" [(ngModel)]="coordenadas" matInput placeholder="Coordenadas" 
+                                                            [readonly]="true" (click)="abrirMapa()" [required]="true">
+                                                            <mat-icon class="search-info" matSuffix (click)="abrirMapa()">place</mat-icon>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div fxLayout="column">
+                                                        <mat-form-field>
+                                                            <input type="text" currencyMask [options]="{ prefix: 'Q ', thousands: ',', decimal: '.', precision: 2 }" name="costo" [(ngModel)]="subcomponente.costo" (ngModelChange)="validarAsignado()" matInput placeholder="Monto Planificado" [required]="subcomponente.acumulacionCostoid > 0" [readonly]="subcomponente.tieneHijos || congelado == 1 || bloquearCosto">
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div fxLayout="column">
+                                                        <mat-form-field>
+                                                            <input type="text" currencyMask [options]="{ prefix: 'Q ', thousands: ',', decimal: '.', precision: 2 }" name="asignado" [(ngModel)]="asignado" matInput placeholder="Presupuesto Asignado (Año Fiscal)" [readonly]="true">
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div fxLayout="column">
+                                                        <mat-form-field>
+                                                            <input name="acumulacionCosto" [formControl]="myControl" [(ngModel)]="subcomponente.acumulacionCostoId" matInput placeholder="Tipo de Acumulación Monto Planificado" 
+                                                            [required]="subcomponente.costo>0" [matAutocomplete]="auto">
+                                                            <mat-autocomplete #auto="matAutocomplete">
+                                                            <mat-option *ngFor="let value of filteredAcumulacionCosto | async" [value]="value.nombre" (onSelectionChange)="acumulacionCostoSeleccionado(value)">                                                
+                                                                <span>{{value.nombre}}</span>
+                                                            </mat-option>
+                                                            </mat-autocomplete>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div fxLayout="row" fxLayoutGap="15px">
+                                                        <mat-form-field fxFlex="50%">
+                                                            <input min="1" style="text-align: right;" matInput type="number" placeholder="Duración" [required]="true"
+                                                                name="duracion" [(ngModel)]="subcomponente.duracion" 
+                                                                (ngModelChange)="subcomponente.fechaInicio != null && dimensionSelected != 0 ? cambioDuracion(dimensiones[dimensionSelected-1]) : ''" 
+                                                                [readonly]="subcomponente.tieneHijos != true ? (dimensionSelected != 0 ? false : true) : subcomponente.tieneHijos">
+                                                        </mat-form-field>
+                                                        <mat-form-field fxFlex="50%">
+                                                            <mat-select placeholder="Dimensión" disableRipple [required]="true" [(value)]="dimensionSelected">
+                                                                <mat-option *ngFor="let opcion of dimensiones" [value]="opcion.value">{{opcion.nombre}}</mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div fxLayout="row" fxLayoutGap="15px">
+                                                        <mat-form-field fxFlex="50%">
+                                                            <input matInput [matDatepicker]="fechaInicio" placeholder="Fecha Inicio" 
+                                                                (ngModelChange)="modelChangedFechaInicio($event, dimensiones[dimensionSelected-1]);"
+                                                                name="fechaInicio" [(ngModel)]="subcomponente.fechaInicio" [required]="true">
+                                                            <mat-datepicker-toggle matSuffix [for]="fechaInicio"></mat-datepicker-toggle>
+                                                            <mat-datepicker #fechaInicio></mat-datepicker>
+                                                        </mat-form-field>
+                                                        <mat-form-field fxFlex="50%">
+                                                            <input matInput placeholder="Fecha Fin"
+                                                                name="fechaFin" [(ngModel)]="subcomponente.fechaFin" [required]="true" [readonly]="true">
+                                                            <mat-icon style="font-size: 14px;" matSuffix>date_range</mat-icon>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div fxLayout="row" fxLayoutGap="15px">
+                                                        <mat-form-field fxFlex="50%">
+                                                            <input matInput placeholder="Fecha Inicio Real"
+                                                                name="fechaInicioReal" [(ngModel)]="fechaInicioRealTemp" [readonly]="true">
+                                                        </mat-form-field>
+                                                        <mat-form-field fxFlex="50%">
+                                                            <input matInput placeholder="Fecha Fin Real"
+                                                                name="fechaFinalReal" [(ngModel)]="fechaFinalRealTemp" [readonly]="true">
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div fxLayout="column">
+                                                        <mat-checkbox color="primary" name="inversionNueva" [(ngModel)]="subcomponente.inversionNueva">
+                                                                Es Inversion Nueva
+                                                        </mat-checkbox>
+                                                    </div>
+                                                    <br>
+                                                    <div fxLayout="column" *ngFor="let campo of camposdinamicos">
+                                                        <div [ngSwitch]="campo.tipo">
+                                                            <mat-form-field *ngSwitchCase="'texto'">
+                                                                <input name="{{'campo_'+campo.id}}" [(ngModel)]="campo.valor" matInput placeholder="{{campo.label}}" id="{{'campo_'+ campo.id}}">
+                                                            </mat-form-field>
+                                                            <mat-form-field *ngSwitchCase="'entero'">
+                                                                <input style="text-align: right" type="number" name="{{'campo_'+campo.id}}" [(ngModel)]="campo.valor" matInput placeholder="{{campo.label}}" id="{{'campo_'+ campo.id}}">
+                                                            </mat-form-field>
+                                                            <mat-form-field *ngSwitchCase="'decimal'">
+                                                                <input style="text-align: right" type="number" name="{{'campo_'+campo.id}}" [(ngModel)]="campo.valor" matInput placeholder="{{campo.label}}" id="{{'campo_'+ campo.id}}">
+                                                            </mat-form-field>
+                                                            <div *ngSwitchCase="'booleano'">
+                                                                <mat-checkbox color="primary" name="{{'campo_'+campo.id}}" [(ngModel)]="campo.valor" id="{{'campo_'+ campo.id}}">
+                                                                    {{campo.label}}
+                                                                </mat-checkbox>
+                                                                <br>
+                                                                <br>
+                                                            </div>
+                                                            <mat-form-field *ngSwitchCase="'fecha'">
+                                                                <input required="false" matInput [matDatepicker]="fecha_dinamica" placeholder="{{campo.label}}" name="{{'campo_'+campo.id}}" [(ngModel)]="campo.valor">
+                                                                <mat-datepicker-toggle matSuffix [for]="fecha_dinamica"></mat-datepicker-toggle>
+                                                                <mat-datepicker #fecha_dinamica></mat-datepicker>
+                                                            </mat-form-field>
+                                                        </div>
+                                                    </div>
+                                                    <div fxLayout="column">
+                                                        <mat-form-field>
+                                                            <textarea name="descripcion" matInput rows="4" [(ngModel)]="subcomponente.descripcion" placeholder="Descripción"></textarea>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div fxLayout="column">
+                                                        <div class="panel panel-default" style="height: 180px;">
+                                                            <div class="panel-heading label-form" fxLayoutAlign="center">Datos de auditoría</div>
+                                                            <div class="panel-body">
+                                                                <div>
+                                                                    <div fxLayout="row" fxLayoutGap="20px">
+                                                                        <div fxFlex="50%">
+                                                                        <label fxLayoutAlign="end" class="label-form" for="usuarioCreo">Usuario que creo</label>
+                                                                        <p fxLayoutAlign="end">{{ subcomponente.usuarioCreo }}</p>
+                                                                        </div>
+                                
+                                                                        <div fxFlex="50%">
+                                                                            <label fxLayoutAlign="start" class="label-form"  for="fechaCreacion">Fecha de creación</label>
+                                                                            <p fxLayoutAlign="start">{{ subcomponente.fechaCreacion }}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div fxLayout="row" fxLayoutGap="20px">
+                                                                        <div fxFlex="50%">
+                                                                            <label fxLayoutAlign="end" class="label-form" for="usuarioActualizo">Usuario que actualizo</label>
+                                                                            <p fxLayoutAlign="end">{{ subcomponente.usuarioActualizo }}</p>
+                                                                        </div>
+                                
+                                                                        <div fxFlex="50%">
+                                                                            <label fxLayoutAlign="start" for="fechaActualizacion"  class="label-form" >Fecha de actualizacion</label>
+                                                                            <p fxLayoutAlign="start">{{ subcomponente.fechaActualizacion }}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>                                  
+                                                            </div>
+                                                        </div>
+                                                    </div>                                                    
+                                                </div>
+                                            </mat-tab>
+                                            <mat-tab label="Riesgos" style="overflow: hidden;">
+                                                <div class="demo-tab-content">
+                                                    <br>
+                                                </div>
+                                            </mat-tab>
+                                        </mat-tab-group>
+                                    </mat-card-content>
+                                </mat-card>
+                                <br>
+                                <div fxLayout="row" fxLayoutAlign="center" class="label-form">Los campos marcados con * son obligatorios y las fechas deben tener formato de dd/mm/aaaa</div>
+                                <br>
+                                <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2px">
+                                    <button mat-raised-button id="applying-disabled" class="applying-btn" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>
+                                    <button mat-raised-button class="primary-btn" (click)="IrATabla()" matTooltip="Ir a Tabla" matTooltipPosition="above"><mat-icon>list</mat-icon>Ir a Tabla</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

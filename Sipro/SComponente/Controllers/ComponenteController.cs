@@ -576,7 +576,7 @@ namespace SComponente.Controllers
                     componente.costo = value.costo;
                     componente.acumulacionCostoid = value.acumulacionCostoid;
                     componente.fechaInicio = value.fechaInicio;
-                    componente.fechaFin = value.fechaFin;
+                    componente.fechaFin = Convert.ToDateTime(value.fechaFin);
                     componente.duracion = value.duracion;
                     componente.duracionDimension = value.duracionDimension;
                     componente.esDeSigade = value.esDeSigade;

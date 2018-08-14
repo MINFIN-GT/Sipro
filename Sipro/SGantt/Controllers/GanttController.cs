@@ -73,9 +73,9 @@ namespace SGantt.Controllers
 
                 System.IO.File.Delete(fullPath);
 
-                ProyectoDAO.calcularCostoyFechas(proyResult);
+                bool result = ProyectoDAO.calcularCostoyFechas(proyResult);
 
-                return Ok(new { success = proyResult > 0 ? true : false, proyectoId = proyResult });
+                return Ok(new { success = result, proyectoId = proyResult });
             }
             catch (Exception e)
             {

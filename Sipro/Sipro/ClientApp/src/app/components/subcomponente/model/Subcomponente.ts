@@ -21,7 +21,7 @@ export class Subcomponente{
     duracion: number = null;
     duracionDimension: string = null;
     fechaInicio: Date = null;
-    fechaFin: Date = null;
+    fechaFin: string;
     ueunidadEjecutora: number = null;
     ejercicio: number = null;
     entidad: number = null;
@@ -30,13 +30,14 @@ export class Subcomponente{
     latitud: string = null;
     longitud: string = null;
     costo: number = null;
-    acumulacionCostoid: number = null;
+    acumulacionCostoid: number = 3;
     acumulacionCostoNombre: string;
     tieneHijos: boolean;
     fechaInicioReal: Date = null;
     fechaFinReal: Date = null;
     congelado: number;
-    inversionNueva: number = null;
+    inversionNueva: number = 0;
 
     pagosPlanificados: string;
+    camposDinamicos: string;
 }

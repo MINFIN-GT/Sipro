@@ -110,12 +110,12 @@ namespace SiproDAO.Dao
                             cu_admin.usuario = "admin";
                             cu_admin.usuarioCreo = SubComponente.usuarioCreo;
 
-                            existe = db.ExecuteScalar<int>("SELECT COUNT(*) FROM SUBCOMPONENTE_USUARIO WHERE componenteid=:id AND usuario=:usuario", new { id = cu_admin.subcomponenteid, usuario = cu.usuario });
+                            existe = db.ExecuteScalar<int>("SELECT COUNT(*) FROM SUBCOMPONENTE_USUARIO WHERE subcomponenteid=:id AND usuario=:usuario", new { id = cu_admin.subcomponenteid, usuario = cu.usuario });
 
                             if (existe > 0)
                             {
                                 guardado = db.Execute("UPDATE SUBCOMPONENTE_USUARIO SET usuario_creo=:usuarioCreo, usuario_actualizo=:usuarioActualizo, fecha_creacion=:fechaCreacion, " +
-                                    "fecha_actualizacion=:fechaActualizacion WHERE subcomponenteid=:componenteid AND usuario=:usuario", cu_admin);
+                                    "fecha_actualizacion=:fechaActualizacion WHERE subcomponenteid=:subcomponenteid AND usuario=:usuario", cu_admin);
                             }
                             else
                             {
@@ -123,12 +123,12 @@ namespace SiproDAO.Dao
                             }
                         }
 
-                        if (calcular_valores_agregados)
+                        if (guardado > 0 && calcular_valores_agregados)
                         {
                             ProyectoDAO.calcularCostoyFechas(Convert.ToInt32(SubComponente.treepath.Substring(0, 8)) - 10000000);
                         }
 
-                        ret = true;
+                        ret = guardado > 0 ? true : false;
                     }
                 }
             }
