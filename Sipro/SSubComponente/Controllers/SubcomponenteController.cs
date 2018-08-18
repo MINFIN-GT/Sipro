@@ -30,14 +30,14 @@ namespace SSubComponente.Controllers
             public int subcomponenteTipoid;
             public String subcomponentetiponombre;
             public int estado;
-            public long snip;
-            public int programa;
-            public int subprograma;
-            public int proyecto;
-            public int obra;
-            public int actividad;
-            public int renglon;
-            public int ubicacionGeografica;
+            public long? snip;
+            public int? programa;
+            public int? subprograma;
+            public int? proyecto;
+            public int? obra;
+            public int? actividad;
+            public int? renglon;
+            public int? ubicacionGeografica;
             public int duracion;
             public String duracionDimension;
             public String fechaInicio;
@@ -93,18 +93,18 @@ namespace SSubComponente.Controllers
                     temp.subcomponenteTipoid = subcomponente.subcomponenteTipoid;
                     temp.subcomponentetiponombre = subcomponente.subcomponenteTipos.nombre;
 
-                    temp.snip = subcomponente.snip ?? default(int);
-                    temp.programa = subcomponente.programa ?? default(int);
-                    temp.subprograma = subcomponente.subprograma ?? default(int);
-                    temp.proyecto = subcomponente.proyecto ?? default(int);
-                    temp.actividad = subcomponente.actividad ?? default(int);
-                    temp.renglon = subcomponente.renglon ?? default(int);
-                    temp.ubicacionGeografica = subcomponente.ubicacionGeografica ?? default(int);
+                    temp.snip = subcomponente.snip;
+                    temp.programa = subcomponente.programa;
+                    temp.subprograma = subcomponente.subprograma;
+                    temp.proyecto = subcomponente.proyecto;
+                    temp.actividad = subcomponente.actividad;
+                    temp.renglon = subcomponente.renglon;
+                    temp.ubicacionGeografica = subcomponente.ubicacionGeografica;
                     temp.duracion = subcomponente.duracion;
                     temp.duracionDimension = subcomponente.duracionDimension;
                     temp.fechaInicio = subcomponente.fechaInicio != null ? subcomponente.fechaInicio.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     temp.fechaFin = subcomponente.fechaFin != null ? subcomponente.fechaFin.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
-                    temp.obra = subcomponente.obra ?? default(int);
+                    temp.obra = subcomponente.obra;
 
                     subcomponente.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(subcomponente.ejercicio ?? default(int), subcomponente.entidad ?? default(int), subcomponente.ueunidadEjecutora ?? default(int));
                     if (subcomponente.unidadEjecutoras != null)
@@ -181,18 +181,18 @@ namespace SSubComponente.Controllers
                     temp.subcomponenteTipoid = subcomponente.subcomponenteTipoid;
                     temp.subcomponentetiponombre = subcomponente.subcomponenteTipos.nombre;
 
-                    temp.snip = subcomponente.snip ?? default(int);
-                    temp.programa = subcomponente.programa ?? default(int);
-                    temp.subprograma = subcomponente.subprograma ?? default(int);
-                    temp.proyecto = subcomponente.proyecto ?? default(int);
-                    temp.actividad = subcomponente.actividad ?? default(int);
-                    temp.renglon = subcomponente.renglon ?? default(int);
-                    temp.ubicacionGeografica = subcomponente.ubicacionGeografica ?? default(int);
+                    temp.snip = subcomponente.snip;
+                    temp.programa = subcomponente.programa;
+                    temp.subprograma = subcomponente.subprograma;
+                    temp.proyecto = subcomponente.proyecto;
+                    temp.actividad = subcomponente.actividad;
+                    temp.renglon = subcomponente.renglon;
+                    temp.ubicacionGeografica = subcomponente.ubicacionGeografica;
                     temp.duracion = subcomponente.duracion;
                     temp.duracionDimension = subcomponente.duracionDimension;
                     temp.fechaInicio = subcomponente.fechaInicio != null ? subcomponente.fechaInicio.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     temp.fechaFin = subcomponente.fechaFin != null ? subcomponente.fechaFin.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
-                    temp.obra = subcomponente.obra ?? default(int);
+                    temp.obra = subcomponente.obra;
 
                     subcomponente.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(subcomponente.ejercicio ?? default(int), subcomponente.entidad ?? default(int), subcomponente.ueunidadEjecutora ?? default(int));
                     if (subcomponente.unidadEjecutoras != null)
@@ -265,20 +265,24 @@ namespace SSubComponente.Controllers
                     subComponente.ueunidadEjecutora = value.ueunidadEjecutora;
                     subComponente.ejercicio = value.ejercicio;
                     subComponente.entidad = value.entidad;
-                    subComponente.snip = value.snip;
-                    subComponente.programa = value.programa;
-                    subComponente.subprograma = value.subprograma;
-                    subComponente.proyecto = value.proyecto;
-                    subComponente.actividad = value.actividad;
-                    subComponente.obra = value.obra;
-                    subComponente.renglon = value.renglon;
-                    subComponente.ubicacionGeografica = value.ubicacionGeografica;
+                    subComponente.snip = value.snip ?? null;
+                    subComponente.programa = value.programa ?? null;
+                    subComponente.subprograma = value.subprograma ?? null;
+                    subComponente.proyecto = value.proyecto ?? null;
+                    subComponente.actividad = value.actividad ?? null;
+                    subComponente.obra = value.obra ?? null;
+                    subComponente.renglon = value.renglon ?? null;
+                    subComponente.ubicacionGeografica = value.ubicacionGeografica ?? null;
                     subComponente.latitud = value.latitud;
                     subComponente.longitud = value.longitud;
                     subComponente.costo = value.costo;
                     subComponente.acumulacionCostoid = value.acumulacionCostoid;
                     subComponente.fechaInicio = value.fechaInicio;
-                    subComponente.fechaFin = Convert.ToDateTime(value.fechaFin);
+
+                    DateTime fechaFin;
+                    DateTime.TryParse((string)value.fechaFin, out fechaFin);
+
+                    subComponente.fechaFin = fechaFin;
                     subComponente.duracion = value.duracion;
                     subComponente.duracionDimension = value.duracionDimension;
                     subComponente.inversionNueva = value.inversionNueva;
@@ -332,7 +336,8 @@ namespace SSubComponente.Controllers
                         foreach (SubcomponentePropiedad subComponentePropiedad in subcomponentePropiedades)
                         {
                             SubcomponentePropiedadValor subCompPropVal = SubcomponentePropiedadValorDAO.getValorPorSubComponenteYPropiedad(subComponentePropiedad.id, subComponente.id);
-                            result = result && SubcomponentePropiedadValorDAO.eliminarTotalSubComponentePropiedadValor(subCompPropVal);
+                            if (subCompPropVal != null)
+                                result = result && SubcomponentePropiedadValorDAO.eliminarTotalSubComponentePropiedadValor(subCompPropVal);
                         }
 
                         JArray datosDinamicos = JArray.Parse((string)value.camposDinamicos);
@@ -377,7 +382,7 @@ namespace SSubComponente.Controllers
 
                     return Ok(new
                     {
-                        success = true,
+                        success = result,
                         id = subComponente.id,
                         usuarioCreo = subComponente.usuarioCreo,
                         usuarioActualizo = subComponente.usuarioActualizo,
@@ -415,20 +420,25 @@ namespace SSubComponente.Controllers
                     subComponente.ueunidadEjecutora = value.ueunidadEjecutora;
                     subComponente.ejercicio = value.ejercicio;
                     subComponente.entidad = value.entidad;
-                    subComponente.snip = value.snip;
-                    subComponente.programa = value.programa;
-                    subComponente.subprograma = value.subprograma;
-                    subComponente.proyecto = value.proyecto;
-                    subComponente.actividad = value.actividad;
-                    subComponente.obra = value.obra;
-                    subComponente.renglon = value.renglon;
-                    subComponente.ubicacionGeografica = value.ubicacionGeografica;
+                    subComponente.snip = value.snip ?? null;
+                    subComponente.programa = (value.programa != null && value.programa != "") ? value.programa : null;
+                    subComponente.subprograma = (value.subprograma != null && value.subprograma != "") ? value.subprograma : null;
+                    subComponente.proyecto = (value.proyecto != null && value.proyecto != "") ? value.proyecto : null;
+                    subComponente.actividad = (value.actividad  != null && value.actividad != "") ? value.actividad : null;
+                    subComponente.obra = (value.obra != null && value.obra != "") ? value.obra : null;
+                    subComponente.renglon = (value.renglon != null && value.renglon != "") ? value.renglon : null;
+                    subComponente.ubicacionGeografica = (value.ubicacionGeografica != null && value.ubicacionGeografica != "") ? value.ubicacionGeografica : null;
                     subComponente.latitud = value.latitud;
                     subComponente.longitud = value.longitud;
                     subComponente.costo = value.costo;
                     subComponente.acumulacionCostoid = value.acumulacionCostoid;
                     subComponente.fechaInicio = value.fechaInicio;
-                    subComponente.fechaFin = value.fechaFin;
+
+                    DateTime fechaFin;
+                    DateTime.TryParse((string)value.fechaFin, out fechaFin);
+
+                    subComponente.fechaFin = fechaFin;
+
                     subComponente.duracion = value.duracion;
                     subComponente.duracionDimension = value.duracionDimension;
                     subComponente.inversionNueva = value.inversionNueva;
@@ -481,7 +491,8 @@ namespace SSubComponente.Controllers
                         foreach (SubcomponentePropiedad subComponentePropiedad in subcomponentePropiedades)
                         {
                             SubcomponentePropiedadValor subCompPropVal = SubcomponentePropiedadValorDAO.getValorPorSubComponenteYPropiedad(subComponentePropiedad.id, subComponente.id);
-                            result = result && SubcomponentePropiedadValorDAO.eliminarTotalSubComponentePropiedadValor(subCompPropVal);
+                            if(subCompPropVal != null)
+                                result = result && SubcomponentePropiedadValorDAO.eliminarTotalSubComponentePropiedadValor(subCompPropVal);
                         }
 
                         JArray datosDinamicos = JArray.Parse((string)value.camposDinamicos);
@@ -526,7 +537,7 @@ namespace SSubComponente.Controllers
 
                     return Ok(new
                     {
-                        success = true,
+                        success = result,
                         id = subComponente.id,
                         usuarioCreo = subComponente.usuarioCreo,
                         usuarioActualizo = subComponente.usuarioActualizo,
@@ -612,18 +623,18 @@ namespace SSubComponente.Controllers
                     temp.subcomponenteTipoid = subcomponente.subcomponenteTipoid;
                     temp.subcomponentetiponombre = subcomponente.subcomponenteTipos.nombre;
 
-                    temp.snip = subcomponente.snip ?? default(int);
-                    temp.programa = subcomponente.programa ?? default(int);
-                    temp.subprograma = subcomponente.subprograma ?? default(int);
-                    temp.proyecto = subcomponente.proyecto ?? default(int);
-                    temp.actividad = subcomponente.actividad ?? default(int);
-                    temp.renglon = subcomponente.renglon ?? default(int);
-                    temp.ubicacionGeografica = subcomponente.ubicacionGeografica ?? default(int);
+                    temp.snip = subcomponente.snip;
+                    temp.programa = subcomponente.programa;
+                    temp.subprograma = subcomponente.subprograma;
+                    temp.proyecto = subcomponente.proyecto;
+                    temp.actividad = subcomponente.actividad;
+                    temp.renglon = subcomponente.renglon;
+                    temp.ubicacionGeografica = subcomponente.ubicacionGeografica;
                     temp.duracion = subcomponente.duracion;
                     temp.duracionDimension = subcomponente.duracionDimension;
                     temp.fechaInicio = subcomponente.fechaInicio != null ? subcomponente.fechaInicio.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                     temp.fechaFin = subcomponente.fechaFin != null ? subcomponente.fechaFin.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
-                    temp.obra = subcomponente.obra ?? default(int);
+                    temp.obra = subcomponente.obra;
 
                     subcomponente.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(subcomponente.ejercicio ?? default(int), subcomponente.entidad ?? default(int), subcomponente.ueunidadEjecutora ?? default(int));
                     if (subcomponente.unidadEjecutoras != null)
@@ -743,18 +754,18 @@ namespace SSubComponente.Controllers
                 temp.subcomponenteTipoid = subcomponente.subcomponenteTipoid;
                 temp.subcomponentetiponombre = subcomponente.subcomponenteTipos.nombre;
 
-                temp.snip = subcomponente.snip ?? default(int);
-                temp.programa = subcomponente.programa ?? default(int);
-                temp.subprograma = subcomponente.subprograma ?? default(int);
-                temp.proyecto = subcomponente.proyecto ?? default(int);
-                temp.actividad = subcomponente.actividad ?? default(int);
-                temp.renglon = subcomponente.renglon ?? default(int);
-                temp.ubicacionGeografica = subcomponente.ubicacionGeografica ?? default(int);
+                temp.snip = subcomponente.snip;
+                temp.programa = subcomponente.programa;
+                temp.subprograma = subcomponente.subprograma;
+                temp.proyecto = subcomponente.proyecto;
+                temp.actividad = subcomponente.actividad;
+                temp.renglon = subcomponente.renglon;
+                temp.ubicacionGeografica = subcomponente.ubicacionGeografica;
                 temp.duracion = subcomponente.duracion;
                 temp.duracionDimension = subcomponente.duracionDimension;
                 temp.fechaInicio = subcomponente.fechaInicio != null ? subcomponente.fechaInicio.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
                 temp.fechaFin = subcomponente.fechaFin != null ? subcomponente.fechaFin.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
-                temp.obra = subcomponente.obra ?? default(int);
+                temp.obra = subcomponente.obra;
 
                 subcomponente.unidadEjecutoras = UnidadEjecutoraDAO.getUnidadEjecutora(subcomponente.ejercicio ?? default(int), subcomponente.entidad ?? default(int), subcomponente.ueunidadEjecutora ?? default(int));
                 if (subcomponente.unidadEjecutoras != null)

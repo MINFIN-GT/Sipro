@@ -59,7 +59,10 @@
                         <br>
                         <div fxLayout="row">
                             <div [hidden]="esNuevo" fxFlex="50%" fxLayoutAlign="start" fxLayoutGap="1px">
-                            
+                                <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="irAProductos(componente.id)" matTooltip="Productos" matTooltipPosition="above"><mat-icon>inbox</mat-icon></button>
+                                <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="irAActividades(componente.id)" matTooltip="Actividades" matTooltipPosition="above"><mat-icon>watch_later</mat-icon></button>
+                                <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="verHistoria()" matTooltip="Ver Historia" matTooltipPosition="above"><mat-icon>history</mat-icon></button>
+                                <button mat-raised-button style="min-width: 35px; border-color: #ccc; color:#333" (click)="subcomponente.acumulacionCostoid == 2 ? agregarPagos() : ''" matTooltip="Pagos planificados" matTooltipPosition="above" [disabled]="subcomponente.acumulacionCostoid != 2"><mat-icon>payment</mat-icon></button>
                             </div>
                             <div fxFlex fxLayoutAlign="end" fxLayoutGap="2px">
                                 <button mat-raised-button id="applying-disabled" class="applying-btn" [disabled]="!myForm.valid" (click)="guardar()" matTooltip="Guardar" matTooltipPosition="above"><mat-icon>save</mat-icon>Guardar</button>

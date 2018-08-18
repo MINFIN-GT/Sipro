@@ -10,17 +10,6 @@ namespace SiproDAO.Dao
 {
     public class DatoTipoDAO
     {
-        /*
-         static class EstructuraComboPojo {
-		Integer id;
-		String nombre;
-	}
-	static class EstructuraPojo {
-		Integer id;
-		String nombre;
-		String descripcion;
-	}*/
-
         public static DatoTipo getDatoTipo(int codigo)
         {
             DatoTipo ret = null;
@@ -38,111 +27,74 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        /*public static boolean guardar(Integer codigo, String nombre, String descripcion) {
+        public static bool guardar(int codigo, String nombre, String descripcion)
+        {
+            bool ret = false;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    int existe = db.Execute("SELECT COUNT(*) FROM dato_tipo WHERE id=:id", new { id = codigo });
 
-            DatoTipo pojo = getDatoTipo(codigo);
-            boolean ret = false;
+                    if (existe > 0)
+                    {
+                        int guardado = db.Execute("UPDATE dato_tipo SET nombre=:nombre, descripcion=:descripcion WHERE id=:id",
+                            new { nombre = nombre, descripcion = descripcion, id = codigo });
 
-            if (pojo == null) {
-                pojo = new DatoTipo();
-                pojo.setNombre(nombre);
-                pojo.setDescripcion(descripcion);
+                        ret = guardado > 0 ? true : false;
+                    }
+                    else
+                    {
+                        int sequenceId = db.ExecuteScalar<int>("SELECT seq_dato_tipo.nextval FROM DUAL");
+                        int guardado = db.Execute("INSERT INTO dato_tipo VALUES (:id, :nombre, :descripcion)", new { id = sequenceId, nombre = nombre, descripcion = descripcion });
 
-                pojo.setComponentePropiedads(null);
-                pojo.setProductoPropiedads(null);
-                pojo.setProyectoPropiedads(null);
-
-                Session session = CHibernateSession.getSessionFactory().openSession();
-                try {
-                    session.beginTransaction();
-                    session.save(pojo);
-                    session.getTransaction().commit();
-                    ret = true;
-                } catch (Throwable e) {
-                    CLogger.write("2", DatoTipoDAO.class, e);
-                } finally {
-                    session.close();
+                        ret = guardado > 0 ? true : false;
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                CLogger.write("2", "DatoTipoDAO.class", e);
+            }
 
             return ret;
         }
 
-        public static boolean actualizar(Integer codigo, String nombre, String descripcion) {
-
-            DatoTipo pojo = getDatoTipo(codigo);
-            boolean ret = false;
-
-            if (pojo != null) {
-                pojo.setNombre(nombre);
-                pojo.setDescripcion(descripcion);
-
-                Session session = CHibernateSession.getSessionFactory().openSession();
-                try {
-                    session.beginTransaction();
-                    session.update(pojo);
-                    session.getTransaction().commit();
-                    ret = true;
-                } catch (Throwable e) {
-                    CLogger.write("3", DatoTipoDAO.class, e);
-                } finally {
-                    session.close();
+        public static List<DatoTipo> getPagina(int pagina, int registros)
+        {
+            List<DatoTipo> ret = new List<DatoTipo>();
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    string query = String.Join(" ", "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT * FROM dato_tipo");
+                    query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + registros + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + registros + ") + 1)");
+                    ret = db.Query<DatoTipo>(query).AsList<DatoTipo>();
                 }
             }
-
-            return ret;
-        }
-
-        public static List<DatoTipo> getPagina(int pagina, int registros) {
-            List<DatoTipo> ret = new ArrayList<DatoTipo>();
-            Session session = CHibernateSession.getSessionFactory().openSession();
-            try {
-                Query<DatoTipo> criteria = session.createQuery("SELECT e FROM DatoTipo e", DatoTipo.class);
-                criteria.setFirstResult(((pagina - 1) * (registros)));
-                criteria.setMaxResults(registros);
-                ret = criteria.getResultList();
-            } catch (Throwable e) {
-                CLogger.write("5", DatoTipoDAO.class, e);
-            } finally {
-                session.close();
+            catch (Exception e)
+            {
+                CLogger.write("3", "DatoTipoDAO.class", e);
             }
             return ret;
         }
 
-        public static String getJson(int pagina, int registros) {
-            String jsonEntidades = "";
-
-            List<DatoTipo> pojos = getPagina(pagina, registros);
-
-            List<EstructuraPojo> listaEstructuraPojos = new ArrayList<EstructuraPojo>();
-
-            for (DatoTipo pojo : pojos) {
-                EstructuraPojo estructuraPojo = new EstructuraPojo();
-                estructuraPojo.id = pojo.getId();
-                estructuraPojo.nombre = pojo.getNombre();
-                estructuraPojo.descripcion = pojo.getDescripcion();
-
-                listaEstructuraPojos.add(estructuraPojo);
+        public static long getTotal()
+        {
+            long ret = 0L;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    ret = db.ExecuteScalar<long>("SELECT COUNT(*) FROM dato_tipo");
+                }
             }
-
-            jsonEntidades = Utils.getJSonString("datoTipos", listaEstructuraPojos);
-
-            return jsonEntidades;
-        }
-
-        public static Long getTotal() {
-            Long ret = 0L;
-            Session session = CHibernateSession.getSessionFactory().openSession();
-            try {
-                Query<Long> conteo = session.createQuery("SELECT count(e.id) FROM DatoTipo e", Long.class);
-                ret = conteo.getSingleResult();
-            } catch (Throwable e) {
-                CLogger.write("7", DatoTipoDAO.class, e);
-            } finally {
-                session.close();
+            catch (Exception e)
+            {
+                CLogger.write("7", "DatoTipoDAO.class", e);
             }
             return ret;
-        }*/
+        }
 
         public static List<DatoTipo> getDatoTipos()
         {
@@ -160,48 +112,5 @@ namespace SiproDAO.Dao
             }
             return ret;
         }
-	
-	/*public static String getJson() {
-		String jsonEntidades = "";
-
-		List<DatoTipo> pojos = getDatoTipos();
-
-		List<EstructuraPojo> listaEstructuraPojos = new ArrayList<EstructuraPojo>();
-
-		for (DatoTipo pojo : pojos) {
-			EstructuraPojo estructuraPojo = new EstructuraPojo();
-			estructuraPojo.id = pojo.getId();
-			estructuraPojo.nombre = pojo.getNombre();
-			estructuraPojo.descripcion = pojo.getDescripcion();
-
-			listaEstructuraPojos.add(estructuraPojo);
-		}
-
-		jsonEntidades = Utils.getJSonString("datoTipos", listaEstructuraPojos);
-
-		return jsonEntidades;
-	}
-
-	public static String getJsonCombo() {
-		String jsonEntidades = "";
-
-		List<DatoTipo> pojos = getDatoTipos();
-
-		List<EstructuraComboPojo> listaEstructuraPojos = new ArrayList<EstructuraComboPojo>();
-
-		for (DatoTipo pojo : pojos) {
-			EstructuraComboPojo estructuraPojo = new EstructuraComboPojo();
-			estructuraPojo.id = pojo.getId();
-			estructuraPojo.nombre = pojo.getNombre();
-
-			listaEstructuraPojos.add(estructuraPojo);
-		}
-
-		jsonEntidades = Utils.getJSonString("datoTipos", listaEstructuraPojos);
-
-		return jsonEntidades;
-	}
-         
-         */
     }
 }

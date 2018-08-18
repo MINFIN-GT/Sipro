@@ -59,6 +59,7 @@ import { ComponentetipoComponent } from './components/componentetipo/componentet
 import { SubcomponenteComponent } from './components/subcomponente/subcomponente.component';
 import { SubcomponentepropiedadComponent } from './components/subcomponentepropiedad/subcomponentepropiedad.component';
 import { SubcomponentetipoComponent } from './components/subcomponentetipo/subcomponentetipo.component';
+import { ProductoComponent } from './components/producto/producto.component';
 
 const routes: Routes = [{
           path: '',    // Va a Main
@@ -122,7 +123,7 @@ const routes: Routes = [{
       PeppropiedadComponent, PeptipoComponent, DialogProyectoPropiedad, DialogDelete, DialogUnidadEjecutora, DialogColaborador,
       DialogImpacto, DialogEntidad, ComponenteComponent, DialogCargarProject, DialogMapa, ComponentepropiedadComponent, ComponentetipoComponent,
       DialogComponentePropiedad, DialogComponenteTipo, SubcomponenteComponent, SubcomponentepropiedadComponent, SubcomponentetipoComponent,
-      DialogSubComponentePropiedad, DialogSubComponenteTipo
+      DialogSubComponentePropiedad, DialogSubComponenteTipo, ProductoComponent
   ],
   imports: [
       BrowserModule,

@@ -20,7 +20,7 @@ namespace SiproModelCore.Models
 	    [ForeignKey("Componente")]
         public virtual Int32? componenteid { get; set; }
 	    [ForeignKey("Subcomponente")]
-        public virtual Int32 subcomponenteid { get; set; }
+        public virtual Int32? subcomponenteid { get; set; }
 	    [Column("USUARIO_CREO")]
 	    public virtual string usuarioCreo { get; set; }
 	    [Column("USUARIO_ACTUALIZO")]

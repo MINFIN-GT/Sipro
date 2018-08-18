@@ -422,119 +422,145 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        /*public static BigDecimal calcularCosto(Proyecto proyecto){
-            BigDecimal costo = new BigDecimal(0);
-            try{
-                Set<Componente> componentes = proyecto.getComponentes();
-                List<Actividad> actividades = ActividadDAO.getActividadesPorObjeto(proyecto.getId(), 1);
+        public static decimal calcularCosto(Proyecto proyecto)
+        {
+            decimal costo = decimal.Zero;
+            try
+            {
+                List<Componente> componentes = ComponenteDAO.getComponentesPorProyecto(proyecto.id);
+                List<Actividad> actividades = ActividadDAO.getActividadesPorObjeto(proyecto.id, 1);
 
-                if((componentes != null && componentes.size() > 0) || (actividades!=null && actividades.size()>0)){
-                    Iterator<Componente> iterador = componentes.iterator();
+                if ((componentes != null && componentes.Count > 0) || (actividades != null && actividades.Count > 0))
+                {
 
-                    while(iterador.hasNext()){
-                        Componente componente = iterador.next();
-                        costo = costo.add(componente.getCosto() != null ? componente.getCosto() : new BigDecimal(0));
+                    foreach (Componente componente in componentes)
+                    {
+                        costo += componente.costo ?? default(decimal);
                     }
 
-                    if(actividades != null && actividades.size() > 0){
-                        for(Actividad actividad : actividades){
-                            costo = costo.add(actividad.getCosto() != null ? actividad.getCosto() : new BigDecimal(0));
+                    if (actividades != null && actividades.Count > 0)
+                    {
+                        foreach (Actividad actividad in actividades)
+                        {
+                            costo += actividad.costo ?? default(decimal);
                         }
-                    }			
-                }else{
-                    costo = proyecto.getCosto();
-                }				
-            }catch(Exception e){
-                CLogger.write("16", Proyecto.class, e);
-            } 
+                    }
+                }
+                else
+                {
+                    costo = proyecto.costo ?? default(decimal);
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("16", "Proyecto.class", e);
+            }
 
             return costo;
         }
 
-        public static Date calcularFechaMinima(Proyecto proyecto){
-            DateTime fechaActual = null;
-            try{
-                List<Actividad> actividades = ActividadDAO.getActividadesPorObjeto(proyecto.getId(), 1);
-                if(actividades != null && actividades.size() > 0){
+        public static DateTime calcularFechaMinima(Proyecto proyecto)
+        {
+            DateTime fechaActual = default(DateTime);
+            try
+            {
+                List<Actividad> actividades = ActividadDAO.getActividadesPorObjeto(proyecto.id, 1);
+                if (actividades != null && actividades.Count > 0)
+                {
                     DateTime fechaMinima = new DateTime();
-                    for(Actividad actividad : actividades){
-                        if(fechaActual == null)
-                            fechaActual = new DateTime(actividad.getFechaInicio());
-                        else{
-                            fechaMinima = new DateTime(actividad.getFechaInicio());
+                    foreach (Actividad actividad in actividades)
+                    {
+                        if (fechaActual == null)
+                            fechaActual = actividad.fechaInicio;
+                        else
+                        {
+                            fechaMinima = actividad.fechaInicio;
 
-                            if(fechaActual.isAfter(fechaMinima))
+                            if (fechaActual > fechaMinima)
                                 fechaActual = fechaMinima;
                         }
                     }
                 }
 
-                Set<Componente> componentes = proyecto.getComponentes();
-                if(componentes != null && componentes.size() > 0){
-                    Iterator<Componente> iterador = componentes.iterator();
+                List<Componente> componentes = ComponenteDAO.getComponentesPorProyecto(proyecto.id);
+                if (componentes != null && componentes.Count > 0)
+                {
                     DateTime fechaMinima = new DateTime();
-                    while(iterador.hasNext()){
-                        Componente componente = iterador.next();
-                        if(fechaActual == null)
-                            fechaActual = new DateTime(componente.getFechaInicio());
-                        else{
-                            fechaMinima = new DateTime(componente.getFechaInicio());
+                    foreach (Componente componente in componentes)
+                    {
+                        if (fechaActual == null)
+                            fechaActual = componente.fechaInicio ?? default(DateTime);
+                        else
+                        {
+                            fechaMinima = componente.fechaInicio ?? default(DateTime);
 
-                            if(fechaActual.isAfter(fechaMinima))
+                            if (fechaActual > fechaMinima)
                                 fechaActual = fechaMinima;
                         }
-                    }	
-                }else if(fechaActual == null)
-                    fechaActual = new DateTime(proyecto.getFechaInicio());	
-            }catch(Exception e){
-                CLogger.write("17", Proyecto.class, e);
+                    }
+                }
+                else if (fechaActual == null)
+                    fechaActual = proyecto.fechaInicio ?? default(DateTime);
+            }
+            catch (Exception e)
+            {
+                CLogger.write("17", "Proyecto.class", e);
             }
 
-            return fechaActual.toDate();
+            return fechaActual;
         }
 
-        public static Date calcularFechaMaxima(Proyecto proyecto){
-            DateTime fechaActual = null;
-            try{
-                List<Actividad> actividades = ActividadDAO.getActividadesPorObjeto(proyecto.getId(), 1);
-                if(actividades != null && actividades.size() > 0){
+        public static DateTime calcularFechaMaxima(Proyecto proyecto)
+        {
+            DateTime fechaActual = default(DateTime);
+            try
+            {
+                List<Actividad> actividades = ActividadDAO.getActividadesPorObjeto(proyecto.id, 1);
+                if (actividades != null && actividades.Count > 0)
+                {
                     DateTime fechaMaxima = new DateTime();
-                    for(Actividad actividad : actividades){
-                        if(fechaActual == null)
-                            fechaActual = new DateTime(actividad.getFechaFin());
-                        else{
-                            fechaMaxima = new DateTime(actividad.getFechaFin());
+                    foreach (Actividad actividad in actividades)
+                    {
+                        if (fechaActual == null)
+                            fechaActual = actividad.fechaFin;
+                        else
+                        {
+                            fechaMaxima = actividad.fechaFin;
 
-                            if(fechaActual.isBefore(fechaMaxima))
+                            if (fechaActual < fechaMaxima)
                                 fechaActual = fechaMaxima;
                         }
                     }
                 }
 
-                Set<Componente> componentes = proyecto.getComponentes();
-                if(componentes != null && componentes.size() > 0){
-                    Iterator<Componente> iterador = componentes.iterator();
+                List<Componente> componentes = ComponenteDAO.getComponentesPorProyecto(proyecto.id);
+                if (componentes != null && componentes.Count > 0)
+                {
                     DateTime fechaMaxima = new DateTime();
-                    while(iterador.hasNext()){
-                        Componente componente = iterador.next();
-                        if(fechaActual == null)
-                            fechaActual = new DateTime(componente.getFechaFin());
-                        else{
-                            fechaMaxima = new DateTime(componente.getFechaFin());
+                    foreach (Componente componente in componentes)
+                    {
+                        if (fechaActual == null)
+                            fechaActual = componente.fechaFin ?? default(DateTime);
+                        else
+                        {
+                            fechaMaxima = componente.fechaFin ?? default(DateTime);
 
-                            if(fechaActual.isBefore(fechaMaxima))
+                            if (fechaActual < fechaMaxima)
                                 fechaActual = fechaMaxima;
                         }
                     }
-                }else if(fechaActual == null)
-                        fechaActual = new DateTime(proyecto.getFechaFin());
+                }
+                else if (fechaActual == null)
+                    fechaActual = proyecto.fechaFin ?? default(DateTime);
 
-            }catch(Exception e){
-                CLogger.write("18", Proyecto.class, e);
+            }
+            catch (Exception e)
+            {
+                CLogger.write("18", "Proyecto.class", e);
             }
 
-            return fechaActual.toDate();
-        }*/
+            return fechaActual;
+        }
 
         public static bool calcularCostoyFechas(int proyectoId){
             bool ret = false;
@@ -734,32 +760,26 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        /*public static List<Proyecto> getProyectosPorPrestamoHistory(int idPrograma,String lineaBase){
+        public static List<Proyecto> getProyectosPorPrestamoHistory(int prestamoId, String lineaBase)
+        {
             List<Proyecto> ret = new List<Proyecto>();
-            
-            try{
-                String query = String.Join(" ","select * ",
-                        "from sipro_history.proyecto p",
-                        "where p.prestamoid = ?1",
-                        "and p.estado = 1",
-                        lineaBase != null ? "and p.linea_base = ?2" : "and p.actual = 1");
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnectionHistory())
+                {
+                    String query = String.Join(" ", "SELECT * FROM proyecto p WHERE p.prestamoid=:prestamoId",
+                        "AND p.estado = 1",
+                        lineaBase != null ? "AND p.linea_base=:lineaBase" : "AND p.actual = 1");
 
-                Query<Proyecto> criteria = session.createNativeQuery(query, Proyecto.class);
-
-                criteria.setParameter(1, idPrograma);
-                if (lineaBase != null)
-                    criteria.setParameter(2, lineaBase);
-                ret =   criteria.getResultList();
+                    ret = db.Query<Proyecto>(query, new { prestamoId = prestamoId, lineaBase = lineaBase }).AsList<Proyecto>();
+                }
             }
-            catch(Exception e){
-                CLogger.write("22", ProyectoDAO.class, e);
+            catch (Exception e)
+            {
+                CLogger.write("22", "ProyectoDAO.class", e);
             }
-            finally{
-                session.close();
-            }
-
             return ret;
-        }*/
+        }
 
         public static Proyecto getProyectobyTreePath(String treePath)
         {

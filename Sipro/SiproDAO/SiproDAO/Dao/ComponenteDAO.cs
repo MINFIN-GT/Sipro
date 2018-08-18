@@ -180,40 +180,45 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        /*public static List<Componente> getComponentesPagina(int pagina, int numeroComponentes, String usuario){
-            List<Componente> ret = new ArrayList<Componente>();
-            Session session = CHibernateSession.getSessionFactory().openSession();
-            try{
-                Query<Componente> criteria = session.createQuery("SELECT c FROM Componente c WHERE estado = 1 AND c.id in (SELECT u.id.componenteid from ComponenteUsuario u where u.id.usuario=:usuario )",Componente.class);
-                criteria.setParameter("usuario", usuario);
-                criteria.setFirstResult(((pagina-1)*(numeroComponentes)));
-                criteria.setMaxResults(numeroComponentes);
-                ret = criteria.getResultList();
+        public static List<Componente> getComponentesPagina(int pagina, int numeroComponentes, String usuario)
+        {
+            List<Componente> ret = new List<Componente>();
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    string query = String.Join(" ", "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT c.* FROM componente c WHERE c.estado = 1 AND c.id in ",
+                        "(SELECT u.componenteid FROM componente_usuario u WHERE u.usuario=:usuario)");
+                    query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + numeroComponentes + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + numeroComponentes + ") + 1)");
+
+                    ret = db.Query<Componente>(query, new { usuario = usuario }).AsList<Componente>();
+                }
             }
-            catch(Throwable e){
-                CLogger.write("6", ComponenteDAO.class, e);
-            }
-            finally{
-                session.close();
+            catch (Exception e)
+            {
+                CLogger.write("6", "ComponenteDAO.class", e);
             }
             return ret;
         }
 
-        public static Long getTotalComponentes(String usuario){
-            Long ret=0L;
-            Session session = CHibernateSession.getSessionFactory().openSession();
-            try{
-                Query<Long> conteo = session.createQuery("SELECT count(c.id) FROM Componente c WHERE c.estado=1 AND  c.id in (SELECT u.id.componenteid from ComponenteUsuario u where u.id.usuario=:usuario )",Long.class);
-                conteo.setParameter("usuario", usuario);
-                ret = conteo.getSingleResult();
-            } catch(Throwable e){
-                CLogger.write("7", ComponenteDAO.class, e);
+        public static long getTotalComponentes(String usuario)
+        {
+            long ret = 0L;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    string query = String.Join(" ", "SELECT COUNT(*) FROM componente c WHERE c.estado=1 AND c.id in ",
+                        "(SELECT u.componenteid FROM componente_usuario u WHERE u.usuario=:usuario)");
+                    ret = db.ExecuteScalar<long>(query, new { usuario = usuario });
+                }
             }
-            finally{
-                session.close();
+            catch (Exception e)
+            {
+                CLogger.write("7", "ComponenteDAO.class", e);
             }
             return ret;
-        }*/
+        }
 
         public static List<Componente> getComponentesPaginaPorProyecto(int pagina, int numeroComponentes, int proyectoId,
                 String filtro_busqueda, String columna_ordenada, String orden_direccion, String usuario)
@@ -306,7 +311,7 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        public static Componente getComponenteFechaMaxima(Integer proyectoId, String usuario, Session session){
+        /*public static Componente getComponenteFechaMaxima(Integer proyectoId, String usuario, Session session){
             Componente ret = null;
             List<Componente> listRet = null;
             try{
@@ -397,47 +402,58 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        /*public static BigDecimal calcularCosto(Componente componente){
-            BigDecimal costo = new BigDecimal(0);
-            try{
-                Set<Producto> productos = componente.getProductos();
-                List<Actividad> actividades = ActividadDAO.getActividadesPorObjeto(componente.getId(), 2);
-                if((productos != null && productos.size() > 0) || (actividades!=null && actividades.size()>0) ){
-                    if(productos!=null){
-                        Iterator<Producto> iterador = productos.iterator();
-
-                        while(iterador.hasNext()){
-                            Producto producto = iterador.next();
-                            costo = costo.add(producto.getCosto() != null ? producto.getCosto() : new BigDecimal(0));
+        public static decimal calcularCosto(Componente componente)
+        {
+            decimal costo = decimal.Zero;
+            try
+            {
+                List<Producto> productos = ProductoDAO.getProductosByComponente(componente.id);
+                List<Actividad> actividades = ActividadDAO.getActividadesPorObjeto(componente.id, 2);
+                if ((productos != null && productos.Count > 0) || (actividades != null && actividades.Count > 0))
+                {
+                    if (productos != null)
+                    {
+                        foreach (Producto producto in productos)
+                        {
+                            costo += producto.costo ?? decimal.Zero;
                         }
                     }
 
-                    if(actividades != null && actividades.size() > 0){
-                        for(Actividad actividad : actividades){
-                            costo = costo.add(actividad.getCosto() != null ? actividad.getCosto() : new BigDecimal(0));
+                    if (actividades != null && actividades.Count > 0)
+                    {
+                        foreach (Actividad actividad in actividades)
+                        {
+                            costo += actividad.costo ?? decimal.Zero;
                         }
                     }
-                }else{
-                    PlanAdquisicion pa = PlanAdquisicionDAO.getPlanAdquisicionByObjeto(2, componente.getId());
-                    if(pa!=null){
-                            if(pa.getPlanAdquisicionPagos()!=null && pa.getPlanAdquisicionPagos().size()>0){
-                                BigDecimal pagos = new BigDecimal(0);
-                                for(PlanAdquisicionPago pago: pa.getPlanAdquisicionPagos())
-                                    pagos.add(pago.getPago());
-                                costo = pagos;
-                            }
-                            else
-                                costo = pa.getMontoContrato();
+                }
+                else
+                {
+                    PlanAdquisicion pa = PlanAdquisicionDAO.getPlanAdquisicionByObjeto(2, componente.id);
+                    if (pa != null)
+                    {
+                        List<PlanAdquisicionPago> lstpagos = PlanAdquisicionPagoDAO.getPagosByObjetoTipo(2, componente.id);
+                        if (lstpagos != null && lstpagos.Count > 0)
+                        {
+                            decimal pagos = decimal.Zero;
+                            foreach (PlanAdquisicionPago pago in lstpagos)
+                                pagos += pago.pago ?? default(decimal);
+                            costo = pagos;
+                        }
+                        else
+                            costo = pa.montoContrato;
                     }
                     else
-                        costo = componente.getCosto();
+                        costo = componente.costo ?? default(decimal);
                 }
-            }catch(Exception e){
-                CLogger.write("16", Proyecto.class, e);
-            } 
+            }
+            catch (Exception e)
+            {
+                CLogger.write("16", "Proyecto.class", e);
+            }
 
             return costo;
-        }*/
+        }
 
         public static List<Componente> getComponentesPorProyecto(int proyectoId)
         {
@@ -457,30 +473,31 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        /*public static boolean calcularCostoyFechas(Integer componenteId){
-            boolean ret = false;
-            ArrayList<ArrayList<Nodo>> listas = EstructuraProyectoDAO.getEstructuraObjetoArbolCalculos(componenteId, 2);
-            for(int i=listas.size()-2; i>=0; i--){
-                for(int j=0; j<listas.get(i).size(); j++){
-                    Nodo nodo = listas.get(i).get(j);
-                    Double costo=0.0d;
-                    Timestamp fecha_maxima=new Timestamp(0);
-                    Timestamp fecha_minima=new Timestamp((new DateTime(2999,12,31,0,0,0)).getMillis());
-                    for(Nodo nodo_hijo:nodo.children){
+        public static bool calcularCostoyFechas(int componenteId){
+            bool ret = false;
+            List<List<Nodo>> listas = EstructuraProyectoDAO.getEstructuraObjetoArbolCalculos(componenteId, 2);
+            for(int i=listas.Count-2; i>=0; i--){
+                for(int j=0; j<listas[i].Count; j++){
+                    Nodo nodo = listas[i][j];
+                    decimal costo = decimal.Zero;
+                    DateTime fecha_maxima = new DateTime();
+                    DateTime fecha_minima =new DateTime(new DateTime(2999,12,31,0,0,0).Ticks);
+                    foreach (Nodo nodo_hijo in nodo.children)
+                    { 
                         costo += nodo_hijo.costo;
-                        fecha_minima = (nodo_hijo.fecha_inicio.getTime()<fecha_minima.getTime()) ? nodo_hijo.fecha_inicio : fecha_minima;
-                        fecha_maxima = (nodo_hijo.fecha_fin.getTime()>fecha_maxima.getTime()) ? nodo_hijo.fecha_fin : fecha_maxima;
+                        fecha_minima = (nodo_hijo.fecha_inicio.TimeOfDay < fecha_minima.TimeOfDay) ? nodo_hijo.fecha_inicio : fecha_minima;
+                        fecha_maxima = (nodo_hijo.fecha_fin.TimeOfDay > fecha_maxima.TimeOfDay) ? nodo_hijo.fecha_fin : fecha_maxima;
                     }
                     nodo.objeto = ObjetoDAO.getObjetoPorIdyTipo(nodo.id, nodo.objeto_tipo);
-                    if(nodo.children!=null && nodo.children.size()>0){
+                    if(nodo.children!=null && nodo.children.Count>0){
                         nodo.fecha_inicio = fecha_minima;
                         nodo.fecha_fin = fecha_maxima;
                         nodo.costo = costo;
                     }
                     else
-                        nodo.costo = calcularCosto((Componente)nodo.objeto).doubleValue();
-                    nodo.duracion = Utils.getWorkingDays(new DateTime(nodo.fecha_inicio), new DateTime(nodo.fecha_fin));
-                    setDatosCalculados(nodo.objeto,nodo.fecha_inicio,nodo.fecha_fin,nodo.costo, nodo.duracion);
+                        nodo.costo = calcularCosto((Componente)nodo.objeto);
+                    nodo.duracion = Utils.getWorkingDays(nodo.fecha_inicio, nodo.fecha_fin);
+                    setDatosCalculados(nodo.objeto,nodo.fecha_inicio,nodo.fecha_fin, nodo.costo, nodo.duracion);
                 }
                 ret = true;
             }
@@ -488,50 +505,65 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        private static void setDatosCalculados(Object objeto,Timestamp fecha_inicio, Timestamp fecha_fin, Double costo, int duracion){
-            try{
-                if(objeto!=null){
-                    Method setFechaInicio =objeto.getClass().getMethod("setFechaInicio",Date.class);
-                    Method setFechaFin =  objeto.getClass().getMethod("setFechaFin",Date.class);
-                    Method setCosto = objeto.getClass().getMethod("setCosto",BigDecimal.class);
-                    Method setDuracion = objeto.getClass().getMethod("setDuracion", int.class);
-                    setFechaInicio.invoke(objeto, new Date(fecha_inicio.getTime()));
-                    setFechaFin.invoke(objeto, new Date(fecha_fin.getTime()));
-                    setCosto.invoke(objeto, new BigDecimal(costo));
-                    setDuracion.invoke(objeto, duracion);
+        private static void setDatosCalculados(Object objeto, DateTime fecha_inicio, DateTime fecha_fin, decimal costo, int duracion)
+        {
+            try
+            {
+                if (objeto != null)
+                {
+                    var setFechaInicio = objeto.GetType().GetProperty("fechaInicio");
+                    var setFechaFin = objeto.GetType().GetProperty("fechaFin");
+                    var setCosto = objeto.GetType().GetProperty("costo");
+                    var setDuracion = objeto.GetType().GetProperty("duracion");
+                    setFechaInicio.SetValue(objeto, fecha_inicio);
+                    setFechaFin.SetValue(objeto, fecha_fin);
+                    setCosto.SetValue(objeto, costo);
+                    setDuracion.SetValue(objeto, duracion);
                 }
             }
-            catch(Throwable e){
-                CLogger.write("20", ComponenteDAO.class, e);
+            catch (Exception e)
+            {
+                CLogger.write("20", "ComponenteDAO.class", e);
             }
-
         }
 
-        private static boolean guardarComponenteBatch(ArrayList<ArrayList<Nodo>> listas){
-            boolean ret = true;
-            try{
-                Session session = CHibernateSession.getSessionFactory().openSession();
-                session.beginTransaction();
-                int count=0;
-                for(int i=0; i<listas.size()-1; i++){
-                    for(int j=0; j<listas.get(i).size();j++){
-                        session.saveOrUpdate(listas.get(i).get(j).objeto);
-                        if ( ++count % 20 == 0 ) {
-                            session.flush();
-                            session.clear();
+        private static bool guardarComponenteBatch(List<List<Nodo>> listas)
+        {
+            bool ret = true;
+            try
+            {
+                for (int i = 0; i < listas.Count - 1; i++)
+                {
+                    for (int j = 0; j < listas[i].Count; j++)
+                    {
+                        switch (listas[i][j].objeto_tipo)
+                        {
+                            case 1:
+                                ComponenteDAO.guardarComponente((Componente)listas[i][j].objeto, false);
+                                break;
+                            case 2:
+                                SubComponenteDAO.guardarSubComponente((Subcomponente)listas[i][j].objeto, false);
+                                break;
+                            case 3:
+                                ProductoDAO.guardarProducto((Producto)listas[i][j].objeto, false);
+                                break;
+                            case 4:
+                                SubproductoDAO.guardarSubproducto((Subproducto)listas[i][j].objeto, false);
+                                break;
+                            case 5:
+                                ActividadDAO.guardarActividad((Actividad)listas[i][j].objeto, false);
+                                break;
                         }
                     }
                 }
-                session.flush();
-                session.getTransaction().commit();
-                session.close();
             }
-            catch(Throwable e){
+            catch (Exception e)
+            {
                 ret = false;
-                CLogger.write("21", ComponenteDAO.class, e);
+                CLogger.write("21", "ComponenteDAO.class", e);
             }
             return ret;
-        }*/
+        }
 
         public static Componente obtenerComponentePorEntidad(string codigo_presupuestario, int ejercicio, int entidad, int unidadEjectora, int numeroComponente, int prestamoId)
         {
@@ -604,30 +636,24 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        /*public static Componente getComponenteHistory(Integer componenteId,String lineaBase){
+        public static Componente getComponenteHistory(int componenteId, String lineaBase)
+        {
             Componente ret = null;
-            List<Componente> listRet = null;
-            Session session = CHibernateSession.getSessionFactory().openSession();
-            try{
-                String query = String.join(" ", "select * ", 
-                        "from sipro_history.componente c ",
-                        "where c.estado = 1 ",
-                        "and c.id = ?1 ",
-                        lineaBase != null ? "and c.linea_base like '%" + lineaBase + "%'" : "and c.actual = 1",
-                                "order by c.id desc");
-                Query<Componente> criteria = session.createNativeQuery(query, Componente.class);
-                criteria.setParameter(1, componenteId);
-                listRet =   criteria.getResultList();
-                ret = !listRet.isEmpty() ? listRet.get(0) : null;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnectionHistory())
+                {
+                    string query = String.Join(" ", "SELECT * FROM componente c WHERE c.estado = 1 AND c.id=:componenteId ",
+                        lineaBase != null ? "AND c.linea_base like '%" + lineaBase + "%'" : "AND c.actual = 1 ORDER BY c.id desc");
+                    ret = db.QueryFirstOrDefault<Componente>(query, new { componenteId = componenteId });
+                }
             }
-            catch(Throwable e){
-                CLogger.write("20", ComponenteDAO.class, e);
-            }
-            finally{
-                session.close();
+            catch (Exception e)
+            {
+                CLogger.write("20", "ComponenteDAO.class", e);
             }
             return ret;
-        }*/
+        }
 
         public static String getVersiones(int componenteId)
         {

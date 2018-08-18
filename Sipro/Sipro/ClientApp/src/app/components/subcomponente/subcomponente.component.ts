@@ -14,6 +14,7 @@ import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { DialogOverviewUnidadEjecutora, DialogUnidadEjecutora } from '../../../assets/modals/unidadejecutora/unidad-ejecutora';
 import { DialogSubComponenteTipo, DialogOverviewSubComponenteTipo } from '../../../assets/modals/subcomponentetipo/modal-subcomponente-tipo';
+import { DialogDelete, DialogOverviewDelete } from '../../../assets/modals/deleteconfirmation/confirmation-delete';
 
 export interface AcumulacionCosto {
   id: number;
@@ -76,6 +77,7 @@ export class SubcomponenteComponent implements OnInit {
   botones: boolean;
   componenteNombre: string;
   objetoTipoNombre: string;
+  modalDelete: DialogOverviewDelete;
 
   dimensiones = [
     {value:1,nombre:'Dias',sigla:'d'}
@@ -112,6 +114,7 @@ export class SubcomponenteComponent implements OnInit {
     this.modalUnidadEjecutora = new DialogOverviewUnidadEjecutora(dialog);
     this.modalSubComponenteTipo = new DialogOverviewSubComponenteTipo(dialog);
     this.unidadejecutoranombre = "";
+    this.modalDelete = new DialogOverviewDelete(dialog);
    }
 
    private _filterAcumulacionCosto(value: string): AcumulacionCosto[] {
@@ -177,22 +180,22 @@ export class SubcomponenteComponent implements OnInit {
       t:moment().unix()
     };
 
-    this.http.post('http://localhost:60080/api/Subcomponente/SubComponentesPaginaPorComponente', filtro, { withCredentials : true}).subscribe(response =>{
-      if(response['success'] == true){
-        var data = response['subcomponentes'];
+    this.http.post('http://localhost:60080/api/Subcomponente/SubComponentesPaginaPorComponente', filtro, { withCredentials : true}).subscribe(
+      response =>{
+        if(response['success'] == true){
+          var data = response['subcomponentes'];
 
-        for(var i =0; i<data.length; i++){
-          data[i].fechaInicio = data[i].fechaInicio != null ? moment(data[i].fechaInicio,'DD/MM/YYYY').toDate() : null;
-          data[i].fechaFin = data[i].fechaFin != null ? moment(data[i].fechaFin,'DD/MM/YYYY').format('DD/MM/YYYY') : null;
-        }
+          for(var i =0; i<data.length; i++){
+            data[i].fechaInicio = data[i].fechaInicio != null ? moment(data[i].fechaInicio,'DD/MM/YYYY').toDate() : null;
+            data[i].fechaFin = data[i].fechaFin != null ? moment(data[i].fechaFin,'DD/MM/YYYY').format('DD/MM/YYYY') : null;
+          }
 
-        this.source = new LocalDataSource(data);
-        this.source.setSort([
-            { field: 'id', direction: 'asc' }  // primary sort
-        ]);
-        this.busquedaGlobal = null;
+          this.source = new LocalDataSource(data);
+          this.source.setSort([
+              { field: 'id', direction: 'asc' }  // primary sort
+          ]);
+          this.busquedaGlobal = null;
       }
-
       this.mostrarcargando = false;
     })
   }
@@ -210,11 +213,65 @@ export class SubcomponenteComponent implements OnInit {
   }
 
   editar(){
+    if(this.subcomponente.id != null){
+      this.esColapsado = true;
+      this.esNuevo = false;
+      this.tabActive = 0;
+      this.dimensionSelected = 0;
 
+      this.unidadejecutoraid= this.subcomponente.ueunidadEjecutora;
+      this.unidadejecutoranombre= this.subcomponente.unidadejecutoranombre;
+      this.ejercicio = this.subcomponente.ejercicio;
+      this.entidad = this.subcomponente.entidad;
+      this.entidadnombre = this.subcomponente.entidadnombre;
+
+      if(this.subcomponente.acumulacionCostoid==2)
+        this.bloquearCosto = true;
+      else
+        this.bloquearCosto = false;
+
+      this.mostraringreso = true;
+      this.esNuevo = false;
+
+      this.coordenadas = (this.subcomponente.latitud !=null ?  this.subcomponente.latitud : '') +
+        (this.subcomponente.latitud!=null ? ', ' : '') + (this.subcomponente.longitud!=null ? this.subcomponente.longitud : '');
+        
+      this.obtenerCamposDinamicos();
+
+      this.getAsignado();      
+    }
+    else
+      this.utils.mensaje("warning", "Debe de seleccionar el componente que desea editar");
   }
 
   borrar(){
-
+    if(this.subcomponente.id > 0){
+      this.modalDelete.dialog.open(DialogDelete, {
+        width: '600px',
+        height: '200px',
+        data: { 
+          id: this.subcomponente.id,
+          titulo: 'Confirmación de Borrado', 
+          textoCuerpo: '¿Desea borrar el subcomponente?',
+          textoBotonOk: 'Borrar',
+          textoBotonCancelar: 'Cancelar'
+        }
+      }).afterClosed().subscribe(result => {
+        if(result != null){
+          if(result){
+            this.http.delete('http://localhost:60080/api/Subcomponente/SubComponente/'+ this.subcomponente.id, { withCredentials : true }).subscribe(response =>{
+              if(response['success'] == true){
+                this.obtenerTotalSubcomponentes();
+                this.utils.mensaje('success', 'Subcomponente borrado exitosamente');
+              }
+            })
+          } 
+        }
+      })
+    }
+    else{
+      this.utils.mensaje('warning', 'Seleccione una propiedad de subcomponente');
+    }
   }
 
   filtrar(campo){
@@ -285,20 +342,20 @@ export class SubcomponenteComponent implements OnInit {
         }
       }
 
+      this.subcomponente.inversionNueva = this.subcomponente.inversionNueva == 1 ? 1 : this.subcomponente.inversionNueva.toString() == "true" ? 1 : 0;
       this.subcomponente.camposDinamicos = JSON.stringify(this.camposdinamicos);
+      this.subcomponente.componenteid = this.componenteid;
 
       var objetoHttp;
 
       if(this.subcomponente.id > 0){
         objetoHttp = this.http.put("http://localhost:60080/api/Subcomponente/SubComponente/" + this.subcomponente.id, this.subcomponente, { withCredentials: true });
       }
-      else{
-        this.subcomponente.componenteid = this.componenteid;
+      else{        
         this.subcomponente.id=0;
         this.subcomponente.ejercicio = this.ejercicio;
         this.subcomponente.entidad = this.entidad;
         this.subcomponente.ueunidadEjecutora = this.unidadEjecutora;
-        this.subcomponente.fechaFin = moment(this.subcomponente.fechaFin).toString();
         objetoHttp = this.http.post("http://localhost:60080/api/Subcomponente/SubComponente", this.subcomponente, { withCredentials: true });
       }
 
@@ -324,12 +381,16 @@ export class SubcomponenteComponent implements OnInit {
 						}
 						else
               $utilidades.mensaje('success','Componente '+(this.esNuevo ? 'creado' : 'guardado')+' con éxito');*/
-            this.utils.mensaje('success', 'Componente '+(this.esNuevo ? 'creado' : 'guardado')+' con éxito');
+            this.utils.mensaje('success', 'Subcomponente '+(this.esNuevo ? 'creado' : 'guardado')+' con éxito');
             this.esNuevo = false;
         }
         else
-          this.utils.mensaje('danger', 'No se pudo guardar el Subcomponente.');
-      })
+          this.utils.mensaje('warning', 'No se pudo guardar el Subcomponente.');
+      },
+      error => {
+          this.utils.mensaje('danger', 'Ocurrió un error al guardar el Subcomponente');
+      }
+    )
     }
   }
 

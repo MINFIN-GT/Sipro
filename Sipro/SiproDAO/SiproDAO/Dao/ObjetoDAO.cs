@@ -5,7 +5,6 @@ using System.Data.Common;
 using Utilities;
 using SiproModelCore.Models;
 using System.Numerics;
-using SiproModelAnalyticCore.Models;
 
 namespace SiproDAO.Dao
 {
@@ -220,274 +219,320 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        /*public static List<ObjetoCosto> getEstructuraConCosto(int idProyecto, int anioInicial, int anioFinal, bool obtenerPlanificado, bool obtenerReal, int mesPresupuestos,  String lineaBase, String usuario)
-            {
+        public static List<ObjetoCosto> getEstructuraConCosto(int idProyecto, int anioInicial, int anioFinal, bool obtenerPlanificado, bool obtenerReal, int? mesPresupuestos, String lineaBase, String usuario)
+        {
             List<ObjetoCosto> lstPrestamo = new List<ObjetoCosto>();
             ObjetoCosto root = null;
-            int fuente=0;
-                int organismo =0;
-                int correlativo =0;
+            int fuente = 0;
+            int organismo = 0;
+            int correlativo = 0;
 
-                using (DbConnection db = new OracleContext().getConnectionAnalytic())
+            using (DbConnection db = new OracleContext().getConnectionAnalytic())
+            {
+                List<dynamic> estructuras = getConsultaEstructuraConCosto(idProyecto, lineaBase);
+
+                if (estructuras != null && estructuras.Count > 0)
                 {
-                    List <dynamic> estructuras = getConsultaEstructuraConCosto(idProyecto, lineaBase);
-
-                    if (estructuras != null && estructuras.Count > 0)
+                    try
                     {
-                        try
-                        {
-                            Object[] dato = (Object[])estructuras[0];
-                            int objeto_id = dato[0] != null ? (int)dato[0] : 0;
-                            String nombre = dato[1] != null ? (String)dato[1] : null;
-                            int objeto_tipo = dato[2] != null ? Convert.ToInt32((BigInteger)dato[2]) : 0;
-                            int nivel = (dato[3] != null) ? ((String)dato[3]).Length / 8 : 0;
-                            String treePath = dato[3] != null ? ((String)dato[3]) : null;
-                            DateTime fecha_inicial = dato[4] != null ? (DateTime)dato[4] : default(DateTime);
-                            DateTime fecha_final = dato[5] != null ? (DateTime)dato[5] : default(DateTime);
-                            int duracion = dato[6] != null ? (int)dato[6] : default(int);
-                            decimal costo = dato[8] != null ? (decimal)dato[8] : default(decimal);
-                            int acumulacion_costoid = dato[10] != null ? Convert.ToInt32(dato[10].ToString()) : default(int);
-                            int programa = dato[11] != null ? (int)dato[11] : default(int);
-                            int subprograma = dato[12] != null ? (int)dato[12] : default(int);
-                            int proyecto = dato[13] != null ? (int)dato[13] : default(int);
-                            int actividad = dato[14] != null ? (int)dato[14] : default(int);
-                            int obra = dato[15] != null ? (int)dato[15] : default(int);
-                            int reglon = dato[16] != null ? (int)dato[16] : default(int);
-                            int geografico = dato[17] != null ? (int)dato[17] : default(int);
-                            DateTime fecha_inicial_real = dato[18] != null ? (DateTime)dato[18] : default(DateTime);
-                            DateTime fecha_final_real = dato[19] != null ? (DateTime)dato[19] : default(DateTime);
-                            int unidad_ejecutora = dato[20] != null ? (int)dato[20] : default(int);
-                            int entidad = dato[21] != null ? (int)dato[21] : default(int);
-                            int avance_fisico = dato[22] != null ? Convert.ToInt32((BigInteger)dato[22]) : default(int);
-                            int inversion_nueva = dato[23] != null ? (int)dato[23] : default(int);
-                            decimal totalPagos = dato[25] != null ? (decimal)dato[25] : default(decimal);
+                        Object[] dato = (Object[])estructuras[0];
+                        int objeto_id = dato[0] != null ? (int)dato[0] : 0;
+                        String nombre = dato[1] != null ? (String)dato[1] : null;
+                        int objeto_tipo = dato[2] != null ? Convert.ToInt32((BigInteger)dato[2]) : 0;
+                        int nivel = (dato[3] != null) ? ((String)dato[3]).Length / 8 : 0;
+                        String treePath = dato[3] != null ? ((String)dato[3]) : null;
+                        DateTime fecha_inicial = dato[4] != null ? (DateTime)dato[4] : default(DateTime);
+                        DateTime fecha_final = dato[5] != null ? (DateTime)dato[5] : default(DateTime);
+                        int duracion = dato[6] != null ? (int)dato[6] : default(int);
+                        decimal costo = dato[8] != null ? (decimal)dato[8] : default(decimal);
+                        int acumulacion_costoid = dato[10] != null ? Convert.ToInt32(dato[10].ToString()) : default(int);
+                        int? programa = dato[11] != null ? (int)dato[11] : default(int);
+                        int? subprograma = dato[12] != null ? (int)dato[12] : default(int);
+                        int? proyecto = dato[13] != null ? (int)dato[13] : default(int);
+                        int? actividad = dato[14] != null ? (int)dato[14] : default(int);
+                        int? obra = dato[15] != null ? (int)dato[15] : default(int);
+                        int? reglon = dato[16] != null ? (int)dato[16] : default(int);
+                        int? geografico = dato[17] != null ? (int)dato[17] : default(int);
+                        DateTime fecha_inicial_real = dato[18] != null ? (DateTime)dato[18] : default(DateTime);
+                        DateTime fecha_final_real = dato[19] != null ? (DateTime)dato[19] : default(DateTime);
+                        int unidad_ejecutora = dato[20] != null ? (int)dato[20] : default(int);
+                        int entidad = dato[21] != null ? (int)dato[21] : default(int);
+                        int avance_fisico = dato[22] != null ? Convert.ToInt32((BigInteger)dato[22]) : default(int);
+                        int inversion_nueva = dato[23] != null ? (int)dato[23] : default(int);
+                        decimal totalPagos = dato[25] != null ? (decimal)dato[25] : default(decimal);
 
-                            root.nombre = nombre;
-                            root.objeto_id = objeto_id;
-                            root.objeto_tipo = objeto_tipo;
-                            root.nivel = nivel;
-                            root.fecha_inicial = fecha_inicial;
-                            root.fecha_final = fecha_final;
-                            root.fecha_inicial_real = fecha_inicial_real;
-                            root.fecha_final_real = fecha_final_real;
-                            root.duracion = duracion;
-                            root.acumulacion_costoid = acumulacion_costoid;
-                            root.costo = costo;
-                            root.totalPagos = totalPagos;
-                            root.unidad_ejecutora = unidad_ejecutora;
-                            root.entidad = entidad;
-                            root.avance_fisico = avance_fisico;
-                            root.inversion_nueva = inversion_nueva;
-                            root.programa = programa;
-                            root.subprograma = subprograma;
-                            root.proyecto = proyecto;
-                            root.actividad = actividad;
-                            root.obra = obra;
-                            root.renglon = reglon;
-                            root.geografico = geografico;
-                            root.treePath = treePath;
+                        root.nombre = nombre;
+                        root.objeto_id = objeto_id;
+                        root.objeto_tipo = objeto_tipo;
+                        root.nivel = nivel;
+                        root.fecha_inicial = fecha_inicial;
+                        root.fecha_final = fecha_final;
+                        root.fecha_inicial_real = fecha_inicial_real;
+                        root.fecha_final_real = fecha_final_real;
+                        root.duracion = duracion;
+                        root.acumulacion_costoid = acumulacion_costoid;
+                        root.costo = costo;
+                        root.totalPagos = totalPagos;
+                        root.unidad_ejecutora = unidad_ejecutora;
+                        root.entidad = entidad;
+                        root.avance_fisico = avance_fisico;
+                        root.inversion_nueva = inversion_nueva;
+                        root.programa = programa ?? default(int);
+                        root.subprograma = subprograma ?? default(int);
+                        root.proyecto = proyecto ?? default(int);
+                        root.actividad = actividad ?? default(int);
+                        root.obra = obra ?? default(int);
+                        root.renglon = reglon ?? default(int);
+                        root.geografico = geografico ?? default(int);
+                        root.treePath = treePath;
 
-                            root.inicializarStanio(anioInicial, anioFinal);
+                        root.inicializarStanio(anioInicial, anioFinal);
 
-                            if (obtenerReal || mesPresupuestos != default(int))
-                            { //datos de Prestamo para costos reales o presupuestos
-                                Proyecto proy = ProyectoDAO.getProyecto(root.getObjeto_id());
-                                if (proy.getPrestamo() != null)
+                        if (obtenerReal || mesPresupuestos != default(int))
+                        { //datos de Prestamo para costos reales o presupuestos
+                            Proyecto proy = ProyectoDAO.getProyecto(root.objeto_id);
+                            proy.prestamos = PrestamoDAO.getPrestamoById(proy.prestamoid ?? default(int));
+                            if (proy.prestamos != null)
+                            {
+                                String codigoPresupuestario = proy.prestamos.codigoPresupuestario.ToString();
+                                if (codigoPresupuestario != null && codigoPresupuestario.Length > 0)
                                 {
-                                    String codigoPresupuestario = Long.toString(proy.getPrestamo().getCodigoPresupuestario());
-                                    if (codigoPresupuestario != null && !codigoPresupuestario.isEmpty())
-                                    {
-                                        fuente = Utils.String2Int(codigoPresupuestario.substring(0, 2));
-                                        organismo = Utils.String2Int(codigoPresupuestario.substring(2, 6));
-                                        correlativo = Utils.String2Int(codigoPresupuestario.substring(6, 10));
-                                        root = getCostoReal(root, fuente, organismo, correlativo, anioInicial, anioFinal, conn_analytic, usuario);
-                                    }
+                                    fuente = Convert.ToInt32(codigoPresupuestario.Substring(0, 2));
+                                    organismo = Convert.ToInt32(codigoPresupuestario.Substring(2, 6));
+                                    correlativo = Convert.ToInt32(codigoPresupuestario.Substring(6, 10));
+                                    root = getCostoReal(root, fuente, organismo, correlativo, anioInicial, anioFinal, usuario);
                                 }
                             }
+                        }
 
-                            ObjetoCosto nivel_actual_estructura = root;
-                            for (int i = 0; i < estructuras.size(); i++)
+                        ObjetoCosto nivel_actual_estructura = root;
+                        for (int i = 0; i < estructuras.Count; i++)
+                        {
+                            dato = (Object[])estructuras[i];
+                            objeto_id = dato[0] != null ? (int)dato[0] : 0;
+                            nombre = dato[1] != null ? (String)dato[1] : null;
+                            objeto_tipo = dato[2] != null ? (int)dato[2] : 0;
+                            nivel = (dato[3] != null) ? ((String)dato[3]).Length / 8 : 0;
+                            treePath = dato[3] != null ? ((String)dato[3]) : null;
+                            fecha_inicial = dato[4] != null ? (DateTime)dato[4] : default(DateTime);
+                            fecha_final = dato[5] != null ? (DateTime)dato[5] : default(DateTime);
+                            duracion = dato[6] != null ? (int)dato[6] : default(int);
+                            costo = dato[8] != null ? (decimal)dato[8] : default(int);
+                            acumulacion_costoid = dato[10] != null ? (int)dato[10] : default(int);
+                            programa = dato[11] != null ? (int)dato[11] : default(int);
+                            subprograma = dato[12] != null ? (int)dato[12] : default(int);
+                            proyecto = dato[13] != null ? (int)dato[13] : default(int);
+                            actividad = dato[14] != null ? (int)dato[14] : default(int);
+                            obra = dato[15] != null ? (int)dato[15] : default(int);
+                            reglon = dato[16] != null ? (int)dato[16] : default(int);
+                            geografico = dato[17] != null ? (int)dato[17] : default(int);
+                            fecha_inicial_real = dato[18] != null ? (DateTime)dato[18] : default(DateTime);
+                            fecha_final_real = dato[19] != null ? (DateTime)dato[19] : default(DateTime);
+                            unidad_ejecutora = dato[20] != null ? (int)dato[20] : default(int);
+                            entidad = dato[21] != null ? (int)dato[21] : default(int);
+                            avance_fisico = dato[22] != null ? (int)dato[22] : default(int);
+                            inversion_nueva = dato[23] != null ? (int)dato[23] : default(int);
+                            totalPagos = dato[25] != null ? (decimal)dato[25] : default(decimal);
+
+                            ObjetoCosto nodo = new ObjetoCosto();
+
+                            nodo.nombre = nombre;
+                            nodo.objeto_id = objeto_id;
+                            nodo.objeto_tipo = objeto_tipo;
+                            nodo.nivel = nivel;
+                            nodo.fecha_inicial = fecha_inicial;
+                            nodo.fecha_final = fecha_final;
+                            nodo.fecha_inicial_real = fecha_inicial_real;
+                            nodo.fecha_final_real = fecha_final_real;
+                            nodo.duracion = duracion;
+                            nodo.anios = null;
+                            nodo.acumulacion_costoid = acumulacion_costoid;
+                            nodo.costo = costo;
+                            nodo.totalPagos = totalPagos;
+                            nodo.unidad_ejecutora = unidad_ejecutora;
+                            nodo.entidad = entidad;
+                            nodo.avance_fisico = avance_fisico;
+                            nodo.inversion_nueva = inversion_nueva;
+                            nodo.programa = programa ?? default(int);
+                            nodo.subprograma = subprograma ?? default(int);
+                            nodo.proyecto = proyecto ?? default(int);
+                            nodo.actividad = actividad ?? default(int);
+                            nodo.obra = obra ?? default(int);
+                            nodo.renglon = reglon ?? default(int);
+                            nodo.geografico = geografico ?? default(int);
+                            nodo.treePath = treePath;
+                            nodo.inicializarStanio(anioInicial, anioFinal);
+
+                            if (obtenerReal)
                             {
-                                dato = (Object[])estructuras.get(i);
-                                objeto_id = dato[0] != null ? (Integer)dato[0] : 0;
-                                nombre = dato[1] != null ? (String)dato[1] : null;
-                                objeto_tipo = dato[2] != null ? ((BigInteger)dato[2]).intValue() : 0;
-                                nivel = (dato[3] != null) ? ((String)dato[3]).length() / 8 : 0;
-                                treePath = dato[3] != null ? ((String)dato[3]) : null;
-                                fecha_inicial = dato[4] != null ? new DateTime((Timestamp)dato[4]) : null;
-                                fecha_final = dato[5] != null ? new DateTime((Timestamp)dato[5]) : null;
-                                duracion = dato[6] != null ? (Integer)dato[6] : null;
-                                costo = dato[8] != null ? (BigDecimal)dato[8] : null;
-                                acumulacion_costoid = dato[10] != null ? Integer.valueOf(dato[10].toString()) : null;
-                                programa = dato[11] != null ? (Integer)dato[11] : null;
-                                subprograma = dato[12] != null ? (Integer)dato[12] : null;
-                                proyecto = dato[13] != null ? (Integer)dato[13] : null;
-                                actividad = dato[14] != null ? (Integer)dato[14] : null;
-                                obra = dato[15] != null ? (Integer)dato[15] : null;
-                                reglon = dato[16] != null ? (Integer)dato[16] : null;
-                                geografico = dato[17] != null ? (Integer)dato[17] : null;
-                                fecha_inicial_real = dato[18] != null ? new DateTime((Timestamp)dato[18]) : null;
-                                fecha_final_real = dato[19] != null ? new DateTime((Timestamp)dato[19]) : null;
-                                unidad_ejecutora = dato[20] != null ? (Integer)dato[20] : null;
-                                entidad = dato[21] != null ? (Integer)dato[21] : null;
-                                avance_fisico = dato[22] != null ? Integer.valueOf(((BigInteger)dato[22]).toString()) : null;
-                                inversion_nueva = dato[23] != null ? (Integer)dato[23] : null;
-                                totalPagos = dato[25] != null ? (BigDecimal)dato[25] : null;
+                                nodo = getCostoReal(nodo, fuente, organismo, correlativo, anioInicial, anioFinal, usuario);
+                            }
 
-                                ObjetoCosto nodo = new ObjetoCosto(nombre, objeto_id, objeto_tipo, nivel, fecha_inicial, fecha_final,
-                                        fecha_inicial_real, fecha_final_real, duracion, null,
-                                        acumulacion_costoid, costo, totalPagos,
-                                        unidad_ejecutora, entidad, avance_fisico, inversion_nueva,
-                                        programa, subprograma, proyecto, actividad, obra, reglon, geografico, treePath);
-                                nodo.inicializarStanio(anioInicial, anioFinal);
+                            if (mesPresupuestos != null)
+                            {
+                                nodo = getPresupuestos(nodo, fuente, organismo, correlativo, anioInicial, mesPresupuestos, usuario);
+                            }
 
-                                if (obtenerReal)
+                            if (nodo.objeto_tipo > 0 && nodo.nivel != nivel_actual_estructura.nivel + 1)
+                            {
+                                if (nodo.nivel > nivel_actual_estructura.nivel)
                                 {
-                                    nodo = getCostoReal(nodo, fuente, organismo, correlativo, anioInicial, anioFinal, conn_analytic, usuario);
-                                }
-
-                                if (mesPresupuestos != null)
-                                {
-                                    nodo = getPresupuestos(nodo, fuente, organismo, correlativo, anioInicial, mesPresupuestos, conn_analytic, usuario);
-                                }
-
-                                if (nodo.objeto_tipo > 0 && nodo.nivel != nivel_actual_estructura.nivel + 1)
-                                {
-                                    if (nodo.nivel > nivel_actual_estructura.nivel)
-                                    {
-                                        nivel_actual_estructura = nivel_actual_estructura.children.get(nivel_actual_estructura.children.size() - 1);
-                                    }
-                                    else
-                                    {
-                                        int retornar = nivel_actual_estructura.nivel - nodo.nivel + 1;
-                                        for (int j = 0; j < retornar; j++)
-                                            nivel_actual_estructura = nivel_actual_estructura.parent;
-                                    }
-                                }
-
-                                if (nodo.objeto_tipo > 0)
-                                {
-                                    nodo.parent = nivel_actual_estructura;
-                                    nivel_actual_estructura.children.add(nodo);
+                                    nivel_actual_estructura = nivel_actual_estructura.children[nivel_actual_estructura.children.Count - 1];
                                 }
                                 else
-                                    nodo.parent = null;
+                                {
+                                    int retornar = nivel_actual_estructura.nivel - nodo.nivel + 1;
+                                    for (int j = 0; j < retornar; j++)
+                                        nivel_actual_estructura = nivel_actual_estructura.parent;
+                                }
                             }
-                        }
-                        catch (Exception e)
-                        {
-                            root = null;
-                            CLogger.write("3", "ObjetoDAO.class", e);
-                        }
 
-    }
+                            if (nodo.objeto_tipo > 0)
+                            {
+                                nodo.parent = nivel_actual_estructura;
+                                nivel_actual_estructura.children.Add(nodo);
+                            }
+                            else
+                                nodo.parent = null;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        root = null;
+                        CLogger.write("3", "ObjetoDAO.class", e);
+                    }
+
                 }
-                    if (CMariaDB.connectAnalytic()){
-
-
-                    if(obtenerPlanificado){ //sube montos por hijos en arbol
-                        root = obtenerPlanificado(root, anioInicial, anioFinal, lineaBase, conn_analytic);
-                    }		
-                    lstPrestamo = root.getListado(root);
-                conn_analytic.close();
             }
+            if (obtenerPlanificado)
+            { //sube montos por hijos en arbol
+                root = obtenerCostoPlanificado(root, anioInicial, anioFinal, lineaBase);
+            }
+            lstPrestamo = root.getListado(root);
             return lstPrestamo;
         }
 
 
-        /*public static List<ObjetoCostoJasper> getEstructuraConCostoJasper(Integer proyectoId, int anioInicial, int anioFinal, Integer mesPresupuestos, String lineaBase, String usuario) throws SQLException{
+        public static List<ObjetoCostoJasper> getEstructuraConCostoJasper(int proyectoId, int anioInicial, int anioFinal, int mesPresupuestos, String lineaBase, String usuario)
+        {
             List<ObjetoCosto> listadoObjetos = getEstructuraConCosto(proyectoId, anioInicial, anioFinal, true, true, mesPresupuestos, lineaBase, usuario);
-            List<ObjetoCostoJasper> listadoCostos = new ArrayList<ObjetoCostoJasper>(); 
+            List<ObjetoCostoJasper> listadoCostos = new List<ObjetoCostoJasper>();
 
-            for (int i=0; i<listadoObjetos.size(); i++){
-                ObjetoCosto temp = listadoObjetos.get(i);
+            for (int i = 0; i < listadoObjetos.Count; i++)
+            {
+                ObjetoCosto temp = listadoObjetos[i];
                 ObjetoCostoJasper elemento = new ObjetoCostoJasper(temp.nombre, temp.objeto_id, temp.objeto_tipo, temp.nivel,
-                        temp.fecha_inicial!=null?temp.fecha_inicial.toDate():null, temp.fecha_final!=null?temp.fecha_final.toDate():null, 
-                        temp.fecha_inicial_real!=null?temp.fecha_inicial_real.toDate():null, temp.fecha_final_real!=null?temp.fecha_final_real.toDate():null, 
+                        temp.fecha_inicial, temp.fecha_final, temp.fecha_inicial_real, temp.fecha_final_real,
                         temp.duracion, temp.acumulacion_costoid, temp.costo, temp.totalPagos, temp.programa,
-                        temp.subprograma, temp.proyecto, temp.actividad, temp.obra, temp.renglon, temp.geografico, temp.treePath, 
-                        temp.anios[0].mes[0].planificado.setScale(2, BigDecimal.ROUND_HALF_UP), temp.anios[0].mes[1].planificado.setScale(2, BigDecimal.ROUND_HALF_UP), 
-                        temp.anios[0].mes[2].planificado.setScale(2, BigDecimal.ROUND_HALF_UP), 
-                        temp.anios[0].mes[3].planificado.setScale(2, BigDecimal.ROUND_HALF_UP), temp.anios[0].mes[4].planificado.setScale(2, BigDecimal.ROUND_HALF_UP), temp.anios[0].mes[5].planificado.setScale(2, BigDecimal.ROUND_HALF_UP), 
-                        temp.anios[0].mes[6].planificado.setScale(2, BigDecimal.ROUND_HALF_UP), temp.anios[0].mes[7].planificado.setScale(2, BigDecimal.ROUND_HALF_UP), temp.anios[0].mes[8].planificado.setScale(2, BigDecimal.ROUND_HALF_UP), 
-                        temp.anios[0].mes[9].planificado.setScale(2, BigDecimal.ROUND_HALF_UP), temp.anios[0].mes[10].planificado.setScale(2, BigDecimal.ROUND_HALF_UP), temp.anios[0].mes[11].planificado.setScale(2, BigDecimal.ROUND_HALF_UP), 
-                        temp.anios[0].mes[0].real.setScale(2, BigDecimal.ROUND_HALF_UP), temp.anios[0].mes[1].real.setScale(2, BigDecimal.ROUND_HALF_UP), temp.anios[0].mes[2].real.setScale(2, BigDecimal.ROUND_HALF_UP), 
-                        temp.anios[0].mes[3].real.setScale(2, BigDecimal.ROUND_HALF_UP), temp.anios[0].mes[4].real.setScale(2, BigDecimal.ROUND_HALF_UP), temp.anios[0].mes[5].real.setScale(2, BigDecimal.ROUND_HALF_UP), 
-                        temp.anios[0].mes[6].real.setScale(2, BigDecimal.ROUND_HALF_UP), temp.anios[0].mes[7].real.setScale(2, BigDecimal.ROUND_HALF_UP), temp.anios[0].mes[8].real.setScale(2, BigDecimal.ROUND_HALF_UP), 
-                        temp.anios[0].mes[9].real.setScale(2, BigDecimal.ROUND_HALF_UP), temp.anios[0].mes[10].real.setScale(2, BigDecimal.ROUND_HALF_UP), temp.anios[0].mes[11].real.setScale(2, BigDecimal.ROUND_HALF_UP),
+                        temp.subprograma, temp.proyecto, temp.actividad, temp.obra, temp.renglon, temp.geografico, temp.treePath,
+                        Math.Round(temp.anios[0].mes[0].planificado, 2, MidpointRounding.AwayFromZero), Math.Round(temp.anios[0].mes[1].planificado, 2, MidpointRounding.AwayFromZero),
+                        Math.Round(temp.anios[0].mes[2].planificado, 2, MidpointRounding.AwayFromZero), Math.Round(temp.anios[0].mes[3].planificado, 2, MidpointRounding.AwayFromZero),
+                        Math.Round(temp.anios[0].mes[4].planificado, 2, MidpointRounding.AwayFromZero), Math.Round(temp.anios[0].mes[5].planificado, 2, MidpointRounding.AwayFromZero),
+                        Math.Round(temp.anios[0].mes[6].planificado, 2, MidpointRounding.AwayFromZero), Math.Round(temp.anios[0].mes[7].planificado, 2, MidpointRounding.AwayFromZero),
+                        Math.Round(temp.anios[0].mes[8].planificado, 2, MidpointRounding.AwayFromZero), Math.Round(temp.anios[0].mes[9].planificado, 2, MidpointRounding.AwayFromZero),
+                        Math.Round(temp.anios[0].mes[10].planificado, 2, MidpointRounding.AwayFromZero), Math.Round(temp.anios[0].mes[11].planificado, 2, MidpointRounding.AwayFromZero),
+                        Math.Round(temp.anios[0].mes[0].real, 2, MidpointRounding.AwayFromZero), Math.Round(temp.anios[0].mes[1].real, 2, MidpointRounding.AwayFromZero),
+                        Math.Round(temp.anios[0].mes[2].real, 2, MidpointRounding.AwayFromZero), Math.Round(temp.anios[0].mes[3].real, 2, MidpointRounding.AwayFromZero),
+                        Math.Round(temp.anios[0].mes[4].real, 2, MidpointRounding.AwayFromZero), Math.Round(temp.anios[0].mes[5].real, 2, MidpointRounding.AwayFromZero),
+                        Math.Round(temp.anios[0].mes[6].real, 2, MidpointRounding.AwayFromZero), Math.Round(temp.anios[0].mes[7].real, 2, MidpointRounding.AwayFromZero),
+                        Math.Round(temp.anios[0].mes[8].real, 2, MidpointRounding.AwayFromZero), Math.Round(temp.anios[0].mes[9].real, 2, MidpointRounding.AwayFromZero),
+                        Math.Round(temp.anios[0].mes[10].real, 2, MidpointRounding.AwayFromZero), Math.Round(temp.anios[0].mes[11].real, 2, MidpointRounding.AwayFromZero),
                         temp.ejecutado, temp.asignado, temp.modificaciones, temp.avance_fisico, temp.inversion_nueva);
-                listadoCostos.add(elemento);
+                listadoCostos.Add(elemento);
             }
             return listadoCostos;
         }
 
-        private static ObjetoCosto obtenerPlanificado(ObjetoCosto objetoCosto, Integer anioInicial, Integer anioFinal, String lineaBase, Connection conn){
-            if(objetoCosto.getChildren()!=null && !objetoCosto.getChildren().isEmpty()){ //tiene hijos
-                for(int a=0; a<(anioFinal-anioInicial+1);a++){
-                    for (int m=0; m<12; m++){
-                        objetoCosto.anios[a].mes[m].planificado = new BigDecimal(0);
+        private static ObjetoCosto obtenerCostoPlanificado(ObjetoCosto objetoCosto, int anioInicial, int anioFinal, String lineaBase)
+        {
+            if (objetoCosto.children != null && objetoCosto.children.Count != 0)
+            { //tiene hijos
+                for (int a = 0; a < (anioFinal - anioInicial + 1); a++)
+                {
+                    for (int m = 0; m < 12; m++)
+                    {
+                        objetoCosto.anios[a].mes[m].planificado = decimal.Zero;
                     }
                 }
-                List<ObjetoCosto> hijos = objetoCosto.getChildren();
-                for(int h=0; h<hijos.size(); h++){
-                    ObjetoCosto hijo = hijos.get(h); 
-                    hijo.anios = obtenerPlanificado(hijo, anioInicial, anioFinal, lineaBase, conn).anios;
-                    for(int a=0; a<(anioFinal-anioInicial+1);a++){
-                        for (int m=0; m<12; m++){
-                            objetoCosto.anios[a].mes[m].planificado = objetoCosto.anios[a].mes[m].planificado!=null ? objetoCosto.anios[a].mes[m].planificado : new BigDecimal(0);
-                            hijo.anios[a].mes[m].planificado = hijo.anios[a].mes[m].planificado!=null ? hijo.anios[a].mes[m].planificado : new BigDecimal(0);
-                            objetoCosto.anios[a].mes[m].planificado = objetoCosto.anios[a].mes[m].planificado.add(hijo.anios[a].mes[m].planificado);
-                            objetoCosto.anios[a].mes[m].real = objetoCosto.anios[a].mes[m].real!=null ? objetoCosto.anios[a].mes[m].real : new BigDecimal(0);
-                            hijo.anios[a].mes[m].real = hijo.anios[a].mes[m].real!=null ? hijo.anios[a].mes[m].real : new BigDecimal(0);
-                            objetoCosto.anios[a].mes[m].real = objetoCosto.anios[a].mes[m].real.add(hijo.anios[a].mes[m].real);
+                List<ObjetoCosto> hijos = objetoCosto.children;
+                for (int h = 0; h < hijos.Count; h++)
+                {
+                    ObjetoCosto hijo = hijos[h];
+                    hijo.anios = obtenerCostoPlanificado(hijo, anioInicial, anioFinal, lineaBase).anios;
+                    for (int a = 0; a < (anioFinal - anioInicial + 1); a++)
+                    {
+                        for (int m = 0; m < 12; m++)
+                        {
+                            objetoCosto.anios[a].mes[m].planificado = objetoCosto.anios[a].mes[m].planificado;
+                            hijo.anios[a].mes[m].planificado = hijo.anios[a].mes[m].planificado;
+                            objetoCosto.anios[a].mes[m].planificado = objetoCosto.anios[a].mes[m].planificado + hijo.anios[a].mes[m].planificado;
+                            objetoCosto.anios[a].mes[m].real = objetoCosto.anios[a].mes[m].real;
+                            hijo.anios[a].mes[m].real = hijo.anios[a].mes[m].real;
+                            objetoCosto.anios[a].mes[m].real = objetoCosto.anios[a].mes[m].real + hijo.anios[a].mes[m].real;
                         }
                     }
                 }
-            }else{ //es hijo
-                if(objetoCosto.totalPagos!=null && objetoCosto.totalPagos.compareTo(BigDecimal.ZERO)!=0){
+            }
+            else
+            { //es hijo
+                if (objetoCosto.totalPagos.CompareTo(decimal.Zero) != 0)
+                {
                     //obtener pagos
-                    List<?> estructuraPagos = getConsultaPagos(objetoCosto.objeto_id, objetoCosto.objeto_tipo, anioInicial, anioFinal, lineaBase);
+                    List<dynamic> estructuraPagos = getConsultaPagos(objetoCosto.objeto_id, objetoCosto.objeto_tipo, anioInicial, anioFinal, lineaBase);
 
-                    Iterator<?> iteradorPagos = estructuraPagos.iterator();
-                    while (iteradorPagos.hasNext()) {
-                        Object objetoPago = iteradorPagos.next();
-                        Object[] objPago = (Object[]) objetoPago;
-                        Integer ejercicio = objPago[0]!=null ? (Integer)objPago[0] : null;
-                        objetoCosto.anios[ejercicio-anioInicial].anio = ejercicio;
-                        for(int m=0; m<12; m++){
-                            objetoCosto.anios[ejercicio-anioInicial].mes[m].planificado = objPago[3+m]!=null ? (BigDecimal)objPago[3+m] : null;
+                    foreach (dynamic objPago in estructuraPagos)
+                    {
+                        int ejercicio = (int)objPago[0];
+                        objetoCosto.anios[ejercicio - anioInicial].anio = ejercicio;
+                        for (int m = 0; m < 12; m++)
+                        {
+                            objetoCosto.anios[ejercicio - anioInicial].mes[m].planificado = (decimal)objPago[3 + m];
                         }
-                    }	
-                }else{
+                    }
+                }
+                else
+                {
                     //utilizar costo del objeto
-                    for(int a=0; a<(anioFinal-anioInicial+1); a++){
-                        objetoCosto.anios[a].anio=anioInicial+a;
+                    for (int a = 0; a < (anioFinal - anioInicial + 1); a++)
+                    {
+                        objetoCosto.anios[a].anio = anioInicial + a;
                         ObjetoCosto.stanio anioObj = objetoCosto.anios[a];
-                        if(objetoCosto.getFecha_inicial()!=null && objetoCosto.getFecha_final()!=null){
-                            int mesInicial = objetoCosto.getFecha_inicial().getMonthOfYear() -1;
-                            int anioInicialObj = objetoCosto.getFecha_inicial().getYear();
-                            int mesFinal = objetoCosto.getFecha_final().getMonthOfYear() -1;
-                            int anioFinalObj = objetoCosto.getFecha_final().getYear();
-                            if((anioInicial+a) >= anioInicialObj && (anioInicial+a)<=anioFinalObj){
-                                Integer acumulacionCostoId = objetoCosto.getAcumulacion_costoid()!=null ? objetoCosto.getAcumulacion_costoid() : 3;
-                                if(acumulacionCostoId.compareTo(1)==0){						
-                                    if(anioInicialObj == (anioInicial+a)){
-                                        anioObj.mes[mesInicial].planificado =  objetoCosto.getCosto() != null ? objetoCosto.getCosto() : new BigDecimal(0);
+                        if (objetoCosto.fecha_inicial != null && objetoCosto.fecha_final != null)
+                        {
+                            int mesInicial = objetoCosto.fecha_inicial.Month - 1;
+                            int anioInicialObj = objetoCosto.fecha_inicial.Year;
+                            int mesFinal = objetoCosto.fecha_final.Month - 1;
+                            int anioFinalObj = objetoCosto.fecha_final.Year;
+                            if ((anioInicial + a) >= anioInicialObj && (anioInicial + a) <= anioFinalObj)
+                            {
+                                int acumulacionCostoId = objetoCosto.acumulacion_costoid;
+                                if (acumulacionCostoId.CompareTo(1) == 0)
+                                {
+                                    if (anioInicialObj == (anioInicial + a))
+                                    {
+                                        anioObj.mes[mesInicial].planificado = objetoCosto.costo;
                                     }
-                                }else if(acumulacionCostoId.compareTo(2)==0){
-                                    List<PagoPlanificado> lstPagosPlanificados = PagoPlanificadoDAO.getPagosPlanificadosPorObjeto(objetoCosto.objeto_id,objetoCosto.objeto_tipo);
-                                    Calendar cal = Calendar.getInstance();
-                                    for(PagoPlanificado pago : lstPagosPlanificados){
-                                        cal.setTime(pago.getFechaPago());
-                                        int mesPago = cal.get(Calendar.MONTH);
-                                        int anioPago = cal.get(Calendar.YEAR);
-                                        if(anioObj.anio == anioPago){
-                                            anioObj.mes[mesPago].planificado = anioObj.mes[mesPago].planificado.add(pago.getPago());	
+                                }
+                                else if (acumulacionCostoId.CompareTo(2) == 0)
+                                {
+                                    List<PagoPlanificado> lstPagosPlanificados = PagoPlanificadoDAO.getPagosPlanificadosPorObjeto(objetoCosto.objeto_id, objetoCosto.objeto_tipo);
+                                    DateTime cal = new DateTime();
+                                    foreach (PagoPlanificado pago in lstPagosPlanificados)
+                                    {
+                                        cal = pago.fechaPago;
+                                        int mesPago = cal.Month;
+                                        int anioPago = cal.Year;
+                                        if (anioObj.anio == anioPago)
+                                        {
+                                            anioObj.mes[mesPago].planificado += pago.pago;
                                         }
-                                    }								
-                                }else{
-                                    if(anioFinalObj == anioObj.anio){
-                                        anioObj.mes[mesFinal].planificado =  objetoCosto.getCosto() != null ? objetoCosto.getCosto() : new BigDecimal(0);
+                                    }
+                                }
+                                else
+                                {
+                                    if (anioFinalObj == anioObj.anio)
+                                    {
+                                        anioObj.mes[mesFinal].planificado += objetoCosto.costo;
                                     }
                                 }
                             }
@@ -498,47 +543,57 @@ namespace SiproDAO.Dao
             return objetoCosto;
         }
 
-        private static ObjetoCosto getCostoReal(ObjetoCosto objetoCosto, Integer fuente, Integer organismo, Integer correlativo, Integer anioInicial, Integer anioFinal, Connection conn, String usuario){
-            ArrayList<ArrayList<BigDecimal>> presupuestoPrestamo = new ArrayList<ArrayList<BigDecimal>>();
+        private static ObjetoCosto getCostoReal(ObjetoCosto objetoCosto, int fuente, int organismo, int correlativo, int anioInicial, int anioFinal, String usuario)
+        {
+            List<List<decimal>> presupuestoPrestamo = new List<List<decimal>>();
 
-                if(objetoCosto.getObjeto_tipo() == 0){
-                    presupuestoPrestamo = InformacionPresupuestariaDAO.getPresupuestoProyecto(fuente, organismo, correlativo,anioInicial,anioFinal, conn);
-                }else{
-                    presupuestoPrestamo = InformacionPresupuestariaDAO.getPresupuestoPorObjeto(fuente, organismo, correlativo, 
-                            anioInicial, anioFinal, objetoCosto.getPrograma(), objetoCosto.getSubprograma(), objetoCosto.getProyecto(), 
-                            objetoCosto.getActividad(), objetoCosto.getObra(), objetoCosto.getRenglon(), objetoCosto.getGeografico() ,conn);
-                }
+            if (objetoCosto.objeto_tipo == 0)
+            {
+                presupuestoPrestamo = InformacionPresupuestariaDAO.getPresupuestoProyecto(fuente, organismo, correlativo, anioInicial, anioFinal);
+            }
+            else
+            {
+                presupuestoPrestamo = InformacionPresupuestariaDAO.getPresupuestoPorObjeto(fuente, organismo, correlativo,
+                        anioInicial, anioFinal, objetoCosto.programa, objetoCosto.subprograma, objetoCosto.proyecto,
+                        objetoCosto.actividad, objetoCosto.obra, objetoCosto.renglon, objetoCosto.geografico);
+            }
 
-            if(presupuestoPrestamo.size() > 0){
+            if (presupuestoPrestamo.Count > 0)
+            {
                 int pos = 0;
-                for(ArrayList<BigDecimal> objprestamopresupuesto : presupuestoPrestamo){
-                    for (int m=0; m<12; m++){
-                        objetoCosto.getAnios()[pos].mes[m].real = objprestamopresupuesto.get(m) != null ? objprestamopresupuesto.get(m) : new BigDecimal(0);
+                foreach (List<decimal> objprestamopresupuesto in presupuestoPrestamo)
+                {
+                    for (int m = 0; m < 12; m++)
+                    {
+                        objetoCosto.anios[pos].mes[m].real = objprestamopresupuesto[m];
                     }
-                    objetoCosto.getAnios()[pos].anio = objprestamopresupuesto.get(12) != null ? objprestamopresupuesto.get(12).intValueExact() : 0;
+                    objetoCosto.anios[pos].anio = Convert.ToInt32(objprestamopresupuesto[12]);
                     pos = pos + 1;
                 }
             }
             return objetoCosto;
         }
 
-        private static ObjetoCosto getPresupuestos(ObjetoCosto objetoCosto, Integer fuente, Integer organismo, Integer correlativo, Integer ejercicio, Integer mes, Connection conn, String usuario){
-            if(fuente!=null && organismo!=null && correlativo!=null && ejercicio!=null && ejercicio>0 && mes!=null && mes>0
-                    && objetoCosto.getPrograma()!=null && objetoCosto.getPrograma()>=0){
-                ArrayList<BigDecimal> presupuestoPrestamo = new ArrayList<BigDecimal>();
-                presupuestoPrestamo = InformacionPresupuestariaDAO.getPresupuestosPorObjeto(fuente, organismo, correlativo, ejercicio, mes, 
-                    objetoCosto.getEntidad(), 
-                    objetoCosto.getPrograma(), objetoCosto.getSubprograma(), objetoCosto.getProyecto(), objetoCosto.getActividad(), objetoCosto.getObra(), 
-                    objetoCosto.getRenglon(), objetoCosto.getGeografico(), conn);
+        private static ObjetoCosto getPresupuestos(ObjetoCosto objetoCosto, int? fuente, int? organismo, int? correlativo, int? ejercicio, int? mes, String usuario)
+        {
+            if (fuente != null && organismo != null && correlativo != null && ejercicio != null && ejercicio > 0 && mes != null && mes > 0
+                    && objetoCosto.programa >= 0)
+            {
+                List<decimal> presupuestoPrestamo = new List<decimal>();
+                presupuestoPrestamo = InformacionPresupuestariaDAO.getPresupuestosPorObjeto(fuente, organismo, correlativo, ejercicio ?? default(int), mes ?? default(int),
+                    objetoCosto.entidad,
+                    objetoCosto.programa, objetoCosto.subprograma, objetoCosto.proyecto, objetoCosto.actividad, objetoCosto.obra,
+                    objetoCosto.renglon, objetoCosto.geografico);
 
-                if(presupuestoPrestamo.size() > 0){
-                    objetoCosto.setAsignado(presupuestoPrestamo.get(0));
-                    objetoCosto.setEjecutado(presupuestoPrestamo.get(1));
-                    objetoCosto.setModificaciones(presupuestoPrestamo.get(2));
+                if (presupuestoPrestamo.Count > 0)
+                {
+                    objetoCosto.asignado = presupuestoPrestamo[0];
+                    objetoCosto.ejecutado = presupuestoPrestamo[1];
+                    objetoCosto.modificaciones = presupuestoPrestamo[2];
                 }
             }
             return objetoCosto;
-        }*/
+        }
 
         public static bool tieneHijos(int objetoId, int objetoTipo)
         {
@@ -588,138 +643,140 @@ namespace SiproDAO.Dao
             }
         }
 
-        /*public static List<ObjetoHoja> getHojas(Integer proyectoId){
-            Session session = CHibernateSession.getSessionFactory().openSession();
-            ArrayList<ObjetoHoja> hojas = new ArrayList<ObjetoHoja>();
+        public static List<ObjetoHoja> getHojas(int proyectoId){
+            List<ObjetoHoja> hojas = new List<ObjetoHoja>();
             try{
                 ObjetoHoja temp = null;
-                List<?> resultados = new ArrayList<Object>();
-                String query = String.join(" ", "SELECT c FROM Componente c",
-                        "WHERE not exists (FROM Producto pr where pr.componente.id=c.id and pr.estado=1)",
-                        "and not exists (FROM Subcomponente s where s.componente.id=c.id and s.estado=1)",
-                        "and not exists (FROM Actividad a where a.objetoId=c.id and a.objetoTipo=1 and a.estado=1)",
-                        "and c.proyecto.id=:proyectoId");
-                Query<?> criteria = session.createQuery(query);
-                criteria.setParameter("proyectoId", proyectoId);
-                resultados = criteria.getResultList();
+                List<dynamic> resultados = new List<Object>();
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    String query = String.Join(" ", "SELECT c.* FROM componente c",
+                        "WHERE NOT EXISTS (SELECT * FROM producto pr WHERE pr.componenteid=c.id AND pr.estado=1)",
+                        "AND NOT EXISTS (SELECT * FROM subcomponente s WHERE s.componenteid=c.id AND s.estado=1)",
+                        "AND NOT EXISTS (SELECT * FROM actividad a WHERE a.objeto_id=c.id and a.objeto_tipo=1 AND a.estado=1)",
+                        "AND c.proyectoid=:proyectoId");
 
-                Proyecto proyecto = null;
-                for(Object obj : resultados){
-                    if(proyecto == null)
+                    resultados = db.Query<dynamic>(query, new { proyectoId = proyectoId }).AsList<dynamic>();
+
+                    Proyecto proyecto = null;
+                    Componente componente = null;
+                    Subcomponente subcomponente = null;
+                    Producto producto = null;
+                    Subproducto subproducto = null;
+                    Actividad actividadP = null;
+
+                    foreach (Object obj in resultados)
                     {
-                        Componente componente = (Componente)obj;
-                        proyecto = ProyectoDAO.getProyecto(componente.getProyecto().getId());
+                        if (proyecto == null)
+                        {
+                            componente = (Componente)obj;
+                            proyecto = ProyectoDAO.getProyecto(componente.proyectoid);
+                        }
+
+                        temp = new ObjetoHoja(1, obj, 0, proyecto);
+                        hojas.Add(temp);
                     }
 
-                    temp = new ObjetoHoja(1, obj, 0, proyecto);
-                    hojas.add(temp);
-                }
-
-                query = String.join(" ", "SELECT s FROM Subcomponente s",
+                    query = String.Join(" ", "SELECT s FROM Subcomponente s",
                         "WHERE not exists (FROM Producto p where p.producto.id=pr.id and sp.estado=1)",
                         "and not exists (FROM Actividad a where a.objetoId=pr.id and a.objetoTipo=2 and a.estado=1)",
                         "and pr.componente.proyecto.id=:proyectoId");
 
-                criteria = session.createQuery(query);
-                criteria.setParameter("proyectoId", proyectoId);
-                resultados = criteria.getResultList();
+                    resultados = db.Query<dynamic>(query, new { proyectoId = proyectoId }).AsList<dynamic>();
 
-                Componente componente = null;
-                for(Object obj : resultados){
-                    Subcomponente subcomponente = (Subcomponente)obj;
-                    componente = ComponenteDAO.getComponente(subcomponente.getComponente().getId());
-                    temp = new ObjetoHoja(2, obj, 1, componente);
-                    hojas.add(temp);
-                }
-
-                query = String.join(" ", "SELECT pr FROM Producto pr",
-                        "WHERE not exists (FROM Subproducto sp where sp.producto.id=pr.id and sp.estado=1)",
-                        "and not exists (FROM Actividad a where a.objetoId=pr.id and a.objetoTipo=3 and a.estado=1)",
-                        "and (pr.componente.proyecto.id=:proyectoId or pr.subcomponente.componente.componente.proyecto.id=:proyectoId)");
-
-                criteria = session.createQuery(query);
-                criteria.setParameter("proyectoId", proyectoId);
-                resultados = criteria.getResultList();
-
-                Subcomponente subcomponente = null;
-                componente = null;
-                for(Object obj : resultados){
-                    Producto producto = (Producto)obj;
-                    if(producto.getComponente()!=null){
-                        componente = ComponenteDAO.getComponente(producto.getComponente().getId());
-                        temp = new ObjetoHoja(3, obj, 1, componente);
-                        hojas.add(temp);
+                    foreach (Object obj in resultados)
+                    {
+                        subcomponente = (Subcomponente)obj;
+                        componente = ComponenteDAO.getComponente(subcomponente.componenteid);
+                        temp = new ObjetoHoja(2, obj, 1, componente);
+                        hojas.Add(temp);
                     }
-                    if(producto.getSubcomponente()!=null){
-                        subcomponente = SubComponenteDAO.getSubComponente(producto.getSubcomponente().getId());
-                        temp = new ObjetoHoja(3, obj, 2, subcomponente);
-                        hojas.add(temp);
-                    }
-                }
 
-                query = String.join(" ", "SELECT sp FROM Subproducto sp",
+                    query = String.Join(" ", "SELECT pr FROM Producto pr",
+                            "WHERE not exists (FROM Subproducto sp where sp.producto.id=pr.id and sp.estado=1)",
+                            "and not exists (FROM Actividad a where a.objetoId=pr.id and a.objetoTipo=3 and a.estado=1)",
+                            "and (pr.componente.proyecto.id=:proyectoId or pr.subcomponente.componente.componente.proyecto.id=:proyectoId)");
+
+                    resultados = db.Query<dynamic>(query, new { proyectoId = proyectoId }).AsList<dynamic>();
+
+                    foreach (Object obj in resultados)
+                    {
+                        producto = (Producto)obj;
+                        producto.componentes = ComponenteDAO.getComponentePorId(producto.componenteid ?? default(int), null);
+                        producto.subcomponentes = SubComponenteDAO.getSubComponentePorId(producto.subcomponenteid, null);
+                        if (producto.componentes != null)
+                        {
+                            componente = ComponenteDAO.getComponente(producto.componenteid ?? default(int));
+                            temp = new ObjetoHoja(3, obj, 1, componente);
+                            hojas.Add(temp);
+                        }
+                        if (producto.subcomponentes != null)
+                        {
+                            subcomponente = SubComponenteDAO.getSubComponente(producto.subcomponenteid);
+                            temp = new ObjetoHoja(3, obj, 2, subcomponente);
+                            hojas.Add(temp);
+                        }
+                    }
+
+                    query = String.Join(" ", "SELECT sp FROM Subproducto sp",
                         "WHERE not exists (FROM Actividad a where a.objetoId=sp.id and a.objetoTipo=4 and a.estado=1)",
                         "and (sp.producto.componente.proyecto.id=:proyectoId or sp.producto.subcomponente.componente.proyecto.id=:proyectoId)");
 
-                criteria = session.createQuery(query);
-                criteria.setParameter("proyectoId", proyectoId);
-                resultados = criteria.getResultList();
+                    resultados = db.Query<dynamic>(query, new { proyectoId = proyectoId }).AsList<dynamic>();
 
-                Producto producto = null;
-                for(Object obj : resultados){
-                    Subproducto subproducto = (Subproducto)obj;
-                    producto = ProductoDAO.getProductoPorId(subproducto.getProducto().getId());
-                    temp = new ObjetoHoja(4, obj, 3, producto);
-                    hojas.add(temp);
-                }
-
-                query = String.join(" ", "SELECT a FROM Actividad a",
-                        "WHERE not exists (FROM Actividad a2 where a2.objetoId=a.id and a2.objetoTipo=5 and a2.estado=1 and a2.treePath like '"+(10000000+proyectoId)+"%')",
-                        "and a.treePath like '"+(10000000+proyectoId)+"%'");
-
-                criteria = session.createQuery(query);
-                resultados = criteria.getResultList();
-
-                Actividad actividadP = null;
-                Subproducto subproducto = null;
-                for(Object obj : resultados){
-                    Actividad actividad = (Actividad)obj;
-                    switch(actividad.getObjetoTipo()){
-                    case 0:
-                        proyecto = ProyectoDAO.getProyecto(actividad.getObjetoId());
-                        temp = new ObjetoHoja(5, obj, 0, proyecto);
-                        break;
-                    case 1:
-                        componente = ComponenteDAO.getComponente(actividad.getObjetoId());
-                        temp = new ObjetoHoja(5, obj, 1, componente);
-                        break;
-                    case 2:
-                        subcomponente = SubComponenteDAO.getSubComponente(actividad.getObjetoId());
-                        temp = new ObjetoHoja(5, obj, 2, componente);
-                        break;
-                    case 3:
-                        producto = ProductoDAO.getProductoPorId(actividad.getObjetoId());
-                        temp = new ObjetoHoja(5, obj, 3, producto);
-                        break;
-                    case 4:
-                        subproducto = SubproductoDAO.getSubproductoPorId(actividad.getObjetoId());
-                        temp = new ObjetoHoja(5, obj, 4, subproducto);
-                        break;
-                    case 5:
-                        actividadP = ActividadDAO.getActividadPorId(actividad.getObjetoId());
-                        temp = new ObjetoHoja(5, obj, 5, actividadP);
-                        break;
+                    foreach (Object obj in resultados)
+                    {
+                        subproducto = (Subproducto)obj;
+                        producto = ProductoDAO.getProductoPorId(subproducto.productoid);
+                        temp = new ObjetoHoja(4, obj, 3, producto);
+                        hojas.Add(temp);
                     }
-                    hojas.add(temp);
+
+                    query = String.Join(" ", "SELECT a FROM Actividad a",
+                        "WHERE not exists (FROM Actividad a2 where a2.objetoId=a.id and a2.objetoTipo=5 and a2.estado=1 and a2.treePath like '" + (10000000 + proyectoId) + "%')",
+                        "and a.treePath like '" + (10000000 + proyectoId) + "%'");
+
+                    resultados = db.Query<dynamic>(query, new { proyectoId = proyectoId }).AsList<dynamic>();
+
+                    foreach (Object obj in resultados)
+                    {
+                        Actividad actividad = (Actividad)obj;
+                        switch (actividad.objetoTipo)
+                        {
+                            case 0:
+                                proyecto = ProyectoDAO.getProyecto(Convert.ToInt32(actividad.objetoId));
+                                temp = new ObjetoHoja(5, obj, 0, proyecto);
+                                break;
+                            case 1:
+                                componente = ComponenteDAO.getComponente(Convert.ToInt32(actividad.objetoId));
+                                temp = new ObjetoHoja(5, obj, 1, componente);
+                                break;
+                            case 2:
+                                subcomponente = SubComponenteDAO.getSubComponente(Convert.ToInt32(actividad.objetoId));
+                                temp = new ObjetoHoja(5, obj, 2, componente);
+                                break;
+                            case 3:
+                                producto = ProductoDAO.getProductoPorId(Convert.ToInt32(actividad.objetoId));
+                                temp = new ObjetoHoja(5, obj, 3, producto);
+                                break;
+                            case 4:
+                                subproducto = SubproductoDAO.getSubproductoPorId(Convert.ToInt32(actividad.objetoId));
+                                temp = new ObjetoHoja(5, obj, 4, subproducto);
+                                break;
+                            case 5:
+                                actividadP = ActividadDAO.getActividadPorId(Convert.ToInt32(actividad.objetoId));
+                                temp = new ObjetoHoja(5, obj, 5, actividadP);
+                                break;
+                        }
+                        hojas.Add(temp);
+                    }
                 }
             }catch(Exception e){
-                CLogger.write("4", ObjetoDAO.class, e);
-            }finally {
-                session.close();
+                CLogger.write("4", "ObjetoDAO.class", e);
             }
 
             return hojas;
-        }*/
+        }
 
         public static Object getObjetoPorIdyTipo(int id, int tipo) {
             Object ret = null;
@@ -861,58 +918,57 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-        /*public static List<?> getVigente(Integer fuente, Integer organismo, Integer correlativo,
-                int ejercicio, int mesMaximo, int entidad){
-            List<?> ret = null;
-            Session session = CHibernateSession.getSessionFactory().openSession();
-
-            try{
-                String query =String.join(" ","select ",
-                "sum(case when t.mes = 1 then t.vigente else null end) enero,",
-                "sum(case when t.mes = 2 then t.vigente else null end) febrero,",
-                "sum(case when t.mes = 3 then t.vigente else null end) marzo,",
-                "sum(case when t.mes = 4 then t.vigente else null end) abril,",
-                "sum(case when t.mes = 5 then t.vigente else null end) mayo,",
-                "sum(case when t.mes = 6 then t.vigente else null end) junio,",
-                "sum(case when t.mes = 7 then t.vigente else null end) julio,",
-                "sum(case when t.mes = 8 then t.vigente else null end) agosto,",
-                "sum(case when t.mes = 9 then t.vigente else null end) septiembre,",
-                "sum(case when t.mes = 10 then t.vigente else null end) octubre,",
-                "sum(case when t.mes = 11 then t.vigente else null end) noviembre,",
-                "sum(case when t.mes = 12 then t.vigente else null end) diciembre",
-                "from",
+        public static List<Vigente> getVigente(int fuente, int organismo, int correlativo,
+                int ejercicio, int mesMaximo, int entidad)
+        {
+            List<Vigente> ret = null;
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnectionAnalytic())
+                {
+                    String query = String.Join(" ", "SELECT ",
+                "SUM(CASE WHEN t.mes = 1 THEN t.vigente ELSE null END) enero,",
+                "SUM(CASE WHEN t.mes = 2 THEN t.vigente ELSE null END) febrero,",
+                "SUM(CASE WHEN t.mes = 3 THEN t.vigente ELSE null END) marzo,",
+                "SUM(CASE WHEN t.mes = 4 THEN t.vigente ELSE null END) abril,",
+                "SUM(CASE WHEN t.mes = 5 THEN t.vigente ELSE null END) mayo,",
+                "SUM(CASE WHEN t.mes = 6 THEN t.vigente ELSE null END) junio,",
+                "SUM(CASE WHEN t.mes = 7 THEN t.vigente ELSE null END) julio,",
+                "SUM(CASE WHEN t.mes = 8 THEN t.vigente ELSE null END) agosto,",
+                "SUM(CASE WHEN t.mes = 9 THEN t.vigente ELSE null END) septiembre,",
+                "SUM(CASE WHEN t.mes = 10 THEN t.vigente ELSE null END) octubre,",
+                "SUM(CASE WHEN t.mes = 11 THEN t.vigente ELSE null END) noviembre,",
+                "SUM(CASE WHEN t.mes = 12 THEN t.vigente ELSE null END) diciembre",
+                "FROM",
                 "(",
-                    "select  v.ejercicio,v.mes, sum(v.asignado + v.modificaciones) vigente",
-                    "from sipro_analytic.mv_ep_ejec_asig_vige  v",
-                    "where organismo =:proyectoId",
-                    "and fuente = ?2",
-                    "and correlativo = ?3",
-                    "and entidad = ?4",
-    //				"and unidad_ejecutra = ?5",
-                    "and ejercicio = ?6",
-                    "and mes between 1 and ?7",
-                    "group by  v.ejercicio,v.mes",
-                ") as t");
+                    "SELECT v.ejercicio,v.mes, SUM(v.asignado + v.modificaciones) vigente",
+                    "FROM mv_ep_ejec_asig_vige v",
+                    "WHERE organismo=:organismo",
+                    "AND fuente=:fuente",
+                    "AND correlativo=:correlativo",
+                    "AND entidad=:entidad",
+                    "AND ejercicio=:ejercicio",
+                    "AND mes BETWEEN 1 AND :mesFinal",
+                    "GROUP BY v.ejercicio,v.mes",
+                ") AS t");
 
-
-                Query<?> criteria = session.createNativeQuery(query);
-                criteria.setParameter("1", organismo);
-                criteria.setParameter("2", fuente);
-                criteria.setParameter("3", correlativo);
-                criteria.setParameter("4", entidad);
-    //			criteria.setParameter("5", unidad_ejecutora);
-                criteria.setParameter("6", ejercicio);
-                criteria.setParameter("7", mesMaximo);
-                ret = criteria.getResultList();
+                    ret = db.Query<Vigente>(query, new
+                    {
+                        organismo = organismo,
+                        fuente = fuente,
+                        correlativo = correlativo,
+                        entidad = entidad,
+                        ejercicio = ejercicio,
+                        mesFinal = mesMaximo
+                    }).AsList<Vigente>();
+                }
             }
-            catch(Throwable e){
-                CLogger.write("7", ObjetoDAO.class, e);
+            catch (Exception e)
+            {
+                CLogger.write("7", "ObjetoDAO.class", e);
             }
-            finally{
-                session.close();
-            }
-            return  ret;
-        }*/
+            return ret;
+        }
 
         public static decimal getAsignadoPorLineaPresupuestaria(int ejercicio, int entidad, int programa, int subprograma, int proyecto, int actividad, int obra, int renglon,
             int geografico)
