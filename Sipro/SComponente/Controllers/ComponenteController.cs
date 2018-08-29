@@ -587,8 +587,14 @@ namespace SComponente.Controllers
                     componente.fuentePrestamo = value.fuentePrestamo;
                     componente.fuenteDonacion = value.fuenteDonacion;
                     componente.fuenteNacional = value.fuenteNacional;
-                    componente.fechaInicioReal = value.fechaInicioReal;
-                    componente.fechaFinReal = value.fechaFinReal;
+
+                    DateTime fechaInicioReal;
+                    DateTime.TryParse((string)value.fechaInicioReal, out fechaInicioReal);
+                    componente.fechaInicioReal = fechaInicioReal;
+
+                    DateTime fechaFinReal;
+                    DateTime.TryParse((string)value.fechaFinReal, out fechaFinReal);
+                    componente.fechaFinReal = fechaFinReal;
 
                     result = ComponenteDAO.guardarComponente(componente, true);
 
@@ -740,8 +746,14 @@ namespace SComponente.Controllers
                     componente.fuentePrestamo = value.fuentePrestamo;
                     componente.fuenteDonacion = value.fuenteDonacion;
                     componente.fuenteNacional = value.fuenteNacional;
-                    componente.fechaInicioReal = value.fechaInicioReal;
-                    componente.fechaFinReal = value.fechaFinReal;
+
+                    DateTime fechaInicioReal;
+                    DateTime.TryParse((string)value.fechaInicioReal, out fechaInicioReal);
+                    componente.fechaInicioReal = fechaInicioReal;
+
+                    DateTime fechaFinReal;
+                    DateTime.TryParse((string)value.fechaFinReal, out fechaFinReal);
+                    componente.fechaFinReal = fechaFinReal;
 
                     result = ComponenteDAO.guardarComponente(componente, true);
 

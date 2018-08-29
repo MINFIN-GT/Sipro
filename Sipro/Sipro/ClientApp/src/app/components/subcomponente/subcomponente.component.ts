@@ -241,7 +241,7 @@ export class SubcomponenteComponent implements OnInit {
       this.getAsignado();      
     }
     else
-      this.utils.mensaje("warning", "Debe de seleccionar el componente que desea editar");
+      this.utils.mensaje("warning", "Debe de seleccionar el subcomponente que desea editar");
   }
 
   borrar(){
@@ -540,7 +540,13 @@ export class SubcomponenteComponent implements OnInit {
 
   irAProductos(subcomponenteId){
     if(this.subcomponente!=null){
-      this.router.navigateByUrl('/main/producto/'+ subcomponenteId);
+      this.router.navigateByUrl('/main/producto/'+subcomponenteId+'/2');
+    }
+  }
+
+  irAActividad(productoId){
+    if(this.subcomponente!=null){
+      this.router.navigateByUrl('/main/actividad/'+ productoId);
     }
   }
 }

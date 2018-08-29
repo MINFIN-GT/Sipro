@@ -703,7 +703,7 @@ namespace SiproDAO.Dao
                     {
                         producto = (Producto)obj;
                         producto.componentes = ComponenteDAO.getComponentePorId(producto.componenteid ?? default(int), null);
-                        producto.subcomponentes = SubComponenteDAO.getSubComponentePorId(producto.subcomponenteid, null);
+                        producto.subcomponentes = SubComponenteDAO.getSubComponentePorId(producto.subcomponenteid ?? default(int), null);
                         if (producto.componentes != null)
                         {
                             componente = ComponenteDAO.getComponente(producto.componenteid ?? default(int));
@@ -712,7 +712,7 @@ namespace SiproDAO.Dao
                         }
                         if (producto.subcomponentes != null)
                         {
-                            subcomponente = SubComponenteDAO.getSubComponente(producto.subcomponenteid);
+                            subcomponente = SubComponenteDAO.getSubComponente(producto.subcomponenteid ?? default(int));
                             temp = new ObjetoHoja(3, obj, 2, subcomponente);
                             hojas.Add(temp);
                         }

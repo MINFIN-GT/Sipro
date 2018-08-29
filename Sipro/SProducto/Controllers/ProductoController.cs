@@ -206,7 +206,7 @@ namespace SProducto.Controllers
             }
             catch (Exception e)
             {
-                CLogger.write("1", "SubcomponenteController.class", e);
+                CLogger.write("1", "ProductoController.class", e);
                 return BadRequest(500);
             }
         }
@@ -246,14 +246,26 @@ namespace SProducto.Controllers
                     producto.costo = value.costo;
                     producto.acumulacionCostoid = value.acumulacionCostoid;
                     producto.fechaInicio = value.fechaInicio;
-                    producto.fechaFin = value.fechaFin;
-                    producto.duracion = value.duaracion;
+
+                    DateTime fechaFin;
+                    DateTime.TryParse((string)value.fechaFin, out fechaFin);
+                    producto.fechaFin = fechaFin;
+
+                    producto.duracion = value.duracion;
                     producto.duracionDimension = value.duracionDimension;
                     producto.inversionNueva = value.inversionNueva;
                     producto.acumulacionCostoid = value.acumulacionCostoid;
                     producto.estado = 1;
                     producto.usuarioCreo = User.Identity.Name;
                     producto.fechaCreacion = DateTime.Now;
+
+                    DateTime fechaInicioReal;
+                    DateTime.TryParse((string)value.fechaInicioReal, out fechaInicioReal);
+                    producto.fechaInicioReal = fechaInicioReal;
+
+                    DateTime fechaFinReal;
+                    DateTime.TryParse((string)value.fechaFinReal, out fechaFinReal);
+                    producto.fechaFinReal = fechaFinReal;
 
                     ret = ProductoDAO.guardarProducto(producto, true);
 
@@ -357,7 +369,7 @@ namespace SProducto.Controllers
             }
             catch (Exception e)
             {
-                CLogger.write("2", "SubcomponenteController.class", e);
+                CLogger.write("2", "ProductoController.class", e);
                 return BadRequest(500);
             }
         }
@@ -397,8 +409,20 @@ namespace SProducto.Controllers
                     producto.costo = value.costo;
                     producto.acumulacionCostoid = value.acumulacionCostoid;
                     producto.fechaInicio = value.fechaInicio;
-                    producto.fechaFin = value.fechaFin;
-                    producto.duracion = value.duaracion;
+
+                    DateTime fechaFin;
+                    DateTime.TryParse((string)value.fechaFin, out fechaFin);
+                    producto.fechaFin = fechaFin;
+
+                    DateTime fechaInicioReal;
+                    DateTime.TryParse((string)value.fechaInicioReal, out fechaInicioReal);
+                    producto.fechaInicioReal = fechaInicioReal;
+
+                    DateTime fechaFinReal;
+                    DateTime.TryParse((string)value.fechaFinReal, out fechaFinReal);
+                    producto.fechaFinReal = fechaFinReal;
+
+                    producto.duracion = value.duracion;
                     producto.duracionDimension = value.duracionDimension;
                     producto.inversionNueva = value.inversionNueva;
                     producto.acumulacionCostoid = value.acumulacionCostoid;
@@ -507,7 +531,7 @@ namespace SProducto.Controllers
             }
             catch (Exception e)
             {
-                CLogger.write("3", "SubcomponenteController.class", e);
+                CLogger.write("3", "ProductoController.class", e);
                 return BadRequest(500);
             }
         }
@@ -524,7 +548,7 @@ namespace SProducto.Controllers
             }
             catch (Exception e)
             {
-                CLogger.write("4", "SubcomponenteController.class", e);
+                CLogger.write("4", "ProductoController.class", e);
                 return BadRequest(500);
             }
         }
@@ -545,7 +569,7 @@ namespace SProducto.Controllers
             }
             catch (Exception e)
             {
-                CLogger.write("5", "SubcomponenteController.class", e);
+                CLogger.write("5", "ProductoController.class", e);
                 return BadRequest(500);
             }
         }
@@ -590,7 +614,7 @@ namespace SProducto.Controllers
             }
             catch (Exception e)
             {
-                CLogger.write("6", "SubcomponenteController.class", e);
+                CLogger.write("6", "ProductoController.class", e);
                 return BadRequest(500);
             }
         }
@@ -700,7 +724,7 @@ namespace SProducto.Controllers
             }
             catch (Exception e)
             {
-                CLogger.write("7", "SubcomponenteController.class", e);
+                CLogger.write("7", "ProductoController.class", e);
                 return BadRequest(500);
             }
         }
@@ -735,7 +759,7 @@ namespace SProducto.Controllers
             }
             catch (Exception e)
             {
-                CLogger.write("8", "SubcomponenteController.class", e);
+                CLogger.write("8", "ProductoController.class", e);
                 return BadRequest(500);
             }
         }
@@ -769,7 +793,7 @@ namespace SProducto.Controllers
             }
             catch (Exception e)
             {
-                CLogger.write("9", "SubcomponenteController.class", e);
+                CLogger.write("9", "ProductoController.class", e);
                 return BadRequest(500);
             }
         }
@@ -785,7 +809,7 @@ namespace SProducto.Controllers
                 }
             catch (Exception e)
             {
-                CLogger.write("10", "SubcomponenteController.class", e);
+                CLogger.write("10", "ProductoController.class", e);
                 return BadRequest(500);
             }
         }
@@ -801,7 +825,7 @@ namespace SProducto.Controllers
             }
             catch (Exception e)
             {
-                CLogger.write("11", "SubcomponenteController.class", e);
+                CLogger.write("11", "ProductoController.class", e);
                 return BadRequest(500);
             }
         }
@@ -869,7 +893,7 @@ namespace SProducto.Controllers
             }
             catch (Exception e)
             {
-                CLogger.write("11", "SubcomponenteController.class", e);
+                CLogger.write("11", "ProductoController.class", e);
                 return BadRequest(500);
             }
         }        

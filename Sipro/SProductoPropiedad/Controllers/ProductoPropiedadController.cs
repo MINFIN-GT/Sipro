@@ -101,6 +101,7 @@ namespace SProductoPropiedad.Controllers
 
                     return Ok(new
                     {
+                        success = ret,
                         id = productoPropiedad.id,
                         usuarioCreo = productoPropiedad.usuarioCreo,
                         usuarioActualizo = productoPropiedad.usuarioActualizo,
@@ -144,6 +145,7 @@ namespace SProductoPropiedad.Controllers
 
                     return Ok(new
                     {
+                        success = ret,
                         id = productoPropiedad.id,
                         usuarioCreo = productoPropiedad.usuarioCreo,
                         usuarioActualizo = productoPropiedad.usuarioActualizo,
@@ -182,7 +184,7 @@ namespace SProductoPropiedad.Controllers
 
         [HttpPost]
         [Authorize("Producto Propiedades - Visualizar")]
-        public IActionResult totalElementos([FromBody]dynamic value)
+        public IActionResult TotalElementos([FromBody]dynamic value)
         {
             try
             {
@@ -249,6 +251,42 @@ namespace SProductoPropiedad.Controllers
             catch (Exception e)
             {
                 CLogger.write("6", "ProductoPropiedadController.class", e);
+                return BadRequest(500);
+            }
+        }
+
+        [HttpGet("{idProductoTipo}")]
+        [Authorize("Producto Propiedades - Visualizar")]
+        public IActionResult ProductoPropiedadPorTipoProducto(int idProductoTipo)
+        {
+            try
+            {
+                List<ProductoPropiedad> productopropiedades = ProductoPropiedadDAO.getProductoPropiedadesPorTipo(idProductoTipo);
+                List<StProductoPropiedad> stproductopropiedad = new List<StProductoPropiedad>();
+                foreach (ProductoPropiedad productopropiedad in productopropiedades)
+                {
+                    StProductoPropiedad temp = new StProductoPropiedad();
+                    temp.id = productopropiedad.id;
+                    temp.nombre = productopropiedad.nombre;
+                    temp.descripcion = productopropiedad.descripcion;
+
+                    productopropiedad.datoTipos = DatoTipoDAO.getDatoTipo(productopropiedad.datoTipoid);
+
+                    temp.datoTipoid = productopropiedad.datoTipoid;
+                    temp.datoTipoNombre = productopropiedad.datoTipos.nombre;
+                    temp.fechaActualizacion = productopropiedad.fechaActualizacion != null ? productopropiedad.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null;
+                    temp.fechaCreacion = productopropiedad.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss");
+                    temp.usuarioActualizo = productopropiedad.usuarioActualizo;
+                    temp.usuarioCreo = productopropiedad.usuarioCreo;
+                    temp.estado = productopropiedad.estado;
+                    stproductopropiedad.Add(temp);
+                }
+
+                return Ok(new { success = true, productopropiedades = stproductopropiedad });
+            }
+            catch (Exception e)
+            {
+                CLogger.write("7", "ProductoPropiedadController.class", e);
                 return BadRequest(500);
             }
         }

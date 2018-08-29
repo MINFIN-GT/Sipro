@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using SiproDAO.Dao;
 using SiproModelCore.Models;
@@ -10,7 +10,10 @@ using Utilities;
 
 namespace SProductoTipo.Controllers
 {
-    [Route("api/[controller]")]
+    [Authorize]
+    [Produces("application/json")]
+    [Route("/api/[controller]/[action]")]
+    [EnableCors("AllowAllHeaders")]
     public class ProductoTipoController : Controller
     {
         private class Stproductotipo
@@ -26,6 +29,7 @@ namespace SProductoTipo.Controllers
         }
 
         [HttpPost]
+        [Authorize("Producto Tipos - Visualizar")]
         public IActionResult ProductoTipoPagina([FromBody]dynamic value)
         {
             try
@@ -65,6 +69,7 @@ namespace SProductoTipo.Controllers
         }
 
         [HttpPost]
+        [Authorize("Producto Tipos - Crear")]
         public IActionResult ProductoTipo([FromBody]dynamic value)
         {
             try
@@ -125,11 +130,57 @@ namespace SProductoTipo.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize("Producto Tipos - Editar")]
         public IActionResult ProductoTipo(int id, [FromBody]dynamic value)
         {
             try
             {
-                return Ok();
+                ProductoTipoValidator validator = new ProductoTipoValidator();
+                ValidationResult results = validator.Validate(value);
+
+                if (results.IsValid)
+                {
+                    ProductoTipo productoTipo = ProductoTipoDAO.getProductoTipo(id);
+                    productoTipo.nombre = value.nombre;
+                    productoTipo.descripcion = value.descripcion;
+                    productoTipo.usuarioActualizo = User.Identity.Name;
+                    productoTipo.fechaActualizacion = DateTime.Now;
+
+                    bool guardado = false;
+                    guardado = ProductoTipoDAO.guardarProductoTipo(productoTipo);
+
+                    if (guardado)
+                    {
+                        string propiedades = value.propiedades != null ? (string)value.propiedades : default(string);
+                        String[] idsPropiedades = propiedades != null && propiedades.Length > 0 ? propiedades.Split(",") : null;
+
+                        if (idsPropiedades != null && idsPropiedades.Length > 0)
+                        {
+                            foreach (String idPropiedad in idsPropiedades)
+                            {
+                                ProdtipoPropiedad prodtipoPropiedad = new ProdtipoPropiedad();
+                                prodtipoPropiedad.productoTipoid = productoTipo.id;
+                                prodtipoPropiedad.productoPropiedadid = Convert.ToInt32(idPropiedad);
+                                prodtipoPropiedad.fechaCreacion = DateTime.Now;
+                                prodtipoPropiedad.usuarioCreo = User.Identity.Name;
+
+                                guardado = guardado & ProdTipoPropiedadDAO.guardarProdTipoPropiedad(prodtipoPropiedad);
+                            }
+                        }
+                    }
+
+                    return Ok(new
+                    {
+                        success = guardado,
+                        id = productoTipo.id,
+                        usuarioCreo = productoTipo.usuarioCreo,
+                        usuarioActualizo = productoTipo.usuarioActualizo,
+                        fechaCreacion = productoTipo.fechaCreacion.ToString("dd/MM/yyyy H:mm:ss"),
+                        fechaActualizacion = productoTipo.fechaActualizacion != null ? productoTipo.fechaActualizacion.Value.ToString("dd/MM/yyyy H:mm:ss") : null
+                    });
+                }
+                else
+                    return Ok(new { success = false });
             }
             catch (Exception e)
             {
@@ -139,11 +190,15 @@ namespace SProductoTipo.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize("Producto Tipos - Eliminar")]
         public IActionResult ProductoTipo(int id)
         {
             try
             {
-                return Ok();
+                ProductoTipo productoTipo = ProductoTipoDAO.getProductoTipo(id);
+                productoTipo.usuarioActualizo = User.Identity.Name;
+                bool eliminado = ProductoTipoDAO.eliminarProductoTipo(productoTipo);
+                return Ok(new { success = eliminado });
             }
             catch (Exception e)
             {
@@ -153,29 +208,19 @@ namespace SProductoTipo.Controllers
         }
 
         [HttpPost]
-        public IActionResult TotalElementos(int id)
+        [Authorize("Producto Tipos - Visualizar")]
+        public IActionResult TotalElementos([FromBody]dynamic value)
         {
             try
             {
-                return Ok();
+                String filtro_busqueda = value.filtro_busqueda;
+                long total = ProductoTipoDAO.getTotal(filtro_busqueda);
+
+                return Ok(new { success = true, total = total });
             }
             catch (Exception e)
             {
                 CLogger.write("5", "ProductoTipoController.class", e);
-                return BadRequest(500);
-            }
-        }
-
-        [HttpGet("{id}")]
-        public IActionResult TipoPropiedades(int id)
-        {
-            try
-            {
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                CLogger.write("6", "ProductoTipoController.class", e);
                 return BadRequest(500);
             }
         }

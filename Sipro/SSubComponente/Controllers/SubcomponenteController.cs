@@ -281,16 +281,22 @@ namespace SSubComponente.Controllers
 
                     DateTime fechaFin;
                     DateTime.TryParse((string)value.fechaFin, out fechaFin);
-
                     subComponente.fechaFin = fechaFin;
+
                     subComponente.duracion = value.duracion;
                     subComponente.duracionDimension = value.duracionDimension;
                     subComponente.inversionNueva = value.inversionNueva;
                     subComponente.fechaCreacion = DateTime.Now;
                     subComponente.usuarioCreo = User.Identity.Name;
                     subComponente.estado = 1;
-                    subComponente.fechaInicioReal = value.fechaInicioReal;
-                    subComponente.fechaFinReal = value.fechaFinReal;
+
+                    DateTime fechaInicioReal;
+                    DateTime.TryParse((string)value.fechaInicioReal, out fechaInicioReal);
+                    subComponente.fechaInicioReal = fechaInicioReal;
+
+                    DateTime fechaFinReal;
+                    DateTime.TryParse((string)value.fechaFinReal, out fechaFinReal);
+                    subComponente.fechaFinReal = fechaFinReal;
 
                     result = SubComponenteDAO.guardarSubComponente(subComponente, true);
 
@@ -436,7 +442,6 @@ namespace SSubComponente.Controllers
 
                     DateTime fechaFin;
                     DateTime.TryParse((string)value.fechaFin, out fechaFin);
-
                     subComponente.fechaFin = fechaFin;
 
                     subComponente.duracion = value.duracion;
@@ -444,8 +449,14 @@ namespace SSubComponente.Controllers
                     subComponente.inversionNueva = value.inversionNueva;
                     subComponente.fechaActualizacion = DateTime.Now;
                     subComponente.usuarioActualizo = User.Identity.Name;
-                    subComponente.fechaInicioReal = value.fechaInicioReal;
-                    subComponente.fechaFinReal = value.fechaFinReal;
+
+                    DateTime fechaInicioReal;
+                    DateTime.TryParse((string)value.fechaInicioReal, out fechaInicioReal);
+                    subComponente.fechaInicioReal = fechaInicioReal;
+
+                    DateTime fechaFinReal;
+                    DateTime.TryParse((string)value.fechaFinReal, out fechaFinReal);
+                    subComponente.fechaFinReal = fechaFinReal;
 
                     result = SubComponenteDAO.guardarSubComponente(subComponente, true);
 

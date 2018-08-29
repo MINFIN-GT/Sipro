@@ -39,6 +39,8 @@ namespace SiproDAO.Dao
                     {
                         Str_usuario = String.Join(" ", "AND id in (SELECT u.productoid FROM producto_usuario u WHERE u.usuario=:usuario)");
                     }
+
+                    ret = db.QueryFirstOrDefault<Producto>(query, new { id = id, usuario = usuario });
                 }
             }
             catch (Exception e)
@@ -66,12 +68,14 @@ namespace SiproDAO.Dao
                             ":treePath, :nivel, :ejercicio, :entidad, :fechaInicioReal, :fechaFinReal, :inversionNueva)", producto);
 
 
-                        if (guardado > 0 && producto.componentes != null)
+                        if (guardado > 0 && producto.componenteid != null)
                         {
+                            producto.componentes = ComponenteDAO.getComponente(producto.componenteid ?? default(int));
                             producto.treepath = producto.componentes.treepath + "" + (10000000 + producto.id);
                         }
-                        else if (producto.subcomponentes != null)
+                        else if (producto.subcomponenteid != null)
                         {
+                            producto.subcomponentes = SubComponenteDAO.getSubComponente(producto.subcomponenteid ?? default(int));
                             producto.treepath = producto.subcomponentes.treepath + "" + (10000000 + producto.id);
                         }
                     }
@@ -99,10 +103,14 @@ namespace SiproDAO.Dao
                         {
                             guardado = db.Execute("UPDATE PRODUCTO_USUARIO SET usuario_creo=:usuarioCreo, usuario_actualizo=:usuarioActualizo, fecha_creacion=:fechaCreacion, " +
                                 "fecha_actualizacion=:fechaActualizacion WHERE productoid=:productoid AND usuario=:usuario", pu);
+
+                            ret = guardado > 0 ? true : false;
                         }
                         else
                         {
                             guardado = db.Execute("INSERT INTO PRODUCTO_USUARIO VALUES (:productoid, :usuario, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion)", pu);
+
+                            ret = guardado > 0 ? true : false;
                         }
 
                         if (guardado > 0 && !producto.usuarioCreo.Equals("admin"))
@@ -129,11 +137,11 @@ namespace SiproDAO.Dao
 
                         if (calcular_valores_agregados)
                         {
-                            ProyectoDAO.calcularCostoyFechas(Convert.ToInt32(producto.treepath.Substring(0, 8)) - 10000000);
+                            ret = ProyectoDAO.calcularCostoyFechas(Convert.ToInt32(producto.treepath.Substring(0, 8)) - 10000000);
                         }
-
-                        ret = true;
                     }
+                    else
+                        ret = false;
                 }
             }
             catch (Exception e)
@@ -231,7 +239,7 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    String query = "SELECT COUNT(p.*) FROM producto p WHERE p.estado=1 ";
+                    String query = "SELECT COUNT(*) FROM producto p WHERE p.estado=1 ";
 
                     if (componenteid != null && componenteid > 0)
                     {

@@ -45,7 +45,9 @@ namespace SiproDAO.Dao
                     }
                     else
                     {
-                        int guardado = db.Execute("INSERT INTO producto_tipo VALUES (:id, :nombre, :descripcion, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion, :estado)");
+                        int sequenceId = db.ExecuteScalar<int>("SELECT seq_producto_tipo.nextval FROM DUAL");
+                        productoTipo.id = sequenceId;
+                        int guardado = db.Execute("INSERT INTO producto_tipo VALUES (:id, :nombre, :descripcion, :usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion, :estado)", productoTipo);
 
                         ret = guardado > 0 ? true : false;
                     }

@@ -543,4 +543,10 @@ export class ComponenteComponent implements OnInit {
       this.router.navigateByUrl('/main/subcomponente/'+ componenteId);
     }
   }
+
+  irAProductos(componenteId){
+    if(this.componente!=null){
+      this.router.navigateByUrl('/main/producto/'+ componenteId+'/1');
+    }
+  }
 }

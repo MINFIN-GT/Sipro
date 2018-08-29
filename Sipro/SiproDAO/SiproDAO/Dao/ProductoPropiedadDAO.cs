@@ -45,7 +45,7 @@ namespace SiproDAO.Dao
 
                     if (existe > 0)
                     {
-                        int guardado = db.Execute("UPDATE producto_propiedad SET nombre=:nombre, descripcion=:descripcion, usuario_creo=:usuarioCreo, usuario_actualizo=:usuario_actualizo," +
+                        int guardado = db.Execute("UPDATE producto_propiedad SET nombre=:nombre, descripcion=:descripcion, usuario_creo=:usuarioCreo, usuario_actualizo=:usuarioActualizo," +
                             " fecha_creacion=:fechaCreacion, fecha_actualizacion=:fechaActualizacion, dato_tipoid=:datoTipoid, estado=:estado WHERE id=:id", productoPropiedad);
 
                         ret = guardado > 0 ? true : false;
@@ -128,7 +128,7 @@ namespace SiproDAO.Dao
             {
                 using (DbConnection db = new OracleContext().getConnection())
                 {
-                    String query = "SELECT COUNT(e.*) FROM producto_propiedad e WHERE e.estado = 1";
+                    String query = "SELECT COUNT(*) FROM producto_propiedad e WHERE e.estado = 1";
                     String query_a = "";
 
                     if (filtro_busqueda != null && filtro_busqueda.Length > 0)
@@ -176,4 +176,6 @@ namespace SiproDAO.Dao
             return ret;
         }
     }
+
+
 }

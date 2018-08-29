@@ -1,0 +1,45 @@
+export class Producto{
+    id: number;
+    nombre: string = null;
+    descripcion: string = null;
+    componenteid: number = null;
+    componenteNombre: string;
+    subcomponenteid: number = null;
+    subcomponenteNombre: string;
+    productoTipoid: number = null;
+    productoTipoNombre: string;
+    ueunidadEjecutora: number = null;
+    entidad: number = null;
+    ejercicio: number = null;
+    nombreUnidadEjecutora: string;
+    entidadnombre: string;
+    snip: number = null;
+    programa: number = null;
+    subprograma: number = null;
+    proyecto: number = null;
+    actividad: number = null;
+    obra: number = null;
+    renglon: number = null;
+    ubicacionGeografica: number = null;
+    duracion: number = null;
+    duracionDimension: string = null;
+    fechaInicio: Date = null;
+    fechaFin: string = null;
+    estado: number;
+    fechaCreacion: Date;
+    usuarioCreo: string;
+    fechaActualizacion: Date;
+    usuarioActualizo: string;
+    latitud: string = null;
+    longitud: string = null;
+    peso: number = null;
+    costo: number = null;
+    acumulacionCostoid: number = null;
+    acumulacionCostoNombre: string;
+    tieneHijos: boolean;
+    fechaInicioReal: string = null;
+    fechaFinReal: string = null;
+    inversionNueva: number = null;
+
+    camposDinamicos: string;
+}

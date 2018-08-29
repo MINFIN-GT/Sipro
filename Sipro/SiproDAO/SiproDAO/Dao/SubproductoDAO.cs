@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using SiproModelCore.Models;
 using System.Data.Common;
 using Dapper;
@@ -190,78 +189,78 @@ namespace SiproDAO.Dao
             return ret;
         }
 
-	/*public static boolean eliminarSubproducto(Subproducto subproducto) {
-		boolean ret = false;
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try {
-			subproducto.setEstado(0);
-			session.beginTransaction();
-			session.update(subproducto);
-			session.getTransaction().commit();
-			ret = true;
-		} catch (Throwable e) {
-			CLogger.write("4", SubproductoDAO.class, e);
-		} finally {
-			session.close();
-		}
-		return ret;
-	}
+        /*public static boolean eliminarSubproducto(Subproducto subproducto) {
+            boolean ret = false;
+            Session session = CHibernateSession.getSessionFactory().openSession();
+            try {
+                subproducto.setEstado(0);
+                session.beginTransaction();
+                session.update(subproducto);
+                session.getTransaction().commit();
+                ret = true;
+            } catch (Throwable e) {
+                CLogger.write("4", SubproductoDAO.class, e);
+            } finally {
+                session.close();
+            }
+            return ret;
+        }
 
-	public static boolean eliminarTotalSubproducto(Subproducto Subproducto) {
-		boolean ret = false;
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try {
-			session.beginTransaction();
-			session.delete(Subproducto);
-			session.getTransaction().commit();
-			ret = true;
-		} catch (Throwable e) {
-			CLogger.write("5", SubproductoDAO.class, e);
-		} finally {
-			session.close();
-		}
-		return ret;
-	}
+        public static boolean eliminarTotalSubproducto(Subproducto Subproducto) {
+            boolean ret = false;
+            Session session = CHibernateSession.getSessionFactory().openSession();
+            try {
+                session.beginTransaction();
+                session.delete(Subproducto);
+                session.getTransaction().commit();
+                ret = true;
+            } catch (Throwable e) {
+                CLogger.write("5", SubproductoDAO.class, e);
+            } finally {
+                session.close();
+            }
+            return ret;
+        }*/
 
-	public static List<Subproducto> getSubproductosPagina(int pagina, int numeroProductos,Integer productoid, 
-			String filtro_nombre, String filtro_usuario_creo, String filtro_fecha_creacion, String columna_ordenada, 
-			String orden_direccion,String usuario) {
-		List<Subproducto> ret = new ArrayList<Subproducto>();
-		Session session = CHibernateSession.getSessionFactory().openSession();
-		try {
-			
-			String query = "SELECT p FROM Subproducto p WHERE p.estado = 1 "
-					+ (productoid!=null && productoid > 0 ? "AND p.producto.id = :idProducto " : "");
-			String query_a="";
-			if(filtro_nombre!=null && filtro_nombre.trim().length()>0)
-				query_a = String.join("",query_a, " p.nombre LIKE '%",filtro_nombre,"%' ");
-			if(filtro_usuario_creo!=null && filtro_usuario_creo.trim().length()>0)
-				query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " p.usuarioCreo LIKE '%", filtro_usuario_creo,"%' ");
-			if(filtro_fecha_creacion!=null && filtro_fecha_creacion.trim().length()>0)
-				query_a = String.join("",query_a,(query_a.length()>0 ? " OR " :""), " str(date_format(p.fechaCreacion,'%d/%m/%YYYY')) LIKE '%", filtro_fecha_creacion,"%' ");
-			query = String.join(" ", query, (query_a.length()>0 ? String.join("","AND (",query_a,")") : ""));
-			if(usuario!=null)
-				query = String.join("", query, " AND p.id in (SELECT u.id.subproductoid from SubproductoUsuario u where u.id.usuario=:usuario )");
-			query = columna_ordenada!=null && columna_ordenada.trim().length()>0 ? String.join(" ",query,"ORDER BY",columna_ordenada,orden_direccion ) : query;
-			
-			Query<Subproducto> criteria = session.createQuery(query,Subproducto.class);
-			criteria.setParameter("usuario", usuario);
-			if (productoid!=null && productoid>0){
-				criteria.setParameter("idProducto", productoid);
-			}
-			criteria.setFirstResult(((pagina - 1) * (numeroProductos)));
-			criteria.setMaxResults(numeroProductos);
-			
-			ret = criteria.getResultList();
-		} catch (Throwable e) {
-			CLogger.write("6", SubproductoDAO.class, e);
-		} finally {
-			session.close();
-		}
-		return ret;
-	}
+        public static List<Subproducto> getSubproductosPagina(int pagina, int numeroSubProductos, int productoid, String filtro_busqueda, String columna_ordenada,
+            String orden_direccion, String usuario)
+        {
+            List<Subproducto> ret = new List<Subproducto>();
+            try
+            {
+                using (DbConnection db = new OracleContext().getConnection())
+                {
+                    String query = "SELECT * FROM (SELECT a.*, rownum r__ FROM (SELECT p.* FROM subproducto p WHERE p.estado=1 AND p.productoid=:productoId ";
+                    String query_a = "";
+                    if (filtro_busqueda != null && filtro_busqueda.Length > 0)
+                    {
+                        query_a = String.Join("", query_a, " p.nombre LIKE '%" + filtro_busqueda + "%' ");
+                        query_a = String.Join("", query_a, (query_a.Length > 0 ? " OR " : ""), " p.usuario_creo LIKE '%" + filtro_busqueda + "%' ");
 
-	public static Long getTotalSubproductos(Integer productoid, String filtro_nombre, String filtro_usuario_creo, 
+                        DateTime fecha_creacion;
+                        if (DateTime.TryParse(filtro_busqueda, out fecha_creacion))
+                        {
+                            query_a = String.Join(" ", query_a, (query_a.Length > 0 ? " OR " : ""), " TO_DATE(TO_CHAR(p.fecha_creacion,'DD/MM/YY'),'DD/MM/YY') LIKE TO_DATE('" + fecha_creacion.ToString("dd/MM/yyyy") + "','DD/MM/YY') ");
+                        }
+                    }
+
+                    query = String.Join(" ", query, (query_a.Length > 0 ? String.Join("", "AND (", query_a, ")") : ""));
+                    if (usuario != null)
+                        query = String.Join("", query, " AND p.id in (SELECT u.subproductoid FROM subproducto_usuario u where u.usuario=:usuario)");
+                    query = columna_ordenada != null && columna_ordenada.Trim().Length > 0 ? String.Join(" ", query, "ORDER BY", columna_ordenada, orden_direccion) : query;
+                    query = String.Join(" ", query, ") a WHERE rownum < ((" + pagina + " * " + numeroSubProductos + ") + 1) ) WHERE r__ >= (((" + pagina + " - 1) * " + numeroSubProductos + ") + 1)");
+
+                    ret = db.Query<Subproducto>(query, new { productoId = productoid, usuario = usuario }).AsList<Subproducto>();
+                }
+            }
+            catch (Exception e)
+            {
+                CLogger.write("6", "SubproductoDAO.class", e);
+            }
+            return ret;
+        }
+
+	/*public static Long getTotalSubproductos(Integer productoid, String filtro_nombre, String filtro_usuario_creo, 
 			String filtro_fecha_creacion, String usuario) {
 		Long ret = 0L;
 		Session session = CHibernateSession.getSessionFactory().openSession();

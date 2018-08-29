@@ -159,7 +159,7 @@ export class SubcomponentepropiedadComponent implements OnInit {
       })
     }
     else{
-      this.utils.mensaje('warning', 'Seleccione una propiedad de componente');
+      this.utils.mensaje('warning', 'Seleccione una propiedad de subcomponente');
     }
   }
 
