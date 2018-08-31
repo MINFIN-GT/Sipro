@@ -95,7 +95,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SSubproducto", "SSubproduct
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SSubproductoPropiedad", "SSubproductoPropiedad\SSubproductoPropiedad.csproj", "{BC65DB44-E990-459C-8810-502C158CB2F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSubproductoTipo", "SSubproductoTipo\SSubproductoTipo.csproj", "{75609063-9F44-4D28-8C95-7553484A3BB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SSubproductoTipo", "SSubproductoTipo\SSubproductoTipo.csproj", "{75609063-9F44-4D28-8C95-7553484A3BB2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SActividadPropiedad", "SActividadPropiedad\SActividadPropiedad.csproj", "{95B24A21-279F-4916-82A2-FD1316E47580}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -287,6 +289,10 @@ Global
 		{75609063-9F44-4D28-8C95-7553484A3BB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75609063-9F44-4D28-8C95-7553484A3BB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75609063-9F44-4D28-8C95-7553484A3BB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95B24A21-279F-4916-82A2-FD1316E47580}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95B24A21-279F-4916-82A2-FD1316E47580}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95B24A21-279F-4916-82A2-FD1316E47580}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95B24A21-279F-4916-82A2-FD1316E47580}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -328,6 +334,7 @@ Global
 		{D1FD14C3-6E6B-4B00-80F2-6178721B3618} = {0DA1BD0E-A90E-4608-ACE8-5971B84A1019}
 		{BC65DB44-E990-459C-8810-502C158CB2F6} = {0DA1BD0E-A90E-4608-ACE8-5971B84A1019}
 		{75609063-9F44-4D28-8C95-7553484A3BB2} = {0DA1BD0E-A90E-4608-ACE8-5971B84A1019}
+		{95B24A21-279F-4916-82A2-FD1316E47580} = {0DA1BD0E-A90E-4608-ACE8-5971B84A1019}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6BB888BE-6FA0-400D-B0C9-9F121D0B435A}

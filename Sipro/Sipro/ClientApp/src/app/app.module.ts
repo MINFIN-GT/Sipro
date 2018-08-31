@@ -68,6 +68,9 @@ import { ProductotipoComponent } from './components/productotipo/productotipo.co
 import { SubproductoComponent } from './components/subproducto/subproducto.component';
 import { SubproductopropiedadComponent } from './components/subproductopropiedad/subproductopropiedad.component';
 import { SubproductotipoComponent } from './components/subproductotipo/subproductotipo.component';
+import { ActividadComponent } from './components/actividad/actividad.component';
+import { ActividadpropiedadComponent } from './components/actividadpropiedad/actividadpropiedad.component';
+import { ActividadtipoComponent } from './components/actividadtipo/actividadtipo.component';
 
 const routes: Routes = [{
           path: '',    // Va a Main
@@ -77,6 +80,12 @@ const routes: Routes = [{
           path: 'main',
           component: MainComponent,
           canActivate: [RouteguardService]
+        },{
+          path: 'main/actividadpropiedad',
+          component: ActividadpropiedadComponent
+        },{
+          path: 'main/actividadtipo',
+          component: ActividadtipoComponent
         },{
           path: 'main/prestamo',
           component: PrestamoComponent
@@ -151,7 +160,7 @@ const routes: Routes = [{
       DialogComponentePropiedad, DialogComponenteTipo, SubcomponenteComponent, SubcomponentepropiedadComponent, SubcomponentetipoComponent,
       DialogSubComponentePropiedad, DialogSubComponenteTipo, ProductoComponent, ProductopropiedadComponent, ProductotipoComponent,
       DialogProductoPropiedad, DialogProductoTipo, SubproductoComponent, SubproductopropiedadComponent, SubproductotipoComponent,
-      DialogSubproductoPropiedad
+      DialogSubproductoPropiedad, ActividadComponent, ActividadpropiedadComponent, ActividadtipoComponent
   ],
   imports: [
       BrowserModule,

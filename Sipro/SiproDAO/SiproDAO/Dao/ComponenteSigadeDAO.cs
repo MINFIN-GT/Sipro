@@ -31,8 +31,8 @@ namespace SiproDAO.Dao
                     {
                         int sequenceId = db.ExecuteScalar<int>("SELECT seq_componente_sigade.nextval FROM DUAL");
                         ComponenteSigade.id = sequenceId;
-                        int guardado = db.Execute("INSERT INTO COMPONENTE_SIGADE VALUES (:id, :nombre, :codigo_presupuestario, :numero_componente, :monto_componente, " +
-                            ":usuario_creo, :usuario_actualizo, :fecha_creacion, :fecha_actualizacion, :estado)", ComponenteSigade);
+                        int guardado = db.Execute("INSERT INTO COMPONENTE_SIGADE VALUES (:id, :nombre, :codigoPresupuestario, :numeroComponente, :montoComponente, " +
+                            ":usuarioCreo, :usuarioActualizo, :fechaCreacion, :fechaActualizacion, :estado)", ComponenteSigade);
 
                         ret = guardado > 0 ? true : false;
                     }
